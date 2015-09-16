@@ -1,0 +1,7 @@
+.npmignore
+benchmark/
+release/tests/
+src/
+test-cases/
+npm-debug.log
+gulpfile.js
