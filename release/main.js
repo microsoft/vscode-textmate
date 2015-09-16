@@ -275,7 +275,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = new __();
 };
 var utils_1 = require('./utils');
-var oniguruma_1 = require('oniguruma');
 var BACK_REFERENCING_END = /\\(\d+)/;
 var Rule = (function () {
     function Rule(id, name, contentName) {
@@ -447,6 +446,15 @@ var RegExpSource = (function () {
     return RegExpSource;
 })();
 exports.RegExpSource = RegExpSource;
+var createOnigScanner = (function () {
+    var onigurumaModule = null;
+    return function createOnigScanner(sources) {
+        if (!onigurumaModule) {
+            onigurumaModule = require('oniguruma');
+        }
+        return new onigurumaModule.OnigScanner(sources);
+    };
+})();
 var RegExpSourceList = (function () {
     function RegExpSourceList() {
         this._items = [];
@@ -486,7 +494,7 @@ var RegExpSourceList = (function () {
         if (!this._hasAnchors) {
             if (!this._cached) {
                 this._cached = {
-                    scanner: new oniguruma_1.OnigScanner(this._items.map(function (e) { return e.source; })),
+                    scanner: createOnigScanner(this._items.map(function (e) { return e.source; })),
                     rules: this._items.map(function (e) { return e.ruleId; })
                 };
             }
@@ -519,7 +527,7 @@ var RegExpSourceList = (function () {
     };
     RegExpSourceList.prototype._resolveAnchors = function (allowA, allowG) {
         return {
-            scanner: new oniguruma_1.OnigScanner(this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); })),
+            scanner: createOnigScanner(this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); })),
             rules: this._items.map(function (e) { return e.ruleId; })
         };
     };

@@ -13,6 +13,10 @@ export interface IGrammarLocator {
  * The registry that will hold all grammars.
  */
 export class Registry {
+
+	public static readGrammarInfo(path:string, callback:(err:any, grammarInfo:IGrammarInfo)=>void): void;
+	public static readGrammarInfoSync(path:string): IGrammarInfo;
+
 	constructor(locator?:IGrammarLocator);
 
 	/**
@@ -29,6 +33,13 @@ export class Registry {
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
 	 */
 	public grammarForScopeName(scopeName:string): IGrammar;
+}
+
+export interface IGrammarInfo {
+	fileTypes: string[];
+	name: string;
+	scopeName: string;
+	firstLineMatch: string;
 }
 
 /**

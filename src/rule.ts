@@ -248,6 +248,16 @@ interface IRegExpSourceListAnchorCache {
 	A1_G1: ICompiledRule;
 }
 
+let createOnigScanner = (function() {
+	var onigurumaModule: any = null;
+	return function createOnigScanner(sources:string[]): OnigScanner {
+		if (!onigurumaModule) {
+			onigurumaModule = require('oniguruma');
+		}
+		return new onigurumaModule.OnigScanner(sources);
+	}
+})();
+
 export class RegExpSourceList {
 
 	private _items: RegExpSource[];
@@ -299,7 +309,7 @@ export class RegExpSourceList {
 		if (!this._hasAnchors) {
 			if (!this._cached) {
 				this._cached = {
-					scanner: new OnigScanner(this._items.map(e => e.source)),
+					scanner: createOnigScanner(this._items.map(e => e.source)),
 					rules: this._items.map(e => e.ruleId)
 				};
 			}
@@ -330,7 +340,7 @@ export class RegExpSourceList {
 
 	private _resolveAnchors(allowA:boolean, allowG:boolean): ICompiledRule {
 		return {
-			scanner: new OnigScanner(this._items.map(e => e.resolveAnchors(allowA, allowG))),
+			scanner: createOnigScanner(this._items.map(e => e.resolveAnchors(allowA, allowG))),
 			rules: this._items.map(e => e.ruleId)
 		};
 	}
