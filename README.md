@@ -75,3 +75,7 @@ See [the .d.ts file](./src/typings/main.d.ts)
 * Compile in the background with `npm run watch`
 * Run tests with `npm test`
 * Run benchmark with `npm run benchmark`
+
+## License
+[MIT](https://github.com/Microsoft/vscode-textmate/blob/master/LICENSE.md)
+
