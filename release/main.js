@@ -89,13 +89,21 @@ $load('./plistParser', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var sax = require('sax');
+var createParser = (function () {
+    var saxModule = null;
+    return function parser(strict, opt) {
+        if (!saxModule) {
+            saxModule = require('sax');
+        }
+        return saxModule.parser(strict, opt);
+    };
+})();
 function parse(content) {
     var errors = [];
     var currObject = null;
     var result = null;
     var text = null;
-    var parser = sax.parser(false, { lowercase: true });
+    var parser = createParser(false, { lowercase: true });
     parser.onerror = function (e) {
         errors.push(e.message);
     };

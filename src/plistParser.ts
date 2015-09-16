@@ -11,6 +11,16 @@ interface PListObject {
 	lastKey?: string;
 }
 
+let createParser = (function() {
+	var saxModule: any = null;
+	return function parser(strict:boolean, opt: sax.SAXOptions) {
+		if (!saxModule) {
+			saxModule = require('sax');
+		}
+		return saxModule.parser(strict, opt);
+	}
+})();
+
 export function parse<T>(content: string) : { value: T; errors: string[]; } {
 
 	let errors : string[] = [];
@@ -19,8 +29,8 @@ export function parse<T>(content: string) : { value: T; errors: string[]; } {
 
 	let text: string = null;
 
-	let parser = sax.parser(false, { lowercase: true });
-	parser.onerror = (e) => {
+	let parser = createParser(false, { lowercase: true });
+	parser.onerror = (e:any) => {
 		errors.push(e.message);
 	};
 	parser.ontext = (s: string) => {
