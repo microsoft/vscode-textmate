@@ -7,12 +7,7 @@
     "type": "git",
     "url": "https://github.com/Microsoft/vscode-textmate"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://github.com/Microsoft/vscode-textmate/raw/master/LICENSE.md"
-    }
-  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Microsoft/vscode-textmate/issues"
   },
