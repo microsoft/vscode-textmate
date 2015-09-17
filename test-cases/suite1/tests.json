@@ -1,0 +1,72 @@
+[
+	{
+		"grammars": [
+			"fixtures/groovy.json"
+		],
+		"grammarPath": "fixtures/groovy.json",
+		"lines": [
+			{
+				"line": "class BootStrap { }",
+				"tokens": [
+					{
+						"value": "class",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy",
+							"storage.modifier.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy"
+						]
+					},
+					{
+						"value": "BootStrap",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.identifier.groovy",
+							"entity.name.type.class.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy"
+						]
+					},
+					{
+						"value": "{",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.body.groovy"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"meta.class.body.groovy"
+						]
+					},
+					{
+						"value": "}",
+						"scopes": [
+							"source.groovy",
+							"meta.definition.class.groovy",
+							"punctuation.section.class.end.groovy"
+						]
+					}
+				]
+			}
+		]
+	}
+]

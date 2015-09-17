@@ -7,10 +7,14 @@ import fs = require('fs');
 import path = require('path');
 import {Registry} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
+import 'colors';
+
+var errCnt = 0;
 
 export function runDescriptiveTests(testLocation: string) {
 	let tests:IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
 
+	errCnt = 0;
 	tests.forEach(function(test, index) {
 		let desc = test.desc;
 		if (test.feature === 'injection') {
@@ -40,6 +44,15 @@ export function runDescriptiveTests(testLocation: string) {
 			prevState = assertTokenization(noAsserts, grammar, test.lines[i], prevState, desc);
 		}
 	});
+
+	if (errCnt === 0) {
+		var msg = 'Test suite at ' + testLocation + ' finished ok';
+		console.log((<any>msg).green);
+	} else {
+		var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
+		console.log((<any>msg).red);
+	}
+
 }
 
 interface IRawTest {
@@ -70,7 +83,8 @@ function assertTokenization(noAsserts:boolean, grammar:IGrammar, testCase:IRawTe
 }
 
 function fail<T>(message:string, actual:T, expected:T): void {
-	console.error(message);
+	errCnt++;
+	console.error((<any>message).red);
 	console.log(JSON.stringify(actual, null, '\t'));
 	console.log(JSON.stringify(expected, null, '\t'));
 }

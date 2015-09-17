@@ -5,8 +5,11 @@
 var fs = require('fs');
 var path = require('path');
 var main_1 = require('../main');
+require('colors');
+var errCnt = 0;
 function runDescriptiveTests(testLocation) {
     var tests = JSON.parse(fs.readFileSync(testLocation).toString());
+    errCnt = 0;
     tests.forEach(function (test, index) {
         var desc = test.desc;
         if (test.feature === 'injection') {
@@ -35,6 +38,14 @@ function runDescriptiveTests(testLocation) {
             prevState = assertTokenization(noAsserts, grammar, test.lines[i], prevState, desc);
         }
     });
+    if (errCnt === 0) {
+        var msg = 'Test suite at ' + testLocation + ' finished ok';
+        console.log(msg.green);
+    }
+    else {
+        var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
+        console.log(msg.red);
+    }
 }
 exports.runDescriptiveTests = runDescriptiveTests;
 function assertTokenization(noAsserts, grammar, testCase, prevState, desc) {
@@ -45,7 +56,8 @@ function assertTokenization(noAsserts, grammar, testCase, prevState, desc) {
     return r.ruleStack;
 }
 function fail(message, actual, expected) {
-    console.error(message);
+    errCnt++;
+    console.error(message.red);
     console.log(JSON.stringify(actual, null, '\t'));
     console.log(JSON.stringify(expected, null, '\t'));
 }

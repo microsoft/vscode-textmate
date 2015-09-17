@@ -707,7 +707,12 @@ var RuleFactory = (function () {
                 if (pattern.include) {
                     if (pattern.include.charAt(0) === '#') {
                         // Local include found in `repository`
-                        patternId = RuleFactory.getCompiledRuleId(repository[pattern.include.substr(1)], helper, repository);
+                        var localIncludedRule = repository[pattern.include.substr(1)];
+                        if (localIncludedRule) {
+                            patternId = RuleFactory.getCompiledRuleId(localIncludedRule, helper, repository);
+                        }
+                        else {
+                        }
                     }
                     else if (pattern.include === '$base' || pattern.include === '$self') {
                         // Special include also found in `repository`
@@ -726,7 +731,12 @@ var RuleFactory = (function () {
                         externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
                         if (externalGrammar) {
                             if (externalGrammarInclude) {
-                                patternId = RuleFactory.getCompiledRuleId(externalGrammar.repository[externalGrammarInclude], helper, externalGrammar.repository);
+                                var externalIncludedRule = externalGrammar.repository[externalGrammarInclude];
+                                if (externalIncludedRule) {
+                                    patternId = RuleFactory.getCompiledRuleId(externalIncludedRule, helper, externalGrammar.repository);
+                                }
+                                else {
+                                }
                             }
                             else {
                                 patternId = RuleFactory.getCompiledRuleId(externalGrammar.repository.$self, helper, externalGrammar.repository);
