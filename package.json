@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "VSCode TextMate grammar helpers",
   "main": "./release/main.js",
   "repository": {
@@ -17,7 +17,7 @@
     "benchmark": "node benchmark/benchmark.js"
   },
   "dependencies": {
-    "oniguruma": "4.2.2",
+    "oniguruma": "^4.2.4",
     "sax": "^1.1.1"
   },
   "devDependencies": {
