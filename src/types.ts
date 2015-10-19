@@ -39,6 +39,8 @@ export interface IRawRule {
 	endCaptures?: IRawCaptures;
 	patterns?: IRawPattern[];
 
+	repository?: IRawRepository;
+
 	applyEndPatternLast?:boolean;
 }
 

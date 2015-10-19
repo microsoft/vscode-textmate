@@ -35,6 +35,15 @@ function cloneObj(obj:any): any {
 	return r;
 }
 
+export function mergeObjects(target:any, ...sources:any[]): any {
+	sources.forEach(source => {
+		for (let key in source) {
+			target[key] = source[key];
+		}
+	});
+	return target;
+}
+
 let CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
 
 export class RegexSource {
