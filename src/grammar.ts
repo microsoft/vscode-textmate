@@ -83,6 +83,9 @@ export function extractIncludedScopes(grammar:IRawGrammar): string[] {
 		_extractIncludedScopesInRepository(result, grammar.repository);
 	}
 
+	// remove references to own scope (avoid recursion)
+	delete result[grammar.scopeName];
+
 	return Object.keys(result);
 }
 

@@ -279,8 +279,7 @@ $load('./rule', function(require, module, exports) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
 var BACK_REFERENCING_END = /\\(\d+)/;
@@ -830,6 +829,8 @@ function extractIncludedScopes(grammar) {
     if (grammar.repository) {
         _extractIncludedScopesInRepository(result, grammar.repository);
     }
+    // remove references to own scope (avoid recursion)
+    delete result[grammar.scopeName];
     return Object.keys(result);
 }
 exports.extractIncludedScopes = extractIncludedScopes;
