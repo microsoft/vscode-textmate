@@ -49,6 +49,19 @@ function cloneObj(obj) {
     }
     return r;
 }
+function mergeObjects(target) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    sources.forEach(function (source) {
+        for (var key in source) {
+            target[key] = source[key];
+        }
+    });
+    return target;
+}
+exports.mergeObjects = mergeObjects;
 var CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
 var RegexSource = (function () {
     function RegexSource() {
@@ -279,8 +292,7 @@ $load('./rule', function(require, module, exports) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
 var BACK_REFERENCING_END = /\\(\d+)/;
@@ -664,6 +676,9 @@ var RuleFactory = (function () {
                     return new MatchRule(desc.id, desc.name, desc.match, RuleFactory._compileCaptures(desc.captures, helper, repository));
                 }
                 if (!desc.begin) {
+                    if (desc.repository) {
+                        repository = utils_1.mergeObjects({}, repository, desc.repository);
+                    }
                     return new IncludeOnlyRule(desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
                 return new BeginEndRule(desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository), desc.applyEndPatternLast, RuleFactory._compilePatterns(desc.patterns, helper, repository));
@@ -819,6 +834,9 @@ function _extractIncludedScopesInRepository(result, repository) {
         var rule = repository[name_1];
         if (rule.patterns && Array.isArray(rule.patterns)) {
             _extractIncludedScopesInPatterns(result, rule.patterns);
+        }
+        if (rule.repository) {
+            _extractIncludedScopesInRepository(result, rule.repository);
         }
     }
 }

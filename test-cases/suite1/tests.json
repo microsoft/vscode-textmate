@@ -68,5 +68,78 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/markdown.plist"
+		],
+		"grammarPath": "fixtures/markdown.plist",
+		"lines": [
+			{
+				"line": "## This is *great* stuff",
+				"tokens": [
+					{
+						"value": "##",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"punctuation.definition.heading.markdown"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown"
+						]
+					},
+					{
+						"value": "This is ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": "great",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": " stuff",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
