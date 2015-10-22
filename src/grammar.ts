@@ -7,6 +7,7 @@ import {clone} from './utils';
 import {IRawGrammar, IRawRepository, IRawPattern, IRawRule} from './types';
 import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, MatchRule, ICompiledRule} from './rule';
 import {IOnigCaptureIndex, IOnigNextMatchResult} from 'oniguruma';
+import {createMatcher, Matcher} from './matcher';
 
 export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRepository): IGrammar {
 	return new Grammar(grammar, grammarRepository);
@@ -94,6 +95,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	private _includedGrammars: { [scopeName:string]:IRawGrammar; };
 	private _grammarRepository: IGrammarRepository;
 	private _grammar: IRawGrammar;
+	private _injections : { matcher: Matcher<StackElement[]>; rule:IRawRule; }[];
 
 	constructor(grammar:IRawGrammar, grammarRepository:IGrammarRepository) {
 		this._rootId = -1;
@@ -102,6 +104,38 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
+	}
+
+	public getInjections(states: StackElement[]) : Rule[] {
+		if (!this._injections) {
+			this._injections = [];
+
+			var rawInjections = this._grammar.injections;
+			if (rawInjections) {
+				var nameMatcher = (name: string, stackElements: StackElement[]) => {
+					if (name[0] === 'L' && name[1] === ':') {
+						name = name.substr(2); // remove 'L:' prefix, not supported
+					}
+					var segments = name.split('.');
+					return stackElements.some(stackElement => stackElement.matches(segments));
+				};
+
+				for (var expression in rawInjections) {
+					this._injections.push({
+						matcher: createMatcher(expression, nameMatcher),
+						rule: rawInjections[expression]
+					});
+				}
+			}
+		}
+		var rules : Rule[] = [];
+		this._injections.forEach(injection => {
+			if (injection.matcher(states)) {
+				var ruleId = RuleFactory.getCompiledRuleId(injection.rule, this, this._grammar.repository);
+				rules.push(this.getRule(ruleId));
+			}
+		});
+		return rules;
 	}
 
 	public registerRule<T extends Rule>(factory:(id:number)=>T): T {
@@ -242,9 +276,22 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 
 	while (linePos < lineLength) {
 		stackElement = stack[stack.length - 1];
-		ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 
+		// first try to find a rule in the repository
+		ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 		r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+
+		if (r === null) {
+			// then check the injections, take the first one that matches
+			var rules = grammar.getInjections(stack);
+			var i = 0;
+			while (i < rules.length && r === null) {
+				console.log('injection found ' + JSON.stringify(stack) + ', line ' + lineText + ', pos ' + linePos);
+				ruleScanner = rules[i].compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+				r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+				i++;
+			}
+		}
 
 		if (r === null) {
 			// No match
@@ -338,6 +385,8 @@ export class StackElement {
 	public scopeName: string;
 	public contentName: string;
 
+	private scopeNameSegments: { [segment:string]:boolean };
+
 	constructor (ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName:string) {
 		this.ruleId = ruleId;
 		this.enterPos = enterPos;
@@ -345,6 +394,21 @@ export class StackElement {
 		this.scopeName = scopeName;
 		this.contentName = contentName;
 	}
+
+	public matches(scopeNameSegemnts: string[]) : boolean {
+		if (!this.scopeName) {
+			return false;
+		}
+
+		if (!this.scopeNameSegments) {
+			this.scopeNameSegments = {};
+			this.scopeName.split('.').forEach(s => {
+				this.scopeNameSegments[s] = true;
+			})
+		}
+		return scopeNameSegemnts.every(segment => this.scopeNameSegments[segment]);
+	}
+
 }
 
 class LocalStackElement {

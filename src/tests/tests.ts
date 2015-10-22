@@ -5,7 +5,7 @@
 
 import fs = require('fs');
 import path = require('path');
-import {Registry} from '../main';
+import {Registry, createMatcher} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
 import 'colors';
 
@@ -128,3 +128,35 @@ function assertToken(actual:IRawToken, expected:IRawToken, desc:string): void {
 	}
 }
 
+interface IMatcherTest {
+	expression: string;
+	input: string[];
+	result: boolean;
+}
+
+export function runMatcherTests(testLocation: string) {
+	let tests:IMatcherTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+
+	var nameMatcher = (name: string, input: string[]) => {
+		return input.indexOf(name) !== -1
+	}
+	var errCnt = 0;
+	tests.forEach((test, index) => {
+		var matcher = createMatcher(test.expression, nameMatcher);
+		var result = matcher(test.input);
+		if (result === test.result) {
+			console.log(index + ': passed');
+		} else {
+			var message = index + ': failed , expected ' +  test.result;
+			console.error((<any>message).red);
+			errCnt++;
+		}
+	});
+	if (errCnt === 0) {
+		var msg = 'Test suite at ' + testLocation + ' finished ok';
+		console.log((<any>msg).green);
+	} else {
+		var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
+		console.log((<any>msg).red);
+	}
+}

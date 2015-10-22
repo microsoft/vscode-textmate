@@ -9,6 +9,7 @@ export interface IRawGrammar {
 	repository: IRawRepository;
 	scopeName: string;
 	patterns: IRawPattern[];
+	injections?: { [expression:string]: IRawRule };
 
 	fileTypes?: string[];
 	name?: string;

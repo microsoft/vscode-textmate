@@ -84,6 +84,84 @@ var RegexSource = (function () {
 exports.RegexSource = RegexSource;
 
 });
+$load('./matcher', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+function createMatcher(expression, matchesName) {
+    var tokenizer = newTokenizer(expression);
+    var token = tokenizer.next();
+    function parseOperand() {
+        if (token === '-') {
+            token = tokenizer.next();
+            var expressionToNegate = parseOperand();
+            return function (matcherInput) { return expressionToNegate && !expressionToNegate(matcherInput); };
+        }
+        if (token === '(') {
+            token = tokenizer.next();
+            var expressionInParents = parseExpression('|');
+            if (token == ')') {
+                token = tokenizer.next();
+            }
+            return expressionInParents;
+        }
+        if (isIdentifier(token)) {
+            var identifier = token; // keep identifier in a variable in the function scope
+            token = tokenizer.next();
+            return function (matcherInput) { return matchesName(identifier, matcherInput); };
+        }
+        return null;
+    }
+    function parseConjunction() {
+        var matchers = [];
+        var matcher = parseOperand();
+        while (matcher) {
+            matchers.push(matcher);
+            matcher = parseOperand();
+        }
+        return function (matcherInput) { return matchers.every(function (matcher) { return matcher(matcherInput); }); }; // and
+    }
+    function parseExpression(orOperatorToken) {
+        if (orOperatorToken === void 0) { orOperatorToken = ','; }
+        var matchers = [];
+        var matcher = parseConjunction();
+        while (matcher) {
+            matchers.push(matcher);
+            if (token === orOperatorToken) {
+                do {
+                    token = tokenizer.next();
+                } while (token === orOperatorToken); // ignore subsequent commas
+            }
+            else {
+                break;
+            }
+            matcher = parseConjunction();
+        }
+        return function (matcherInput) { return matchers.some(function (matcher) { return matcher(matcherInput); }); }; // or
+    }
+    return parseExpression() || (function (matcherInput) { return false; });
+}
+exports.createMatcher = createMatcher;
+function isIdentifier(token) {
+    return token && token.match(/[\w\.:]+/);
+}
+function newTokenizer(input) {
+    var regex = /([\w\.:]+|[\,\|\-\(\)])/g;
+    var match = regex.exec(input);
+    return {
+        next: function () {
+            if (!match) {
+                return null;
+            }
+            var res = match[0];
+            match = regex.exec(input);
+            return res;
+        }
+    };
+}
+
+});
 $load('./plistParser', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -279,8 +357,7 @@ $load('./rule', function(require, module, exports) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
 var BACK_REFERENCING_END = /\\(\d+)/;
@@ -787,6 +864,7 @@ $load('./grammar', function(require, module, exports) {
 'use strict';
 var utils_1 = require('./utils');
 var rule_1 = require('./rule');
+var matcher_1 = require('./matcher');
 function createGrammar(grammar, grammarRepository) {
     return new Grammar(grammar, grammarRepository);
 }
@@ -842,6 +920,36 @@ var Grammar = (function () {
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
     }
+    Grammar.prototype.getInjections = function (states) {
+        var _this = this;
+        if (!this._injections) {
+            this._injections = [];
+            var rawInjections = this._grammar.injections;
+            if (rawInjections) {
+                var nameMatcher = function (name, stackElements) {
+                    if (name[0] === 'L' && name[1] === ':') {
+                        name = name.substr(2); // remove 'L:' prefix, not supported
+                    }
+                    var segments = name.split('.');
+                    return stackElements.some(function (stackElement) { return stackElement.matches(segments); });
+                };
+                for (var expression in rawInjections) {
+                    this._injections.push({
+                        matcher: matcher_1.createMatcher(expression, nameMatcher),
+                        rule: rawInjections[expression]
+                    });
+                }
+            }
+        }
+        var rules = [];
+        this._injections.forEach(function (injection) {
+            if (injection.matcher(states)) {
+                var ruleId = rule_1.RuleFactory.getCompiledRuleId(injection.rule, _this, _this._grammar.repository);
+                rules.push(_this.getRule(ruleId));
+            }
+        });
+        return rules;
+    };
     Grammar.prototype.registerRule = function (factory) {
         var id = (++this._lastRuleId);
         var result = factory(id);
@@ -949,8 +1057,20 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     var lineLength = lineText.length, stackElement, ruleScanner, r, matchedRuleId, anchorPosition = -1, hasAdvanced;
     while (linePos < lineLength) {
         stackElement = stack[stack.length - 1];
+        // first try to find a rule in the repository
         ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
         r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        if (r === null) {
+            // then check the injections, take the first one that matches
+            var rules = grammar.getInjections(stack);
+            var i = 0;
+            while (i < rules.length && r === null) {
+                console.log('injection found ' + JSON.stringify(stack) + ', line ' + lineText + ', pos ' + linePos);
+                ruleScanner = rules[i].compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+                r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+                i++;
+            }
+        }
         if (r === null) {
             // No match
             lineTokens.produce(stack, lineLength);
@@ -1029,6 +1149,19 @@ var StackElement = (function () {
         this.scopeName = scopeName;
         this.contentName = contentName;
     }
+    StackElement.prototype.matches = function (scopeNameSegemnts) {
+        var _this = this;
+        if (!this.scopeName) {
+            return false;
+        }
+        if (!this.scopeNameSegments) {
+            this.scopeNameSegments = {};
+            this.scopeName.split('.').forEach(function (s) {
+                _this.scopeNameSegments[s] = true;
+            });
+        }
+        return scopeNameSegemnts.every(function (segment) { return _this.scopeNameSegments[segment]; });
+    };
     return StackElement;
 })();
 exports.StackElement = StackElement;
@@ -1137,6 +1270,8 @@ $load('./main', function(require, module, exports) {
 'use strict';
 var registry_1 = require('./registry');
 var grammarReader_1 = require('./grammarReader');
+var expressionMatcher = require('./matcher');
+exports.createMatcher = expressionMatcher.createMatcher;
 var DEFAULT_LOCATOR = {
     getFilePath: function (scopeName) { return null; }
 };

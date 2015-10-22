@@ -4625,7 +4625,8 @@
 			"fixtures/html-rails.json",
 			"fixtures/ruby-on-rails.json"
 		],
-		"desc": "TEST #65"
+		"desc": "TEST #65",
+		"feature": "injection"
 	},
 	{
 		"grammarScopeName": "source.js",
