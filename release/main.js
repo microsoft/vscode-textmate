@@ -885,6 +885,9 @@ function createGrammar(grammar, grammarRepository) {
     return new Grammar(grammar, grammarRepository);
 }
 exports.createGrammar = createGrammar;
+/**
+ * Fill in `result` all external included scopes in `patterns`
+ */
 function _extractIncludedScopesInPatterns(result, patterns) {
     for (var i = 0, len = patterns.length; i < len; i++) {
         var include = patterns[i].include;
@@ -908,6 +911,9 @@ function _extractIncludedScopesInPatterns(result, patterns) {
         }
     }
 }
+/**
+ * Fill in `result` all external included scopes in `repository`
+ */
 function _extractIncludedScopesInRepository(result, repository) {
     for (var name_1 in repository) {
         var rule = repository[name_1];
@@ -919,6 +925,9 @@ function _extractIncludedScopesInRepository(result, repository) {
         }
     }
 }
+/**
+ * Return a list of all external included scopes in `grammar`.
+ */
 function extractIncludedScopes(grammar) {
     var result = {};
     if (grammar.patterns && Array.isArray(grammar.patterns)) {
@@ -927,6 +936,8 @@ function extractIncludedScopes(grammar) {
     if (grammar.repository) {
         _extractIncludedScopesInRepository(result, grammar.repository);
     }
+    // remove references to own scope (avoid recursion)
+    delete result[grammar.scopeName];
     return Object.keys(result);
 }
 exports.extractIncludedScopes = extractIncludedScopes;
