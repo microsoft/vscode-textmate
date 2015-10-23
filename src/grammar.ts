@@ -70,6 +70,10 @@ function _extractIncludedScopesInRepository(result:IScopeNameSet, repository:IRa
 		if (rule.patterns && Array.isArray(rule.patterns)) {
 			_extractIncludedScopesInPatterns(result, rule.patterns);
 		}
+
+		if (rule.repository) {
+			_extractIncludedScopesInRepository(result, rule.repository);
+		}
 	}
 }
 

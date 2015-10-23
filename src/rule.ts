@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import {RegexSource} from './utils';
+import {RegexSource, mergeObjects} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule, IRawPattern, IRawCaptures} from './types';
 import {OnigScanner, IOnigCaptureIndex} from 'oniguruma';
 
@@ -502,6 +502,9 @@ export class RuleFactory {
 				}
 
 				if (!desc.begin) {
+					if (desc.repository) {
+						repository = mergeObjects({}, repository, desc.repository);
+					}
 					return new IncludeOnlyRule(
 						desc.id,
 						desc.name,

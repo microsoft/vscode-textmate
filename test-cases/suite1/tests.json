@@ -4,7 +4,7 @@
 			"fixtures/groovy.json"
 		],
 		"grammarPath": "fixtures/groovy.json",
-		"desc": "Goovy",
+		"desc": "Groovy",
 		"lines": [
 			{
 				"line": "class BootStrap { }",
@@ -72,10 +72,84 @@
 	},
 	{
 		"grammars": [
+			"fixtures/markdown.plist"
+		],
+		"grammarPath": "fixtures/markdown.plist",
+		"desc": "Nested repositories in Markdown",
+		"lines": [
+			{
+				"line": "## This is *great* stuff",
+				"tokens": [
+					{
+						"value": "##",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"punctuation.definition.heading.markdown"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown"
+						]
+					},
+					{
+						"value": "This is ",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": "great",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown"
+						]
+					},
+					{
+						"value": "*",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown",
+							"markup.italic.markdown",
+							"punctuation.definition.italic.markdown"
+						]
+					},
+					{
+						"value": " stuff",
+						"scopes": [
+							"text.html.markdown",
+							"markup.heading.${1/(#)(#)?(#)?(#)?(#)?(#)?/${6:?6:${5:?5:${4:?4:${3:?3:${2:?2:1}}}}}/}.markdown",
+							"entity.name.section.markdown"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
 			"fixtures/php.plist"
 		],
 		"grammarPath": "fixtures/php.plist",
-		"desc": "PHP",
+		"desc": "Injections in PHP",
 		"lines": [
 			{
 				"line": "<?php  $zip = new ZipArchive(); ?>",
