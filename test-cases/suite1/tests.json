@@ -131,5 +131,68 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/aspvbnet.plist"
+		],
+		"grammarPath": "fixtures/aspvbnet.plist",
+		"lines": [
+			{
+				"line": "Dim tmpStr As String",
+				"tokens": [
+					{
+						"value": "Dim",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"storage.type.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "tmpStr",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp",
+							"variable.other.bfeac.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net",
+							"variable.other.dim.asp"
+						]
+					},
+					{
+						"value": "As",
+						"scopes": [
+							"source.asp.vb.net",
+							"keyword.operator.asp"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.asp.vb.net"
+						]
+					},
+					{
+						"value": "String",
+						"scopes": [
+							"source.asp.vb.net",
+							"support.type.vb.asp"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
