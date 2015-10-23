@@ -35,6 +35,9 @@ interface IScopeNameSet {
 	[scopeName:string]: boolean;
 }
 
+/**
+ * Fill in `result` all external included scopes in `patterns`
+ */
 function _extractIncludedScopesInPatterns(result:IScopeNameSet, patterns:IRawPattern[]): void {
 	for (let i = 0, len = patterns.length; i < len; i++) {
 		let include = patterns[i].include;
@@ -62,6 +65,9 @@ function _extractIncludedScopesInPatterns(result:IScopeNameSet, patterns:IRawPat
 	}
 }
 
+/**
+ * Fill in `result` all external included scopes in `repository`
+ */
 function _extractIncludedScopesInRepository(result:IScopeNameSet, repository:IRawRepository): void {
 	for (let name in repository) {
 		let rule = repository[name];
@@ -76,6 +82,9 @@ function _extractIncludedScopesInRepository(result:IScopeNameSet, repository:IRa
 	}
 }
 
+/**
+ * Return a list of all external included scopes in `grammar`.
+ */
 export function extractIncludedScopes(grammar:IRawGrammar): string[] {
 	let result: IScopeNameSet = {};
 
@@ -86,6 +95,9 @@ export function extractIncludedScopes(grammar:IRawGrammar): string[] {
 	if (grammar.repository) {
 		_extractIncludedScopesInRepository(result, grammar.repository);
 	}
+
+	// remove references to own scope (avoid recursion)
+	delete result[grammar.scopeName];
 
 	return Object.keys(result);
 }
