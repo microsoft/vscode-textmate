@@ -277,20 +277,23 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 	while (linePos < lineLength) {
 		stackElement = stack[stack.length - 1];
 
-		// first try to find a rule in the repository
+		// try to find a rule in the repository
 		ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 		r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
-		if (r === null) {
-			// then check the injections, take the first one that matches
-			var rules = grammar.getInjections(stack);
-			var i = 0;
-			while (i < rules.length && r === null) {
-				console.log('injection found ' + JSON.stringify(stack) + ', line ' + lineText + ', pos ' + linePos);
-				ruleScanner = rules[i].compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-				r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
-				i++;
-			}
+		// check the injections, take the one that matches with the smallest start index
+		var injections = grammar.getInjections(stack);
+		if (injections.length > 0) {
+			injections.forEach(injection => {
+				let irs = injection.compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+				let ir = irs.scanner._findNextMatchSync(lineText, linePos);
+				if (ir !== null) {
+					if (r === null || r.captureIndices[0].start > ir.captureIndices[0].start) {
+						r = ir;
+						ruleScanner = irs;
+					}
+				}
+			});
 		}
 
 		if (r === null) {

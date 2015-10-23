@@ -3023,8 +3023,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #42",
-		"feature": "injection"
+		"desc": "TEST #42"
 	},
 	{
 		"grammarPath": "fixtures/nested-captures.json",
@@ -3244,8 +3243,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #45",
-		"feature": "injection"
+		"desc": "TEST #45"
 	},
 	{
 		"grammarPath": "fixtures/hyperlink.json",
@@ -3319,22 +3317,7 @@
 						]
 					},
 					{
-						"value": " ",
-						"scopes": [
-							"source.js",
-							"comment.line.double-slash.js"
-						]
-					},
-					{
-						"value": "http://github.com",
-						"scopes": [
-							"source.js",
-							"comment.line.double-slash.js",
-							"markup.underline.link.http.hyperlink"
-						]
-					},
-					{
-						"value": "",
+						"value": " http://github.com",
 						"scopes": [
 							"source.js",
 							"comment.line.double-slash.js"
@@ -3356,8 +3339,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/hyperlink.json"
 		],
-		"desc": "TEST #47",
-		"feature": "injection"
+		"desc": "TEST #47"
 	},
 	{
 		"grammarPath": "fixtures/forever.json",
@@ -3397,29 +3379,7 @@
 						]
 					},
 					{
-						"value": " ",
-						"scopes": [
-							"source.ruby",
-							"comment.line.number-sign.ruby"
-						]
-					},
-					{
-						"value": "TODO",
-						"scopes": [
-							"source.ruby",
-							"comment.line.number-sign.ruby",
-							"storage.type.class.todo"
-						]
-					},
-					{
-						"value": " be nicer",
-						"scopes": [
-							"source.ruby",
-							"comment.line.number-sign.ruby"
-						]
-					},
-					{
-						"value": "",
+						"value": " TODO be nicer",
 						"scopes": [
 							"source.ruby",
 							"comment.line.number-sign.ruby"
@@ -3441,8 +3401,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/todo.json"
 		],
-		"desc": "TEST #49",
-		"feature": "injection"
+		"desc": "TEST #49"
 	},
 	{
 		"grammarScopeName": "source.makefile",
@@ -4593,8 +4552,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #64",
-		"feature": "injection"
+		"desc": "TEST #64"
 	},
 	{
 		"grammarScopeName": "text.html.erb",
@@ -4625,8 +4583,7 @@
 			"fixtures/html-rails.json",
 			"fixtures/ruby-on-rails.json"
 		],
-		"desc": "TEST #65",
-		"feature": "injection"
+		"desc": "TEST #65"
 	},
 	{
 		"grammarScopeName": "source.js",

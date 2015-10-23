@@ -12,10 +12,6 @@ function runDescriptiveTests(testLocation) {
     errCnt = 0;
     tests.forEach(function (test, index) {
         var desc = test.desc;
-        if (test.feature === 'injection') {
-            console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
-            return;
-        }
         var noAsserts = (test.feature === 'endless-loop');
         console.log(index + ' - RUNNING ' + desc);
         var registry = new main_1.Registry();

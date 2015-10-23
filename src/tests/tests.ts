@@ -17,10 +17,6 @@ export function runDescriptiveTests(testLocation: string) {
 	errCnt = 0;
 	tests.forEach(function(test, index) {
 		let desc = test.desc;
-		if (test.feature === 'injection') {
-			console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
-			return;
-		}
 		let noAsserts = (test.feature === 'endless-loop');
 
 		console.log(index + ' - RUNNING ' + desc);
