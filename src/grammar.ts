@@ -103,6 +103,47 @@ export function extractIncludedScopes(grammar:IRawGrammar): string[] {
 	return Object.keys(result);
 }
 
+interface Injection {
+	matcher: Matcher<StackElement[]>;
+	priorityMatch: boolean,
+	ruleId:number;
+	grammar: IRawGrammar;
+}
+
+function getGrammarInjections(grammar: IRawGrammar, ruleFactoryHelper: IRuleFactoryHelper) : Injection[] {
+	var injections : Injection[] = [];
+	var rawInjections = grammar.injections;
+	if (rawInjections) {
+		var nameMatcher = (identifers: string[], stackElements: StackElement[]) => {
+			var lastIndex = 0;
+			return identifers.every(identifier => {
+				for (var i = lastIndex; i < stackElements.length; i++) {
+					if (stackElements[i].matches(identifier)) {
+						lastIndex = i;
+						return true;
+					}
+				}
+				return false;
+			});
+		};
+
+		for (var expression in rawInjections) {
+			var subExpressions = (<string> expression).split(',');
+			subExpressions.forEach(subExpression => {
+				var expressionString = subExpression.replace(/L:/g, '')
+
+				injections.push({
+					matcher: createMatcher(expressionString, nameMatcher),
+					ruleId: RuleFactory.getCompiledRuleId(rawInjections[expression], ruleFactoryHelper, grammar.repository),
+					grammar: grammar,
+					priorityMatch: expressionString.length < subExpression.length
+				});
+			});
+		}
+	}
+	return injections;
+}
+
 class Grammar implements IGrammar, IRuleFactoryHelper {
 
 	private _rootId: number;
@@ -111,7 +152,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	private _includedGrammars: { [scopeName:string]:IRawGrammar; };
 	private _grammarRepository: IGrammarRepository;
 	private _grammar: IRawGrammar;
-	private _injections : { matcher: Matcher<StackElement[]>; rule:IRawRule; }[];
+	private _injections : Injection[];
 
 	constructor(grammar:IRawGrammar, grammarRepository:IGrammarRepository) {
 		this._rootId = -1;
@@ -122,36 +163,13 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		this._grammar = initGrammar(grammar, null);
 	}
 
-	public getInjections(states: StackElement[]) : Rule[] {
+	public getInjections(states: StackElement[]) : Injection[] {
 		if (!this._injections) {
-			this._injections = [];
+			this._injections = getGrammarInjections(this._grammar, this);
+			// optional: bring in injections from exteral repositories
 
-			var rawInjections = this._grammar.injections;
-			if (rawInjections) {
-				var nameMatcher = (name: string, stackElements: StackElement[]) => {
-					if (name[0] === 'L' && name[1] === ':') {
-						name = name.substr(2); // remove 'L:' prefix, not supported
-					}
-					var segments = name.split('.');
-					return stackElements.some(stackElement => stackElement.matches(segments));
-				};
-
-				for (var expression in rawInjections) {
-					this._injections.push({
-						matcher: createMatcher(expression, nameMatcher),
-						rule: rawInjections[expression]
-					});
-				}
-			}
 		}
-		var rules : Rule[] = [];
-		this._injections.forEach(injection => {
-			if (injection.matcher(states)) {
-				var ruleId = RuleFactory.getCompiledRuleId(injection.rule, this, this._grammar.repository);
-				rules.push(this.getRule(ruleId));
-			}
-		});
-		return rules;
+		return this._injections.filter(injection => injection.matcher(states));
 	}
 
 	public registerRule<T extends Rule>(factory:(id:number)=>T): T {
@@ -282,53 +300,61 @@ function handleCaptures(grammar: Grammar, lineText: string, isFirstLine: boolean
 }
 
 function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], lineTokens: LineTokens): void {
-	let lineLength = lineText.length,
-		stackElement: StackElement,
-		ruleScanner: ICompiledRule,
-		r: IOnigNextMatchResult,
-		matchedRuleId: number,
-		anchorPosition = -1,
-		hasAdvanced: boolean;
+	const lineLength = lineText.length;
+
+	let anchorPosition = -1;
 
 	while (linePos < lineLength) {
-		stackElement = stack[stack.length - 1];
+		scanNext(); // potentially modifies linePos && anchorPosition
+	}
 
-		// try to find a rule in the repository
-		ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-		r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+	function scanNext() : boolean {
+		let stackElement = stack[stack.length - 1];
 
-		// check the injections, take the one that matches with the smallest start index
-		var injections = grammar.getInjections(stack);
-		if (injections.length > 0) {
-			injections.forEach(injection => {
-				let irs = injection.compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-				let ir = irs.scanner._findNextMatchSync(lineText, linePos);
-				if (ir !== null) {
-					if (r === null || r.captureIndices[0].start > ir.captureIndices[0].start) {
-						r = ir;
-						ruleScanner = irs;
-					}
+		let captureIndices : IOnigCaptureIndex[] = null;
+		let bestMatchRating = Number.MAX_VALUE; // the smaller the better
+		let matchedRuleId : number;
+
+		// try to match rule: matchRule will set captureIndices, bestMatchRating and matchedRuleId
+		matchRule(stackElement.ruleId);
+		grammar.getInjections(stack).every(injection => matchRule(injection.ruleId, injection.priorityMatch));
+
+		function matchRule(ruleId: number, priorityMatch: boolean = false) : boolean {
+			let ruleScanner = grammar.getRule(ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+			let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+			if (matchResult !== null) {
+				let matchRating = matchResult.captureIndices[0].start * 2;
+				if (!priorityMatch) {
+					matchRating++;
 				}
-			});
+
+				if (matchRating < bestMatchRating) {
+					bestMatchRating = matchRating;
+					matchedRuleId = ruleScanner.rules[matchResult.index];
+					captureIndices = matchResult.captureIndices;
+					return bestMatchRating > 0;
+				}
+			}
+			return true;
 		}
 
-		if (r === null) {
+		if (captureIndices === null) {
 			// No match
 			lineTokens.produce(stack, lineLength);
-			break;
+			linePos = lineLength;
+			return true;
 		}
 
-		matchedRuleId = ruleScanner.rules[r.index];
-		hasAdvanced = (r.captureIndices[0].end > linePos);
+		let hasAdvanced = (captureIndices[0].end > linePos);
 
 		if (matchedRuleId === -1) {
 			// We matched the `end` for this rule => pop it
 			let poppedRule = <BeginEndRule>grammar.getRule(stackElement.ruleId);
 
-			lineTokens.produce(stack, r.captureIndices[0].start);
+			lineTokens.produce(stack, captureIndices[0].start);
 			stackElement.contentName = null;
-			handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, r.captureIndices);
-			lineTokens.produce(stack, r.captureIndices[0].end);
+			handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
+			lineTokens.produce(stack, captureIndices[0].end);
 
 			// pop
 			stack.pop();
@@ -337,28 +363,29 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 				// Grammar pushed & popped a rule without advancing
 				console.error('Grammar is in an endless loop - case 1');
 				lineTokens.produce(stack, lineLength);
-				break;
+				linePos = lineLength;
+				return false;
 			}
 
 		} else {
 			// We matched a rule!
 			let _rule = grammar.getRule(matchedRuleId);
 
-			lineTokens.produce(stack, r.captureIndices[0].start);
+			lineTokens.produce(stack, captureIndices[0].start);
 
 			// push it on the stack rule
-			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, r.captureIndices), null));
+			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, captureIndices), null));
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
 
-				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, r.captureIndices);
-				lineTokens.produce(stack, r.captureIndices[0].end);
-				anchorPosition = r.captureIndices[0].end;
-				stack[stack.length-1].contentName = pushedRule.getContentName(lineText, r.captureIndices);
+				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
+				lineTokens.produce(stack, captureIndices[0].end);
+				anchorPosition = captureIndices[0].end;
+				stack[stack.length-1].contentName = pushedRule.getContentName(lineText, captureIndices);
 
 				if (pushedRule.endHasBackReferences) {
-					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, r.captureIndices);
+					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, captureIndices);
 				}
 
 				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
@@ -366,13 +393,14 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 					console.error('Grammar is in an endless loop - case 2');
 					stack.pop();
 					lineTokens.produce(stack, lineLength);
-					break;
+					linePos = lineLength;
+					return false;
 				}
 			} else {
 				let matchingRule = <MatchRule>_rule;
 
-				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, r.captureIndices);
-				lineTokens.produce(stack, r.captureIndices[0].end);
+				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, captureIndices);
+				lineTokens.produce(stack, captureIndices[0].end);
 
 				// pop rule immediately since it is a MatchRule
 				stack.pop();
@@ -384,16 +412,18 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 						stack.pop();
 					}
 					lineTokens.produce(stack, lineLength);
-					break;
+					linePos = lineLength;
+					return false;
 				}
 			}
 		}
 
-		if (r.captureIndices[0].end > linePos) {
+		if (captureIndices[0].end > linePos) {
 			// Advance stream
-			linePos = r.captureIndices[0].end;
+			linePos = captureIndices[0].end;
 			isFirstLine = false;
 		}
+		return true;
 	}
 }
 
@@ -414,18 +444,15 @@ export class StackElement {
 		this.contentName = contentName;
 	}
 
-	public matches(scopeNameSegemnts: string[]) : boolean {
+	public matches(scopeName: string) : boolean {
 		if (!this.scopeName) {
 			return false;
 		}
-
-		if (!this.scopeNameSegments) {
-			this.scopeNameSegments = {};
-			this.scopeName.split('.').forEach(s => {
-				this.scopeNameSegments[s] = true;
-			})
+		if (this.scopeName === scopeName) {
+			return true;
 		}
-		return scopeNameSegemnts.every(segment => this.scopeNameSegments[segment]);
+		var len = scopeName.length;
+		return this.scopeName.length > len && this.scopeName.substr(0, len) === scopeName && this.scopeName[len] === '.';
 	}
 
 }

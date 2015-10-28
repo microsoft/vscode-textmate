@@ -94,13 +94,26 @@ function assertToken(actual, expected, desc) {
         }
     }
 }
-function runMatcherTests(testLocation) {
+function runMatcherTests(testLocation, testNum) {
+    if (testNum === void 0) { testNum = -1; }
     var tests = JSON.parse(fs.readFileSync(testLocation).toString());
-    var nameMatcher = function (name, input) {
-        return input.indexOf(name) !== -1;
+    var nameMatcher = function (identifers, stackElements) {
+        var lastIndex = 0;
+        return identifers.every(function (identifier) {
+            for (var i = lastIndex; i < stackElements.length; i++) {
+                if (stackElements[i] === identifier) {
+                    lastIndex = i + 1;
+                    return true;
+                }
+            }
+            return false;
+        });
     };
     var errCnt = 0;
     tests.forEach(function (test, index) {
+        if (testNum !== -1 && testNum !== index) {
+            return;
+        }
         var matcher = main_1.createMatcher(test.expression, nameMatcher);
         var result = matcher(test.input);
         if (result === test.result) {

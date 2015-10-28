@@ -7,7 +7,7 @@ export interface Matcher<T> {
 	(matcherInput: T) : boolean;
 }
 
-export function createMatcher<T>(expression: string, matchesName: (name: string, matcherInput: T) => boolean) : Matcher<T> {
+export function createMatcher<T>(expression: string, matchesName: (names: string[], matcherInput: T) => boolean) : Matcher<T> {
 	var tokenizer = newTokenizer(expression);
 	var token = tokenizer.next();
 
@@ -26,9 +26,12 @@ export function createMatcher<T>(expression: string, matchesName: (name: string,
 			return expressionInParents;
 		}
 		if (isIdentifier(token)) {
-			var identifier = token; // keep identifier in a variable in the function scope
-			token = tokenizer.next();
-			return matcherInput => matchesName(identifier, matcherInput);
+			var identifiers : string[] = [];
+			do {
+				identifiers.push(token);
+				token = tokenizer.next();
+			} while (isIdentifier(token));
+			return matcherInput => matchesName(identifiers, matcherInput);
 		}
 		return null;
 	}
@@ -57,7 +60,7 @@ export function createMatcher<T>(expression: string, matchesName: (name: string,
 		}
 		return matcherInput => matchers.some(matcher => matcher(matcherInput)); // or
 	}
-
+	
 	return parseExpression() || (matcherInput => false);
 }
 

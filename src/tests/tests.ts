@@ -130,14 +130,27 @@ interface IMatcherTest {
 	result: boolean;
 }
 
-export function runMatcherTests(testLocation: string) {
+export function runMatcherTests(testLocation: string, testNum =-1) {
 	let tests:IMatcherTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
 
-	var nameMatcher = (name: string, input: string[]) => {
-		return input.indexOf(name) !== -1
-	}
+	var nameMatcher = (identifers: string[], stackElements: string[]) => {
+		var lastIndex = 0;
+		return identifers.every(identifier => {
+			for (var i = lastIndex; i < stackElements.length; i++) {
+				if (stackElements[i] === identifier) {
+					lastIndex = i + 1;
+					return true;
+				}
+			}
+			return false;
+		});
+	};
 	var errCnt = 0;
 	tests.forEach((test, index) => {
+		if (testNum !== -1 && testNum !== index) {
+			return;
+		}
+
 		var matcher = createMatcher(test.expression, nameMatcher);
 		var result = matcher(test.input);
 		if (result === test.result) {
