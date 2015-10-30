@@ -3317,7 +3317,22 @@
 						]
 					},
 					{
-						"value": " http://github.com",
+						"value": " ",
+						"scopes": [
+							"source.js",
+							"comment.line.double-slash.js"
+						]
+					},
+					{
+						"value": "http://github.com",
+						"scopes": [
+							"source.js",
+							"comment.line.double-slash.js",
+							"markup.underline.link.http.hyperlink"
+						]
+					},
+					{
+						"value": "",
 						"scopes": [
 							"source.js",
 							"comment.line.double-slash.js"
@@ -3339,7 +3354,8 @@
 			"fixtures/python-regex.json",
 			"fixtures/hyperlink.json"
 		],
-		"desc": "TEST #47"
+		"desc": "TEST #47",
+		"feature": "external-injection"
 	},
 	{
 		"grammarPath": "fixtures/forever.json",
@@ -3379,7 +3395,29 @@
 						]
 					},
 					{
-						"value": " TODO be nicer",
+						"value": " ",
+						"scopes": [
+							"source.ruby",
+							"comment.line.number-sign.ruby"
+						]
+					},
+					{
+						"value": "TODO",
+						"scopes": [
+							"source.ruby",
+							"comment.line.number-sign.ruby",
+							"storage.type.class.todo"
+						]
+					},
+					{
+						"value": " be nicer",
+						"scopes": [
+							"source.ruby",
+							"comment.line.number-sign.ruby"
+						]
+					},
+					{
+						"value": "",
 						"scopes": [
 							"source.ruby",
 							"comment.line.number-sign.ruby"
@@ -3401,7 +3439,8 @@
 			"fixtures/python-regex.json",
 			"fixtures/todo.json"
 		],
-		"desc": "TEST #49"
+		"desc": "TEST #49",
+		"feature": "external-injection"
 	},
 	{
 		"grammarScopeName": "source.makefile",
