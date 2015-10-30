@@ -12,7 +12,7 @@ function runDescriptiveTests(testLocation) {
     errCnt = 0;
     tests.forEach(function (test, index) {
         var desc = test.desc;
-        if (test.feature === 'injection') {
+        if (test.feature === 'external-injection') {
             console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
             return;
         }
@@ -98,3 +98,44 @@ function assertToken(actual, expected, desc) {
         }
     }
 }
+function runMatcherTests(testLocation, testNum) {
+    if (testNum === void 0) { testNum = -1; }
+    var tests = JSON.parse(fs.readFileSync(testLocation).toString());
+    var nameMatcher = function (identifers, stackElements) {
+        var lastIndex = 0;
+        return identifers.every(function (identifier) {
+            for (var i = lastIndex; i < stackElements.length; i++) {
+                if (stackElements[i] === identifier) {
+                    lastIndex = i + 1;
+                    return true;
+                }
+            }
+            return false;
+        });
+    };
+    var errCnt = 0;
+    tests.forEach(function (test, index) {
+        if (testNum !== -1 && testNum !== index) {
+            return;
+        }
+        var matcher = main_1.createMatcher(test.expression, nameMatcher);
+        var result = matcher(test.input);
+        if (result === test.result) {
+            console.log(index + ': passed');
+        }
+        else {
+            var message = index + ': failed , expected ' + test.result;
+            console.error(message.red);
+            errCnt++;
+        }
+    });
+    if (errCnt === 0) {
+        var msg = 'Test suite at ' + testLocation + ' finished ok';
+        console.log(msg.green);
+    }
+    else {
+        var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
+        console.log(msg.red);
+    }
+}
+exports.runMatcherTests = runMatcherTests;

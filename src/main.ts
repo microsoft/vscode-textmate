@@ -7,6 +7,8 @@ import {SyncRegistry as SyncRegistry} from './registry';
 import {IGrammar} from './grammar';
 import {readGrammar, readGrammarSync} from './grammarReader';
 import {IRawGrammar} from './types';
+import * as expressionMatcher from './matcher';
+export import createMatcher = expressionMatcher.createMatcher;
 
 export interface IGrammarLocator {
 	getFilePath(scopeName:string): string;

@@ -3023,8 +3023,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #42",
-		"feature": "injection"
+		"desc": "TEST #42"
 	},
 	{
 		"grammarPath": "fixtures/nested-captures.json",
@@ -3244,8 +3243,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #45",
-		"feature": "injection"
+		"desc": "TEST #45"
 	},
 	{
 		"grammarPath": "fixtures/hyperlink.json",
@@ -3357,7 +3355,7 @@
 			"fixtures/hyperlink.json"
 		],
 		"desc": "TEST #47",
-		"feature": "injection"
+		"feature": "external-injection"
 	},
 	{
 		"grammarPath": "fixtures/forever.json",
@@ -3442,7 +3440,7 @@
 			"fixtures/todo.json"
 		],
 		"desc": "TEST #49",
-		"feature": "injection"
+		"feature": "external-injection"
 	},
 	{
 		"grammarScopeName": "source.makefile",
@@ -4593,8 +4591,7 @@
 			"fixtures/python.json",
 			"fixtures/python-regex.json"
 		],
-		"desc": "TEST #64",
-		"feature": "injection"
+		"desc": "TEST #64"
 	},
 	{
 		"grammarScopeName": "text.html.erb",

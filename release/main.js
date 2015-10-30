@@ -97,6 +97,87 @@ var RegexSource = (function () {
 exports.RegexSource = RegexSource;
 
 });
+$load('./matcher', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+function createMatcher(expression, matchesName) {
+    var tokenizer = newTokenizer(expression);
+    var token = tokenizer.next();
+    function parseOperand() {
+        if (token === '-') {
+            token = tokenizer.next();
+            var expressionToNegate = parseOperand();
+            return function (matcherInput) { return expressionToNegate && !expressionToNegate(matcherInput); };
+        }
+        if (token === '(') {
+            token = tokenizer.next();
+            var expressionInParents = parseExpression('|');
+            if (token == ')') {
+                token = tokenizer.next();
+            }
+            return expressionInParents;
+        }
+        if (isIdentifier(token)) {
+            var identifiers = [];
+            do {
+                identifiers.push(token);
+                token = tokenizer.next();
+            } while (isIdentifier(token));
+            return function (matcherInput) { return matchesName(identifiers, matcherInput); };
+        }
+        return null;
+    }
+    function parseConjunction() {
+        var matchers = [];
+        var matcher = parseOperand();
+        while (matcher) {
+            matchers.push(matcher);
+            matcher = parseOperand();
+        }
+        return function (matcherInput) { return matchers.every(function (matcher) { return matcher(matcherInput); }); }; // and
+    }
+    function parseExpression(orOperatorToken) {
+        if (orOperatorToken === void 0) { orOperatorToken = ','; }
+        var matchers = [];
+        var matcher = parseConjunction();
+        while (matcher) {
+            matchers.push(matcher);
+            if (token === orOperatorToken) {
+                do {
+                    token = tokenizer.next();
+                } while (token === orOperatorToken); // ignore subsequent commas
+            }
+            else {
+                break;
+            }
+            matcher = parseConjunction();
+        }
+        return function (matcherInput) { return matchers.some(function (matcher) { return matcher(matcherInput); }); }; // or
+    }
+    return parseExpression() || (function (matcherInput) { return false; });
+}
+exports.createMatcher = createMatcher;
+function isIdentifier(token) {
+    return token && token.match(/[\w\.:]+/);
+}
+function newTokenizer(input) {
+    var regex = /([\w\.:]+|[\,\|\-\(\)])/g;
+    var match = regex.exec(input);
+    return {
+        next: function () {
+            if (!match) {
+                return null;
+            }
+            var res = match[0];
+            match = regex.exec(input);
+            return res;
+        }
+    };
+}
+
+});
 $load('./plistParser', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -802,6 +883,7 @@ $load('./grammar', function(require, module, exports) {
 'use strict';
 var utils_1 = require('./utils');
 var rule_1 = require('./rule');
+var matcher_1 = require('./matcher');
 function createGrammar(grammar, grammarRepository) {
     return new Grammar(grammar, grammarRepository);
 }
@@ -862,6 +944,37 @@ function extractIncludedScopes(grammar) {
     return Object.keys(result);
 }
 exports.extractIncludedScopes = extractIncludedScopes;
+function getGrammarInjections(grammar, ruleFactoryHelper) {
+    var injections = [];
+    var rawInjections = grammar.injections;
+    if (rawInjections) {
+        var nameMatcher = function (identifers, stackElements) {
+            var lastIndex = 0;
+            return identifers.every(function (identifier) {
+                for (var i = lastIndex; i < stackElements.length; i++) {
+                    if (stackElements[i].matches(identifier)) {
+                        lastIndex = i;
+                        return true;
+                    }
+                }
+                return false;
+            });
+        };
+        for (var expression in rawInjections) {
+            var subExpressions = expression.split(',');
+            subExpressions.forEach(function (subExpression) {
+                var expressionString = subExpression.replace(/L:/g, '');
+                injections.push({
+                    matcher: matcher_1.createMatcher(expressionString, nameMatcher),
+                    ruleId: rule_1.RuleFactory.getCompiledRuleId(rawInjections[expression], ruleFactoryHelper, grammar.repository),
+                    grammar: grammar,
+                    priorityMatch: expressionString.length < subExpression.length
+                });
+            });
+        }
+    }
+    return injections;
+}
 var Grammar = (function () {
     function Grammar(grammar, grammarRepository) {
         this._rootId = -1;
@@ -871,6 +984,15 @@ var Grammar = (function () {
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
     }
+    Grammar.prototype.getInjections = function (states) {
+        if (!this._injections) {
+            this._injections = getGrammarInjections(this._grammar, this);
+        }
+        if (this._injections.length === 0) {
+            return this._injections;
+        }
+        return this._injections.filter(function (injection) { return injection.matcher(states); });
+    };
     Grammar.prototype.registerRule = function (factory) {
         var id = (++this._lastRuleId);
         var result = factory(id);
@@ -974,62 +1096,143 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         localStack.pop();
     }
 }
-function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
-    var lineLength = lineText.length, stackElement, ruleScanner, r, matchedRuleId, anchorPosition = -1, hasAdvanced;
-    while (linePos < lineLength) {
-        stackElement = stack[stack.length - 1];
-        ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-        r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
-        if (r === null) {
-            // No match
-            lineTokens.produce(stack, lineLength);
+function matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    // The lower the better
+    var bestMatchRating = Number.MAX_VALUE;
+    var bestMatchCaptureIndices = null;
+    var bestMatchRuleId;
+    var bestMatchResultPriority = false;
+    for (var i = 0, len = injections.length; i < len; i++) {
+        var injection = injections[i];
+        var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
+        var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        if (!matchResult) {
+            continue;
+        }
+        var matchRating = matchResult.captureIndices[0].start;
+        if (matchRating >= bestMatchRating) {
+            continue;
+        }
+        bestMatchRating = matchRating;
+        bestMatchCaptureIndices = matchResult.captureIndices;
+        bestMatchRuleId = ruleScanner.rules[matchResult.index];
+        bestMatchResultPriority = injection.priorityMatch;
+        if (bestMatchRating === linePos && bestMatchResultPriority) {
+            // No more need to look at the rest of the injections
             break;
         }
-        matchedRuleId = ruleScanner.rules[r.index];
-        hasAdvanced = (r.captureIndices[0].end > linePos);
+    }
+    if (bestMatchCaptureIndices) {
+        return {
+            priorityMatch: bestMatchResultPriority,
+            captureIndices: bestMatchCaptureIndices,
+            matchedRuleId: bestMatchRuleId
+        };
+    }
+    return null;
+}
+function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    var stackElement = stack[stack.length - 1];
+    var ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+    var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+    if (r) {
+        return {
+            captureIndices: r.captureIndices,
+            matchedRuleId: ruleScanner.rules[r.index]
+        };
+    }
+    return null;
+}
+function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    // Look for normal grammar rule
+    var matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+    // Look for injected rules
+    var injections = grammar.getInjections(stack);
+    if (injections.length === 0) {
+        // No injections whatsoever => early return
+        return matchResult;
+    }
+    var injectionResult = matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+    if (!injectionResult) {
+        // No injections matched => early return
+        return matchResult;
+    }
+    if (!matchResult) {
+        // Only injections matched => early return
+        return injectionResult;
+    }
+    // Decide if `matchResult` or `injectionResult` should win
+    var matchResultScore = matchResult.captureIndices[0].start;
+    var injectionResultScore = injectionResult.captureIndices[0].start;
+    if (injectionResultScore < matchResultScore || (injectionResult.priorityMatch && injectionResultScore === matchResultScore)) {
+        // injection won!
+        return injectionResult;
+    }
+    return matchResult;
+}
+function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
+    var lineLength = lineText.length;
+    var anchorPosition = -1;
+    while (linePos < lineLength) {
+        scanNext(); // potentially modifies linePos && anchorPosition
+    }
+    function scanNext() {
+        var stackElement = stack[stack.length - 1];
+        var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+        if (!r) {
+            // No match
+            lineTokens.produce(stack, lineLength);
+            linePos = lineLength;
+            return true;
+        }
+        var captureIndices = r.captureIndices;
+        var matchedRuleId = r.matchedRuleId;
+        var hasAdvanced = (captureIndices[0].end > linePos);
         if (matchedRuleId === -1) {
             // We matched the `end` for this rule => pop it
             var poppedRule = grammar.getRule(stackElement.ruleId);
-            lineTokens.produce(stack, r.captureIndices[0].start);
+            lineTokens.produce(stack, captureIndices[0].start);
             stackElement.contentName = null;
-            handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, r.captureIndices);
-            lineTokens.produce(stack, r.captureIndices[0].end);
+            handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
+            lineTokens.produce(stack, captureIndices[0].end);
             // pop
             stack.pop();
             if (!hasAdvanced && stackElement.enterPos === linePos) {
                 // Grammar pushed & popped a rule without advancing
                 console.error('Grammar is in an endless loop - case 1');
                 lineTokens.produce(stack, lineLength);
-                break;
+                linePos = lineLength;
+                return false;
             }
         }
         else {
             // We matched a rule!
             var _rule = grammar.getRule(matchedRuleId);
-            lineTokens.produce(stack, r.captureIndices[0].start);
+            lineTokens.produce(stack, captureIndices[0].start);
             // push it on the stack rule
-            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, r.captureIndices), null));
+            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, captureIndices), null));
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
-                handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, r.captureIndices);
-                lineTokens.produce(stack, r.captureIndices[0].end);
-                anchorPosition = r.captureIndices[0].end;
-                stack[stack.length - 1].contentName = pushedRule.getContentName(lineText, r.captureIndices);
+                handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
+                lineTokens.produce(stack, captureIndices[0].end);
+                anchorPosition = captureIndices[0].end;
+                stack[stack.length - 1].contentName = pushedRule.getContentName(lineText, captureIndices);
                 if (pushedRule.endHasBackReferences) {
-                    stack[stack.length - 1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, r.captureIndices);
+                    stack[stack.length - 1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, captureIndices);
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing
                     console.error('Grammar is in an endless loop - case 2');
                     stack.pop();
                     lineTokens.produce(stack, lineLength);
-                    break;
+                    linePos = lineLength;
+                    return false;
                 }
             }
             else {
                 var matchingRule = _rule;
-                handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, r.captureIndices);
-                lineTokens.produce(stack, r.captureIndices[0].end);
+                handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, captureIndices);
+                lineTokens.produce(stack, captureIndices[0].end);
                 // pop rule immediately since it is a MatchRule
                 stack.pop();
                 if (!hasAdvanced) {
@@ -1039,15 +1242,17 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                         stack.pop();
                     }
                     lineTokens.produce(stack, lineLength);
-                    break;
+                    linePos = lineLength;
+                    return false;
                 }
             }
         }
-        if (r.captureIndices[0].end > linePos) {
+        if (captureIndices[0].end > linePos) {
             // Advance stream
-            linePos = r.captureIndices[0].end;
+            linePos = captureIndices[0].end;
             isFirstLine = false;
         }
+        return true;
     }
 }
 var StackElement = (function () {
@@ -1058,6 +1263,16 @@ var StackElement = (function () {
         this.scopeName = scopeName;
         this.contentName = contentName;
     }
+    StackElement.prototype.matches = function (scopeName) {
+        if (!this.scopeName) {
+            return false;
+        }
+        if (this.scopeName === scopeName) {
+            return true;
+        }
+        var len = scopeName.length;
+        return this.scopeName.length > len && this.scopeName.substr(0, len) === scopeName && this.scopeName[len] === '.';
+    };
     return StackElement;
 })();
 exports.StackElement = StackElement;
@@ -1166,6 +1381,8 @@ $load('./main', function(require, module, exports) {
 'use strict';
 var registry_1 = require('./registry');
 var grammarReader_1 = require('./grammarReader');
+var expressionMatcher = require('./matcher');
+exports.createMatcher = expressionMatcher.createMatcher;
 var DEFAULT_LOCATOR = {
     getFilePath: function (scopeName) { return null; }
 };

@@ -4,6 +4,7 @@
 			"fixtures/groovy.json"
 		],
 		"grammarPath": "fixtures/groovy.json",
+		"desc": "Groovy",
 		"lines": [
 			{
 				"line": "class BootStrap { }",
@@ -74,6 +75,7 @@
 			"fixtures/markdown.plist"
 		],
 		"grammarPath": "fixtures/markdown.plist",
+		"desc": "Nested repositories in Markdown",
 		"lines": [
 			{
 				"line": "## This is *great* stuff",
@@ -262,6 +264,148 @@
 						"scopes": [
 							"source.asp.vb.net",
 							"support.type.vb.asp"
+						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/php.plist"
+		],
+		"grammarPath": "fixtures/php.plist",
+		"desc": "Injections in PHP",
+		"lines": [
+			{
+				"line": "<?php  $zip = new ZipArchive(); ?>",
+				"tokens": [
+					{
+						"value": "<?php",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.begin.php"
+						]
+					},
+					{
+						"value": "  ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php",
+							"punctuation.definition.variable.php"
+						]
+					},
+					{
+						"value": "zip",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "=",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"keyword.operator.assignment.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "new",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"keyword.other.new.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "ZipArchive",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"support.class.builtin.php"
+						]
+					},
+					{
+						"value": "()",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ";",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php",
+							"punctuation.terminator.expression.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "?",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php"
 						]
 					}
 				]

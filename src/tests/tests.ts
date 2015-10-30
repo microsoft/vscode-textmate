@@ -5,7 +5,7 @@
 
 import fs = require('fs');
 import path = require('path');
-import {Registry} from '../main';
+import {Registry, createMatcher} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
 import 'colors';
 
@@ -17,7 +17,7 @@ export function runDescriptiveTests(testLocation: string) {
 	errCnt = 0;
 	tests.forEach(function(test, index) {
 		let desc = test.desc;
-		if (test.feature === 'injection') {
+		if (test.feature === 'external-injection') {
 			console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
 			return;
 		}
@@ -128,3 +128,48 @@ function assertToken(actual:IRawToken, expected:IRawToken, desc:string): void {
 	}
 }
 
+interface IMatcherTest {
+	expression: string;
+	input: string[];
+	result: boolean;
+}
+
+export function runMatcherTests(testLocation: string, testNum =-1) {
+	let tests:IMatcherTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+
+	var nameMatcher = (identifers: string[], stackElements: string[]) => {
+		var lastIndex = 0;
+		return identifers.every(identifier => {
+			for (var i = lastIndex; i < stackElements.length; i++) {
+				if (stackElements[i] === identifier) {
+					lastIndex = i + 1;
+					return true;
+				}
+			}
+			return false;
+		});
+	};
+	var errCnt = 0;
+	tests.forEach((test, index) => {
+		if (testNum !== -1 && testNum !== index) {
+			return;
+		}
+
+		var matcher = createMatcher(test.expression, nameMatcher);
+		var result = matcher(test.input);
+		if (result === test.result) {
+			console.log(index + ': passed');
+		} else {
+			var message = index + ': failed , expected ' +  test.result;
+			console.error((<any>message).red);
+			errCnt++;
+		}
+	});
+	if (errCnt === 0) {
+		var msg = 'Test suite at ' + testLocation + ' finished ok';
+		console.log((<any>msg).green);
+	} else {
+		var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
+		console.log((<any>msg).red);
+	}
+}

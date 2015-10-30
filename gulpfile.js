@@ -24,6 +24,7 @@ gulp.task('bundle', ['compile'], function () {
 		gulp.src([
 			'out/_prefix.js',
 			'out/utils.js',
+			'out/matcher.js',
 			'out/plistParser.js',
 			'out/grammarReader.js',
 			'out/rule.js',
@@ -81,4 +82,6 @@ gulp.task('test', function () {
 	var tests = require('./release/tests/tests');
 	tests.runDescriptiveTests(path.join(__dirname, './test-cases/first-mate/tests.json'));
 	tests.runDescriptiveTests(path.join(__dirname, './test-cases/suite1/tests.json'));
+
+	tests.runMatcherTests(path.join(__dirname, './test-cases/matcher/testData.json'));
 });
