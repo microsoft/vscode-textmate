@@ -988,6 +988,9 @@ var Grammar = (function () {
         if (!this._injections) {
             this._injections = getGrammarInjections(this._grammar, this);
         }
+        if (this._injections.length === 0) {
+            return this._injections;
+        }
         return this._injections.filter(function (injection) { return injection.matcher(states); });
     };
     Grammar.prototype.registerRule = function (factory) {
@@ -1093,6 +1096,80 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         localStack.pop();
     }
 }
+function matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    // The lower the better
+    var bestMatchRating = Number.MAX_VALUE;
+    var bestMatchCaptureIndices = null;
+    var bestMatchRuleId;
+    var bestMatchResultPriority = false;
+    for (var i = 0, len = injections.length; i < len; i++) {
+        var injection = injections[i];
+        var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
+        var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        if (!matchResult) {
+            continue;
+        }
+        var matchRating = matchResult.captureIndices[0].start;
+        if (matchRating >= bestMatchRating) {
+            continue;
+        }
+        bestMatchRating = matchRating;
+        bestMatchCaptureIndices = matchResult.captureIndices;
+        bestMatchRuleId = ruleScanner.rules[matchResult.index];
+        bestMatchResultPriority = injection.priorityMatch;
+        if (bestMatchRating === linePos && bestMatchResultPriority) {
+            // No more need to look at the rest of the injections
+            break;
+        }
+    }
+    if (bestMatchCaptureIndices) {
+        return {
+            priorityMatch: bestMatchResultPriority,
+            captureIndices: bestMatchCaptureIndices,
+            matchedRuleId: bestMatchRuleId
+        };
+    }
+    return null;
+}
+function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    var stackElement = stack[stack.length - 1];
+    var ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+    var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+    if (r) {
+        return {
+            captureIndices: r.captureIndices,
+            matchedRuleId: ruleScanner.rules[r.index]
+        };
+    }
+    return null;
+}
+function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
+    // Look for normal grammar rule
+    var matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+    // Look for injected rules
+    var injections = grammar.getInjections(stack);
+    if (injections.length === 0) {
+        // No injections whatsoever => early return
+        return matchResult;
+    }
+    var injectionResult = matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+    if (!injectionResult) {
+        // No injections matched => early return
+        return matchResult;
+    }
+    if (!matchResult) {
+        // Only injections matched => early return
+        return injectionResult;
+    }
+    // Decide if `matchResult` or `injectionResult` should win
+    var matchResultScore = matchResult.captureIndices[0].start;
+    var injectionResultScore = injectionResult.captureIndices[0].start;
+    if (injectionResultScore < matchResultScore || (injectionResult.priorityMatch && injectionResultScore === matchResultScore)) {
+        // injection won!
+        return injectionResult;
+    }
+    return matchResult;
+}
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
     var lineLength = lineText.length;
     var anchorPosition = -1;
@@ -1101,36 +1178,15 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
     function scanNext() {
         var stackElement = stack[stack.length - 1];
-        var captureIndices = null;
-        var bestMatchRating = Number.MAX_VALUE; // the smaller the better
-        var matchedRuleId;
-        // try to match rule: matchRule will set captureIndices, bestMatchRating and matchedRuleId
-        matchRule(stackElement.ruleId);
-        grammar.getInjections(stack).every(function (injection) { return matchRule(injection.ruleId, injection.priorityMatch); });
-        function matchRule(ruleId, priorityMatch) {
-            if (priorityMatch === void 0) { priorityMatch = false; }
-            var ruleScanner = grammar.getRule(ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-            var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
-            if (matchResult !== null) {
-                var matchRating = matchResult.captureIndices[0].start * 2;
-                if (!priorityMatch) {
-                    matchRating++;
-                }
-                if (matchRating < bestMatchRating) {
-                    bestMatchRating = matchRating;
-                    matchedRuleId = ruleScanner.rules[matchResult.index];
-                    captureIndices = matchResult.captureIndices;
-                    return bestMatchRating > 0;
-                }
-            }
-            return true;
-        }
-        if (captureIndices === null) {
+        var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+        if (!r) {
             // No match
             lineTokens.produce(stack, lineLength);
             linePos = lineLength;
             return true;
         }
+        var captureIndices = r.captureIndices;
+        var matchedRuleId = r.matchedRuleId;
         var hasAdvanced = (captureIndices[0].end > linePos);
         if (matchedRuleId === -1) {
             // We matched the `end` for this rule => pop it

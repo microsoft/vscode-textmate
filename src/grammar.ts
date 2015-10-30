@@ -166,8 +166,11 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	public getInjections(states: StackElement[]) : Injection[] {
 		if (!this._injections) {
 			this._injections = getGrammarInjections(this._grammar, this);
-			// optional: bring in injections from exteral repositories
+			// optional: bring in injections from external repositories
 
+		}
+		if (this._injections.length === 0) {
+			return this._injections;
 		}
 		return this._injections.filter(injection => injection.matcher(states));
 	}
@@ -299,6 +302,109 @@ function handleCaptures(grammar: Grammar, lineText: string, isFirstLine: boolean
 	}
 }
 
+interface IMatchInjectionsResult {
+	priorityMatch: boolean;
+	captureIndices: IOnigCaptureIndex[];
+	matchedRuleId: number;
+}
+
+function matchInjections(injections:Injection[], grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchInjectionsResult {
+	// The lower the better
+	let bestMatchRating = Number.MAX_VALUE;
+	let bestMatchCaptureIndices : IOnigCaptureIndex[] = null;
+	let bestMatchRuleId : number;
+	let bestMatchResultPriority: boolean = false;
+
+	for (let i = 0, len = injections.length; i < len; i++) {
+		let injection = injections[i];
+		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
+		let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+
+		if (!matchResult) {
+			continue;
+		}
+
+		let matchRating = matchResult.captureIndices[0].start;
+
+		if (matchRating >= bestMatchRating) {
+			continue;
+		}
+
+		bestMatchRating = matchRating;
+		bestMatchCaptureIndices = matchResult.captureIndices;
+		bestMatchRuleId = ruleScanner.rules[matchResult.index];
+		bestMatchResultPriority = injection.priorityMatch;
+
+		if (bestMatchRating === linePos && bestMatchResultPriority) {
+			// No more need to look at the rest of the injections
+			break;
+		}
+	}
+
+	if (bestMatchCaptureIndices) {
+		return {
+			priorityMatch: bestMatchResultPriority,
+			captureIndices: bestMatchCaptureIndices,
+			matchedRuleId: bestMatchRuleId
+		};
+	}
+
+	return null;
+}
+
+interface IMatchResult {
+	captureIndices: IOnigCaptureIndex[];
+	matchedRuleId: number;
+}
+
+function matchRule(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
+	let stackElement = stack[stack.length - 1];
+	let ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+
+	if (r) {
+		return {
+			captureIndices: r.captureIndices,
+			matchedRuleId: ruleScanner.rules[r.index]
+		};
+	}
+	return null;
+}
+
+function matchRuleOrInjections(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
+	// Look for normal grammar rule
+	let matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+
+	// Look for injected rules
+	let injections = grammar.getInjections(stack);
+	if (injections.length === 0) {
+		// No injections whatsoever => early return
+		return matchResult;
+	}
+
+	let injectionResult = matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+	if (!injectionResult) {
+		// No injections matched => early return
+		return matchResult;
+	}
+
+	if (!matchResult) {
+		// Only injections matched => early return
+		return injectionResult;
+	}
+
+	// Decide if `matchResult` or `injectionResult` should win
+	let matchResultScore = matchResult.captureIndices[0].start;
+	let injectionResultScore = injectionResult.captureIndices[0].start;
+
+	if (injectionResultScore < matchResultScore || (injectionResult.priorityMatch && injectionResultScore === matchResultScore)) {
+		// injection won!
+		return injectionResult;
+	}
+
+	return matchResult;
+}
+
 function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], lineTokens: LineTokens): void {
 	const lineLength = lineText.length;
 
@@ -310,40 +416,17 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 
 	function scanNext() : boolean {
 		let stackElement = stack[stack.length - 1];
+		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
-		let captureIndices : IOnigCaptureIndex[] = null;
-		let bestMatchRating = Number.MAX_VALUE; // the smaller the better
-		let matchedRuleId : number;
-
-		// try to match rule: matchRule will set captureIndices, bestMatchRating and matchedRuleId
-		matchRule(stackElement.ruleId);
-		grammar.getInjections(stack).every(injection => matchRule(injection.ruleId, injection.priorityMatch));
-
-		function matchRule(ruleId: number, priorityMatch: boolean = false) : boolean {
-			let ruleScanner = grammar.getRule(ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
-			let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
-			if (matchResult !== null) {
-				let matchRating = matchResult.captureIndices[0].start * 2;
-				if (!priorityMatch) {
-					matchRating++;
-				}
-
-				if (matchRating < bestMatchRating) {
-					bestMatchRating = matchRating;
-					matchedRuleId = ruleScanner.rules[matchResult.index];
-					captureIndices = matchResult.captureIndices;
-					return bestMatchRating > 0;
-				}
-			}
-			return true;
-		}
-
-		if (captureIndices === null) {
+		if (!r) {
 			// No match
 			lineTokens.produce(stack, lineLength);
 			linePos = lineLength;
 			return true;
 		}
+
+		let captureIndices: IOnigCaptureIndex[] = r.captureIndices;
+		let matchedRuleId: number = r.matchedRuleId;
 
 		let hasAdvanced = (captureIndices[0].end > linePos);
 
