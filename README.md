@@ -1,6 +1,6 @@
 # VSCode TextMate
 
-An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Grammar injection is currently not supported.
+An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Cross - grammar injections are currently not supported.
 
 ## Installing
 
