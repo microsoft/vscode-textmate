@@ -75,4 +75,6 @@ export interface StackElement {
 	endRule: string;
 	scopeName: string;
 	contentName: string;
+
+	clone(): StackElement;
 }

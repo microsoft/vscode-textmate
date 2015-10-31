@@ -527,6 +527,10 @@ export class StackElement {
 		this.contentName = contentName;
 	}
 
+	public clone(): StackElement {
+		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
+	}
+
 	public matches(scopeName: string) : boolean {
 		if (!this.scopeName) {
 			return false;
