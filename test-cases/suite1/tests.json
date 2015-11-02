@@ -411,5 +411,44 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade.tmLanguage"
+		],
+		"grammarPath": "fixtures/Jade.tmLanguage",
+		"desc": "Jade",
+		"lines": [
+			{
+				"line": "html",
+				"tokens": [
+					{
+						"value": "html",
+						"scopes": [
+							"text.jade",
+							"meta.tag.other entity.name.tag.jade"
+						]
+					}
+				]
+			},
+			{
+				"line": "  head",
+				"tokens": [
+					{
+						"value": "  ",
+						"scopes": [
+							"text.jade"
+						]
+					},
+					{
+						"value": "head",
+						"scopes": [
+							"text.jade",
+							"meta.tag.other entity.name.tag.jade"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

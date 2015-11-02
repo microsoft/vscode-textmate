@@ -373,8 +373,7 @@ $load('./rule', function(require, module, exports) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
 var BACK_REFERENCING_END = /\\(\d+)/;
@@ -435,6 +434,15 @@ var RegExpSource = (function () {
     }
     RegExpSource.prototype.clone = function () {
         return new RegExpSource(this.source, this.ruleId, true);
+    };
+    RegExpSource.prototype.setSource = function (newSource) {
+        if (this.source === newSource) {
+            return;
+        }
+        this.source = newSource;
+        if (this.hasAnchor) {
+            this._anchorCache = this._buildAnchorCache();
+        }
     };
     RegExpSource.prototype._handleAnchors = function (regExpSource) {
         if (regExpSource) {
@@ -589,7 +597,7 @@ var RegExpSourceList = (function () {
             this._anchorCache.A0_G1 = null;
             this._anchorCache.A1_G0 = null;
             this._anchorCache.A1_G1 = null;
-            this._items[index].source = newSource;
+            this._items[index].setSource(newSource);
         }
     };
     RegExpSourceList.prototype.compile = function (grammar, allowA, allowG) {

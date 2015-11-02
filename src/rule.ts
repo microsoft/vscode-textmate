@@ -119,6 +119,17 @@ export class RegExpSource {
 		return new RegExpSource(this.source, this.ruleId, true);
 	}
 
+	public setSource(newSource: string): void {
+		if (this.source === newSource) {
+			return;
+		}
+		this.source = newSource;
+
+		if (this.hasAnchor) {
+			this._anchorCache = this._buildAnchorCache();
+		}
+	}
+
 	private _handleAnchors(regExpSource:string): void {
 		if (regExpSource) {
 			let pos:number,
@@ -301,7 +312,7 @@ export class RegExpSourceList {
 			this._anchorCache.A0_G1 = null;
 			this._anchorCache.A1_G0 = null;
 			this._anchorCache.A1_G1 = null;
-			this._items[index].source = newSource;
+			this._items[index].setSource(newSource);
 		}
 	}
 

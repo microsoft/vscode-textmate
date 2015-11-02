@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "VSCode TextMate grammar helpers",
   "main": "./release/main.js",
   "repository": {
