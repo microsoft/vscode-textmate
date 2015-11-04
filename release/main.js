@@ -485,7 +485,7 @@ var RegExpSource = (function () {
             return lineText.substring(capture.start, capture.end);
         });
         return this.source.replace(BACK_REFERENCING_END, function (match, g1) {
-            return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)]);
+            return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)] || '');
         });
     };
     RegExpSource.prototype._buildAnchorCache = function () {

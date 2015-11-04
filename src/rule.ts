@@ -177,7 +177,7 @@ export class RegExpSource {
 			return lineText.substring(capture.start, capture.end);
 		});
 		return this.source.replace(BACK_REFERENCING_END, (match, g1) => {
-			return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)]);
+			return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)] || '');
 		});
 	}
 

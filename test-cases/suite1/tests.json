@@ -450,5 +450,97 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Perl.plist"
+		],
+		"grammarPath": "fixtures/Perl.plist",
+		"desc": "Perl",
+		"lines": [
+			{
+				"line": "\t$text =~ s@",
+				"tokens": [
+					{
+						"value": "\t",
+						"scopes": [
+							"source.perl",
+							"meta.leading-tabs",
+							"meta.odd-tab"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"source.perl",
+							"variable.other.readwrite.global.perl",
+							"punctuation.definition.variable.perl"
+						]
+					},
+					{
+						"value": "text",
+						"scopes": [
+							"source.perl",
+							"variable.other.readwrite.global.perl"
+						]
+					},
+					{
+						"value": " =~ ",
+						"scopes": [
+							"source.perl"
+						]
+					},
+					{
+						"value": "s",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl",
+							"support.function.perl"
+						]
+					},
+					{
+						"value": "@",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl"
+						]
+					}
+				]
+			},
+			{
+				"line": "\t\t\t(`+)\t\t# $1 = Opening run of `",
+				"tokens": [
+					{
+						"value": "\t\t\t(`+)\t\t# $1 = Opening run of `",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl"
+						]
+					}
+				]
+			},
+			{
+				"line": "\t\t@",
+				"tokens": [
+					{
+						"value": "\t\t",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl"
+						]
+					},
+					{
+						"value": "@",
+						"scopes": [
+							"source.perl",
+							"string.regexp.replace.extended.simple_delimiter.perl",
+							"punctuation.definition.string.perl"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
