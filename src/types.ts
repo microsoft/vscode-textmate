@@ -8,7 +8,7 @@
 export interface IRawGrammar {
 	repository: IRawRepository;
 	scopeName: string;
-	patterns: IRawPattern[];
+	patterns: IRawRule[];
 	injections?: { [expression:string]: IRawRule };
 
 	fileTypes?: string[];
@@ -22,12 +22,10 @@ export interface IRawRepository {
 	$base: IRawRule;
 }
 
-export interface IRawPattern {
-	include: string;
-}
-
 export interface IRawRule {
 	id?: number;
+
+	include?: string;
 
 	name?: string;
 	contentName?: string;
@@ -38,7 +36,7 @@ export interface IRawRule {
 	beginCaptures?: IRawCaptures;
 	end?:string;
 	endCaptures?: IRawCaptures;
-	patterns?: IRawPattern[];
+	patterns?: IRawRule[];
 
 	repository?: IRawRepository;
 

@@ -4,7 +4,7 @@
 'use strict';
 
 import {clone} from './utils';
-import {IRawGrammar, IRawRepository, IRawPattern, IRawRule} from './types';
+import {IRawGrammar, IRawRepository, IRawRule} from './types';
 import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, MatchRule, ICompiledRule} from './rule';
 import {IOnigCaptureIndex, IOnigNextMatchResult} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
@@ -39,8 +39,13 @@ interface IScopeNameSet {
 /**
  * Fill in `result` all external included scopes in `patterns`
  */
-function _extractIncludedScopesInPatterns(result:IScopeNameSet, patterns:IRawPattern[]): void {
+function _extractIncludedScopesInPatterns(result:IScopeNameSet, patterns:IRawRule[]): void {
 	for (let i = 0, len = patterns.length; i < len; i++) {
+
+		if (Array.isArray(patterns[i].patterns)) {
+			_extractIncludedScopesInPatterns(result, patterns[i].patterns);
+		}
+
 		let include = patterns[i].include;
 
 		if (!include) {

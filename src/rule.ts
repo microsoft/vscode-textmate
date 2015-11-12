@@ -4,7 +4,7 @@
 'use strict';
 
 import {RegexSource, mergeObjects} from './utils';
-import {IRawGrammar, IRawRepository, IRawRule, IRawPattern, IRawCaptures} from './types';
+import {IRawGrammar, IRawRepository, IRawRule, IRawCaptures} from './types';
 import {OnigScanner, IOnigCaptureIndex} from 'oniguruma';
 
 const BACK_REFERENCING_END = /\\(\d+)/;
@@ -575,9 +575,9 @@ export class RuleFactory {
 		return r;
 	}
 
-	private static _compilePatterns(patterns:IRawPattern[], helper: IRuleFactoryHelper, repository:IRawRepository): ICompilePatternsResult {
+	private static _compilePatterns(patterns:IRawRule[], helper: IRuleFactoryHelper, repository:IRawRepository): ICompilePatternsResult {
 		let r: number[] = [],
-			pattern: IRawPattern,
+			pattern: IRawRule,
 			i: number,
 			len: number,
 			patternId: number,
