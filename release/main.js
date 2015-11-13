@@ -373,8 +373,7 @@ $load('./rule', function(require, module, exports) {
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
-    __.prototype = b.prototype;
-    d.prototype = new __();
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
 var BACK_REFERENCING_END = /\\(\d+)/;
@@ -1407,8 +1406,6 @@ var Registry = (function () {
         if (locator === void 0) { locator = DEFAULT_LOCATOR; }
         this._locator = locator;
         this._syncRegistry = new registry_1.SyncRegistry();
-        this._loadingGrammars = {};
-        this._erroredGrammars = {};
     }
     Registry._extractInfo = function (rawGrammar) {
         return {
@@ -1431,15 +1428,41 @@ var Registry = (function () {
     Registry.readGrammarInfoSync = function (path) {
         return this._extractInfo(grammarReader_1.readGrammarSync(path));
     };
-    Registry.prototype.loadGrammar = function (scopeName, callback) {
-        var _this = this;
-        this._cachedLoadGrammar(scopeName, function () {
-            if (_this._erroredGrammars[scopeName]) {
-                callback(_this._erroredGrammars[scopeName], null);
-                return;
+    Registry.prototype.loadGrammar = function (initialScopeName, callback) {
+        var remainingScopeNames = [initialScopeName];
+        var seenScopeNames = {};
+        seenScopeNames[initialScopeName] = true;
+        while (remainingScopeNames.length > 0) {
+            var scopeName = remainingScopeNames.shift();
+            if (this._syncRegistry.lookup(scopeName)) {
+                continue;
             }
-            callback(null, _this.grammarForScopeName(scopeName));
-        });
+            var filePath = this._locator.getFilePath(scopeName);
+            if (!filePath) {
+                if (scopeName === initialScopeName) {
+                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+                    return;
+                }
+                continue;
+            }
+            try {
+                var grammar = grammarReader_1.readGrammarSync(filePath);
+                var deps = this._syncRegistry.addGrammar(grammar);
+                deps.forEach(function (dep) {
+                    if (!seenScopeNames[dep]) {
+                        seenScopeNames[dep] = true;
+                        remainingScopeNames.push(dep);
+                    }
+                });
+            }
+            catch (err) {
+                if (scopeName === initialScopeName) {
+                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+                    return;
+                }
+            }
+        }
+        callback(null, this.grammarForScopeName(initialScopeName));
     };
     Registry.prototype.loadGrammarFromPathSync = function (path) {
         var rawGrammar = grammarReader_1.readGrammarSync(path);
@@ -1448,73 +1471,6 @@ var Registry = (function () {
     };
     Registry.prototype.grammarForScopeName = function (scopeName) {
         return this._syncRegistry.grammarForScopeName(scopeName);
-    };
-    Registry.prototype._cachedLoadGrammar = function (scopeName, callback) {
-        // Check if grammar is currently loading
-        if (this._loadingGrammars[scopeName]) {
-            this._loadingGrammars[scopeName].push(callback);
-            return;
-        }
-        // Check if grammar has been attempted before but has failed
-        if (this._erroredGrammars[scopeName]) {
-            callback();
-            return;
-        }
-        // Check if grammar is already loaded
-        var grammar = this._syncRegistry.lookup(scopeName);
-        if (grammar) {
-            callback();
-            return;
-        }
-        // Ok, this is the first mention of this grammar
-        this._loadGrammar(scopeName, callback);
-    };
-    Registry.prototype._loadGrammar = function (scopeName, callback) {
-        var _this = this;
-        this._loadingGrammars[scopeName] = [callback];
-        var filePath = this._locator.getFilePath(scopeName);
-        if (!filePath) {
-            this._onLoadedGrammar(scopeName, new Error('Unknown location for grammar <' + scopeName + '>'), null);
-            return;
-        }
-        grammarReader_1.readGrammar(filePath, function (err, grammar) {
-            if (err) {
-                _this._onLoadedGrammar(scopeName, err, null);
-                return;
-            }
-            if (scopeName !== grammar.scopeName) {
-                _this._onLoadedGrammar(scopeName, new Error('Expected grammar at location ' + filePath + ' to define scope ' + scopeName + ', but instead discovered scope ' + grammar.scopeName), null);
-                return;
-            }
-            _this._onLoadedGrammar(scopeName, null, grammar);
-        });
-    };
-    Registry.prototype._onLoadedGrammar = function (scopeName, err, grammar) {
-        var _this = this;
-        if (err) {
-            this._erroredGrammars[scopeName] = err;
-            this._releaseBarrier(scopeName);
-            return;
-        }
-        var referencedScopes = this._syncRegistry.addGrammar(grammar);
-        var remainingDeps = referencedScopes.length + 1;
-        var onDepResolved = function () {
-            remainingDeps--;
-            if (remainingDeps === 0) {
-                _this._releaseBarrier(scopeName);
-            }
-        };
-        for (var i = 0; i < referencedScopes.length; i++) {
-            this._cachedLoadGrammar(referencedScopes[i], onDepResolved);
-        }
-        onDepResolved();
-    };
-    Registry.prototype._releaseBarrier = function (scopeName) {
-        var waitingParties = this._loadingGrammars[scopeName];
-        delete this._loadingGrammars[scopeName];
-        for (var i = 0; i < waitingParties.length; i++) {
-            process.nextTick(waitingParties[i]);
-        }
     };
     return Registry;
 })();
