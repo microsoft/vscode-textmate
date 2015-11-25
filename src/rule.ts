@@ -7,7 +7,8 @@ import {RegexSource, mergeObjects} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule, IRawCaptures} from './types';
 import {OnigScanner, IOnigCaptureIndex} from 'oniguruma';
 
-const BACK_REFERENCING_END = /\\(\d+)/;
+const HAS_BACK_REFERENCES = /\\(\d+)/;
+const BACK_REFERENCING_END = /\\(\d+)/g;
 
 export interface IRuleRegistry {
 	getRule(patternId:number): Rule;
@@ -110,7 +111,7 @@ export class RegExpSource {
 		}
 
 		this.ruleId = ruleId;
-		this.hasBackReferences = BACK_REFERENCING_END.test(this.source);
+		this.hasBackReferences = HAS_BACK_REFERENCES.test(this.source);
 
 		// console.log('input: ' + regExpSource + ' => ' + this.source + ', ' + this.hasAnchor);
 	}
@@ -176,6 +177,7 @@ export class RegExpSource {
 		let capturedValues = captureIndices.map((capture) => {
 			return lineText.substring(capture.start, capture.end);
 		});
+		BACK_REFERENCING_END.lastIndex = 0;
 		return this.source.replace(BACK_REFERENCING_END, (match, g1) => {
 			return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)] || '');
 		});

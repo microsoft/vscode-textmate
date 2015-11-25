@@ -1,46 +1,22 @@
 {
 	"version": "0.1.0",
-	// List of configurations. Add new configurations or edit existing ones.
 	"configurations": [
 		{
-			// Name of configuration; appears in the launch configuration drop down menu.
-			"name": "Launch test.js",
-			// Type of configuration.
+			"name": "Launch tests",
 			"type": "node",
-			// Request type of configuration. Can be "launch" or "attach".
 			"request": "launch",
-			// Workspace relative or absolute path to the program.
-			"program": "./test.js",
-			// Automatically stop program after launch.
+			"program": "./node_modules/gulp/bin/gulp.js",
 			"stopOnEntry": false,
-			// Command line arguments passed to the program.
-			"args": [],
-			// Workspace relative or absolute path to the working directory of the program being debugged. Default is the current workspace.
+			"args": [ "test" ],
 			"cwd": ".",
-			// Workspace relative or absolute path to the runtime executable to be used. Default is the runtime executable on the PATH.
 			"runtimeExecutable": null,
-			// Optional arguments passed to the runtime executable.
 			"runtimeArgs": ["--nolazy"],
-			// Environment variables passed to the program.
 			"env": {
 				"NODE_ENV": "development"
 			},
-			// Launch debug target in external console.
 			"externalConsole": false,
-			// Use JavaScript source maps (if they exist).
 			"sourceMaps": false,
-			// If JavaScript source maps are enabled, the generated code is expected in this directory.
 			"outDir": null
-		},
-		{
-			"name": "Attach",
-			"type": "node",
-			"request": "attach",
-			// TCP/IP address. Default is "localhost".
-			"address": "localhost",
-			// Port to attach to.
-			"port": 5858,
-			"sourceMaps": false
 		}
 	]
 }

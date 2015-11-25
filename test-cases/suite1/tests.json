@@ -542,5 +542,67 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Ruby.plist"
+		],
+		"grammarPath": "fixtures/Ruby.plist",
+		"desc": "Ruby",
+		"lines": [
+			{
+				"line": "          %r{^/Developer} === prefix",
+				"tokens": [
+					{
+						"value": "          ",
+						"scopes": [
+							"source.ruby"
+						]
+					},
+					{
+						"value": "%r{",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby",
+							"punctuation.definition.string.begin.ruby"
+						]
+					},
+					{
+						"value": "^/Developer",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby"
+						]
+					},
+					{
+						"value": "}",
+						"scopes": [
+							"source.ruby",
+							"string.regexp.percent.ruby",
+							"punctuation.definition.string.end.ruby"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.ruby"
+						]
+					},
+					{
+						"value": "===",
+						"scopes": [
+							"source.ruby",
+							"keyword.operator.comparison.ruby"
+						]
+					},
+					{
+						"value": " prefix",
+						"scopes": [
+							"source.ruby"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

@@ -376,7 +376,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 var utils_1 = require('./utils');
-var BACK_REFERENCING_END = /\\(\d+)/;
+var HAS_BACK_REFERENCES = /\\(\d+)/;
+var BACK_REFERENCING_END = /\\(\d+)/g;
 var Rule = (function () {
     function Rule(id, name, contentName) {
         this.id = id;
@@ -429,7 +430,7 @@ var RegExpSource = (function () {
             this._anchorCache = this._buildAnchorCache();
         }
         this.ruleId = ruleId;
-        this.hasBackReferences = BACK_REFERENCING_END.test(this.source);
+        this.hasBackReferences = HAS_BACK_REFERENCES.test(this.source);
         // console.log('input: ' + regExpSource + ' => ' + this.source + ', ' + this.hasAnchor);
     }
     RegExpSource.prototype.clone = function () {
@@ -484,6 +485,7 @@ var RegExpSource = (function () {
         var capturedValues = captureIndices.map(function (capture) {
             return lineText.substring(capture.start, capture.end);
         });
+        BACK_REFERENCING_END.lastIndex = 0;
         return this.source.replace(BACK_REFERENCING_END, function (match, g1) {
             return escapeRegExpCharacters(capturedValues[parseInt(g1, 10)] || '');
         });
