@@ -7,3 +7,4 @@ test-cases/
 .npmignore
 npm-debug.log
 gulpfile.js
+ThirdPartyNotices.txt
