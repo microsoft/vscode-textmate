@@ -604,5 +604,237 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Makefile.plist"
+		],
+		"grammarPath": "fixtures/Makefile.plist",
+		"desc": "Issue #8",
+		"lines": [
+			{
+				"line": "ifeq (version,$(firstword $(MAKECMDGOALS)))",
+				"tokens": [
+					{
+						"value": "ifeq",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"keyword.control.ifeq.makefile"
+						]
+					},
+					{
+						"value": " (version,",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "firstword",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"support.function.firstword.makefile"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "MAKECMDGOALS",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"variable.other.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.condition.makefile"
+						]
+					}
+				]
+			},
+			{
+				"line": "  $(eval $(SET_VERSION):,@:)",
+				"tokens": [
+						{
+						"value": "  ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "eval",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"support.function.eval.makefile"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile"
+						]
+					},
+					{
+						"value": "$(",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": "SET_VERSION",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"variable.other.makefile"
+						]
+					},
+					{
+						"value": ")",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"entity.name.function.target.makefile",
+							"string.interpolated.makefile",
+							"meta.scope.function-call.makefile",
+							"string.interpolated.makefile",
+							"punctuation.definition.variable.makefile"
+						]
+					},
+					{
+						"value": ":",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"punctuation.separator.key-value.makefile"
+						]
+					},
+					{
+						"value": ",@:)",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"meta.scope.target.makefile",
+							"meta.scope.prerequisites.makefile"
+						]
+					}
+				]
+			},
+			{
+				"line": "endif",
+				"tokens": [
+					{
+						"value": "endif",
+						"scopes": [
+							"source.makefile",
+							"meta.scope.conditional.makefile",
+							"keyword.control.endif.makefile"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

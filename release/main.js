@@ -1096,9 +1096,9 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         lineTokens.produce(stack, captureIndex.start, localStack);
         if (captureRule.retokenizeCapturedWithRuleId) {
             // the capture requires additional matching
-            stack.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(lineText, captureIndices), captureRule.getContentName(lineText, captureIndices)));
-            _tokenizeString(grammar, lineText.substring(0, captureIndex.end), (isFirstLine && captureIndex.start === 0), captureIndex.start, stack, lineTokens);
-            stack.pop();
+            var stackClone = stack.map(function (el) { return el.clone(); });
+            stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(lineText, captureIndices), captureRule.getContentName(lineText, captureIndices)));
+            _tokenizeString(grammar, lineText.substring(0, captureIndex.end), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             continue;
         }
         // push
