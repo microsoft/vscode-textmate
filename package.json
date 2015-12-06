@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "VSCode TextMate grammar helpers",
   "author": {
     "name": "Microsoft Corporation"
@@ -20,7 +20,7 @@
     "benchmark": "node benchmark/benchmark.js"
   },
   "dependencies": {
-    "oniguruma": "^5.1.1",
+    "alexandrudima-oniguruma": "^6.0.0",
     "sax": "^1.1.1"
   },
   "devDependencies": {

@@ -5,8 +5,8 @@
 
 import {clone} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule} from './types';
-import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, MatchRule, ICompiledRule} from './rule';
-import {IOnigCaptureIndex, IOnigNextMatchResult} from 'oniguruma';
+import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
+import {IOnigCaptureIndex, IOnigNextMatchResult, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
 
 export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRepository): IGrammar {
@@ -223,9 +223,10 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		}
 
 		lineText = lineText + '\n';
-		let lineLength = lineText.length;
+		let onigLineText = createOnigString(lineText);
+		let lineLength = getString(onigLineText).length;
 		let lineTokens = new LineTokens();
-		_tokenizeString(this, lineText, isFirstLine, 0, prevState, lineTokens);
+		_tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
 
 		let _produced = lineTokens.getResult(prevState, lineLength);
 
@@ -248,7 +249,7 @@ function initGrammar(grammar:IRawGrammar, base:IRawRule): IRawGrammar {
 	return grammar;
 }
 
-function handleCaptures(grammar: Grammar, lineText: string, isFirstLine: boolean, stack: StackElement[], lineTokens: LineTokens, captures: CaptureRule[], captureIndices: IOnigCaptureIndex[]): void {
+function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StackElement[], lineTokens: LineTokens, captures: CaptureRule[], captureIndices: IOnigCaptureIndex[]): void {
 	if (captures.length === 0) {
 		return;
 	}
@@ -291,13 +292,18 @@ function handleCaptures(grammar: Grammar, lineText: string, isFirstLine: boolean
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
 			let stackClone = stack.map((el) => el.clone());
-			stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(lineText, captureIndices), captureRule.getContentName(lineText, captureIndices)))
-			_tokenizeString(grammar, lineText.substring(0, captureIndex.end), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+			stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(getString(lineText), captureIndices), captureRule.getContentName(getString(lineText), captureIndices)))
+			_tokenizeString(grammar,
+				createOnigString(
+					getString(lineText).substring(0, captureIndex.end)
+				),
+				(isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens
+			);
 			continue;
 		}
 
 		// push
-		localStack.push(new LocalStackElement(captureRule.getName(lineText, captureIndices), captureIndex.end));
+		localStack.push(new LocalStackElement(captureRule.getName(getString(lineText), captureIndices), captureIndex.end));
 	}
 
 	while (localStack.length > 0) {
@@ -313,7 +319,7 @@ interface IMatchInjectionsResult {
 	matchedRuleId: number;
 }
 
-function matchInjections(injections:Injection[], grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchInjectionsResult {
+function matchInjections(injections:Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchInjectionsResult {
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
 	let bestMatchCaptureIndices : IOnigCaptureIndex[] = null;
@@ -362,7 +368,7 @@ interface IMatchResult {
 	matchedRuleId: number;
 }
 
-function matchRule(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
+function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
 	let stackElement = stack[stack.length - 1];
 	let ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
@@ -376,7 +382,7 @@ function matchRule(grammar: Grammar, lineText: string, isFirstLine: boolean, lin
 	return null;
 }
 
-function matchRuleOrInjections(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
+function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
 	// Look for normal grammar rule
 	let matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
@@ -410,8 +416,8 @@ function matchRuleOrInjections(grammar: Grammar, lineText: string, isFirstLine: 
 	return matchResult;
 }
 
-function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolean, linePos: number, stack: StackElement[], lineTokens: LineTokens): void {
-	const lineLength = lineText.length;
+function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], lineTokens: LineTokens): void {
+	const lineLength = getString(lineText).length;
 
 	let anchorPosition = -1;
 
@@ -462,7 +468,7 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 			lineTokens.produce(stack, captureIndices[0].start);
 
 			// push it on the stack rule
-			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, captureIndices), null));
+			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null));
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -470,10 +476,10 @@ function _tokenizeString(grammar: Grammar, lineText: string, isFirstLine: boolea
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				stack[stack.length-1].contentName = pushedRule.getContentName(lineText, captureIndices);
+				stack[stack.length-1].contentName = pushedRule.getContentName(getString(lineText), captureIndices);
 
 				if (pushedRule.endHasBackReferences) {
-					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, captureIndices);
+					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices);
 				}
 
 				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {

@@ -558,15 +558,46 @@ var RegExpSource = (function () {
     return RegExpSource;
 })();
 exports.RegExpSource = RegExpSource;
-var createOnigScanner = (function () {
+var USE_NEW_ONE = true;
+var getOnigModule = (function () {
     var onigurumaModule = null;
-    return function createOnigScanner(sources) {
+    return function () {
         if (!onigurumaModule) {
-            onigurumaModule = require('oniguruma');
+            if (USE_NEW_ONE) {
+                onigurumaModule = require('alexandrudima-oniguruma');
+            }
+            else {
+                onigurumaModule = require('oniguruma');
+            }
         }
-        return new onigurumaModule.OnigScanner(sources);
+        return onigurumaModule;
     };
 })();
+function createOnigScanner(sources) {
+    var onigurumaModule = getOnigModule();
+    return new onigurumaModule.OnigScanner(sources);
+}
+function createOnigString(sources) {
+    if (USE_NEW_ONE) {
+        var onigurumaModule = getOnigModule();
+        var r = new onigurumaModule.OnigString(sources);
+        r.$str = sources;
+        return r;
+    }
+    else {
+        return sources;
+    }
+}
+exports.createOnigString = createOnigString;
+function getString(str) {
+    if (USE_NEW_ONE) {
+        return str.$str;
+    }
+    else {
+        return str;
+    }
+}
+exports.getString = getString;
 var RegExpSourceList = (function () {
     function RegExpSourceList() {
         this._items = [];
@@ -1046,9 +1077,10 @@ var Grammar = (function () {
             }
         }
         lineText = lineText + '\n';
-        var lineLength = lineText.length;
+        var onigLineText = rule_1.createOnigString(lineText);
+        var lineLength = rule_1.getString(onigLineText).length;
         var lineTokens = new LineTokens();
-        _tokenizeString(this, lineText, isFirstLine, 0, prevState, lineTokens);
+        _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
         var _produced = lineTokens.getResult(prevState, lineLength);
         return {
             tokens: _produced,
@@ -1097,12 +1129,12 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         if (captureRule.retokenizeCapturedWithRuleId) {
             // the capture requires additional matching
             var stackClone = stack.map(function (el) { return el.clone(); });
-            stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(lineText, captureIndices), captureRule.getContentName(lineText, captureIndices)));
-            _tokenizeString(grammar, lineText.substring(0, captureIndex.end), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+            stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(rule_1.getString(lineText), captureIndices), captureRule.getContentName(rule_1.getString(lineText), captureIndices)));
+            _tokenizeString(grammar, rule_1.createOnigString(rule_1.getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             continue;
         }
         // push
-        localStack.push(new LocalStackElement(captureRule.getName(lineText, captureIndices), captureIndex.end));
+        localStack.push(new LocalStackElement(captureRule.getName(rule_1.getString(lineText), captureIndices), captureIndex.end));
     }
     while (localStack.length > 0) {
         // pop!
@@ -1185,7 +1217,7 @@ function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, a
     return matchResult;
 }
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
-    var lineLength = lineText.length;
+    var lineLength = rule_1.getString(lineText).length;
     var anchorPosition = -1;
     while (linePos < lineLength) {
         scanNext(); // potentially modifies linePos && anchorPosition
@@ -1224,15 +1256,15 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             var _rule = grammar.getRule(matchedRuleId);
             lineTokens.produce(stack, captureIndices[0].start);
             // push it on the stack rule
-            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(lineText, captureIndices), null));
+            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null));
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                stack[stack.length - 1].contentName = pushedRule.getContentName(lineText, captureIndices);
+                stack[stack.length - 1].contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
                 if (pushedRule.endHasBackReferences) {
-                    stack[stack.length - 1].endRule = pushedRule.getEndWithResolvedBackReferences(lineText, captureIndices);
+                    stack[stack.length - 1].endRule = pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices);
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing

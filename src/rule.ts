@@ -5,7 +5,7 @@
 
 import {RegexSource, mergeObjects} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule, IRawCaptures} from './types';
-import {OnigScanner, IOnigCaptureIndex} from 'oniguruma';
+import {OnigString, OnigScanner, IOnigCaptureIndex} from 'oniguruma';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
 const BACK_REFERENCING_END = /\\(\d+)/g;
@@ -261,15 +261,45 @@ interface IRegExpSourceListAnchorCache {
 	A1_G1: ICompiledRule;
 }
 
-let createOnigScanner = (function() {
+var USE_NEW_ONE = true;
+
+let getOnigModule = (function() {
 	var onigurumaModule: any = null;
-	return function createOnigScanner(sources:string[]): OnigScanner {
+	return function() {
 		if (!onigurumaModule) {
-			onigurumaModule = require('oniguruma');
+			if (USE_NEW_ONE) {
+				onigurumaModule = require('alexandrudima-oniguruma');
+			} else {
+				onigurumaModule = require('oniguruma');
+			}
 		}
-		return new onigurumaModule.OnigScanner(sources);
+		return onigurumaModule;
 	}
 })();
+
+function createOnigScanner(sources:string[]): OnigScanner {
+	let onigurumaModule = getOnigModule();
+	return new onigurumaModule.OnigScanner(sources);
+}
+
+export function createOnigString(sources:string): OnigString {
+	if (USE_NEW_ONE) {
+		let onigurumaModule = getOnigModule();
+		var r = new onigurumaModule.OnigString(sources);
+		(<any>r).$str = sources;
+		return r;
+	} else {
+		return <any>sources;
+	}
+}
+
+export function getString(str:OnigString): string {
+	if (USE_NEW_ONE) {
+		return (<any>str).$str;
+	} else {
+		return (<any>str);
+	}
+}
 
 export class RegExpSourceList {
 

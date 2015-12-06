@@ -25,7 +25,9 @@ function tokenizeFile(filePath, grammar, message) {
 	tokenize(grammar, content.split(/\r\n|\r|\n/));
 }
 
-tokenizeFile(path.join(__dirname, 'large.js'), jsGrammar, 'Tokenizing jQuery v2.0.3')
-tokenizeFile(path.join(__dirname, 'large.min.js'), jsGrammar, 'Tokenizing jQuery v2.0.3 minified')
-tokenizeFile(path.join(__dirname, 'bootstrap.css'), cssGrammar, 'Tokenizing Bootstrap CSS v3.1.1')
-tokenizeFile(path.join(__dirname, 'bootstrap.min.css'), cssGrammar, 'Tokenizing Bootstrap CSS v3.1.1 minified')
+tokenizeFile(path.join(__dirname, 'main.08642f99.css.txt'), cssGrammar, 'Tokenizing Bootstrap with multi-byte')
+
+tokenizeFile(path.join(__dirname, 'large.js.txt'), jsGrammar, 'Tokenizing jQuery v2.0.3')
+tokenizeFile(path.join(__dirname, 'large.min.js.txt'), jsGrammar, 'Tokenizing jQuery v2.0.3 minified')
+tokenizeFile(path.join(__dirname, 'bootstrap.css.txt'), cssGrammar, 'Tokenizing Bootstrap CSS v3.1.1')
+tokenizeFile(path.join(__dirname, 'bootstrap.min.css.txt'), cssGrammar, 'Tokenizing Bootstrap CSS v3.1.1 minified')

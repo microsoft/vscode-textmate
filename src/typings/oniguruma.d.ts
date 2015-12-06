@@ -15,6 +15,11 @@ declare module "oniguruma" {
 	export class OnigScanner {
 		constructor(regexps:string[]);
 		_findNextMatchSync(lin:string, pos:number): IOnigNextMatchResult;
+		_findNextMatchSync(lin:OnigString, pos:number): IOnigNextMatchResult;
+	}
+
+	export class OnigString {
+		constructor(str:string);
 	}
 
 }
