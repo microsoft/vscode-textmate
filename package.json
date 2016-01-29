@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "VSCode TextMate grammar helpers",
   "author": {
     "name": "Microsoft Corporation"
