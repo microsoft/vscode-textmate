@@ -562,7 +562,7 @@ var getOnigModule = (function () {
     var onigurumaModule = null;
     return function () {
         if (!onigurumaModule) {
-            onigurumaModule = require('alexandrudima-oniguruma');
+            onigurumaModule = require('oniguruma');
         }
         return onigurumaModule;
     };
