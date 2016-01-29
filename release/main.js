@@ -558,17 +558,11 @@ var RegExpSource = (function () {
     return RegExpSource;
 })();
 exports.RegExpSource = RegExpSource;
-var USE_NEW_ONE = true;
 var getOnigModule = (function () {
     var onigurumaModule = null;
     return function () {
         if (!onigurumaModule) {
-            if (USE_NEW_ONE) {
-                onigurumaModule = require('alexandrudima-oniguruma');
-            }
-            else {
-                onigurumaModule = require('oniguruma');
-            }
+            onigurumaModule = require('alexandrudima-oniguruma');
         }
         return onigurumaModule;
     };
@@ -578,24 +572,14 @@ function createOnigScanner(sources) {
     return new onigurumaModule.OnigScanner(sources);
 }
 function createOnigString(sources) {
-    if (USE_NEW_ONE) {
-        var onigurumaModule = getOnigModule();
-        var r = new onigurumaModule.OnigString(sources);
-        r.$str = sources;
-        return r;
-    }
-    else {
-        return sources;
-    }
+    var onigurumaModule = getOnigModule();
+    var r = new onigurumaModule.OnigString(sources);
+    r.$str = sources;
+    return r;
 }
 exports.createOnigString = createOnigString;
 function getString(str) {
-    if (USE_NEW_ONE) {
-        return str.$str;
-    }
-    else {
-        return str;
-    }
+    return str.$str;
 }
 exports.getString = getString;
 var RegExpSourceList = (function () {

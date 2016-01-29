@@ -261,17 +261,11 @@ interface IRegExpSourceListAnchorCache {
 	A1_G1: ICompiledRule;
 }
 
-var USE_NEW_ONE = true;
-
 let getOnigModule = (function() {
 	var onigurumaModule: any = null;
 	return function() {
 		if (!onigurumaModule) {
-			if (USE_NEW_ONE) {
-				onigurumaModule = require('alexandrudima-oniguruma');
-			} else {
-				onigurumaModule = require('oniguruma');
-			}
+			onigurumaModule = require('alexandrudima-oniguruma');
 		}
 		return onigurumaModule;
 	}
@@ -283,22 +277,14 @@ function createOnigScanner(sources:string[]): OnigScanner {
 }
 
 export function createOnigString(sources:string): OnigString {
-	if (USE_NEW_ONE) {
-		let onigurumaModule = getOnigModule();
-		var r = new onigurumaModule.OnigString(sources);
-		(<any>r).$str = sources;
-		return r;
-	} else {
-		return <any>sources;
-	}
+	let onigurumaModule = getOnigModule();
+	var r = new onigurumaModule.OnigString(sources);
+	(<any>r).$str = sources;
+	return r;
 }
 
 export function getString(str:OnigString): string {
-	if (USE_NEW_ONE) {
-		return (<any>str).$str;
-	} else {
-		return (<any>str);
-	}
+	return (<any>str).$str;
 }
 
 export class RegExpSourceList {
