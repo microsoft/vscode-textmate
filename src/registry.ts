@@ -5,7 +5,7 @@
 
 import fs = require('fs');
 import path = require('path');
-import {createGrammar, extractIncludedScopes, IGrammarRepository, IGrammar} from './grammar';
+import {createGrammar, collectIncludedScopes, IGrammarRepository, IGrammar, IScopeNameSet} from './grammar';
 import {IRawGrammar} from './types';
 import {parse} from './plistParser';
 
@@ -13,18 +13,30 @@ export class SyncRegistry implements IGrammarRepository {
 
 	private _grammars: {[scopeName:string]:IGrammar;};
 	private _rawGrammars: {[scopeName:string]:IRawGrammar;};
+	private _injectionGrammars: {[scopeName:string]:string[];};
 
 	constructor() {
 		this._grammars = {};
 		this._rawGrammars = {};
+		this._injectionGrammars = {};
 	}
 
 	/**
 	 * Add `grammar` to registry and return a list of referenced scope names
 	 */
-	public addGrammar(grammar:IRawGrammar): string[] {
+	public addGrammar(grammar:IRawGrammar, injectionScopeNames?: string[]): string[] {
 		this._rawGrammars[grammar.scopeName] = grammar;
-		return extractIncludedScopes(grammar);
+
+		let includedScopes: IScopeNameSet = {};
+		collectIncludedScopes(includedScopes, grammar);
+
+		if (injectionScopeNames) {
+			this._injectionGrammars[grammar.scopeName] = injectionScopeNames;
+			injectionScopeNames.forEach(scopeName => {
+				includedScopes[scopeName] = true;
+			});
+		}
+		return Object.keys(includedScopes);
 	}
 
 	/**
@@ -32,6 +44,13 @@ export class SyncRegistry implements IGrammarRepository {
 	 */
 	public lookup(scopeName:string): IRawGrammar {
 		return this._rawGrammars[scopeName];
+	}
+
+	/**
+	 * Returns the injections for the given grammar
+	 */
+	public injections(targetScope:string): string[] {
+		return this._injectionGrammars[targetScope];
 	}
 
 	/**

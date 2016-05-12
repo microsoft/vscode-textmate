@@ -5,7 +5,7 @@
 
 import fs = require('fs');
 import path = require('path');
-import {Registry, createMatcher} from '../main';
+import {Registry, createMatcher, IGrammarLocator} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
 import 'colors';
 
@@ -17,14 +17,20 @@ export function runDescriptiveTests(testLocation: string) {
 	errCnt = 0;
 	tests.forEach(function(test, index) {
 		let desc = test.desc;
-		if (test.feature === 'external-injection') {
-			console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
-			return;
-		}
 		let noAsserts = (test.feature === 'endless-loop');
 
 		console.log(index + ' - RUNNING ' + desc);
-		let registry = new Registry();
+		let locator : IGrammarLocator = {
+			getFilePath: (scopeName:string) => null,
+			getInjections: (scopeName:string) => {
+				if (scopeName === test.grammarScopeName) {
+					return test.grammarInjections;
+				}
+				return void 0;
+			}
+		}
+
+		let registry = new Registry(locator);
 		let grammar: IGrammar = null;
 		test.grammars.forEach(function(grammarPath) {
 			let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
@@ -61,6 +67,7 @@ interface IRawTest {
 	grammars: string[];
 	grammarPath?: string;
 	grammarScopeName?: string;
+	grammarInjections?: string[];
 	lines: IRawTestLine[];
 }
 

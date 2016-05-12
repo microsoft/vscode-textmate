@@ -3278,6 +3278,7 @@
 	},
 	{
 		"grammarScopeName": "source.js",
+		"grammarInjections": ["text.hyperlink"],
 		"lines": [
 			{
 				"line": "var i; // http://github.com",
@@ -3354,8 +3355,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/hyperlink.json"
 		],
-		"desc": "TEST #47",
-		"feature": "external-injection"
+		"desc": "TEST #47"
 	},
 	{
 		"grammarPath": "fixtures/forever.json",
@@ -3382,6 +3382,7 @@
 	},
 	{
 		"grammarScopeName": "source.ruby",
+		"grammarInjections": ["text.todo"],
 		"lines": [
 			{
 				"line": "# TODO be nicer",
@@ -3439,8 +3440,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/todo.json"
 		],
-		"desc": "TEST #49",
-		"feature": "external-injection"
+		"desc": "TEST #49"
 	},
 	{
 		"grammarScopeName": "source.makefile",

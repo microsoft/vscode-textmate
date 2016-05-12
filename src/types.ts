@@ -10,6 +10,7 @@ export interface IRawGrammar {
 	scopeName: string;
 	patterns: IRawRule[];
 	injections?: { [expression:string]: IRawRule };
+	injectionSelector?: string;
 
 	fileTypes?: string[];
 	name?: string;

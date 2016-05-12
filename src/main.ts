@@ -12,6 +12,7 @@ export import createMatcher = expressionMatcher.createMatcher;
 
 export interface IGrammarLocator {
 	getFilePath(scopeName:string): string;
+	getInjections?(scopeName:string): string[];
 }
 
 export interface IGrammarInfo {
@@ -26,7 +27,8 @@ interface IBarrier {
 }
 
 let DEFAULT_LOCATOR:IGrammarLocator = {
-	getFilePath: (scopeName:string) => null
+	getFilePath: (scopeName:string) => null,
+	getInjections: (scopeName:string) => null
 };
 
 export class Registry {
@@ -87,8 +89,9 @@ export class Registry {
 
 			try {
 				let grammar = readGrammarSync(filePath);
+				let injections = this._locator.getInjections(scopeName);
 
-				let deps = this._syncRegistry.addGrammar(grammar);
+				let deps = this._syncRegistry.addGrammar(grammar, injections);
 				deps.forEach((dep) => {
 					if (!seenScopeNames[dep]) {
 						seenScopeNames[dep] = true;
@@ -108,7 +111,8 @@ export class Registry {
 
 	public loadGrammarFromPathSync(path:string): IGrammar {
 		let rawGrammar = readGrammarSync(path);
-		this._syncRegistry.addGrammar(rawGrammar);
+		let injections = this._locator.getInjections(rawGrammar.scopeName);
+		this._syncRegistry.addGrammar(rawGrammar, injections);
 		return this.grammarForScopeName(rawGrammar.scopeName);
 	}
 
