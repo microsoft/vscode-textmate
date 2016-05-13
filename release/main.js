@@ -1496,7 +1496,7 @@ var Registry = (function () {
             }
             try {
                 var grammar = grammarReader_1.readGrammarSync(filePath);
-                var injections = this._locator.getInjections(scopeName);
+                var injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
                 var deps = this._syncRegistry.addGrammar(grammar, injections);
                 deps.forEach(function (dep) {
                     if (!seenScopeNames[dep]) {

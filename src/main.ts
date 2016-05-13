@@ -89,7 +89,7 @@ export class Registry {
 
 			try {
 				let grammar = readGrammarSync(filePath);
-				let injections = this._locator.getInjections(scopeName);
+				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
 
 				let deps = this._syncRegistry.addGrammar(grammar, injections);
 				deps.forEach((dep) => {
