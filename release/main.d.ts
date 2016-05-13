@@ -9,6 +9,7 @@ export interface IGrammarLocator {
 	getFilePath(scopeName:string): string;
 	getInjections?(scopeName:string): string[];
 }
+
 /**
  * The registry that will hold all grammars.
  */
