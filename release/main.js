@@ -93,7 +93,7 @@ var RegexSource = (function () {
         });
     };
     return RegexSource;
-})();
+}());
 exports.RegexSource = RegexSource;
 
 });
@@ -334,7 +334,7 @@ var AsyncGrammarReader = (function () {
         });
     };
     return AsyncGrammarReader;
-})();
+}());
 var SyncGrammarReader = (function () {
     function SyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
@@ -345,7 +345,7 @@ var SyncGrammarReader = (function () {
         return this._parser(contents.toString());
     };
     return SyncGrammarReader;
-})();
+}());
 function getGrammarParser(filePath) {
     if (/\.json$/.test(filePath)) {
         return parseJSONGrammar;
@@ -405,7 +405,7 @@ var Rule = (function () {
         throw new Error('Implement me!');
     };
     return Rule;
-})();
+}());
 exports.Rule = Rule;
 var CaptureRule = (function (_super) {
     __extends(CaptureRule, _super);
@@ -414,7 +414,7 @@ var CaptureRule = (function (_super) {
         this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
     }
     return CaptureRule;
-})(Rule);
+}(Rule));
 exports.CaptureRule = CaptureRule;
 var RegExpSource = (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
@@ -447,7 +447,7 @@ var RegExpSource = (function () {
     };
     RegExpSource.prototype._handleAnchors = function (regExpSource) {
         if (regExpSource) {
-            var pos, len, ch, nextCh, lastPushedPos = 0, output = [];
+            var pos = void 0, len = void 0, ch = void 0, nextCh = void 0, lastPushedPos = 0, output = [];
             var hasAnchor = false;
             for (pos = 0, len = regExpSource.length; pos < len; pos++) {
                 ch = regExpSource.charAt(pos);
@@ -556,7 +556,7 @@ var RegExpSource = (function () {
         }
     };
     return RegExpSource;
-})();
+}());
 exports.RegExpSource = RegExpSource;
 var getOnigModule = (function () {
     var onigurumaModule = null;
@@ -659,7 +659,7 @@ var RegExpSourceList = (function () {
         };
     };
     return RegExpSourceList;
-})();
+}());
 exports.RegExpSourceList = RegExpSourceList;
 var MatchRule = (function (_super) {
     __extends(MatchRule, _super);
@@ -680,7 +680,7 @@ var MatchRule = (function (_super) {
         return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     return MatchRule;
-})(Rule);
+}(Rule));
 exports.MatchRule = MatchRule;
 var IncludeOnlyRule = (function (_super) {
     __extends(IncludeOnlyRule, _super);
@@ -705,7 +705,7 @@ var IncludeOnlyRule = (function (_super) {
         return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     return IncludeOnlyRule;
-})(Rule);
+}(Rule));
 exports.IncludeOnlyRule = IncludeOnlyRule;
 function escapeRegExpCharacters(value) {
     return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
@@ -729,7 +729,7 @@ var BeginEndRule = (function (_super) {
     };
     BeginEndRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         if (isFirst) {
-            var i, len, rule;
+            var i = void 0, len = void 0, rule = void 0;
             for (i = 0, len = this.patterns.length; i < len; i++) {
                 rule = grammar.getRule(this.patterns[i]);
                 rule.collectPatternsRecursive(grammar, out, false);
@@ -765,8 +765,62 @@ var BeginEndRule = (function (_super) {
         return this._cachedCompiledPatterns;
     };
     return BeginEndRule;
-})(Rule);
+}(Rule));
 exports.BeginEndRule = BeginEndRule;
+var BeginWhileRule = (function (_super) {
+    __extends(BeginWhileRule, _super);
+    function BeginWhileRule(id, name, contentName, begin, beginCaptures, _while, patterns) {
+        _super.call(this, id, name, contentName);
+        this._begin = new RegExpSource(begin, this.id);
+        this.beginCaptures = beginCaptures;
+        this._while = new RegExpSource(_while, -2);
+        this.whileHasBackReferences = this._while.hasBackReferences;
+        this.patterns = patterns.patterns;
+        this.hasMissingPatterns = patterns.hasMissingPatterns;
+        this._cachedCompiledPatterns = null;
+        this._cachedCompiledWhilePatterns = null;
+    }
+    BeginWhileRule.prototype.getWhileWithResolvedBackReferences = function (lineText, captureIndices) {
+        return this._while.resolveBackReferences(lineText, captureIndices);
+    };
+    BeginWhileRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
+        if (isFirst) {
+            var i = void 0, len = void 0, rule = void 0;
+            for (i = 0, len = this.patterns.length; i < len; i++) {
+                rule = grammar.getRule(this.patterns[i]);
+                rule.collectPatternsRecursive(grammar, out, false);
+            }
+        }
+        else {
+            out.push(this._begin);
+        }
+    };
+    BeginWhileRule.prototype.compile = function (grammar, endRegexSource, allowA, allowG) {
+        this._precompile(grammar);
+        return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
+    };
+    BeginWhileRule.prototype._precompile = function (grammar) {
+        if (!this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns = new RegExpSourceList();
+            this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
+        }
+    };
+    BeginWhileRule.prototype.compileWhile = function (grammar, endRegexSource, allowA, allowG) {
+        this._precompileWhile(grammar);
+        if (this._while.hasBackReferences) {
+            this._cachedCompiledWhilePatterns.setSource(0, endRegexSource);
+        }
+        return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
+    };
+    BeginWhileRule.prototype._precompileWhile = function (grammar) {
+        if (!this._cachedCompiledWhilePatterns) {
+            this._cachedCompiledWhilePatterns = new RegExpSourceList();
+            this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);
+        }
+    };
+    return BeginWhileRule;
+}(Rule));
+exports.BeginWhileRule = BeginWhileRule;
 var RuleFactory = (function () {
     function RuleFactory() {
     }
@@ -787,6 +841,9 @@ var RuleFactory = (function () {
                         repository = utils_1.mergeObjects({}, repository, desc.repository);
                     }
                     return new IncludeOnlyRule(desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                }
+                if (desc.while) {
+                    return new BeginWhileRule(desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
                 return new BeginEndRule(desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository), desc.applyEndPatternLast, RuleFactory._compilePatterns(desc.patterns, helper, repository));
             });
@@ -874,12 +931,7 @@ var RuleFactory = (function () {
                 if (patternId !== -1) {
                     rule = helper.getRule(patternId);
                     skipRule = false;
-                    if (rule instanceof IncludeOnlyRule) {
-                        if (rule.hasMissingPatterns && rule.patterns.length === 0) {
-                            skipRule = true;
-                        }
-                    }
-                    else if (rule instanceof BeginEndRule) {
+                    if (rule instanceof IncludeOnlyRule || rule instanceof BeginEndRule || rule instanceof BeginWhileRule) {
                         if (rule.hasMissingPatterns && rule.patterns.length === 0) {
                             skipRule = true;
                         }
@@ -898,7 +950,7 @@ var RuleFactory = (function () {
         };
     };
     return RuleFactory;
-})();
+}());
 exports.RuleFactory = RuleFactory;
 
 });
@@ -1072,7 +1124,7 @@ var Grammar = (function () {
         };
     };
     return Grammar;
-})();
+}());
 function initGrammar(grammar, base) {
     grammar = utils_1.clone(grammar);
     grammar.repository = grammar.repository || {};
@@ -1163,7 +1215,26 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 }
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var stackElement = stack[stack.length - 1];
-    var ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+    var rule = grammar.getRule(stackElement.ruleId);
+    if (rule instanceof rule_1.BeginWhileRule) {
+        var ruleScanner_1 = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+        var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
+        var doNotContinue = {
+            captureIndices: null,
+            matchedRuleId: -3
+        };
+        if (r_1) {
+            var matchedRuleId = ruleScanner_1.rules[r_1.index];
+            if (matchedRuleId != -2) {
+                // we shouldn't end up here
+                return doNotContinue;
+            }
+        }
+        else {
+            return doNotContinue;
+        }
+    }
+    var ruleScanner = rule.compile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
     if (r) {
         return {
@@ -1217,7 +1288,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         }
         var captureIndices = r.captureIndices;
         var matchedRuleId = r.matchedRuleId;
-        var hasAdvanced = (captureIndices[0].end > linePos);
+        var hasAdvanced = (captureIndices && captureIndices.length > 0) ? (captureIndices[0].end > linePos) : false;
         if (matchedRuleId === -1) {
             // We matched the `end` for this rule => pop it
             var poppedRule = grammar.getRule(stackElement.ruleId);
@@ -1235,12 +1306,17 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 return false;
             }
         }
+        else if (matchedRuleId === -3) {
+            // A while clause failed
+            stack.pop();
+            return true;
+        }
         else {
             // We matched a rule!
             var _rule = grammar.getRule(matchedRuleId);
             lineTokens.produce(stack, captureIndices[0].start);
             // push it on the stack rule
-            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null));
+            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null, null));
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
@@ -1249,6 +1325,24 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 stack[stack.length - 1].contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
                 if (pushedRule.endHasBackReferences) {
                     stack[stack.length - 1].endRule = pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices);
+                }
+                if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
+                    // Grammar pushed the same rule without advancing
+                    console.error('Grammar is in an endless loop - case 2');
+                    stack.pop();
+                    lineTokens.produce(stack, lineLength);
+                    linePos = lineLength;
+                    return false;
+                }
+            }
+            else if (_rule instanceof rule_1.BeginWhileRule) {
+                var pushedRule = _rule;
+                handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
+                lineTokens.produce(stack, captureIndices[0].end);
+                anchorPosition = captureIndices[0].end;
+                stack[stack.length - 1].contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
+                if (pushedRule.whileHasBackReferences) {
+                    stack[stack.length - 1].whileRule = pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices);
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing
@@ -1286,15 +1380,17 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
 }
 var StackElement = (function () {
-    function StackElement(ruleId, enterPos, endRule, scopeName, contentName) {
+    function StackElement(ruleId, enterPos, endRule, scopeName, contentName, whileRule) {
+        if (whileRule === void 0) { whileRule = null; }
         this.ruleId = ruleId;
         this.enterPos = enterPos;
         this.endRule = endRule;
         this.scopeName = scopeName;
         this.contentName = contentName;
+        this.whileRule = whileRule;
     }
     StackElement.prototype.clone = function () {
-        return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
+        return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName, this.whileRule);
     };
     StackElement.prototype.matches = function (scopeName) {
         if (!this.scopeName) {
@@ -1307,7 +1403,7 @@ var StackElement = (function () {
         return this.scopeName.length > len && this.scopeName.substr(0, len) === scopeName && this.scopeName[len] === '.';
     };
     return StackElement;
-})();
+}());
 exports.StackElement = StackElement;
 var LocalStackElement = (function () {
     function LocalStackElement(scopeName, endPos) {
@@ -1315,7 +1411,7 @@ var LocalStackElement = (function () {
         this.endPos = endPos;
     }
     return LocalStackElement;
-})();
+}());
 var LineTokens = (function () {
     function LineTokens() {
         this._tokens = [];
@@ -1362,7 +1458,7 @@ var LineTokens = (function () {
         return this._tokens;
     };
     return LineTokens;
-})();
+}());
 
 });
 $load('./registry', function(require, module, exports) {
@@ -1403,7 +1499,7 @@ var SyncRegistry = (function () {
         return this._grammars[scopeName];
     };
     return SyncRegistry;
-})();
+}());
 exports.SyncRegistry = SyncRegistry;
 
 });
@@ -1491,7 +1587,7 @@ var Registry = (function () {
         return this._syncRegistry.grammarForScopeName(scopeName);
     };
     return Registry;
-})();
+}());
 exports.Registry = Registry;
 
 });

@@ -73,6 +73,7 @@ export interface StackElement {
 	ruleId: number;
 	enterPos: number;
 	endRule: string;
+	whileRule: string;
 	scopeName: string;
 	contentName: string;
 
