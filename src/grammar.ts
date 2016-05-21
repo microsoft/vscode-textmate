@@ -372,7 +372,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	let stackElement = stack[stack.length - 1];
 	let rule = grammar.getRule(stackElement.ruleId);
 
-	if (rule instanceof BeginWhileRule) {
+	if (rule instanceof BeginWhileRule && stackElement.enterPos === -1) {
 
 		let ruleScanner = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
