@@ -1216,7 +1216,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var stackElement = stack[stack.length - 1];
     var rule = grammar.getRule(stackElement.ruleId);
-    if (rule instanceof rule_1.BeginWhileRule) {
+    if (rule instanceof rule_1.BeginWhileRule && stackElement.enterPos === -1) {
         var ruleScanner_1 = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
         var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
         var doNotContinue = {
