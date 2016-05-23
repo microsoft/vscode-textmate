@@ -5,7 +5,7 @@
 
 import {clone} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule} from './types';
-import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
+import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
 import {IOnigCaptureIndex, IOnigNextMatchResult, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
 
@@ -381,7 +381,31 @@ interface IMatchResult {
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
 	let stackElement = stack[stack.length - 1];
-	let ruleScanner = grammar.getRule(stackElement.ruleId).compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+	let rule = grammar.getRule(stackElement.ruleId);
+
+	if (rule instanceof BeginWhileRule && stackElement.enterPos === -1) {
+
+		let ruleScanner = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+
+		let doNotContinue: IMatchResult = {
+			captureIndices: null,
+			matchedRuleId: -3
+		};
+
+		if (r) {
+			let matchedRuleId = ruleScanner.rules[r.index];
+			if (matchedRuleId != -2) {
+				// we shouldn't end up here
+				return doNotContinue;
+			}
+		} else {
+			return doNotContinue;
+		}
+	}
+
+
+	let ruleScanner = rule.compile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
 	if (r) {
@@ -450,7 +474,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 		let captureIndices: IOnigCaptureIndex[] = r.captureIndices;
 		let matchedRuleId: number = r.matchedRuleId;
 
-		let hasAdvanced = (captureIndices[0].end > linePos);
+		let hasAdvanced = (captureIndices && captureIndices.length > 0) ? (captureIndices[0].end > linePos) : false;
 
 		if (matchedRuleId === -1) {
 			// We matched the `end` for this rule => pop it
@@ -471,6 +495,10 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				linePos = lineLength;
 				return false;
 			}
+		} else if (matchedRuleId === -3) {
+			// A while clause failed
+			stack.pop();
+			return true;
 
 		} else {
 			// We matched a rule!
@@ -479,7 +507,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			lineTokens.produce(stack, captureIndices[0].start);
 
 			// push it on the stack rule
-			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null));
+			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null, null));
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -491,6 +519,26 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 				if (pushedRule.endHasBackReferences) {
 					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices);
+				}
+
+				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
+					// Grammar pushed the same rule without advancing
+					console.error('Grammar is in an endless loop - case 2');
+					stack.pop();
+					lineTokens.produce(stack, lineLength);
+					linePos = lineLength;
+					return false;
+				}
+			} else if (_rule instanceof BeginWhileRule) {
+				let pushedRule = <BeginWhileRule>_rule;
+
+				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
+				lineTokens.produce(stack, captureIndices[0].end);
+				anchorPosition = captureIndices[0].end;
+				stack[stack.length - 1].contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+
+				if (pushedRule.whileHasBackReferences) {
+					stack[stack.length - 1].whileRule = pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices);
 				}
 
 				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
@@ -538,19 +586,21 @@ export class StackElement {
 	public endRule: string;
 	public scopeName: string;
 	public contentName: string;
+	public whileRule: string;
 
 	private scopeNameSegments: { [segment:string]:boolean };
 
-	constructor (ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName:string) {
+	constructor(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string, whileRule: string = null) {
 		this.ruleId = ruleId;
 		this.enterPos = enterPos;
 		this.endRule = endRule;
 		this.scopeName = scopeName;
 		this.contentName = contentName;
+		this.whileRule = whileRule;
 	}
 
 	public clone(): StackElement {
-		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
+		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName, this.whileRule);
 	}
 
 	public matches(scopeName: string) : boolean {

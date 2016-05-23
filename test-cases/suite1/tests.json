@@ -78,6 +78,18 @@
 		"desc": "Nested repositories in Markdown",
 		"lines": [
 			{
+				"line": "This is a paragraph",
+                "tokens": [
+                    {
+                        "value": "This is a paragraph",
+                        "scopes": [
+                            "text.html.markdown",
+                            "meta.paragraph.markdown"
+                        ]
+                    }
+                ]
+            },
+			{
 				"line": "## This is *great* stuff",
 				"tokens": [
 					{

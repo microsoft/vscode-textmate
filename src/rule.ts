@@ -508,6 +508,77 @@ export class BeginEndRule extends Rule {
 	}
 }
 
+export class BeginWhileRule extends Rule {
+	private _begin: RegExpSource;
+	public beginCaptures: CaptureRule[];
+	private _while: RegExpSource;
+	public whileHasBackReferences: boolean;
+	public hasMissingPatterns: boolean;
+	public patterns: number[];
+	private _cachedCompiledPatterns: RegExpSourceList;
+	private _cachedCompiledWhilePatterns: RegExpSourceList;
+
+	constructor(id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, patterns: ICompilePatternsResult) {
+		super(id, name, contentName);
+		this._begin = new RegExpSource(begin, this.id);
+		this.beginCaptures = beginCaptures;
+		this._while = new RegExpSource(_while, -2);
+		this.whileHasBackReferences = this._while.hasBackReferences;
+		this.patterns = patterns.patterns;
+		this.hasMissingPatterns = patterns.hasMissingPatterns;
+		this._cachedCompiledPatterns = null;
+		this._cachedCompiledWhilePatterns = null;
+	}
+
+	public getWhileWithResolvedBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string {
+		return this._while.resolveBackReferences(lineText, captureIndices);
+	}
+
+	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
+		if (isFirst) {
+			let i: number,
+				len: number,
+				rule: Rule;
+
+			for (i = 0, len = this.patterns.length; i < len; i++) {
+				rule = grammar.getRule(this.patterns[i]);
+				rule.collectPatternsRecursive(grammar, out, false);
+			}
+		} else {
+			out.push(this._begin);
+		}
+	}
+
+	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+		this._precompile(grammar);
+		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
+	}
+
+	private _precompile(grammar: IRuleRegistry): void {
+		if (!this._cachedCompiledPatterns) {
+			this._cachedCompiledPatterns = new RegExpSourceList();
+			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
+		}
+	}
+
+
+	public compileWhile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+		this._precompileWhile(grammar);
+		if (this._while.hasBackReferences) {
+			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource);
+		}
+		return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
+	}
+
+
+	private _precompileWhile(grammar: IRuleRegistry): void {
+		if (!this._cachedCompiledWhilePatterns) {
+			this._cachedCompiledWhilePatterns = new RegExpSourceList();
+			this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);
+		}
+	}
+}
+
 export class RuleFactory {
 
 	public static createCaptureRule(helper: IRuleFactoryHelper, name:string, contentName:string, retokenizeCapturedWithRuleId:number): CaptureRule {
@@ -538,6 +609,17 @@ export class RuleFactory {
 						desc.id,
 						desc.name,
 						desc.contentName,
+						RuleFactory._compilePatterns(desc.patterns, helper, repository)
+					);
+				}
+
+				if (desc.while) {
+					return new BeginWhileRule(
+						desc.id,
+						desc.name,
+						desc.contentName,
+						desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
+						desc.while,
 						RuleFactory._compilePatterns(desc.patterns, helper, repository)
 					);
 				}
@@ -658,11 +740,7 @@ export class RuleFactory {
 
 					skipRule = false;
 
-					if (rule instanceof IncludeOnlyRule) {
-						if (rule.hasMissingPatterns && rule.patterns.length === 0) {
-							skipRule = true;
-						}
-					} else if (rule instanceof BeginEndRule) {
+					if (rule instanceof IncludeOnlyRule || rule instanceof BeginEndRule || rule instanceof BeginWhileRule) {
 						if (rule.hasMissingPatterns && rule.patterns.length === 0) {
 							skipRule = true;
 						}
