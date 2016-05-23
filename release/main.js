@@ -93,7 +93,7 @@ var RegexSource = (function () {
         });
     };
     return RegexSource;
-})();
+}());
 exports.RegexSource = RegexSource;
 
 });
@@ -334,7 +334,7 @@ var AsyncGrammarReader = (function () {
         });
     };
     return AsyncGrammarReader;
-})();
+}());
 var SyncGrammarReader = (function () {
     function SyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
@@ -345,7 +345,7 @@ var SyncGrammarReader = (function () {
         return this._parser(contents.toString());
     };
     return SyncGrammarReader;
-})();
+}());
 function getGrammarParser(filePath) {
     if (/\.json$/.test(filePath)) {
         return parseJSONGrammar;
@@ -405,7 +405,7 @@ var Rule = (function () {
         throw new Error('Implement me!');
     };
     return Rule;
-})();
+}());
 exports.Rule = Rule;
 var CaptureRule = (function (_super) {
     __extends(CaptureRule, _super);
@@ -414,7 +414,7 @@ var CaptureRule = (function (_super) {
         this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
     }
     return CaptureRule;
-})(Rule);
+}(Rule));
 exports.CaptureRule = CaptureRule;
 var RegExpSource = (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
@@ -447,7 +447,7 @@ var RegExpSource = (function () {
     };
     RegExpSource.prototype._handleAnchors = function (regExpSource) {
         if (regExpSource) {
-            var pos, len, ch, nextCh, lastPushedPos = 0, output = [];
+            var pos = void 0, len = void 0, ch = void 0, nextCh = void 0, lastPushedPos = 0, output = [];
             var hasAnchor = false;
             for (pos = 0, len = regExpSource.length; pos < len; pos++) {
                 ch = regExpSource.charAt(pos);
@@ -556,7 +556,7 @@ var RegExpSource = (function () {
         }
     };
     return RegExpSource;
-})();
+}());
 exports.RegExpSource = RegExpSource;
 var getOnigModule = (function () {
     var onigurumaModule = null;
@@ -659,7 +659,7 @@ var RegExpSourceList = (function () {
         };
     };
     return RegExpSourceList;
-})();
+}());
 exports.RegExpSourceList = RegExpSourceList;
 var MatchRule = (function (_super) {
     __extends(MatchRule, _super);
@@ -680,7 +680,7 @@ var MatchRule = (function (_super) {
         return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     return MatchRule;
-})(Rule);
+}(Rule));
 exports.MatchRule = MatchRule;
 var IncludeOnlyRule = (function (_super) {
     __extends(IncludeOnlyRule, _super);
@@ -705,7 +705,7 @@ var IncludeOnlyRule = (function (_super) {
         return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     return IncludeOnlyRule;
-})(Rule);
+}(Rule));
 exports.IncludeOnlyRule = IncludeOnlyRule;
 function escapeRegExpCharacters(value) {
     return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
@@ -729,7 +729,7 @@ var BeginEndRule = (function (_super) {
     };
     BeginEndRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         if (isFirst) {
-            var i, len, rule;
+            var i = void 0, len = void 0, rule = void 0;
             for (i = 0, len = this.patterns.length; i < len; i++) {
                 rule = grammar.getRule(this.patterns[i]);
                 rule.collectPatternsRecursive(grammar, out, false);
@@ -765,7 +765,7 @@ var BeginEndRule = (function (_super) {
         return this._cachedCompiledPatterns;
     };
     return BeginEndRule;
-})(Rule);
+}(Rule));
 exports.BeginEndRule = BeginEndRule;
 var RuleFactory = (function () {
     function RuleFactory() {
@@ -898,7 +898,7 @@ var RuleFactory = (function () {
         };
     };
     return RuleFactory;
-})();
+}());
 exports.RuleFactory = RuleFactory;
 
 });
@@ -958,10 +958,9 @@ function _extractIncludedScopesInRepository(result, repository) {
     }
 }
 /**
- * Return a list of all external included scopes in `grammar`.
+ * Collects the list of all external included scopes in `grammar`.
  */
-function extractIncludedScopes(grammar) {
-    var result = {};
+function collectIncludedScopes(result, grammar) {
     if (grammar.patterns && Array.isArray(grammar.patterns)) {
         _extractIncludedScopesInPatterns(result, grammar.patterns);
     }
@@ -970,39 +969,32 @@ function extractIncludedScopes(grammar) {
     }
     // remove references to own scope (avoid recursion)
     delete result[grammar.scopeName];
-    return Object.keys(result);
 }
-exports.extractIncludedScopes = extractIncludedScopes;
-function getGrammarInjections(grammar, ruleFactoryHelper) {
-    var injections = [];
-    var rawInjections = grammar.injections;
-    if (rawInjections) {
-        var nameMatcher = function (identifers, stackElements) {
-            var lastIndex = 0;
-            return identifers.every(function (identifier) {
-                for (var i = lastIndex; i < stackElements.length; i++) {
-                    if (stackElements[i].matches(identifier)) {
-                        lastIndex = i;
-                        return true;
-                    }
+exports.collectIncludedScopes = collectIncludedScopes;
+function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
+    function nameMatcher(identifers, stackElements) {
+        var lastIndex = 0;
+        return identifers.every(function (identifier) {
+            for (var i = lastIndex; i < stackElements.length; i++) {
+                if (stackElements[i].matches(identifier)) {
+                    lastIndex = i;
+                    return true;
                 }
-                return false;
-            });
-        };
-        for (var expression in rawInjections) {
-            var subExpressions = expression.split(',');
-            subExpressions.forEach(function (subExpression) {
-                var expressionString = subExpression.replace(/L:/g, '');
-                injections.push({
-                    matcher: matcher_1.createMatcher(expressionString, nameMatcher),
-                    ruleId: rule_1.RuleFactory.getCompiledRuleId(rawInjections[expression], ruleFactoryHelper, grammar.repository),
-                    grammar: grammar,
-                    priorityMatch: expressionString.length < subExpression.length
-                });
-            });
-        }
+            }
+            return false;
+        });
     }
-    return injections;
+    ;
+    var subExpressions = selector.split(',');
+    subExpressions.forEach(function (subExpression) {
+        var expressionString = subExpression.replace(/L:/g, '');
+        result.push({
+            matcher: matcher_1.createMatcher(expressionString, nameMatcher),
+            ruleId: rule_1.RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository),
+            grammar: grammar,
+            priorityMatch: expressionString.length < subExpression.length
+        });
+    });
 }
 var Grammar = (function () {
     function Grammar(grammar, grammarRepository) {
@@ -1014,8 +1006,31 @@ var Grammar = (function () {
         this._grammar = initGrammar(grammar, null);
     }
     Grammar.prototype.getInjections = function (states) {
+        var _this = this;
         if (!this._injections) {
-            this._injections = getGrammarInjections(this._grammar, this);
+            this._injections = [];
+            // add injections from the current grammar
+            var rawInjections = this._grammar.injections;
+            if (rawInjections) {
+                for (var expression in rawInjections) {
+                    collectInjections(this._injections, expression, rawInjections[expression], this, this._grammar);
+                }
+            }
+            // add injection grammars contributed for the current scope
+            if (this._grammarRepository) {
+                var injectionScopeNames = this._grammarRepository.injections(this._grammar.scopeName);
+                if (injectionScopeNames) {
+                    injectionScopeNames.forEach(function (injectionScopeName) {
+                        var injectionGrammar = _this.getExternalGrammar(injectionScopeName);
+                        if (injectionGrammar) {
+                            var selector = injectionGrammar.injectionSelector;
+                            if (selector) {
+                                collectInjections(_this._injections, selector, injectionGrammar, _this, injectionGrammar);
+                            }
+                        }
+                    });
+                }
+            }
         }
         if (this._injections.length === 0) {
             return this._injections;
@@ -1040,7 +1055,7 @@ var Grammar = (function () {
             var rawIncludedGrammar = this._grammarRepository.lookup(scopeName);
             if (rawIncludedGrammar) {
                 // console.log('LOADED GRAMMAR ' + pattern.include);
-                this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository.$base);
+                this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository && repository.$base);
                 return this._includedGrammars[scopeName];
             }
         }
@@ -1072,7 +1087,7 @@ var Grammar = (function () {
         };
     };
     return Grammar;
-})();
+}());
 function initGrammar(grammar, base) {
     grammar = utils_1.clone(grammar);
     grammar.repository = grammar.repository || {};
@@ -1307,7 +1322,7 @@ var StackElement = (function () {
         return this.scopeName.length > len && this.scopeName.substr(0, len) === scopeName && this.scopeName[len] === '.';
     };
     return StackElement;
-})();
+}());
 exports.StackElement = StackElement;
 var LocalStackElement = (function () {
     function LocalStackElement(scopeName, endPos) {
@@ -1315,7 +1330,7 @@ var LocalStackElement = (function () {
         this.endPos = endPos;
     }
     return LocalStackElement;
-})();
+}());
 var LineTokens = (function () {
     function LineTokens() {
         this._tokens = [];
@@ -1362,7 +1377,7 @@ var LineTokens = (function () {
         return this._tokens;
     };
     return LineTokens;
-})();
+}());
 
 });
 $load('./registry', function(require, module, exports) {
@@ -1375,19 +1390,34 @@ var SyncRegistry = (function () {
     function SyncRegistry() {
         this._grammars = {};
         this._rawGrammars = {};
+        this._injectionGrammars = {};
     }
     /**
      * Add `grammar` to registry and return a list of referenced scope names
      */
-    SyncRegistry.prototype.addGrammar = function (grammar) {
+    SyncRegistry.prototype.addGrammar = function (grammar, injectionScopeNames) {
         this._rawGrammars[grammar.scopeName] = grammar;
-        return grammar_1.extractIncludedScopes(grammar);
+        var includedScopes = {};
+        grammar_1.collectIncludedScopes(includedScopes, grammar);
+        if (injectionScopeNames) {
+            this._injectionGrammars[grammar.scopeName] = injectionScopeNames;
+            injectionScopeNames.forEach(function (scopeName) {
+                includedScopes[scopeName] = true;
+            });
+        }
+        return Object.keys(includedScopes);
     };
     /**
      * Lookup a raw grammar.
      */
     SyncRegistry.prototype.lookup = function (scopeName) {
         return this._rawGrammars[scopeName];
+    };
+    /**
+     * Returns the injections for the given grammar
+     */
+    SyncRegistry.prototype.injections = function (targetScope) {
+        return this._injectionGrammars[targetScope];
     };
     /**
      * Lookup a grammar.
@@ -1403,7 +1433,7 @@ var SyncRegistry = (function () {
         return this._grammars[scopeName];
     };
     return SyncRegistry;
-})();
+}());
 exports.SyncRegistry = SyncRegistry;
 
 });
@@ -1417,7 +1447,8 @@ var grammarReader_1 = require('./grammarReader');
 var expressionMatcher = require('./matcher');
 exports.createMatcher = expressionMatcher.createMatcher;
 var DEFAULT_LOCATOR = {
-    getFilePath: function (scopeName) { return null; }
+    getFilePath: function (scopeName) { return null; },
+    getInjections: function (scopeName) { return null; }
 };
 var Registry = (function () {
     function Registry(locator) {
@@ -1465,7 +1496,8 @@ var Registry = (function () {
             }
             try {
                 var grammar = grammarReader_1.readGrammarSync(filePath);
-                var deps = this._syncRegistry.addGrammar(grammar);
+                var injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
+                var deps = this._syncRegistry.addGrammar(grammar, injections);
                 deps.forEach(function (dep) {
                     if (!seenScopeNames[dep]) {
                         seenScopeNames[dep] = true;
@@ -1484,14 +1516,15 @@ var Registry = (function () {
     };
     Registry.prototype.loadGrammarFromPathSync = function (path) {
         var rawGrammar = grammarReader_1.readGrammarSync(path);
-        this._syncRegistry.addGrammar(rawGrammar);
+        var injections = this._locator.getInjections(rawGrammar.scopeName);
+        this._syncRegistry.addGrammar(rawGrammar, injections);
         return this.grammarForScopeName(rawGrammar.scopeName);
     };
     Registry.prototype.grammarForScopeName = function (scopeName) {
         return this._syncRegistry.grammarForScopeName(scopeName);
     };
     return Registry;
-})();
+}());
 exports.Registry = Registry;
 
 });

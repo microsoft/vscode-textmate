@@ -12,13 +12,18 @@ function runDescriptiveTests(testLocation) {
     errCnt = 0;
     tests.forEach(function (test, index) {
         var desc = test.desc;
-        if (test.feature === 'external-injection') {
-            console.log(index + ' - SKIPPING TEST ' + desc + ': injection');
-            return;
-        }
         var noAsserts = (test.feature === 'endless-loop');
         console.log(index + ' - RUNNING ' + desc);
-        var registry = new main_1.Registry();
+        var locator = {
+            getFilePath: function (scopeName) { return null; },
+            getInjections: function (scopeName) {
+                if (scopeName === test.grammarScopeName) {
+                    return test.grammarInjections;
+                }
+                return void 0;
+            }
+        };
+        var registry = new main_1.Registry(locator);
         var grammar = null;
         test.grammars.forEach(function (grammarPath) {
             var tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));

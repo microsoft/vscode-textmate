@@ -15,6 +15,7 @@ export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRep
 
 export interface IGrammarRepository {
 	lookup(scopeName:string): IRawGrammar;
+	injections(scopeName:string): string[];
 }
 
 export interface IGrammar {
@@ -32,7 +33,7 @@ export interface IToken {
 	scopes: string[];
 }
 
-interface IScopeNameSet {
+export interface IScopeNameSet {
 	[scopeName:string]: boolean;
 }
 
@@ -89,11 +90,9 @@ function _extractIncludedScopesInRepository(result:IScopeNameSet, repository:IRa
 }
 
 /**
- * Return a list of all external included scopes in `grammar`.
+ * Collects the list of all external included scopes in `grammar`.
  */
-export function extractIncludedScopes(grammar:IRawGrammar): string[] {
-	let result: IScopeNameSet = {};
-
+export function collectIncludedScopes(result: IScopeNameSet, grammar:IRawGrammar) : void {
 	if (grammar.patterns && Array.isArray(grammar.patterns)) {
 		_extractIncludedScopesInPatterns(result, grammar.patterns);
 	}
@@ -104,8 +103,6 @@ export function extractIncludedScopes(grammar:IRawGrammar): string[] {
 
 	// remove references to own scope (avoid recursion)
 	delete result[grammar.scopeName];
-
-	return Object.keys(result);
 }
 
 interface Injection {
@@ -115,38 +112,31 @@ interface Injection {
 	grammar: IRawGrammar;
 }
 
-function getGrammarInjections(grammar: IRawGrammar, ruleFactoryHelper: IRuleFactoryHelper) : Injection[] {
-	var injections : Injection[] = [];
-	var rawInjections = grammar.injections;
-	if (rawInjections) {
-		var nameMatcher = (identifers: string[], stackElements: StackElement[]) => {
-			var lastIndex = 0;
-			return identifers.every(identifier => {
-				for (var i = lastIndex; i < stackElements.length; i++) {
-					if (stackElements[i].matches(identifier)) {
-						lastIndex = i;
-						return true;
-					}
+function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar) : void {
+	function nameMatcher(identifers: string[], stackElements: StackElement[]) {
+		var lastIndex = 0;
+		return identifers.every(identifier => {
+			for (var i = lastIndex; i < stackElements.length; i++) {
+				if (stackElements[i].matches(identifier)) {
+					lastIndex = i;
+					return true;
 				}
-				return false;
-			});
-		};
+			}
+			return false;
+		});
+	};
 
-		for (var expression in rawInjections) {
-			var subExpressions = (<string> expression).split(',');
-			subExpressions.forEach(subExpression => {
-				var expressionString = subExpression.replace(/L:/g, '')
+	var subExpressions = selector.split(',');
+	subExpressions.forEach(subExpression => {
+		var expressionString = subExpression.replace(/L:/g, '')
 
-				injections.push({
-					matcher: createMatcher(expressionString, nameMatcher),
-					ruleId: RuleFactory.getCompiledRuleId(rawInjections[expression], ruleFactoryHelper, grammar.repository),
-					grammar: grammar,
-					priorityMatch: expressionString.length < subExpression.length
-				});
-			});
-		}
-	}
-	return injections;
+		result.push({
+			matcher: createMatcher(expressionString, nameMatcher),
+			ruleId: RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository),
+			grammar: grammar,
+			priorityMatch: expressionString.length < subExpression.length
+		});
+	});
 }
 
 class Grammar implements IGrammar, IRuleFactoryHelper {
@@ -170,9 +160,30 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 
 	public getInjections(states: StackElement[]) : Injection[] {
 		if (!this._injections) {
-			this._injections = getGrammarInjections(this._grammar, this);
-			// optional: bring in injections from external repositories
+			this._injections = [];
+			// add injections from the current grammar
+			var rawInjections = this._grammar.injections;
+			if (rawInjections) {
+				for (var expression in rawInjections) {
+					collectInjections(this._injections, expression, rawInjections[expression], this, this._grammar);
+				}
+			}
 
+			// add injection grammars contributed for the current scope
+			if (this._grammarRepository) {
+				let injectionScopeNames = this._grammarRepository.injections(this._grammar.scopeName);
+				if (injectionScopeNames) {
+					injectionScopeNames.forEach(injectionScopeName => {
+						let injectionGrammar = this.getExternalGrammar(injectionScopeName);
+						if (injectionGrammar) {
+							let selector = injectionGrammar.injectionSelector;
+							if (selector) {
+								collectInjections(this._injections, selector, injectionGrammar, this, injectionGrammar);
+							}
+						}
+					});
+				}
+			}
 		}
 		if (this._injections.length === 0) {
 			return this._injections;
@@ -191,7 +202,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		return this._ruleId2desc[patternId];
 	}
 
-	public getExternalGrammar(scopeName:string, repository:IRawRepository): IRawGrammar {
+	public getExternalGrammar(scopeName:string, repository?:IRawRepository): IRawGrammar {
 		let actualGrammar: IRawGrammar = null;
 
 		if (this._includedGrammars[scopeName]) {
@@ -200,7 +211,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 			let rawIncludedGrammar = this._grammarRepository.lookup(scopeName);
 			if (rawIncludedGrammar) {
 				// console.log('LOADED GRAMMAR ' + pattern.include);
-				this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository.$base);
+				this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository && repository.$base);
 				return this._includedGrammars[scopeName];
 			}
 		}
