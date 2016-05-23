@@ -161,6 +161,7 @@
 			"fixtures/aspvbnet.plist"
 		],
 		"grammarPath": "fixtures/aspvbnet.plist",
+		"desc": "asp",
 		"lines": [
 			{
 				"line": "Dim tmpStr As String",
@@ -224,6 +225,7 @@
 			"fixtures/aspvbnet.plist"
 		],
 		"grammarPath": "fixtures/aspvbnet.plist",
+		"desc": "asp2",
 		"lines": [
 			{
 				"line": "Dim tmpStr As String",
@@ -846,6 +848,73 @@
 						]
 					}
 				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/testlang12.plist"
+		],
+		"grammarPath": "fixtures/testlang12.plist",
+		"desc": "Issue #12",
+		"lines": [
+			{
+				"line": "[test]|",
+				"tokens": [{
+					"value": "[test]|",
+					"scopes": [
+						"text.testlang",
+						"string.unquoted.verbatim.youki"
+					]
+				}]
+			},
+			{
+				"line": "\tverb",
+				"tokens": [{
+					"value": "\tverb",
+					"scopes": [
+						"text.testlang",
+						"string.unquoted.verbatim.youki"
+					]
+				}]
+			},
+			{
+				"line": "asd",
+				"tokens": [{
+					"value": "asd",
+					"scopes": [
+						"text.testlang"
+					]
+				}]
+			},
+			{
+				"line": "asd",
+				"tokens": [{
+					"value": "asd",
+					"scopes": [
+						"text.testlang"
+					]
+				}]
+			},
+			{
+				"line": "[test]|",
+				"tokens": [{
+					"value": "[test]|",
+					"scopes": [
+						"text.testlang",
+						"string.unquoted.verbatim.youki"
+					]
+				}]
+			},
+			{
+				"line": "\tverbatim",
+				"tokens": [{
+					"value": "\tverbatim",
+					"scopes": [
+						"text.testlang",
+						"string.unquoted.verbatim.youki"
+					]
+				}]
 			}
 		]
 	}

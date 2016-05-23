@@ -80,8 +80,10 @@ gulp.task('watch', ['bundle'], function () {
 
 gulp.task('test', function () {
 	var tests = require('./release/tests/tests');
-	tests.runDescriptiveTests(path.join(__dirname, './test-cases/first-mate/tests.json'));
-	tests.runDescriptiveTests(path.join(__dirname, './test-cases/suite1/tests.json'));
-
-	tests.runMatcherTests(path.join(__dirname, './test-cases/matcher/testData.json'));
+	tests.runTests([
+		path.join(__dirname, './test-cases/first-mate/tests.json'),
+		path.join(__dirname, './test-cases/suite1/tests.json')
+	], [
+		path.join(__dirname, './test-cases/matcher/testData.json')
+	]);
 });

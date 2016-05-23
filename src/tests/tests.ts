@@ -9,61 +9,157 @@ import {Registry, createMatcher, IGrammarLocator} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
 import 'colors';
 
-var errCnt = 0;
+enum TestResult {
+	Pending,
+	Success,
+	Failed
+}
 
-export function runDescriptiveTests(testLocation: string) {
-	let tests:IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+class Test {
+	testName:string;
+	result:TestResult;
+	failReason: string;
 
-	errCnt = 0;
-	tests.forEach(function(test, index) {
-		let desc = test.desc;
-		let noAsserts = (test.feature === 'endless-loop');
+	private _runner: (ctx:TestContext) => void;
 
-		console.log(index + ' - RUNNING ' + desc);
-		let locator : IGrammarLocator = {
-			getFilePath: (scopeName:string) => null,
-			getInjections: (scopeName:string) => {
-				if (scopeName === test.grammarScopeName) {
-					return test.grammarInjections;
-				}
-				return void 0;
-			}
-		}
-
-		let registry = new Registry(locator);
-		let grammar: IGrammar = null;
-		test.grammars.forEach(function(grammarPath) {
-			let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
-			if (test.grammarPath === grammarPath) {
-				grammar = tmpGrammar;
-			}
-		});
-		if (test.grammarScopeName) {
-			grammar = registry.grammarForScopeName(test.grammarScopeName);
-		}
-		let prevState: StackElement[] = null;
-		if (!grammar) {
-			console.error('I HAVE NO GRAMMAR FOR TEST ' + desc);
-			return;
-		}
-		for (let i = 0; i < test.lines.length; i++) {
-			prevState = assertTokenization(noAsserts, grammar, test.lines[i], prevState, desc);
-		}
-	});
-
-	if (errCnt === 0) {
-		var msg = 'Test suite at ' + testLocation + ' finished ok';
-		console.log((<any>msg).green);
-	} else {
-		var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
-		console.log((<any>msg).red);
+	constructor(testName:string, runner: (ctx:TestContext) => void) {
+		this.testName = testName;
+		this._runner = runner;
+		this.result = TestResult.Pending;
+		this.failReason = null;
 	}
 
+	public run(): void {
+		let ctx = new TestContext(this);
+		try {
+			this.result = TestResult.Success;
+			this._runner(ctx);
+		} catch(err) {
+			this.result = TestResult.Failed;
+			this.failReason = err;
+		}
+	}
+
+	public fail<T>(message:string, actual:T, expected:T): void {
+		this.result = TestResult.Failed;
+		let reason = [
+			message
+		];
+		if (actual) {
+			'ACTUAL: ' + reason.push(JSON.stringify(actual, null, '\t'))
+		}
+		if (expected) {
+			'EXPECTED: ' + reason.push(JSON.stringify(expected, null, '\t'))
+		}
+		this.failReason = reason.join('\n');
+	}
+}
+
+class TestContext {
+
+	private _test: Test;
+
+	constructor(test: Test) {
+		this._test = test;
+	}
+
+	public fail<T>(message:string, actual?:T, expected?:T): void {
+		this._test.fail(message, actual, expected);
+	}
+}
+
+class TestManager {
+
+	private _tests:Test[];
+
+	constructor() {
+		this._tests = [];
+	}
+
+	registerTest(testName: string, runner:(ctx:TestContext)=>void): void {
+		this._tests.push(new Test(testName, runner));
+	}
+
+	runTests(): void {
+
+		let len = this._tests.length;
+
+		for (let i = 0; i < len; i++) {
+			let test = this._tests[i];
+			let progress = (i + 1) + '/' + len;
+			console.log((<any>progress).yellow, ': ' + test.testName);
+			test.run();
+			if (test.result === TestResult.Failed) {
+				console.log((<any>'FAILED').red);
+				console.log(test.failReason);
+			}
+		}
+
+		let passed = this._tests.filter(t => t.result === TestResult.Success);
+
+		if (passed.length === len) {
+			console.log((<any>(passed.length + '/' + len + ' PASSED.')).green);
+		} else {
+			console.log((<any>(passed.length + '/' + len + ' PASSED.')).red);
+		}
+	}
+}
+
+export function runTests(tokenizationTestPaths:string[], matcherTestPaths:string[]): void {
+	let manager = new TestManager();
+
+	tokenizationTestPaths.forEach((path) => {
+		generateTokenizationTests(manager, path)
+	});
+
+	matcherTestPaths.forEach((path) => {
+		generateMatcherTests(manager, path);
+	});
+
+	manager.runTests();
+}
+
+function generateTokenizationTests(manager:TestManager, testLocation: string): void {
+	let tests:IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+
+	let suiteName = path.join(path.basename(path.dirname(testLocation)), path.basename(testLocation));
+	tests.forEach(function(test, index) {
+		manager.registerTest(suiteName + ' > ' + test.desc, (ctx) => {
+			let locator : IGrammarLocator = {
+				getFilePath: (scopeName:string) => null,
+				getInjections: (scopeName:string) => {
+					if (scopeName === test.grammarScopeName) {
+						return test.grammarInjections;
+					}
+					return void 0;
+				}
+			}
+
+			let registry = new Registry(locator);
+			let grammar: IGrammar = null;
+			test.grammars.forEach(function(grammarPath) {
+				let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
+				if (test.grammarPath === grammarPath) {
+					grammar = tmpGrammar;
+				}
+			});
+			if (test.grammarScopeName) {
+				grammar = registry.grammarForScopeName(test.grammarScopeName);
+			}
+			let prevState: StackElement[] = null;
+			if (!grammar) {
+				ctx.fail('I HAVE NO GRAMMAR FOR TEST');
+				return;
+			}
+			for (let i = 0; i < test.lines.length; i++) {
+				prevState = assertTokenization(ctx, grammar, test.lines[i], prevState);
+			}
+		});
+	});
 }
 
 interface IRawTest {
 	desc: string;
-	feature: string;
 	grammars: string[];
 	grammarPath?: string;
 	grammarScopeName?: string;
@@ -81,22 +177,13 @@ interface IRawToken {
 	scopes: string[];
 }
 
-function assertTokenization(noAsserts:boolean, grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement[], desc:string): StackElement[] {
+function assertTokenization(ctx:TestContext, grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement[]): StackElement[] {
 	let r = grammar.tokenizeLine(testCase.line, prevState);
-	if (!noAsserts) {
-		assertTokens(r.tokens, testCase.line, testCase.tokens, desc);
-	}
+	assertTokens(ctx, r.tokens, testCase.line, testCase.tokens);
 	return r.ruleStack;
 }
 
-function fail<T>(message:string, actual:T, expected:T): void {
-	errCnt++;
-	console.error((<any>message).red);
-	console.log(JSON.stringify(actual, null, '\t'));
-	console.log(JSON.stringify(expected, null, '\t'));
-}
-
-function assertTokens(actual:IToken[], line:string, expected:IRawToken[], desc:string): void {
+function assertTokens(ctx:TestContext, actual:IToken[], line:string, expected:IRawToken[]): void {
 	let actualTokens:IRawToken[] = actual.map(function(token) {
 		return {
 			value: line.substring(token.startIndex, token.endIndex),
@@ -110,26 +197,26 @@ function assertTokens(actual:IToken[], line:string, expected:IRawToken[], desc:s
 		});
 	}
 	if (actualTokens.length !== expected.length) {
-		fail('test: GOT DIFFERENT LENGTHS FOR ' + desc, actualTokens, expected);
+		ctx.fail('GOT DIFFERENT LENGTHS FOR ', actualTokens, expected);
 		return;
 	}
 	for (let i = 0, len = actualTokens.length; i < len; i++) {
-		assertToken(actualTokens[i], expected[i], desc);
+		assertToken(ctx, actualTokens[i], expected[i]);
 	}
 }
 
-function assertToken(actual:IRawToken, expected:IRawToken, desc:string): void {
+function assertToken(ctx:TestContext, actual:IRawToken, expected:IRawToken): void {
 	if (actual.value !== expected.value) {
-		fail('test: GOT DIFFERENT VALUES FOR ' + desc, actual.value, expected.value);
+		ctx.fail('test: GOT DIFFERENT VALUES FOR ', actual.value, expected.value);
 		return;
 	}
 	if (actual.scopes.length !== expected.scopes.length) {
-		fail('test: GOT DIFFERENT scope lengths FOR ' + desc, actual.scopes, expected.scopes);
+		ctx.fail('test: GOT DIFFERENT scope lengths FOR ', actual.scopes, expected.scopes);
 		return;
 	}
 	for (let i = 0, len = actual.scopes.length; i < len; i++) {
 		if (actual.scopes[i] !== expected.scopes[i]) {
-			fail('test: GOT DIFFERENT scopes FOR ' + desc, actual.scopes, expected.scopes);
+			ctx.fail('test: GOT DIFFERENT scopes FOR ', actual.scopes, expected.scopes);
 			return;
 		}
 	}
@@ -141,8 +228,9 @@ interface IMatcherTest {
 	result: boolean;
 }
 
-export function runMatcherTests(testLocation: string, testNum =-1) {
+function generateMatcherTests(manager:TestManager, testLocation: string) {
 	let tests:IMatcherTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+	let suiteName = path.join(path.basename(path.dirname(testLocation)), path.basename(testLocation));
 
 	var nameMatcher = (identifers: string[], stackElements: string[]) => {
 		var lastIndex = 0;
@@ -156,27 +244,13 @@ export function runMatcherTests(testLocation: string, testNum =-1) {
 			return false;
 		});
 	};
-	var errCnt = 0;
 	tests.forEach((test, index) => {
-		if (testNum !== -1 && testNum !== index) {
-			return;
-		}
-
-		var matcher = createMatcher(test.expression, nameMatcher);
-		var result = matcher(test.input);
-		if (result === test.result) {
-			console.log(index + ': passed');
-		} else {
-			var message = index + ': failed , expected ' +  test.result;
-			console.error((<any>message).red);
-			errCnt++;
-		}
+		manager.registerTest(suiteName + ' > ' + index, (ctx) => {
+			var matcher = createMatcher(test.expression, nameMatcher);
+			var result = matcher(test.input);
+			if (result !== test.result) {
+				ctx.fail('matcher expected', result, test.result);
+			}
+		});
 	});
-	if (errCnt === 0) {
-		var msg = 'Test suite at ' + testLocation + ' finished ok';
-		console.log((<any>msg).green);
-	} else {
-		var msg = 'Test suite at ' + testLocation + ' finished with ' + errCnt + ' errors.';
-		console.log((<any>msg).red);
-	}
 }

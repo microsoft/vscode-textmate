@@ -1312,10 +1312,13 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
             lineTokens.produce(stack, captureIndices[0].end);
             // pop
-            stack.pop();
+            var popped = stack.pop();
             if (!hasAdvanced && stackElement.enterPos === linePos) {
                 // Grammar pushed & popped a rule without advancing
-                console.error('Grammar is in an endless loop - case 1');
+                console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
+                // See https://github.com/Microsoft/vscode-textmate/issues/12
+                // Let's assume this was a mistake by the grammar author and the intent was to continue in this state
+                stack.push(popped);
                 lineTokens.produce(stack, lineLength);
                 linePos = lineLength;
                 return false;
@@ -1343,7 +1346,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing
-                    console.error('Grammar is in an endless loop - case 2');
+                    console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack.pop();
                     lineTokens.produce(stack, lineLength);
                     linePos = lineLength;
@@ -1361,7 +1364,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing
-                    console.error('Grammar is in an endless loop - case 2');
+                    console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack.pop();
                     lineTokens.produce(stack, lineLength);
                     linePos = lineLength;
@@ -1376,7 +1379,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 stack.pop();
                 if (!hasAdvanced) {
                     // Grammar is not advancing, nor is it pushing/popping
-                    console.error('Grammar is in an endless loop - case 3');
+                    console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
                     if (stack.length > 1) {
                         stack.pop();
                     }

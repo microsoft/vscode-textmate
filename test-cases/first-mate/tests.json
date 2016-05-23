@@ -2680,7 +2680,21 @@
 		"grammarPath": "fixtures/infinite-loop.json",
 		"lines": [
 			{
-				"line": "abc"
+				"line": "abc",
+				"tokens": [{
+					"value": "a",
+					"scopes": [
+						"source.infinite-loop",
+						"start"
+					]
+
+				},
+				{
+					"value": "bc",
+					"scopes": [
+						"source.infinite-loop"
+					]
+				}]
 			}
 		],
 		"grammars": [
@@ -2696,8 +2710,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/infinite-loop.json"
 		],
-		"desc": "TEST #38",
-		"feature": "endless-loop"
+		"desc": "TEST #38"
 	},
 	{
 		"grammarScopeName": "source.css.scss",
@@ -3361,7 +3374,14 @@
 		"grammarPath": "fixtures/forever.json",
 		"lines": [
 			{
-				"line": "forever and ever"
+				"line": "forever and ever",
+				"tokens": [{
+					"value": "forever and ever",
+					"scopes": [
+						"source.forever",
+						"text"
+					]
+				}]
 			}
 		],
 		"grammars": [
@@ -3377,8 +3397,7 @@
 			"fixtures/python-regex.json",
 			"fixtures/forever.json"
 		],
-		"desc": "TEST #48",
-		"feature": "endless-loop"
+		"desc": "TEST #48"
 	},
 	{
 		"grammarScopeName": "source.ruby",
@@ -5246,22 +5265,216 @@
 		"grammarScopeName": "source.thrift",
 		"lines": [
 			{
-				"line": "exception SimpleErr {"
+				"line": "exception SimpleErr {",
+				"tokens": [{
+					"value": "exception",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"keyword.other.exception.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift"
+					]
+				},
+				{
+					"value": "SimpleErr",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"entity.name.type.exception.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift"
+					]
+				},
+				{
+					"value": "{",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"punctuation.section.exception.begin.thrift"
+					]
+				}]
 			},
 			{
-				"line": "  1: string message"
+				"line": "  1: string message",
+				"tokens": [{
+					"value": "  ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift"
+					]
+				},
+				{
+					"value": "1:",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"entity.other.field-id.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": "string",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"storage.type.field.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": "message",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"variable.other.field-name.thrift"
+					]
+				}]
 			},
 			{
-				"line": ""
+				"line": "",
+				"tokens": [{
+					"value": "",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift"
+					]
+				}]
 			},
 			{
-				"line": "service SimpleService {"
+				"line": "service SimpleService {",
+				"tokens": [{
+					"value": "service",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"storage.type.field.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": "SimpleService",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"variable.other.field-name.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": "{",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				}]
 			},
 			{
-				"line": "  void Simple() throws (1: SimpleErr simpleErr)"
+				"line": "  void Simple() throws (1: SimpleErr simpleErr)",
+				"tokens": [{
+					"value": "  ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift"
+					]
+				},
+				{
+					"value": "void",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"storage.type.field.thrift"
+					]
+				},
+				{
+					"value": " ",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": "Simple",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift",
+						"variable.other.field-name.thrift"
+					]
+				},
+				{
+					"value": "(",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				},
+				{
+					"value": ") throws (1: SimpleErr simpleErr)",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				}]
 			},
 			{
-				"line": "}"
+				"line": "}",
+				"tokens": [{
+					"value": "}",
+					"scopes": [
+						"source.thrift",
+						"meta.exception.thrift",
+						"meta.field.thrift"
+					]
+				}]
 			}
 		],
 		"grammars": [
@@ -5277,14 +5490,19 @@
 			"fixtures/python-regex.json",
 			"fixtures/thrift.json"
 		],
-		"desc": "TEST #73",
-		"feature": "endless-loop"
+		"desc": "TEST #73"
 	},
 	{
 		"grammarScopeName": "source.loops",
 		"lines": [
 			{
-				"line": "test"
+				"line": "test",
+				"tokens": [{
+					"value": "test",
+					"scopes": [
+						"source.loops"
+					]
+				}]
 			}
 		],
 		"grammars": [
@@ -5300,7 +5518,6 @@
 			"fixtures/python-regex.json",
 			"fixtures/loops.json"
 		],
-		"desc": "TEST #74",
-		"feature": "endless-loop"
+		"desc": "TEST #74"
 	}
 ]
