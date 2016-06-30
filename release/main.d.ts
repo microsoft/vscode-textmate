@@ -15,9 +15,6 @@ export interface IGrammarLocator {
  */
 export class Registry {
 
-	public static readGrammarInfo(path:string, callback:(err:any, grammarInfo:IGrammarInfo)=>void, useExperimentalParser?:boolean): void;
-	public static readGrammarInfoSync(path:string, useExperimentalParser?:boolean): IGrammarInfo;
-
 	constructor(locator?:IGrammarLocator, useExperimentalParser?:boolean);
 
 	/**
@@ -36,13 +33,6 @@ export class Registry {
 	public grammarForScopeName(scopeName:string): IGrammar;
 }
 
-export interface IGrammarInfo {
-	fileTypes: string[];
-	name: string;
-	scopeName: string;
-	firstLineMatch: string;
-}
-
 /**
  * A grammar
  */
@@ -50,18 +40,18 @@ export interface IGrammar {
 	/**
 	 * Tokenize `lineText` using previous line state `prevState`.
 	 */
-	tokenizeLine(lineText: string, prevState: StackElement[]): ITokenizeLineResult;
+	tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
 }
 
 export interface ITokenizeLineResult {
-	tokens: IToken[];
+	tokens: ITMToken[];
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
-	ruleStack: StackElement[];
+	ruleStack: StackElement;
 }
 
-export interface IToken {
+export interface ITMToken {
 	startIndex: number;
 	endIndex: number;
 	scopes: string[];
@@ -71,10 +61,5 @@ export interface IToken {
  * Should not be used by consumers, as its shape might change at any time.
  */
 export interface StackElement {
-	ruleId: number;
-	enterPos: number;
-	endRule: string;
-	whileRule: string;
-	scopeName: string;
-	contentName: string;
+	_stackElementBrand: void;
 }

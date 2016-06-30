@@ -151,7 +151,7 @@ function generateTokenizationTests(manager:TestManager, testLocation: string): v
 			if (test.grammarScopeName) {
 				grammar = registry.grammarForScopeName(test.grammarScopeName);
 			}
-			let prevState: StackElement[] = null;
+			let prevState: StackElement = null;
 			if (!grammar) {
 				ctx.fail('I HAVE NO GRAMMAR FOR TEST');
 				return;
@@ -182,7 +182,7 @@ interface IRawToken {
 	scopes: string[];
 }
 
-function assertTokenization(ctx:TestContext, grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement[]): StackElement[] {
+function assertTokenization(ctx:TestContext, grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement): StackElement {
 	let r = grammar.tokenizeLine(testCase.line, prevState);
 	assertTokens(ctx, r.tokens, testCase.line, testCase.tokens);
 	return r.ruleStack;

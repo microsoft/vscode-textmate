@@ -33,29 +33,6 @@ let DEFAULT_LOCATOR:IGrammarLocator = {
 
 export class Registry {
 
-	private static _extractInfo(rawGrammar:IRawGrammar): IGrammarInfo {
-		return {
-			fileTypes: rawGrammar.fileTypes,
-			name: rawGrammar.name,
-			scopeName: rawGrammar.scopeName,
-			firstLineMatch: rawGrammar.firstLineMatch
-		};
-	}
-
-	public static readGrammarInfo(path:string, callback:(err:any, grammarInfo:IGrammarInfo)=>void, useExperimentalParser:boolean = false): void {
-		readGrammar(path, useExperimentalParser, (err, grammar) => {
-			if (err) {
-				callback(err, null);
-				return;
-			}
-			callback(null, this._extractInfo(grammar));
-		});
-	}
-
-	public static readGrammarInfoSync(path:string, useExperimentalParser:boolean = false): IGrammarInfo {
-		return this._extractInfo(readGrammarSync(path, useExperimentalParser));
-	}
-
 	private _locator: IGrammarLocator;
 	private _useExperimentalParser: boolean;
 	private _syncRegistry: SyncRegistry;
