@@ -1535,7 +1535,7 @@ var Grammar = (function () {
         else {
             isFirstLine = false;
             for (var i = 0; i < prevState.length; i++) {
-                prevState[i].enterPos = -1;
+                prevState[i].reset();
             }
         }
         lineText = lineText + '\n';
@@ -1642,7 +1642,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var stackElement = stack[stack.length - 1];
     var rule = stackElement.getRule(grammar);
-    if (rule instanceof rule_1.BeginWhileRule && stackElement.enterPos === -1) {
+    if (rule instanceof rule_1.BeginWhileRule && stackElement.getEnterPos() === -1) {
         var ruleScanner_1 = rule.compileWhile(grammar, stackElement.getEndRule(), isFirstLine, linePos === anchorPosition);
         var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
         var doNotContinue = {
@@ -1725,7 +1725,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             lineTokens.produce(stack, captureIndices[0].end);
             // pop
             var popped = stack.pop();
-            if (!hasAdvanced && stackElement.enterPos === linePos) {
+            if (!hasAdvanced && stackElement.getEnterPos() === linePos) {
                 // Grammar pushed & popped a rule without advancing
                 console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
                 // See https://github.com/Microsoft/vscode-textmate/issues/12
@@ -1756,7 +1756,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 if (pushedRule.endHasBackReferences) {
                     stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
                 }
-                if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
+                if (!hasAdvanced && stackElement.hasSameRuleAs(stack[stack.length - 1])) {
                     // Grammar pushed the same rule without advancing
                     console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack.pop();
@@ -1774,7 +1774,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 if (pushedRule.whileHasBackReferences) {
                     stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
                 }
-                if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
+                if (!hasAdvanced && stackElement.hasSameRuleAs(stack[stack.length - 1])) {
                     // Grammar pushed the same rule without advancing
                     console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack.pop();
@@ -1815,11 +1815,17 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
 var StackElement = (function () {
     function StackElement(ruleId, enterPos, endRule, scopeName, contentName) {
         this._ruleId = ruleId;
-        this.enterPos = enterPos;
+        this._enterPos = enterPos;
         this._endRule = endRule;
         this._scopeName = scopeName;
         this._contentName = contentName;
     }
+    StackElement.prototype.reset = function () {
+        this._enterPos = -1;
+    };
+    StackElement.prototype.getEnterPos = function () {
+        return this._enterPos;
+    };
     StackElement.prototype.getRule = function (grammar) {
         return grammar.getRule(this._ruleId);
     };
@@ -1830,13 +1836,13 @@ var StackElement = (function () {
         if (this._contentName === contentName) {
             return this;
         }
-        return new StackElement(this._ruleId, this.enterPos, this._endRule, this._scopeName, contentName);
+        return new StackElement(this._ruleId, this._enterPos, this._endRule, this._scopeName, contentName);
     };
     StackElement.prototype.withEndRule = function (endRule) {
         if (this._endRule === endRule) {
             return this;
         }
-        return new StackElement(this._ruleId, this.enterPos, endRule, this._scopeName, this._contentName);
+        return new StackElement(this._ruleId, this._enterPos, endRule, this._scopeName, this._contentName);
     };
     StackElement.prototype.generateScopes = function (scopes, outIndex) {
         if (this._scopeName) {
@@ -1857,7 +1863,7 @@ var StackElement = (function () {
         var len = scopeName.length;
         return this._scopeName.length > len && this._scopeName.substr(0, len) === scopeName && this._scopeName[len] === '.';
     };
-    StackElement.prototype.softEquals = function (other) {
+    StackElement.prototype.hasSameRuleAs = function (other) {
         return this._ruleId === other._ruleId;
     };
     return StackElement;

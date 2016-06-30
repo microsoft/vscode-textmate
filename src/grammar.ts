@@ -229,7 +229,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		} else {
 			isFirstLine = false;
 			for (let i = 0; i < prevState.length; i++) {
-				prevState[i].enterPos = -1;
+				prevState[i].reset();
 			}
 		}
 
@@ -383,7 +383,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	let stackElement = stack[stack.length - 1];
 	let rule = stackElement.getRule(grammar);
 
-	if (rule instanceof BeginWhileRule && stackElement.enterPos === -1) {
+	if (rule instanceof BeginWhileRule && stackElement.getEnterPos() === -1) {
 
 		let ruleScanner = rule.compileWhile(grammar, stackElement.getEndRule(), isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
@@ -489,7 +489,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// pop
 			let popped = stack.pop();
 
-			if (!hasAdvanced && stackElement.enterPos === linePos) {
+			if (!hasAdvanced && stackElement.getEnterPos() === linePos) {
 				// Grammar pushed & popped a rule without advancing
 				console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
 
@@ -528,7 +528,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices));
 				}
 
-				if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
+				if (!hasAdvanced && stackElement.hasSameRuleAs(stack[stack.length - 1])) {
 					// Grammar pushed the same rule without advancing
 					console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack.pop();
@@ -548,7 +548,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices));
 				}
 
-				if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
+				if (!hasAdvanced && stackElement.hasSameRuleAs(stack[stack.length - 1])) {
 					// Grammar pushed the same rule without advancing
 					console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack.pop();
@@ -593,11 +593,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 export class StackElement {
 	public _stackElementBrand: void;
 
-	/**
-	 * Enter position on current line.
-	 * It is ok to mutate this one, as it's always reset to -1 when a new line begins tokenization
-	 */
-	public enterPos: number;
+	private _enterPos: number;
 	private _ruleId: number;
 	private _endRule: string;
 	private _scopeName: string;
@@ -605,10 +601,18 @@ export class StackElement {
 
 	constructor(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string) {
 		this._ruleId = ruleId;
-		this.enterPos = enterPos;
+		this._enterPos = enterPos;
 		this._endRule = endRule;
 		this._scopeName = scopeName;
 		this._contentName = contentName;
+	}
+
+	public reset(): void {
+		this._enterPos = -1;
+	}
+
+	public getEnterPos(): number {
+		return this._enterPos;
 	}
 
 	public getRule(grammar:Grammar): Rule {
@@ -623,14 +627,14 @@ export class StackElement {
 		if (this._contentName === contentName) {
 			return this;
 		}
-		return new StackElement(this._ruleId, this.enterPos, this._endRule, this._scopeName, contentName);
+		return new StackElement(this._ruleId, this._enterPos, this._endRule, this._scopeName, contentName);
 	}
 
 	public withEndRule(endRule:string): StackElement {
 		if (this._endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this._ruleId, this.enterPos, endRule, this._scopeName, this._contentName);
+		return new StackElement(this._ruleId, this._enterPos, endRule, this._scopeName, this._contentName);
 	}
 
 	public generateScopes(scopes: string[], outIndex:number): number {
@@ -656,7 +660,7 @@ export class StackElement {
 		return this._scopeName.length > len && this._scopeName.substr(0, len) === scopeName && this._scopeName[len] === '.';
 	}
 
-	public softEquals(other:StackElement): boolean {
+	public hasSameRuleAs(other:StackElement): boolean {
 		return this._ruleId === other._ruleId;
 	}
 }
