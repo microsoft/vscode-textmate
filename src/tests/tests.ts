@@ -8,6 +8,7 @@ import path = require('path');
 import {Registry, createMatcher, IGrammarLocator} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
 import 'colors';
+import {parseSAX, parse} from '../plistParser';
 
 enum TestResult {
 	Pending,
@@ -105,15 +106,19 @@ class TestManager {
 	}
 }
 
-export function runTests(tokenizationTestPaths:string[], matcherTestPaths:string[]): void {
+export function runTests(tokenizationTestPaths:string[], matcherTestPaths:string[], plistParserPaths:string[]): void {
 	let manager = new TestManager();
 
-	tokenizationTestPaths.forEach((path) => {
-		generateTokenizationTests(manager, path)
+	plistParserPaths.forEach((path) => {
+		generatePListParserTests(manager, path);
 	});
 
 	matcherTestPaths.forEach((path) => {
 		generateMatcherTests(manager, path);
+	});
+
+	tokenizationTestPaths.forEach((path) => {
+		generateTokenizationTests(manager, path)
 	});
 
 	manager.runTests();
@@ -135,7 +140,7 @@ function generateTokenizationTests(manager:TestManager, testLocation: string): v
 				}
 			}
 
-			let registry = new Registry(locator);
+			let registry = new Registry(locator, true);
 			let grammar: IGrammar = null;
 			test.grammars.forEach(function(grammarPath) {
 				let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
@@ -252,5 +257,24 @@ function generateMatcherTests(manager:TestManager, testLocation: string) {
 				ctx.fail('matcher expected', result, test.result);
 			}
 		});
+	});
+}
+
+function generatePListParserTests(manager:TestManager, p:string) {
+	manager.registerTest('PLIST > ' + p, (ctx) => {
+		let contents = fs.readFileSync(p).toString();
+		let expectedObj = parseSAX(contents);
+		let actualObj = parse(contents);
+
+		let expected = JSON.stringify(expectedObj.value, null, '\t');
+		let actual = JSON.stringify(actualObj.value, null, '\t');
+
+		if (expected !== actual) {
+			console.log('bubu');
+			fs.writeFileSync(path.join(__dirname, '../../good.txt'), expected);
+			fs.writeFileSync(path.join(__dirname, '../../bad.txt'), actual);
+			ctx.fail('plist parsers disagree');
+			process.exit(0);
+		}
 	});
 }

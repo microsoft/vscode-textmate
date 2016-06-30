@@ -8,3 +8,4 @@ test-cases/
 npm-debug.log
 gulpfile.js
 ThirdPartyNotices.txt
+/scripts/

@@ -5,16 +5,21 @@
 
 import fs = require('fs');
 import {IRawGrammar} from './types';
+import {parseSAX as saxParsePLIST} from './plistParser';
 import {parse as parsePLIST} from './plistParser';
 
-export function readGrammar(filePath:string, callback:(error:any, grammar:IRawGrammar)=>void): void {
-	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
+export function readGrammar(filePath:string, useExperimentalParser:boolean, callback:(error:any, grammar:IRawGrammar)=>void): void {
+	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
 	reader.load(callback);
 }
 
-export function readGrammarSync(filePath:string): IRawGrammar {
-	let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
-	return reader.load();
+export function readGrammarSync(filePath:string, useExperimentalParser:boolean): IRawGrammar {
+	try {
+		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
+		return reader.load();
+	} catch(err) {
+		throw new Error('Error parsing ' + filePath + ': ' + err.message);
+	}
 }
 
 interface IGrammarParser {
@@ -63,15 +68,30 @@ class SyncGrammarReader {
 	}
 }
 
-function getGrammarParser(filePath:string): IGrammarParser {
+function getGrammarParser(filePath:string, useExperimentalParser:boolean): IGrammarParser {
 	if (/\.json$/.test(filePath)) {
 		return parseJSONGrammar;
 	}
-	return parsePLISTGrammar;
+	if (useExperimentalParser) {
+		return parsePLISTGrammar;
+	}
+	return parseSAXPLISTGrammar;
 }
 
 function parseJSONGrammar(contents:string): IRawGrammar {
 	return <IRawGrammar>JSON.parse(contents.toString());
+}
+
+function parseSAXPLISTGrammar(contents:string): IRawGrammar {
+	let tmp:{ value: IRawGrammar, errors: string[]; };
+
+	tmp = saxParsePLIST<IRawGrammar>(contents);
+
+	if (tmp.errors && tmp.errors.length > 0) {
+		throw new Error('Error parsing PLIST: ' + tmp.errors.join(','));
+	}
+
+	return tmp.value;
 }
 
 function parsePLISTGrammar(contents:string): IRawGrammar {

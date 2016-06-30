@@ -42,8 +42,8 @@ export class Registry {
 		};
 	}
 
-	public static readGrammarInfo(path:string, callback:(err:any, grammarInfo:IGrammarInfo)=>void): void {
-		readGrammar(path, (err, grammar) => {
+	public static readGrammarInfo(path:string, callback:(err:any, grammarInfo:IGrammarInfo)=>void, useExperimentalParser:boolean = false): void {
+		readGrammar(path, useExperimentalParser, (err, grammar) => {
 			if (err) {
 				callback(err, null);
 				return;
@@ -52,15 +52,17 @@ export class Registry {
 		});
 	}
 
-	public static readGrammarInfoSync(path:string): IGrammarInfo {
-		return this._extractInfo(readGrammarSync(path));
+	public static readGrammarInfoSync(path:string, useExperimentalParser:boolean = false): IGrammarInfo {
+		return this._extractInfo(readGrammarSync(path, useExperimentalParser));
 	}
 
 	private _locator: IGrammarLocator;
+	private _useExperimentalParser: boolean;
 	private _syncRegistry: SyncRegistry;
 
-	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR) {
+	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR, useExperimentalParser:boolean = false) {
 		this._locator = locator;
+		this._useExperimentalParser = useExperimentalParser;
 		this._syncRegistry = new SyncRegistry();
 	}
 
@@ -88,7 +90,7 @@ export class Registry {
 			}
 
 			try {
-				let grammar = readGrammarSync(filePath);
+				let grammar = readGrammarSync(filePath, this._useExperimentalParser);
 				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
 
 				let deps = this._syncRegistry.addGrammar(grammar, injections);
@@ -110,7 +112,7 @@ export class Registry {
 	}
 
 	public loadGrammarFromPathSync(path:string): IGrammar {
-		let rawGrammar = readGrammarSync(path);
+		let rawGrammar = readGrammarSync(path, this._useExperimentalParser);
 		let injections = this._locator.getInjections(rawGrammar.scopeName);
 		this._syncRegistry.addGrammar(rawGrammar, injections);
 		return this.grammarForScopeName(rawGrammar.scopeName);
