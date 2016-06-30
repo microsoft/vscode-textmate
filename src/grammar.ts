@@ -302,7 +302,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
-			let stackClone = stack.map((el) => el.clone());
+			let stackClone = stack.slice(0);
 			stackClone.push(new StackElement(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(getString(lineText), captureIndices), captureRule.getContentName(getString(lineText), captureIndices)))
 			_tokenizeString(grammar,
 				createOnigString(
@@ -381,11 +381,11 @@ interface IMatchResult {
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement[], anchorPosition:number): IMatchResult {
 	let stackElement = stack[stack.length - 1];
-	let rule = grammar.getRule(stackElement.ruleId);
+	let rule = stackElement.getRule(grammar);
 
 	if (rule instanceof BeginWhileRule && stackElement.enterPos === -1) {
 
-		let ruleScanner = rule.compileWhile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+		let ruleScanner = rule.compileWhile(grammar, stackElement.getEndRule(), isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
 		let doNotContinue: IMatchResult = {
@@ -405,7 +405,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	}
 
 
-	let ruleScanner = rule.compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
+	let ruleScanner = rule.compile(grammar, stackElement.getEndRule(), isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
 	if (r) {
@@ -478,10 +478,11 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 		if (matchedRuleId === -1) {
 			// We matched the `end` for this rule => pop it
-			let poppedRule = <BeginEndRule>grammar.getRule(stackElement.ruleId);
+			let poppedRule = <BeginEndRule>stackElement.getRule(grammar);
 
 			lineTokens.produce(stack, captureIndices[0].start);
-			stackElement.contentName = null;
+			stackElement = stackElement.withContentName(null);
+			stack[stack.length - 1] = stackElement;
 			handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
 			lineTokens.produce(stack, captureIndices[0].end);
 
@@ -521,13 +522,13 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				stack[stack.length-1].contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+				stack[stack.length - 1] = stack[stack.length - 1].withContentName(pushedRule.getContentName(getString(lineText), captureIndices));
 
 				if (pushedRule.endHasBackReferences) {
-					stack[stack.length-1].endRule = pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices);
+					stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices));
 				}
 
-				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
+				if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
 					// Grammar pushed the same rule without advancing
 					console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack.pop();
@@ -541,13 +542,13 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				stack[stack.length - 1].contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+				stack[stack.length - 1] = stack[stack.length - 1].withContentName(pushedRule.getContentName(getString(lineText), captureIndices));
 
 				if (pushedRule.whileHasBackReferences) {
-					stack[stack.length - 1].endRule = pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices);
+					stack[stack.length - 1] = stack[stack.length - 1].withEndRule(pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices));
 				}
 
-				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
+				if (!hasAdvanced && stackElement.softEquals(stack[stack.length - 1])) {
 					// Grammar pushed the same rule without advancing
 					console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack.pop();
@@ -586,41 +587,78 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	}
 }
 
+/**
+ * **IMPORTANT** - Immutable!
+ */
 export class StackElement {
-	private _ruleId: number;
-	public get ruleId(): number { return this._ruleId; }
+	public _stackElementBrand: void;
 
+	/**
+	 * Enter position on current line.
+	 * It is ok to mutate this one, as it's always reset to -1 when a new line begins tokenization
+	 */
 	public enterPos: number;
-
-	public endRule: string;
-	public scopeName: string;
-	public contentName: string;
-
-	private scopeNameSegments: { [segment:string]:boolean };
+	private _ruleId: number;
+	private _endRule: string;
+	private _scopeName: string;
+	private _contentName: string;
 
 	constructor(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string) {
-		this.ruleId = ruleId;
+		this._ruleId = ruleId;
 		this.enterPos = enterPos;
-		this.endRule = endRule;
-		this.scopeName = scopeName;
-		this.contentName = contentName;
+		this._endRule = endRule;
+		this._scopeName = scopeName;
+		this._contentName = contentName;
 	}
 
-	public clone(): StackElement {
-		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
+	public getRule(grammar:Grammar): Rule {
+		return grammar.getRule(this._ruleId);
+	}
+
+	public getEndRule(): string {
+		return this._endRule;
+	}
+
+	public withContentName(contentName:string): StackElement {
+		if (this._contentName === contentName) {
+			return this;
+		}
+		return new StackElement(this._ruleId, this.enterPos, this._endRule, this._scopeName, contentName);
+	}
+
+	public withEndRule(endRule:string): StackElement {
+		if (this._endRule === endRule) {
+			return this;
+		}
+		return new StackElement(this._ruleId, this.enterPos, endRule, this._scopeName, this._contentName);
+	}
+
+	public generateScopes(scopes: string[], outIndex:number): number {
+		if (this._scopeName) {
+			scopes[outIndex++] = this._scopeName;
+		}
+
+		if (this._contentName) {
+			scopes[outIndex++] = this._contentName;
+		}
+
+		return outIndex;
 	}
 
 	public matches(scopeName: string) : boolean {
-		if (!this.scopeName) {
+		if (!this._scopeName) {
 			return false;
 		}
-		if (this.scopeName === scopeName) {
+		if (this._scopeName === scopeName) {
 			return true;
 		}
 		var len = scopeName.length;
-		return this.scopeName.length > len && this.scopeName.substr(0, len) === scopeName && this.scopeName[len] === '.';
+		return this._scopeName.length > len && this._scopeName.substr(0, len) === scopeName && this._scopeName[len] === '.';
 	}
 
+	public softEquals(other:StackElement): boolean {
+		return this._ruleId === other._ruleId;
+	}
 }
 
 class LocalStackElement {
@@ -649,24 +687,17 @@ class LineTokens {
 			return;
 		}
 
-		let scopes: string[] = [],
-			out = 0;
+		let scopes: string[] = [];
+		let outIndex = 0;
 
 		for (let i = 0; i < stack.length; i++) {
 			let el = stack[i];
-
-			if (el.scopeName) {
-				scopes[out++] = el.scopeName;
-			}
-
-			if (el.contentName) {
-				scopes[out++] = el.contentName;
-			}
+			outIndex = el.generateScopes(scopes, outIndex);
 		}
 
 		if (extraScopes) {
 			for (let i = 0; i < extraScopes.length; i++) {
-				scopes[out++] = extraScopes[i].scopeName;
+				scopes[outIndex++] = extraScopes[i].scopeName;
 			}
 		}
 

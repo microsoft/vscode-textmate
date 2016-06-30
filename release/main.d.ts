@@ -77,6 +77,4 @@ export interface StackElement {
 	whileRule: string;
 	scopeName: string;
 	contentName: string;
-
-	clone(): StackElement;
 }
