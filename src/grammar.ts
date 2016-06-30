@@ -385,7 +385,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 
 	if (rule instanceof BeginWhileRule && stackElement.enterPos === -1) {
 
-		let ruleScanner = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+		let ruleScanner = rule.compileWhile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
 		let doNotContinue: IMatchResult = {
@@ -405,7 +405,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	}
 
 
-	let ruleScanner = rule.compile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+	let ruleScanner = rule.compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 
 	if (r) {
@@ -513,7 +513,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			lineTokens.produce(stack, captureIndices[0].start);
 
 			// push it on the stack rule
-			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null, null));
+			stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null));
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -544,7 +544,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				stack[stack.length - 1].contentName = pushedRule.getContentName(getString(lineText), captureIndices);
 
 				if (pushedRule.whileHasBackReferences) {
-					stack[stack.length - 1].whileRule = pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices);
+					stack[stack.length - 1].endRule = pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices);
 				}
 
 				if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
@@ -587,26 +587,27 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 }
 
 export class StackElement {
-	public ruleId: number;
+	private _ruleId: number;
+	public get ruleId(): number { return this._ruleId; }
+
 	public enterPos: number;
+
 	public endRule: string;
 	public scopeName: string;
 	public contentName: string;
-	public whileRule: string;
 
 	private scopeNameSegments: { [segment:string]:boolean };
 
-	constructor(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string, whileRule: string = null) {
+	constructor(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string) {
 		this.ruleId = ruleId;
 		this.enterPos = enterPos;
 		this.endRule = endRule;
 		this.scopeName = scopeName;
 		this.contentName = contentName;
-		this.whileRule = whileRule;
 	}
 
 	public clone(): StackElement {
-		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName, this.whileRule);
+		return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
 	}
 
 	public matches(scopeName: string) : boolean {

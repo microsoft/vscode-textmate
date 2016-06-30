@@ -1643,7 +1643,7 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     var stackElement = stack[stack.length - 1];
     var rule = grammar.getRule(stackElement.ruleId);
     if (rule instanceof rule_1.BeginWhileRule && stackElement.enterPos === -1) {
-        var ruleScanner_1 = rule.compileWhile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+        var ruleScanner_1 = rule.compileWhile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
         var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
         var doNotContinue = {
             captureIndices: null,
@@ -1660,7 +1660,7 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
             return doNotContinue;
         }
     }
-    var ruleScanner = rule.compile(grammar, stackElement.endRule || stackElement.whileRule, isFirstLine, linePos === anchorPosition);
+    var ruleScanner = rule.compile(grammar, stackElement.endRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
     if (r) {
         return {
@@ -1745,7 +1745,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             var _rule = grammar.getRule(matchedRuleId);
             lineTokens.produce(stack, captureIndices[0].start);
             // push it on the stack rule
-            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null, null));
+            stack.push(new StackElement(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null));
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
@@ -1771,7 +1771,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 anchorPosition = captureIndices[0].end;
                 stack[stack.length - 1].contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
                 if (pushedRule.whileHasBackReferences) {
-                    stack[stack.length - 1].whileRule = pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices);
+                    stack[stack.length - 1].endRule = pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices);
                 }
                 if (!hasAdvanced && stackElement.ruleId === stack[stack.length - 1].ruleId) {
                     // Grammar pushed the same rule without advancing
@@ -1809,17 +1809,20 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
 }
 var StackElement = (function () {
-    function StackElement(ruleId, enterPos, endRule, scopeName, contentName, whileRule) {
-        if (whileRule === void 0) { whileRule = null; }
+    function StackElement(ruleId, enterPos, endRule, scopeName, contentName) {
         this.ruleId = ruleId;
         this.enterPos = enterPos;
         this.endRule = endRule;
         this.scopeName = scopeName;
         this.contentName = contentName;
-        this.whileRule = whileRule;
     }
+    Object.defineProperty(StackElement.prototype, "ruleId", {
+        get: function () { return this._ruleId; },
+        enumerable: true,
+        configurable: true
+    });
     StackElement.prototype.clone = function () {
-        return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName, this.whileRule);
+        return new StackElement(this.ruleId, this.enterPos, this.endRule, this.scopeName, this.contentName);
     };
     StackElement.prototype.matches = function (scopeName) {
         if (!this.scopeName) {
