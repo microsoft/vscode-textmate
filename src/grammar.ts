@@ -617,6 +617,28 @@ export class StackElement {
 		this._contentName = contentName;
 	}
 
+	public equals(other:StackElement): boolean {
+		if (!this._shallowEquals(other)) {
+			return false;
+		}
+		if (!this._parent && !other._parent) {
+			return true;
+		}
+		if (!this._parent || !other._parent) {
+			return false;
+		}
+		return this._parent.equals(other._parent);
+	}
+
+	private _shallowEquals(other:StackElement): boolean {
+		return (
+			this._ruleId === other._ruleId
+			&& this._endRule === other._endRule
+			&& this._scopeName === other._scopeName
+			&& this._contentName === other._contentName
+		);
+	}
+
 	public reset(): void {
 		this._enterPos = -1;
 		if (this._parent) {

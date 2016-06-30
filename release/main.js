@@ -1827,6 +1827,24 @@ var StackElement = (function () {
         this._scopeName = scopeName;
         this._contentName = contentName;
     }
+    StackElement.prototype.equals = function (other) {
+        if (!this._shallowEquals(other)) {
+            return false;
+        }
+        if (!this._parent && !other._parent) {
+            return true;
+        }
+        if (!this._parent || !other._parent) {
+            return false;
+        }
+        return this._parent.equals(other._parent);
+    };
+    StackElement.prototype._shallowEquals = function (other) {
+        return (this._ruleId === other._ruleId
+            && this._endRule === other._endRule
+            && this._scopeName === other._scopeName
+            && this._contentName === other._contentName);
+    };
     StackElement.prototype.reset = function () {
         this._enterPos = -1;
         if (this._parent) {

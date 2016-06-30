@@ -33,6 +33,13 @@ export class Registry {
 	public grammarForScopeName(scopeName:string): IGrammar;
 }
 
+export interface IGrammarInfo {
+	fileTypes: string[];
+	name: string;
+	scopeName: string;
+	firstLineMatch: string;
+}
+
 /**
  * A grammar
  */
@@ -44,14 +51,14 @@ export interface IGrammar {
 }
 
 export interface ITokenizeLineResult {
-	tokens: ITMToken[];
+	tokens: IToken[];
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
 	ruleStack: StackElement;
 }
 
-export interface ITMToken {
+export interface IToken {
 	startIndex: number;
 	endIndex: number;
 	scopes: string[];
@@ -62,4 +69,6 @@ export interface ITMToken {
  */
 export interface StackElement {
 	_stackElementBrand: void;
+
+	equals(other:StackElement): boolean;
 }

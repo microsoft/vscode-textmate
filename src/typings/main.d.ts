@@ -69,4 +69,6 @@ export interface IToken {
  */
 export interface StackElement {
 	_stackElementBrand: void;
+
+	equals(other:StackElement): boolean;
 }
