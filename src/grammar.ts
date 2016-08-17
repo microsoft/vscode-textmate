@@ -275,21 +275,18 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		return;
 	}
 
-	let len = Math.min(captures.length, captureIndices.length),
-		localStack: LocalStackElement[] = [],
-		maxEnd = captureIndices[0].end,
-		i: number,
-		captureRule: CaptureRule,
-		captureIndex: IOnigCaptureIndex;
+	let len = Math.min(captures.length, captureIndices.length);
+	let localStack: LocalStackElement[] = [];
+	let maxEnd = captureIndices[0].end;
 
-	for (i = 0; i < len; i++) {
-		captureRule = captures[i];
+	for (let i = 0; i < len; i++) {
+		let captureRule = captures[i];
 		if (captureRule === null) {
 			// Not interested
 			continue;
 		}
 
-		captureIndex = captureIndices[i];
+		let captureIndex = captureIndices[i];
 
 		if (captureIndex.length === 0) {
 			// Nothing really captured
@@ -322,8 +319,11 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			continue;
 		}
 
-		// push
-		localStack.push(new LocalStackElement(captureRule.getName(getString(lineText), captureIndices), captureIndex.end));
+		let captureRuleScopeName = captureRule.getName(getString(lineText), captureIndices);
+		if (captureRuleScopeName !== null) {
+			// push
+			localStack.push(new LocalStackElement(captureRuleScopeName, captureIndex.end));
+		}
 	}
 
 	while (localStack.length > 0) {
@@ -741,6 +741,9 @@ class LocalStackElement {
 	public endPos: number;
 
 	constructor (scopeName: string, endPos: number) {
+		if (typeof scopeName !== 'string') {
+			throw new Error('bubu');
+		}
 		this.scopeName = scopeName;
 		this.endPos = endPos;
 	}

@@ -960,5 +960,60 @@
 				}]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Markdown.tmLanguage"
+		],
+		"grammarPath": "fixtures/Markdown.tmLanguage",
+		"desc": "Issue #10",
+		"lines": [
+			{
+				"line": "Toggle preview `Shift+CMD+V`",
+				"tokens": [
+					{
+						"value": "Toggle preview ",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown"
+						]
+					},
+					{
+						"value": "`",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown",
+							"punctuation.definition.raw.markdown"
+						]
+					},
+					{
+						"value": "Shift+CMD+",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown"
+						]
+					},
+					{
+						"value": "V",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown"
+						]
+					},
+					{
+						"value": "`",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown",
+							"markup.raw.inline.markdown",
+							"punctuation.definition.raw.markdown"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

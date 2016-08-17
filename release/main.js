@@ -1048,14 +1048,16 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
     if (captures.length === 0) {
         return;
     }
-    var len = Math.min(captures.length, captureIndices.length), localStack = [], maxEnd = captureIndices[0].end, i, captureRule, captureIndex;
-    for (i = 0; i < len; i++) {
-        captureRule = captures[i];
+    var len = Math.min(captures.length, captureIndices.length);
+    var localStack = [];
+    var maxEnd = captureIndices[0].end;
+    for (var i = 0; i < len; i++) {
+        var captureRule = captures[i];
         if (captureRule === null) {
             // Not interested
             continue;
         }
-        captureIndex = captureIndices[i];
+        var captureIndex = captureIndices[i];
         if (captureIndex.length === 0) {
             // Nothing really captured
             continue;
@@ -1077,8 +1079,11 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
             _tokenizeString(grammar, rule_1.createOnigString(rule_1.getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             continue;
         }
-        // push
-        localStack.push(new LocalStackElement(captureRule.getName(rule_1.getString(lineText), captureIndices), captureIndex.end));
+        var captureRuleScopeName = captureRule.getName(rule_1.getString(lineText), captureIndices);
+        if (captureRuleScopeName !== null) {
+            // push
+            localStack.push(new LocalStackElement(captureRuleScopeName, captureIndex.end));
+        }
     }
     while (localStack.length > 0) {
         // pop!
@@ -1401,6 +1406,9 @@ var StackElement = (function () {
 exports.StackElement = StackElement;
 var LocalStackElement = (function () {
     function LocalStackElement(scopeName, endPos) {
+        if (typeof scopeName !== 'string') {
+            throw new Error('bubu');
+        }
         this.scopeName = scopeName;
         this.endPos = endPos;
     }
