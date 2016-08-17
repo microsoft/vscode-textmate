@@ -25,7 +25,6 @@ gulp.task('bundle', ['compile'], function () {
 			'out/_prefix.js',
 			'out/utils.js',
 			'out/matcher.js',
-			'out/plistParser.js',
 			'out/grammarReader.js',
 			'out/rule.js',
 			'out/grammar.js',

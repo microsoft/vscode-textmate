@@ -6,7 +6,6 @@ var fs = require('fs');
 var path = require('path');
 var main_1 = require('../main');
 require('colors');
-var plistParser_1 = require('../plistParser');
 var TestResult;
 (function (TestResult) {
     TestResult[TestResult["Pending"] = 0] = "Pending";
@@ -84,11 +83,8 @@ var TestManager = (function () {
     };
     return TestManager;
 }());
-function runTests(tokenizationTestPaths, matcherTestPaths, plistParserPaths) {
+function runTests(tokenizationTestPaths, matcherTestPaths) {
     var manager = new TestManager();
-    plistParserPaths.forEach(function (path) {
-        generatePListParserTests(manager, path);
-    });
     matcherTestPaths.forEach(function (path) {
         generateMatcherTests(manager, path);
     });
@@ -112,7 +108,7 @@ function generateTokenizationTests(manager, testLocation) {
                     return void 0;
                 }
             };
-            var registry = new main_1.Registry(locator, true);
+            var registry = new main_1.Registry(locator);
             var grammar = null;
             test.grammars.forEach(function (grammarPath) {
                 var tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
@@ -199,21 +195,5 @@ function generateMatcherTests(manager, testLocation) {
                 ctx.fail('matcher expected', result, test.result);
             }
         });
-    });
-}
-function generatePListParserTests(manager, p) {
-    manager.registerTest('PLIST > ' + p, function (ctx) {
-        var contents = fs.readFileSync(p).toString();
-        var expectedObj = plistParser_1.parseSAX(contents);
-        var actualObj = plistParser_1.parse(contents);
-        var expected = JSON.stringify(expectedObj.value, null, '\t');
-        var actual = JSON.stringify(actualObj.value, null, '\t');
-        if (expected !== actual) {
-            console.log('bubu');
-            fs.writeFileSync(path.join(__dirname, '../../good.txt'), expected);
-            fs.writeFileSync(path.join(__dirname, '../../bad.txt'), actual);
-            ctx.fail('plist parsers disagree');
-            process.exit(0);
-        }
     });
 }

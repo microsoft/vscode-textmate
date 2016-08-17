@@ -178,531 +178,21 @@ function newTokenizer(input) {
 }
 
 });
-$load('./plistParser', function(require, module, exports) {
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-'use strict';
-var createParser = (function () {
-    var saxModule = null;
-    return function parser(strict, opt) {
-        if (!saxModule) {
-            saxModule = require('sax');
-        }
-        return saxModule.parser(strict, opt);
-    };
-})();
-function parseSAX(content) {
-    var errors = [];
-    var currObject = null;
-    var result = null;
-    var text = null;
-    var parser = createParser(false, { lowercase: true });
-    parser.onerror = function (e) {
-        errors.push(e.message);
-    };
-    parser.ontext = function (s) {
-        text = s;
-    };
-    parser.onopentag = function (tag) {
-        switch (tag.name) {
-            case 'dict':
-                currObject = { parent: currObject, value: {} };
-                break;
-            case 'array':
-                currObject = { parent: currObject, value: [] };
-                break;
-            case 'key':
-                if (currObject) {
-                    currObject.lastKey = null;
-                }
-                break;
-        }
-        text = '';
-    };
-    parser.onclosetag = function (tagName) {
-        var value;
-        switch (tagName) {
-            case 'key':
-                if (!currObject || Array.isArray(currObject.value)) {
-                    errors.push('key can only be used inside an open dict element');
-                    return;
-                }
-                currObject.lastKey = text;
-                return;
-            case 'dict':
-            case 'array':
-                if (!currObject) {
-                    errors.push(tagName + ' closing tag found, without opening tag');
-                    return;
-                }
-                value = currObject.value;
-                currObject = currObject.parent;
-                break;
-            case 'string':
-            case 'data':
-                value = text;
-                break;
-            case 'date':
-                value = new Date(text);
-                break;
-            case 'integer':
-                value = parseInt(text);
-                if (isNaN(value)) {
-                    errors.push(text + ' is not a integer');
-                    return;
-                }
-                break;
-            case 'real':
-                value = parseFloat(text);
-                if (isNaN(value)) {
-                    errors.push(text + ' is not a float');
-                    return;
-                }
-                break;
-            case 'true':
-                value = true;
-                break;
-            case 'false':
-                value = false;
-                break;
-            case 'plist':
-                return;
-            default:
-                errors.push('Invalid tag name: ' + tagName);
-                return;
-        }
-        if (!currObject) {
-            result = value;
-        }
-        else if (Array.isArray(currObject.value)) {
-            currObject.value.push(value);
-        }
-        else {
-            if (currObject.lastKey) {
-                currObject.value[currObject.lastKey] = value;
-            }
-            else {
-                errors.push('Dictionary key missing for value ' + value);
-            }
-        }
-    };
-    parser.write(content);
-    return { errors: errors, value: result };
-}
-exports.parseSAX = parseSAX;
-/**
- * A very fast plist parser
- */
-function _parse(file) {
-    var len = file.length;
-    var i = 0;
-    // Skip UTF8 BOM
-    if (len > 0 && file.charCodeAt(0) === 65279) {
-        i = 1;
-    }
-    function skipWhitespace() {
-        while (i < len) {
-            var chCode = file.charCodeAt(i);
-            if (chCode !== 32 /*<space>*/ && chCode !== 9 /*<tab>*/ && chCode !== 13 /*<CarriageReturn>*/ && chCode !== 10 /*<LineFeed>*/) {
-                break;
-            }
-            i++;
-        }
-    }
-    function advanceIfStartsWith(str) {
-        if (file.substr(i, str.length) === str) {
-            i += str.length;
-            return true;
-        }
-        return false;
-    }
-    function advanceUntil(str) {
-        var nextOccurence = file.indexOf(str, i);
-        if (nextOccurence !== -1) {
-            i = nextOccurence + str.length;
-        }
-        else {
-            // EOF
-            i = len;
-        }
-    }
-    function captureUntil(str) {
-        var nextOccurence = file.indexOf(str, i);
-        if (nextOccurence !== -1) {
-            var r = file.substring(i, nextOccurence);
-            i = nextOccurence + str.length;
-            return r;
-        }
-        else {
-            // EOF
-            var r = file.substr(i);
-            i = len;
-            return r;
-        }
-    }
-    var ROOT_STATE = 0;
-    var DICT_STATE = 1;
-    var ARR_STATE = 2;
-    var state = ROOT_STATE;
-    var cur = {};
-    var stateStack = [];
-    var objStack = [];
-    var curKey = null;
-    function pushState(newState, newCur) {
-        stateStack.push(state);
-        objStack.push(cur);
-        state = newState;
-        cur = newCur;
-    }
-    function popState() {
-        state = stateStack.pop();
-        cur = objStack.pop();
-    }
-    function fail(msg) {
-        throw new Error('Near offset ' + i + ': ' + msg + ' ~~~' + file.substr(i, 50) + '~~~');
-    }
-    var dictState = {
-        enterDict: function () {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            var newDict = {};
-            cur[curKey] = newDict;
-            curKey = null;
-            pushState(DICT_STATE, newDict);
-        },
-        enterArray: function () {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            var newArr = [];
-            cur[curKey] = newArr;
-            curKey = null;
-            pushState(ARR_STATE, newArr);
-        }
-    };
-    var arrState = {
-        enterDict: function () {
-            var newDict = {};
-            cur.push(newDict);
-            pushState(DICT_STATE, newDict);
-        },
-        enterArray: function () {
-            var newArr = [];
-            cur.push(newArr);
-            pushState(ARR_STATE, newArr);
-        }
-    };
-    function enterDict() {
-        if (state === DICT_STATE) {
-            dictState.enterDict();
-        }
-        else if (state === ARR_STATE) {
-            arrState.enterDict();
-        }
-        else {
-            pushState(DICT_STATE, cur);
-        }
-    }
-    function leaveDict() {
-        if (state === DICT_STATE) {
-            popState();
-        }
-        else if (state === ARR_STATE) {
-            fail('unexpected </dict>');
-        }
-        else {
-            fail('unexpected </dict>');
-        }
-    }
-    function enterArray() {
-        if (state === DICT_STATE) {
-            dictState.enterArray();
-        }
-        else if (state === ARR_STATE) {
-            arrState.enterArray();
-        }
-        else {
-            fail('unexpected <array>');
-        }
-    }
-    function leaveArray() {
-        if (state === DICT_STATE) {
-            fail('unexpected </array>');
-        }
-        else if (state === ARR_STATE) {
-            popState();
-        }
-        else {
-            fail('unexpected </array>');
-        }
-    }
-    function acceptKey(val) {
-        if (state === DICT_STATE) {
-            if (curKey !== null) {
-                fail('too many <key>');
-            }
-            curKey = val;
-        }
-        else if (state === ARR_STATE) {
-            fail('unexpected <key>');
-        }
-        else {
-            fail('unexpected <key>');
-        }
-    }
-    function acceptString(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <string>');
-        }
-    }
-    function acceptReal(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <real>');
-        }
-    }
-    function acceptInteger(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <integer>');
-        }
-    }
-    function acceptDate(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <date>');
-        }
-    }
-    function acceptData(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <data>');
-        }
-    }
-    function acceptBool(val) {
-        if (state === DICT_STATE) {
-            if (curKey === null) {
-                fail('missing <key>');
-            }
-            cur[curKey] = val;
-            curKey = null;
-        }
-        else if (state === ARR_STATE) {
-            cur.push(val);
-        }
-        else {
-            fail('unexpected <true> or <false>');
-        }
-    }
-    function escapeVal(str) {
-        return str.replace(/&#([0-9]+);/g, function (_, m0) {
-            return String.fromCodePoint(parseInt(m0, 10));
-        }).replace(/&#x([0-9a-f]+);/g, function (_, m0) {
-            return String.fromCodePoint(parseInt(m0, 16));
-        }).replace(/&amp;|&lt;|&gt;|&quot;|&apos;/g, function (_) {
-            switch (_) {
-                case '&amp;': return '&';
-                case '&lt;': return '<';
-                case '&gt;': return '>';
-                case '&quot;': return '"';
-                case '&apos;': return '\'';
-            }
-            return _;
-        });
-    }
-    function parseOpenTag() {
-        var r = captureUntil('>');
-        var isClosed = false;
-        if (r.charCodeAt(r.length - 1) === 47 /*/*/) {
-            isClosed = true;
-            r = r.substring(0, r.length - 1);
-        }
-        return {
-            name: r.trim(),
-            isClosed: isClosed
-        };
-    }
-    function parseTagValue(tag) {
-        if (tag.isClosed) {
-            return '';
-        }
-        var val = captureUntil('</');
-        advanceUntil('>');
-        return escapeVal(val);
-    }
-    while (i < len) {
-        skipWhitespace();
-        if (i >= len) {
-            break;
-        }
-        var chCode = file.charCodeAt(i++);
-        if (chCode !== 60 /*<*/) {
-            fail('expected <');
-        }
-        if (i >= len) {
-            fail('unexpected end of input');
-        }
-        var peekChCode = file.charCodeAt(i);
-        if (peekChCode === 63 /*?*/) {
-            i++;
-            advanceUntil('?>');
-            continue;
-        }
-        if (peekChCode === 33 /*!*/) {
-            i++;
-            if (advanceIfStartsWith('--')) {
-                advanceUntil('-->');
-                continue;
-            }
-            advanceUntil('>');
-            continue;
-        }
-        if (peekChCode === 47 /*/*/) {
-            i++;
-            skipWhitespace();
-            if (advanceIfStartsWith('plist')) {
-                advanceUntil('>');
-                continue;
-            }
-            if (advanceIfStartsWith('dict')) {
-                advanceUntil('>');
-                leaveDict();
-                continue;
-            }
-            if (advanceIfStartsWith('array')) {
-                advanceUntil('>');
-                leaveArray();
-                continue;
-            }
-            fail('unexpected closed tag');
-        }
-        var tag = parseOpenTag();
-        switch (tag.name) {
-            case 'dict':
-                enterDict();
-                if (tag.isClosed) {
-                    leaveDict();
-                }
-                continue;
-            case 'array':
-                enterArray();
-                if (tag.isClosed) {
-                    leaveArray();
-                }
-                continue;
-            case 'key':
-                acceptKey(parseTagValue(tag));
-                continue;
-            case 'string':
-                acceptString(parseTagValue(tag));
-                continue;
-            case 'real':
-                acceptReal(parseFloat(parseTagValue(tag)));
-                continue;
-            case 'integer':
-                acceptInteger(parseInt(parseTagValue(tag), 10));
-                continue;
-            case 'date':
-                acceptDate(new Date(parseTagValue(tag)));
-                continue;
-            case 'data':
-                acceptData(parseTagValue(tag));
-                continue;
-            case 'true':
-                acceptBool(true);
-                continue;
-            case 'false':
-                acceptBool(false);
-                continue;
-        }
-        if (/^plist/.test(tag.name)) {
-            continue;
-        }
-        fail('unexpected opened tag ' + tag.name);
-    }
-    return cur;
-}
-function parse(content) {
-    try {
-        return {
-            value: _parse(content),
-            errors: []
-        };
-    }
-    catch (err) {
-        return {
-            value: null,
-            errors: [err.message]
-        };
-    }
-}
-exports.parse = parse;
-
-});
 $load('./grammarReader', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
 var fs = require('fs');
-var plistParser_1 = require('./plistParser');
-var plistParser_2 = require('./plistParser');
-function readGrammar(filePath, useExperimentalParser, callback) {
-    var reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
+var plist = require('fast-plist');
+function readGrammar(filePath, callback) {
+    var reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
     reader.load(callback);
 }
 exports.readGrammar = readGrammar;
-function readGrammarSync(filePath, useExperimentalParser) {
+function readGrammarSync(filePath) {
     try {
-        var reader = new SyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
+        var reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
         return reader.load();
     }
     catch (err) {
@@ -746,33 +236,17 @@ var SyncGrammarReader = (function () {
     };
     return SyncGrammarReader;
 }());
-function getGrammarParser(filePath, useExperimentalParser) {
+function getGrammarParser(filePath) {
     if (/\.json$/.test(filePath)) {
         return parseJSONGrammar;
     }
-    if (useExperimentalParser) {
-        return parsePLISTGrammar;
-    }
-    return parseSAXPLISTGrammar;
+    return parsePLISTGrammar;
 }
 function parseJSONGrammar(contents) {
-    return JSON.parse(contents.toString());
-}
-function parseSAXPLISTGrammar(contents) {
-    var tmp;
-    tmp = plistParser_1.parseSAX(contents);
-    if (tmp.errors && tmp.errors.length > 0) {
-        throw new Error('Error parsing PLIST: ' + tmp.errors.join(','));
-    }
-    return tmp.value;
+    return JSON.parse(contents);
 }
 function parsePLISTGrammar(contents) {
-    var tmp;
-    tmp = plistParser_2.parse(contents);
-    if (tmp.errors && tmp.errors.length > 0) {
-        throw new Error('Error parsing PLIST: ' + tmp.errors.join(','));
-    }
-    return tmp.value;
+    return plist.parse(contents);
 }
 
 });
@@ -2044,11 +1518,9 @@ var DEFAULT_LOCATOR = {
     getInjections: function (scopeName) { return null; }
 };
 var Registry = (function () {
-    function Registry(locator, useExperimentalParser) {
+    function Registry(locator) {
         if (locator === void 0) { locator = DEFAULT_LOCATOR; }
-        if (useExperimentalParser === void 0) { useExperimentalParser = false; }
         this._locator = locator;
-        this._useExperimentalParser = useExperimentalParser;
         this._syncRegistry = new registry_1.SyncRegistry();
     }
     Registry.prototype.loadGrammar = function (initialScopeName, callback) {
@@ -2069,7 +1541,7 @@ var Registry = (function () {
                 continue;
             }
             try {
-                var grammar = grammarReader_1.readGrammarSync(filePath, this._useExperimentalParser);
+                var grammar = grammarReader_1.readGrammarSync(filePath);
                 var injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
                 var deps = this._syncRegistry.addGrammar(grammar, injections);
                 deps.forEach(function (dep) {
@@ -2089,7 +1561,7 @@ var Registry = (function () {
         callback(null, this.grammarForScopeName(initialScopeName));
     };
     Registry.prototype.loadGrammarFromPathSync = function (path) {
-        var rawGrammar = grammarReader_1.readGrammarSync(path, this._useExperimentalParser);
+        var rawGrammar = grammarReader_1.readGrammarSync(path);
         var injections = this._locator.getInjections(rawGrammar.scopeName);
         this._syncRegistry.addGrammar(rawGrammar, injections);
         return this.grammarForScopeName(rawGrammar.scopeName);

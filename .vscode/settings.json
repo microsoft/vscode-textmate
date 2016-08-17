@@ -2,5 +2,11 @@
 {
 	"files.trimTrailingWhitespace": true,
 	"editor.insertSpaces": false,
-	"editor.tabSize": 4
+	"editor.tabSize": 4,
+	"search.exclude": {
+		"**/node_modules": true,
+		"**/bower_components": true,
+		"out/**": true,
+		"release/**": true
+	}
 }

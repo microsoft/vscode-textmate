@@ -34,12 +34,10 @@ let DEFAULT_LOCATOR:IGrammarLocator = {
 export class Registry {
 
 	private _locator: IGrammarLocator;
-	private _useExperimentalParser: boolean;
 	private _syncRegistry: SyncRegistry;
 
-	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR, useExperimentalParser:boolean = false) {
+	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR) {
 		this._locator = locator;
-		this._useExperimentalParser = useExperimentalParser;
 		this._syncRegistry = new SyncRegistry();
 	}
 
@@ -67,7 +65,7 @@ export class Registry {
 			}
 
 			try {
-				let grammar = readGrammarSync(filePath, this._useExperimentalParser);
+				let grammar = readGrammarSync(filePath);
 				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
 
 				let deps = this._syncRegistry.addGrammar(grammar, injections);
@@ -89,7 +87,7 @@ export class Registry {
 	}
 
 	public loadGrammarFromPathSync(path:string): IGrammar {
-		let rawGrammar = readGrammarSync(path, this._useExperimentalParser);
+		let rawGrammar = readGrammarSync(path);
 		let injections = this._locator.getInjections(rawGrammar.scopeName);
 		this._syncRegistry.addGrammar(rawGrammar, injections);
 		return this.grammarForScopeName(rawGrammar.scopeName);

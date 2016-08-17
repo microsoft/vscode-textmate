@@ -3,19 +3,18 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import fs = require('fs');
+import * as fs from 'fs';
 import {IRawGrammar} from './types';
-import {parseSAX as saxParsePLIST} from './plistParser';
-import {parse as parsePLIST} from './plistParser';
+import * as plist from 'fast-plist';
 
-export function readGrammar(filePath:string, useExperimentalParser:boolean, callback:(error:any, grammar:IRawGrammar)=>void): void {
-	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
+export function readGrammar(filePath:string, callback:(error:any, grammar:IRawGrammar)=>void): void {
+	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
 	reader.load(callback);
 }
 
-export function readGrammarSync(filePath:string, useExperimentalParser:boolean): IRawGrammar {
+export function readGrammarSync(filePath:string): IRawGrammar {
 	try {
-		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath, useExperimentalParser));
+		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
 		return reader.load();
 	} catch(err) {
 		throw new Error('Error parsing ' + filePath + ': ' + err.message);
@@ -68,40 +67,17 @@ class SyncGrammarReader {
 	}
 }
 
-function getGrammarParser(filePath:string, useExperimentalParser:boolean): IGrammarParser {
+function getGrammarParser(filePath:string): IGrammarParser {
 	if (/\.json$/.test(filePath)) {
 		return parseJSONGrammar;
 	}
-	if (useExperimentalParser) {
-		return parsePLISTGrammar;
-	}
-	return parseSAXPLISTGrammar;
+	return parsePLISTGrammar;
 }
 
 function parseJSONGrammar(contents:string): IRawGrammar {
-	return <IRawGrammar>JSON.parse(contents.toString());
-}
-
-function parseSAXPLISTGrammar(contents:string): IRawGrammar {
-	let tmp:{ value: IRawGrammar, errors: string[]; };
-
-	tmp = saxParsePLIST<IRawGrammar>(contents);
-
-	if (tmp.errors && tmp.errors.length > 0) {
-		throw new Error('Error parsing PLIST: ' + tmp.errors.join(','));
-	}
-
-	return tmp.value;
+	return <IRawGrammar>JSON.parse(contents);
 }
 
 function parsePLISTGrammar(contents:string): IRawGrammar {
-	let tmp:{ value: IRawGrammar, errors: string[]; };
-
-	tmp = parsePLIST<IRawGrammar>(contents);
-
-	if (tmp.errors && tmp.errors.length > 0) {
-		throw new Error('Error parsing PLIST: ' + tmp.errors.join(','));
-	}
-
-	return tmp.value;
+	return <IRawGrammar>plist.parse(contents);
 }
