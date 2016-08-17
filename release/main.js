@@ -1181,7 +1181,8 @@ function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, a
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
     var lineLength = rule_1.getString(lineText).length;
     var anchorPosition = -1;
-    while (linePos < lineLength) {
+    var STOP = false;
+    while (!STOP) {
         scanNext(); // potentially modifies linePos && anchorPosition
     }
     function scanNext() {
@@ -1189,8 +1190,8 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         if (!r) {
             // No match
             lineTokens.produce(stack, lineLength);
-            linePos = lineLength;
-            return true;
+            STOP = true;
+            return;
         }
         var captureIndices = r.captureIndices;
         var matchedRuleId = r.matchedRuleId;
@@ -1212,14 +1213,14 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 // Let's assume this was a mistake by the grammar author and the intent was to continue in this state
                 stack = stack.pushElement(popped);
                 lineTokens.produce(stack, lineLength);
-                linePos = lineLength;
-                return false;
+                STOP = true;
+                return;
             }
         }
         else if (matchedRuleId === -3) {
             // A while clause failed
             stack = stack.pop();
-            return true;
+            return;
         }
         else {
             // We matched a rule!
@@ -1242,8 +1243,8 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                     console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack = stack.pop();
                     lineTokens.produce(stack, lineLength);
-                    linePos = lineLength;
-                    return false;
+                    STOP = true;
+                    return;
                 }
             }
             else if (_rule instanceof rule_1.BeginWhileRule) {
@@ -1260,8 +1261,8 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                     console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
                     stack = stack.pop();
                     lineTokens.produce(stack, lineLength);
-                    linePos = lineLength;
-                    return false;
+                    STOP = true;
+                    return;
                 }
             }
             else {
@@ -1275,8 +1276,8 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                     console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
                     stack = stack.safePop();
                     lineTokens.produce(stack, lineLength);
-                    linePos = lineLength;
-                    return false;
+                    STOP = true;
+                    return;
                 }
             }
         }
@@ -1285,7 +1286,6 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             linePos = captureIndices[0].end;
             isFirstLine = false;
         }
-        return true;
     }
     return stack;
 }

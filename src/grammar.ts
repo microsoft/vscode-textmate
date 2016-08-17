@@ -463,19 +463,20 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	const lineLength = getString(lineText).length;
 
 	let anchorPosition = -1;
+	let STOP = false;
 
-	while (linePos < lineLength) {
+	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
 	}
 
-	function scanNext() : boolean {
+	function scanNext() : void {
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 		if (!r) {
 			// No match
 			lineTokens.produce(stack, lineLength);
-			linePos = lineLength;
-			return true;
+			STOP = true;
+			return;
 		}
 
 		let captureIndices: IOnigCaptureIndex[] = r.captureIndices;
@@ -505,14 +506,13 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				stack = stack.pushElement(popped);
 
 				lineTokens.produce(stack, lineLength);
-				linePos = lineLength;
-
-				return false;
+				STOP = true;
+				return;
 			}
 		} else if (matchedRuleId === -3) {
 			// A while clause failed
 			stack = stack.pop();
-			return true;
+			return;
 
 		} else {
 			// We matched a rule!
@@ -541,8 +541,8 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack = stack.pop();
 					lineTokens.produce(stack, lineLength);
-					linePos = lineLength;
-					return false;
+					STOP = true;
+					return;
 				}
 			} else if (_rule instanceof BeginWhileRule) {
 				let pushedRule = <BeginWhileRule>_rule;
@@ -561,8 +561,8 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					stack = stack.pop();
 					lineTokens.produce(stack, lineLength);
-					linePos = lineLength;
-					return false;
+					STOP = true;
+					return;
 				}
 			} else {
 				let matchingRule = <MatchRule>_rule;
@@ -578,8 +578,8 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
 					stack = stack.safePop();
 					lineTokens.produce(stack, lineLength);
-					linePos = lineLength;
-					return false;
+					STOP = true;
+					return;
 				}
 			}
 		}
@@ -589,7 +589,6 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			linePos = captureIndices[0].end;
 			isFirstLine = false;
 		}
-		return true;
 	}
 
 	return stack;

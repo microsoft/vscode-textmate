@@ -917,5 +917,48 @@
 				}]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade.json"
+		],
+		"grammarPath": "fixtures/Jade.json",
+		"desc": "Issue #17",
+		"lines": [
+			{
+				"line": ".ssdsd",
+				"tokens": [{
+					"value": ".ssdsd",
+					"scopes": [
+						"text.jade"
+					]
+				}]
+			},
+			{
+				"line": "",
+				"tokens": [{
+					"value": "",
+					"scopes": [
+						"text.jade"
+					]
+				}]
+			},
+			{
+				"line": "    // asdsdas",
+				"tokens": [{
+					"value": "    //",
+					"scopes": [
+						"text.jade",
+						"string.comment.buffered.block.jade"
+					]
+				}, {
+					"value": " asdsdas",
+					"scopes": [
+						"text.jade",
+						"string.comment.buffered.block.jade"
+					]
+				}]
+			}
+		]
 	}
 ]
