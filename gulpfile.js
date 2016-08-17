@@ -74,8 +74,3 @@ gulp.task('watch', ['bundle'], function () {
 		'src/**/*.ts'
 	], ['bundle']);
 });
-
-gulp.task('test', function () {
-	var tests = require('./scripts/tests.js');
-	tests.runTests();
-});
