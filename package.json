@@ -15,8 +15,8 @@
     "url": "https://github.com/Microsoft/vscode-textmate/issues"
   },
   "scripts": {
-    "watch": "./node_modules/.bin/gulp watch",
-    "test": "./node_modules/.bin/gulp test",
+    "watch": "gulp watch",
+    "test": "mocha out/tests/tests",
     "benchmark": "node benchmark/benchmark.js"
   },
   "dependencies": {
@@ -24,10 +24,10 @@
     "oniguruma": "^6.0.1"
   },
   "devDependencies": {
-    "colors": "^1.1.2",
     "event-stream": "^3.3.1",
     "gulp": "^3.9.0",
     "gulp-concat": "^2.6.0",
-    "gulp-typescript": "^2.8.2"
+    "gulp-typescript": "^2.8.2",
+    "mocha": "^3.0.2"
   }
 }

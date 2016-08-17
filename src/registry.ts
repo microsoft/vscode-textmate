@@ -3,8 +3,8 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import fs = require('fs');
-import path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
 import {createGrammar, collectIncludedScopes, IGrammarRepository, IGrammar, IScopeNameSet} from './grammar';
 import {IRawGrammar} from './types';
 

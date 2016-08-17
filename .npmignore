@@ -1,7 +1,6 @@
 .vscode/
 benchmark/
 out/
-release/tests/
 src/
 test-cases/
 .npmignore

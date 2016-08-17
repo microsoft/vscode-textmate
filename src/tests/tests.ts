@@ -3,128 +3,37 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import fs = require('fs');
-import path = require('path');
+import * as fs from 'fs';
+import * as path from 'path';
+import * as assert from 'assert';
 import {Registry, createMatcher, IGrammarLocator} from '../main';
 import {IToken, StackElement, IGrammar} from '../grammar';
-import 'colors';
 
-enum TestResult {
-	Pending,
-	Success,
-	Failed
-}
+const REPO_ROOT = path.join(__dirname, '../../');
 
-class Test {
-	testName:string;
-	result:TestResult;
-	failReason: string;
+function assertTokenizationSuite(testLocation: string): void {
 
-	private _runner: (ctx:TestContext) => void;
-
-	constructor(testName:string, runner: (ctx:TestContext) => void) {
-		this.testName = testName;
-		this._runner = runner;
-		this.result = TestResult.Pending;
-		this.failReason = null;
+	interface IRawTest {
+		desc: string;
+		grammars: string[];
+		grammarPath?: string;
+		grammarScopeName?: string;
+		grammarInjections?: string[];
+		lines: IRawTestLine[];
+	}
+	interface IRawTestLine {
+		line: string;
+		tokens: IRawToken[];
+	}
+	interface IRawToken {
+		value: string;
+		scopes: string[];
 	}
 
-	public run(): void {
-		let ctx = new TestContext(this);
-		try {
-			this.result = TestResult.Success;
-			this._runner(ctx);
-		} catch(err) {
-			this.result = TestResult.Failed;
-			this.failReason = err;
-		}
-	}
-
-	public fail<T>(message:string, actual:T, expected:T): void {
-		this.result = TestResult.Failed;
-		let reason = [
-			message
-		];
-		if (actual) {
-			'ACTUAL: ' + reason.push(JSON.stringify(actual, null, '\t'))
-		}
-		if (expected) {
-			'EXPECTED: ' + reason.push(JSON.stringify(expected, null, '\t'))
-		}
-		this.failReason = reason.join('\n');
-	}
-}
-
-class TestContext {
-
-	private _test: Test;
-
-	constructor(test: Test) {
-		this._test = test;
-	}
-
-	public fail<T>(message:string, actual?:T, expected?:T): void {
-		this._test.fail(message, actual, expected);
-	}
-}
-
-class TestManager {
-
-	private _tests:Test[];
-
-	constructor() {
-		this._tests = [];
-	}
-
-	registerTest(testName: string, runner:(ctx:TestContext)=>void): void {
-		this._tests.push(new Test(testName, runner));
-	}
-
-	runTests(): void {
-
-		let len = this._tests.length;
-
-		for (let i = 0; i < len; i++) {
-			let test = this._tests[i];
-			let progress = (i + 1) + '/' + len;
-			console.log((<any>progress).yellow, ': ' + test.testName);
-			test.run();
-			if (test.result === TestResult.Failed) {
-				console.log((<any>'FAILED').red);
-				console.log(test.failReason);
-			}
-		}
-
-		let passed = this._tests.filter(t => t.result === TestResult.Success);
-
-		if (passed.length === len) {
-			console.log((<any>(passed.length + '/' + len + ' PASSED.')).green);
-		} else {
-			console.log((<any>(passed.length + '/' + len + ' PASSED.')).red);
-		}
-	}
-}
-
-export function runTests(tokenizationTestPaths:string[], matcherTestPaths:string[]): void {
-	let manager = new TestManager();
-
-	matcherTestPaths.forEach((path) => {
-		generateMatcherTests(manager, path);
-	});
-
-	tokenizationTestPaths.forEach((path) => {
-		generateTokenizationTests(manager, path)
-	});
-
-	manager.runTests();
-}
-
-function generateTokenizationTests(manager:TestManager, testLocation: string): void {
 	let tests:IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
 
-	let suiteName = path.join(path.basename(path.dirname(testLocation)), path.basename(testLocation));
-	tests.forEach(function(test, index) {
-		manager.registerTest(suiteName + ' > ' + test.desc, (ctx) => {
+	tests.forEach((test) => {
+		it (test.desc, () => {
 			let locator : IGrammarLocator = {
 				getFilePath: (scopeName:string) => null,
 				getInjections: (scopeName:string) => {
@@ -136,106 +45,95 @@ function generateTokenizationTests(manager:TestManager, testLocation: string): v
 			}
 
 			let registry = new Registry(locator);
+
 			let grammar: IGrammar = null;
-			test.grammars.forEach(function(grammarPath) {
+			test.grammars.forEach((grammarPath) => {
 				let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
 				if (test.grammarPath === grammarPath) {
 					grammar = tmpGrammar;
 				}
 			});
+
 			if (test.grammarScopeName) {
 				grammar = registry.grammarForScopeName(test.grammarScopeName);
 			}
-			let prevState: StackElement = null;
+
 			if (!grammar) {
-				ctx.fail('I HAVE NO GRAMMAR FOR TEST');
-				return;
+				throw new Error('I HAVE NO GRAMMAR FOR TEST');
 			}
+
+			let prevState: StackElement = null;
 			for (let i = 0; i < test.lines.length; i++) {
-				prevState = assertTokenization(ctx, grammar, test.lines[i], prevState);
+				prevState = assertLineTokenization(grammar, test.lines[i], prevState);
 			}
 		});
 	});
-}
 
-interface IRawTest {
-	desc: string;
-	grammars: string[];
-	grammarPath?: string;
-	grammarScopeName?: string;
-	grammarInjections?: string[];
-	lines: IRawTestLine[];
-}
+	function assertLineTokenization(grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement): StackElement {
+		let actual = grammar.tokenizeLine(testCase.line, prevState);
 
-interface IRawTestLine {
-	line: string;
-	tokens: IRawToken[];
-}
-
-interface IRawToken {
-	value: string;
-	scopes: string[];
-}
-
-function assertTokenization(ctx:TestContext, grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement): StackElement {
-	let r = grammar.tokenizeLine(testCase.line, prevState);
-	assertTokens(ctx, r.tokens, testCase.line, testCase.tokens);
-	return r.ruleStack;
-}
-
-function assertTokens(ctx:TestContext, actual:IToken[], line:string, expected:IRawToken[]): void {
-	let actualTokens:IRawToken[] = actual.map(function(token) {
-		return {
-			value: line.substring(token.startIndex, token.endIndex),
-			scopes: token.scopes
-		};
-	});
-	if (line.length > 0) {
-		// Remove empty tokens...
-		expected = expected.filter(function(token) {
-			return (token.value.length > 0);
+		let actualTokens:IRawToken[] = actual.tokens.map((token) => {
+			return {
+				value: testCase.line.substring(token.startIndex, token.endIndex),
+				scopes: token.scopes
+			};
 		});
-	}
-	if (actualTokens.length !== expected.length) {
-		ctx.fail('GOT DIFFERENT LENGTHS FOR ', actualTokens, expected);
-		return;
-	}
-	for (let i = 0, len = actualTokens.length; i < len; i++) {
-		assertToken(ctx, actualTokens[i], expected[i]);
-	}
-}
 
-function assertToken(ctx:TestContext, actual:IRawToken, expected:IRawToken): void {
-	if (actual.value !== expected.value) {
-		ctx.fail('test: GOT DIFFERENT VALUES FOR ', actual.value, expected.value);
-		return;
-	}
-	if (actual.scopes.length !== expected.scopes.length) {
-		ctx.fail('test: GOT DIFFERENT scope lengths FOR ', actual.scopes, expected.scopes);
-		return;
-	}
-	for (let i = 0, len = actual.scopes.length; i < len; i++) {
-		if (actual.scopes[i] !== expected.scopes[i]) {
-			ctx.fail('test: GOT DIFFERENT scopes FOR ', actual.scopes, expected.scopes);
-			return;
+		// TODO@Alex: fix tests instead of working around
+		if (testCase.line.length > 0) {
+			// Remove empty tokens...
+			testCase.tokens = testCase.tokens.filter((token) => {
+				return (token.value.length > 0);
+			});
 		}
+
+		assert.deepEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
+
+		return actual.ruleStack;
 	}
 }
 
-interface IMatcherTest {
-	expression: string;
-	input: string[];
-	result: boolean;
-}
+describe('Tokenization /first-mate/', () => {
+	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/first-mate/tests.json'));
+});
 
-function generateMatcherTests(manager:TestManager, testLocation: string) {
-	let tests:IMatcherTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
-	let suiteName = path.join(path.basename(path.dirname(testLocation)), path.basename(testLocation));
+describe('Tokenization /suite1/', () => {
+	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/tests.json'));
+});
 
-	var nameMatcher = (identifers: string[], stackElements: string[]) => {
-		var lastIndex = 0;
+describe('Matcher', () => {
+	let tests = [
+		{ "expression": "foo", "input": ["foo"], "result": true },
+		{ "expression": "foo", "input": ["bar"], "result": false },
+		{ "expression": "- foo", "input": ["foo"], "result": false },
+		{ "expression": "- foo", "input": ["bar"], "result": true },
+		{ "expression": "- - foo", "input": ["bar"], "result": false },
+		{ "expression": "bar foo", "input": ["foo"], "result": false },
+		{ "expression": "bar foo", "input": ["bar"], "result": false },
+		{ "expression": "bar foo", "input": ["bar", "foo"], "result": true },
+		{ "expression": "bar - foo", "input": ["bar"], "result": true },
+		{ "expression": "bar - foo", "input": ["foo", "bar"], "result": false },
+		{ "expression": "bar - foo", "input": ["foo"], "result": false },
+		{ "expression": "bar, foo", "input": ["foo"], "result": true },
+		{ "expression": "bar, foo", "input": ["bar"], "result": true },
+		{ "expression": "bar, foo", "input": ["bar", "foo"], "result": true },
+		{ "expression": "bar, -foo", "input": ["bar", "foo"], "result": true },
+		{ "expression": "bar, -foo", "input": ["yo"], "result": true },
+		{ "expression": "bar, -foo", "input": ["foo"], "result": false },
+		{ "expression": "(foo)", "input": ["foo"], "result": true },
+		{ "expression": "(foo - bar)", "input": ["foo"], "result": true },
+		{ "expression": "(foo - bar)", "input": ["foo", "bar"], "result": false },
+		{ "expression": "foo bar - (yo man)", "input": ["foo", "bar"], "result": true },
+		{ "expression": "foo bar - (yo man)", "input": ["foo", "bar", "yo"], "result": true },
+		{ "expression": "foo bar - (yo man)", "input": ["foo", "bar", "yo", "man"], "result": false },
+		{ "expression": "foo bar - (yo | man)", "input": ["foo", "bar", "yo", "man"], "result": false },
+		{ "expression": "foo bar - (yo | man)", "input": ["foo", "bar", "yo"], "result": false }
+	];
+
+	let nameMatcher = (identifers: string[], stackElements: string[]) => {
+		let lastIndex = 0;
 		return identifers.every(identifier => {
-			for (var i = lastIndex; i < stackElements.length; i++) {
+			for (let i = lastIndex; i < stackElements.length; i++) {
 				if (stackElements[i] === identifier) {
 					lastIndex = i + 1;
 					return true;
@@ -244,13 +142,12 @@ function generateMatcherTests(manager:TestManager, testLocation: string) {
 			return false;
 		});
 	};
+
 	tests.forEach((test, index) => {
-		manager.registerTest(suiteName + ' > ' + index, (ctx) => {
-			var matcher = createMatcher(test.expression, nameMatcher);
-			var result = matcher(test.input);
-			if (result !== test.result) {
-				ctx.fail('matcher expected', result, test.result);
-			}
+		it('Test #' + index, () => {
+			let matcher = createMatcher(test.expression, nameMatcher);
+			let result = matcher(test.input);
+			assert.equal(result, test.result);
 		});
 	});
-}
+});

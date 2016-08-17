@@ -19,7 +19,6 @@ gulp.task('compile', function () {
 });
 
 gulp.task('bundle', ['compile'], function () {
-	var tests = gulp.src(['out/tests/tests.js'], {base: 'out'});
 	var main = (
 		gulp.src([
 			'out/_prefix.js',
@@ -64,7 +63,6 @@ gulp.task('bundle', ['compile'], function () {
 	return (
 		es.merge(
 			main,
-			tests,
 			dts
 		)
 		.pipe(gulp.dest('./release'))
