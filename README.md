@@ -1,4 +1,4 @@
-# VSCode TextMate
+# VSCode TextMate [![Build Status](https://travis-ci.org/Microsoft/vscode-textmate.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-textmate) [![Coverage Status](https://coveralls.io/repos/github/Microsoft/vscode-textmate/badge.svg?branch=master)](https://coveralls.io/github/Microsoft/vscode-textmate?branch=master)
 
 An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Cross - grammar injections are currently not supported.
 
