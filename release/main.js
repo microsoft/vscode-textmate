@@ -2,21 +2,21 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-// declare var require;
 var $map = {};
 function $load(name, factory) {
     var mod = {
         exports: {}
     };
-    factory.call(this, function (mod) {
+    var requireFunc = function (mod) {
         if ($map[mod]) {
             return $map[mod].exports;
         }
         return require(mod);
-    }, mod, mod.exports);
+    };
+    factory.call(this, requireFunc, mod, mod.exports);
     $map[name] = mod;
 }
-
+//# sourceMappingURL=_prefix.js.map
 $load('./utils', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -95,7 +95,7 @@ var RegexSource = (function () {
     return RegexSource;
 }());
 exports.RegexSource = RegexSource;
-
+//# sourceMappingURL=utils.js.map
 });
 $load('./matcher', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -176,7 +176,7 @@ function newTokenizer(input) {
         }
     };
 }
-
+//# sourceMappingURL=matcher.js.map
 });
 $load('./grammarReader', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -248,7 +248,7 @@ function parseJSONGrammar(contents) {
 function parsePLISTGrammar(contents) {
     return plist.parse(contents);
 }
-
+//# sourceMappingURL=grammarReader.js.map
 });
 $load('./rule', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -837,7 +837,7 @@ var RuleFactory = (function () {
     return RuleFactory;
 }());
 exports.RuleFactory = RuleFactory;
-
+//# sourceMappingURL=rule.js.map
 });
 $load('./grammar', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -1453,7 +1453,7 @@ var LineTokens = (function () {
     };
     return LineTokens;
 }());
-
+//# sourceMappingURL=grammar.js.map
 });
 $load('./registry', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -1510,7 +1510,7 @@ var SyncRegistry = (function () {
     return SyncRegistry;
 }());
 exports.SyncRegistry = SyncRegistry;
-
+//# sourceMappingURL=registry.js.map
 });
 $load('./main', function(require, module, exports) {
 /*---------------------------------------------------------
@@ -1519,12 +1519,13 @@ $load('./main', function(require, module, exports) {
 'use strict';
 var registry_1 = require('./registry');
 var grammarReader_1 = require('./grammarReader');
-var expressionMatcher = require('./matcher');
-exports.createMatcher = expressionMatcher.createMatcher;
 var DEFAULT_LOCATOR = {
     getFilePath: function (scopeName) { return null; },
     getInjections: function (scopeName) { return null; }
 };
+/**
+ * The registry that will hold all grammars.
+ */
 var Registry = (function () {
     function Registry(locator) {
         if (locator === void 0) { locator = DEFAULT_LOCATOR; }
@@ -1580,6 +1581,7 @@ var Registry = (function () {
     return Registry;
 }());
 exports.Registry = Registry;
-
+//# sourceMappingURL=main.js.map
 });
 module.exports = $map['./main'].exports;
+//# sourceMappingURL=_suffix.js.map
