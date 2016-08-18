@@ -4,23 +4,8 @@
 'use strict';
 
 import {SyncRegistry as SyncRegistry} from './registry';
-import {IGrammar} from './grammar';
 import {readGrammar, readGrammarSync} from './grammarReader';
 import {IRawGrammar} from './types';
-import * as expressionMatcher from './matcher';
-export import createMatcher = expressionMatcher.createMatcher;
-
-export interface IGrammarLocator {
-	getFilePath(scopeName:string): string;
-	getInjections?(scopeName:string): string[];
-}
-
-export interface IGrammarInfo {
-	fileTypes: string[];
-	name: string;
-	scopeName: string;
-	firstLineMatch: string;
-}
 
 interface IBarrier {
 	(): void;
@@ -31,6 +16,17 @@ let DEFAULT_LOCATOR:IGrammarLocator = {
 	getInjections: (scopeName:string) => null
 };
 
+/**
+ * A registry helper that can locate grammar file paths given scope names.
+ */
+export interface IGrammarLocator {
+	getFilePath(scopeName:string): string;
+	getInjections?(scopeName:string): string[];
+}
+
+/**
+ * The registry that will hold all grammars.
+ */
 export class Registry {
 
 	private _locator: IGrammarLocator;
@@ -96,4 +92,45 @@ export class Registry {
 	public grammarForScopeName(scopeName:string): IGrammar {
 		return this._syncRegistry.grammarForScopeName(scopeName);
 	}
+}
+
+export interface IGrammarInfo {
+	fileTypes: string[];
+	name: string;
+	scopeName: string;
+	firstLineMatch: string;
+}
+
+/**
+ * A grammar
+ */
+export interface IGrammar {
+	/**
+	 * Tokenize `lineText` using previous line state `prevState`.
+	 */
+	tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
+}
+
+export interface ITokenizeLineResult {
+	tokens: IToken[];
+	/**
+	 * The `prevState` to be passed on to the next line tokenization.
+	 */
+	ruleStack: StackElement;
+}
+
+export interface IToken {
+	startIndex: number;
+	endIndex: number;
+	scopes: string[];
+}
+
+/**
+ * **IMPORTANT** - Immutable!
+ */
+export interface StackElement {
+	_parent: StackElement;
+	_stackElementBrand: void;
+
+	equals(other:StackElement): boolean;
 }

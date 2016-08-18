@@ -5,9 +5,10 @@
 
 import {clone} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule} from './types';
-import {IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
+import {IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
 import {IOnigCaptureIndex, IOnigNextMatchResult, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
+import {IGrammar, ITokenizeLineResult, IToken, StackElement as StackElementDef} from './main';
 
 export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRepository): IGrammar {
 	return new Grammar(grammar, grammarRepository);
@@ -16,21 +17,6 @@ export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRep
 export interface IGrammarRepository {
 	lookup(scopeName:string): IRawGrammar;
 	injections(scopeName:string): string[];
-}
-
-export interface IGrammar {
-	tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
-}
-
-export interface ITokenizeLineResult {
-	tokens: IToken[];
-	ruleStack: StackElement;
-}
-
-export interface IToken {
-	startIndex: number;
-	endIndex: number;
-	scopes: string[];
 }
 
 export interface IScopeNameSet {
@@ -597,10 +583,10 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 /**
  * **IMPORTANT** - Immutable!
  */
-export class StackElement {
+export class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
-	private _parent: StackElement;
+	public _parent: StackElement;
 	private _enterPos: number;
 	private _ruleId: number;
 	private _endRule: string;
@@ -668,7 +654,7 @@ export class StackElement {
 		return this._enterPos;
 	}
 
-	public getRule(grammar:Grammar): Rule {
+	public getRule(grammar:IRuleRegistry): Rule {
 		return grammar.getRule(this._ruleId);
 	}
 

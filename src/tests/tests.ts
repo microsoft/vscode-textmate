@@ -6,8 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import {Registry, createMatcher, IGrammarLocator} from '../main';
-import {IToken, StackElement, IGrammar} from '../grammar';
+import {Registry, IToken, IGrammar, IGrammarLocator, StackElement} from '../main';
+import {createMatcher} from '../matcher';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 

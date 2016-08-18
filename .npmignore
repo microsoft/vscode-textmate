@@ -4,6 +4,7 @@
 /out/
 /src/
 /test-cases/
+/typings/
 /.npmignore
 /.travis.yml
 /gulpfile.js

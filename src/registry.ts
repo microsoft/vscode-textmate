@@ -5,8 +5,9 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import {createGrammar, collectIncludedScopes, IGrammarRepository, IGrammar, IScopeNameSet} from './grammar';
+import {createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet} from './grammar';
 import {IRawGrammar} from './types';
+import {IGrammar} from './main';
 
 export class SyncRegistry implements IGrammarRepository {
 

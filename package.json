@@ -6,6 +6,7 @@
     "name": "Microsoft Corporation"
   },
   "main": "./release/main.js",
+  "typings": "./release/main.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/Microsoft/vscode-textmate"
