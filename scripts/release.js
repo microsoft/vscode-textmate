@@ -9,6 +9,10 @@ cp.execSync('node node_modules/typescript/bin/tsc', {
 var OUT_FOLDER = path.join(__dirname, '../out');
 var RELEASE_FOLDER = path.join(__dirname, '../release');
 
+if (!fs.existsSync(RELEASE_FOLDER)) {
+	fs.mkdirSync(RELEASE_FOLDER);
+}
+
 var sources = [
 	'utils.js',
 	'matcher.js',
