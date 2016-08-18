@@ -65,9 +65,10 @@ export interface IToken {
 }
 
 /**
- * Should not be used by consumers, as its shape might change at any time.
+ * **IMPORTANT** - Immutable!
  */
 export interface StackElement {
+	_parent: StackElement;
 	_stackElementBrand: void;
 
 	equals(other:StackElement): boolean;

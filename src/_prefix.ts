@@ -11,21 +11,29 @@ interface IModuleMap {
 	[path:string]: IModule;
 }
 
-// declare var require;
+interface IFactoryFunc {
+	(require:IFactoryRequireFunc, module: IModule, exports: any): void;
+}
 
-var $map:IModuleMap = {};
+interface IFactoryRequireFunc {
+	(name:string): any;
+}
 
-function $load(name, factory) {
-	var mod: IModule = {
+let $map:IModuleMap = {};
+
+function $load(name:string, factory:IFactoryFunc) {
+	let mod: IModule = {
 		exports: {}
 	};
 
-	factory.call(this, function(mod) {
+	let requireFunc: IFactoryRequireFunc = (mod) => {
 		if ($map[mod]) {
 			return $map[mod].exports;
 		}
 		return require(mod);
-	}, mod, mod.exports);
+	};
+
+	factory.call(this, requireFunc, mod, mod.exports);
 
 	$map[name] = mod;
 }

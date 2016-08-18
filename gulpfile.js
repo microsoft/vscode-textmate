@@ -4,15 +4,14 @@ var path = require('path');
 var es = require('event-stream');
 var concat = require('gulp-concat');
 
+var compilerOptions = require('./src/tsconfig').compilerOptions;
+
 gulp.task('compile', function () {
 	return (
 		gulp.src([
 			'src/**/*.ts'
 		])
-		.pipe(tsc({
-			target: 'es5',
-			module: 'commonjs'
-      }))
+		.pipe(tsc(compilerOptions))
 		.js
 		.pipe(gulp.dest('./out'))
 	);
