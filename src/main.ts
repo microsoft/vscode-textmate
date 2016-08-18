@@ -37,6 +37,9 @@ export class Registry {
 		this._syncRegistry = new SyncRegistry();
 	}
 
+	/**
+	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+	 */
 	public loadGrammar(initialScopeName:string, callback:(err:any, grammar:IGrammar)=>void): void {
 
 		let remainingScopeNames = [ initialScopeName ];
@@ -82,6 +85,9 @@ export class Registry {
 		callback(null, this.grammarForScopeName(initialScopeName));
 	}
 
+	/**
+	 * Load the grammar at `path` synchronously.
+	 */
 	public loadGrammarFromPathSync(path:string): IGrammar {
 		let rawGrammar = readGrammarSync(path);
 		let injections = this._locator.getInjections(rawGrammar.scopeName);
@@ -89,6 +95,9 @@ export class Registry {
 		return this.grammarForScopeName(rawGrammar.scopeName);
 	}
 
+	/**
+	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
+	 */
 	public grammarForScopeName(scopeName:string): IGrammar {
 		return this._syncRegistry.grammarForScopeName(scopeName);
 	}

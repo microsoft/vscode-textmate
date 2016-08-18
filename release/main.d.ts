@@ -12,8 +12,17 @@ export declare class Registry {
     private _locator;
     private _syncRegistry;
     constructor(locator?: IGrammarLocator);
+    /**
+     * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+     */
     loadGrammar(initialScopeName: string, callback: (err: any, grammar: IGrammar) => void): void;
+    /**
+     * Load the grammar at `path` synchronously.
+     */
     loadGrammarFromPathSync(path: string): IGrammar;
+    /**
+     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
+     */
     grammarForScopeName(scopeName: string): IGrammar;
 }
 export interface IGrammarInfo {

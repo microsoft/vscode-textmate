@@ -1,5 +1,10 @@
+var cp = require('child_process');
 var fs = require('fs');
 var path = require('path');
+
+cp.execSync('node node_modules/typescript/bin/tsc', {
+	cwd: path.join(__dirname, '..')
+});
 
 var OUT_FOLDER = path.join(__dirname, '../out');
 var RELEASE_FOLDER = path.join(__dirname, '../release');

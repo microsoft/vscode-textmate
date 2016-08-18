@@ -1532,6 +1532,9 @@ var Registry = (function () {
         this._locator = locator;
         this._syncRegistry = new registry_1.SyncRegistry();
     }
+    /**
+     * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+     */
     Registry.prototype.loadGrammar = function (initialScopeName, callback) {
         var remainingScopeNames = [initialScopeName];
         var seenScopeNames = {};
@@ -1569,12 +1572,18 @@ var Registry = (function () {
         }
         callback(null, this.grammarForScopeName(initialScopeName));
     };
+    /**
+     * Load the grammar at `path` synchronously.
+     */
     Registry.prototype.loadGrammarFromPathSync = function (path) {
         var rawGrammar = grammarReader_1.readGrammarSync(path);
         var injections = this._locator.getInjections(rawGrammar.scopeName);
         this._syncRegistry.addGrammar(rawGrammar, injections);
         return this.grammarForScopeName(rawGrammar.scopeName);
     };
+    /**
+     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
+     */
     Registry.prototype.grammarForScopeName = function (scopeName) {
         return this._syncRegistry.grammarForScopeName(scopeName);
     };

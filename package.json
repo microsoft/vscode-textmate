@@ -20,7 +20,8 @@
     "compile": "gulp compile",
     "test": "mocha out/tests/tests",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/tests",
-    "benchmark": "node benchmark/benchmark.js"
+    "benchmark": "node benchmark/benchmark.js",
+    "prepublish": "node scripts/release.js"
   },
   "dependencies": {
     "fast-plist": "^0.1.0",
