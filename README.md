@@ -75,6 +75,7 @@ See [the main.ts file](./src/main.ts)
 * Compile in the background with `npm run watch`
 * Run tests with `npm test`
 * Run benchmark with `npm run benchmark`
+* Troubleshoot a grammar with `npm run inspect -- PATH_TO_GRAMMAR PATH_TO_FILE`
 
 ## License
 [MIT](https://github.com/Microsoft/vscode-textmate/blob/master/LICENSE.md)
