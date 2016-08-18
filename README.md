@@ -77,6 +77,11 @@ See [the main.ts file](./src/main.ts)
 * Run benchmark with `npm run benchmark`
 * Troubleshoot a grammar with `npm run inspect -- PATH_TO_GRAMMAR PATH_TO_FILE`
 
+## Code of Conduct
+
+This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+
+
 ## License
 [MIT](https://github.com/Microsoft/vscode-textmate/blob/master/LICENSE.md)
 
