@@ -12,5 +12,6 @@ addons:
 script:
   - npm run compile
   - npm run test-travis
-# Send coverage data to Coveralls
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+after_script:
+ - remap-istanbul -i ./coverage/coverage.json -t lcovonly > ./coverage/lcov-remap.info
+ - cat ./coverage/lcov-remap.info | ./node_modules/coveralls/bin/coveralls.js

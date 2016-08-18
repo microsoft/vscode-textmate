@@ -66,7 +66,7 @@ for (var i = 0; i < lines.length; i++) {
 
 ## API doc
 
-See [the .d.ts file](./src/typings/main.d.ts)
+See [the main.ts file](./src/main.ts)
 
 ## Developing
 
