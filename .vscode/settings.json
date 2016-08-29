@@ -8,5 +8,6 @@
 		"**/bower_components": true,
 		"out/**": true,
 		"release/**": true
-	}
+	},
+	"lcov.sourceMaps": true
 }
