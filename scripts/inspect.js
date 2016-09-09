@@ -1,14 +1,20 @@
-if (process.argv.length !== 4) {
-    console.log('usage: node index.js <grammarPath> <filePath>');
+if (process.argv.length < 4) {
+    console.log('usage: node index.js <mainGrammarPath> [<additionalGrammarPath1> ...] <filePath>');
     process.exit(0);
 }
 
-var GRAMMAR_PATH = process.argv[2];
-var FILE_PATH = process.argv[3];
+var GRAMMAR_PATHS = process.argv.slice(2, process.argv.length - 1);
+var FILE_PATH = process.argv[process.argv.length - 1];
 
 var Registry = require('../out/main').Registry;
 var registry = new Registry();
-var grammar = registry.loadGrammarFromPathSync(GRAMMAR_PATH);
+
+console.log('LOADING GRAMMAR' + GRAMMAR_PATHS[0]);
+var grammar = registry.loadGrammarFromPathSync(GRAMMAR_PATHS[0]);
+for (var i = 1; i < GRAMMAR_PATHS.length; i++) {
+    console.log('LOADING GRAMMAR' + GRAMMAR_PATHS[i]);
+    registry.loadGrammarFromPathSync(GRAMMAR_PATHS[i]);
+}
 
 var fileContents = require('fs').readFileSync(FILE_PATH).toString();
 var lines = fileContents.split(/\r\n|\r|\n/);
