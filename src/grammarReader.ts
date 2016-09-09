@@ -6,6 +6,8 @@
 import * as fs from 'fs';
 import {IRawGrammar} from './types';
 import * as plist from 'fast-plist';
+import {CAPTURE_METADATA} from './debug';
+import {parse as manualParseJSON} from './json';
 
 export function readGrammar(filePath:string, callback:(error:any, grammar:IRawGrammar)=>void): void {
 	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
@@ -75,6 +77,9 @@ function getGrammarParser(filePath:string): IGrammarParser {
 }
 
 function parseJSONGrammar(contents:string): IRawGrammar {
+	if (CAPTURE_METADATA) {
+		return <IRawGrammar>manualParseJSON(contents, true);
+	}
 	return <IRawGrammar>JSON.parse(contents);
 }
 

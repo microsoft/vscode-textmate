@@ -6,6 +6,8 @@ if (process.argv.length < 4) {
 var GRAMMAR_PATHS = process.argv.slice(2, process.argv.length - 1);
 var FILE_PATH = process.argv[process.argv.length - 1];
 
+process.env['VSCODE_TEXTMATE_DEBUG'] = true;
+
 var Registry = require('../out/main').Registry;
 var registry = new Registry();
 

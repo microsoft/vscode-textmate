@@ -16,7 +16,7 @@
     "url": "https://github.com/Microsoft/vscode-textmate/issues"
   },
   "scripts": {
-    "watch": "tsc watch",
+    "watch": "tsc -watch",
     "compile": "tsc",
     "test": "mocha out/tests/tests",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/tests",

@@ -9,6 +9,7 @@ import {IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, Begin
 import {IOnigCaptureIndex, IOnigNextMatchResult, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
 import {IGrammar, ITokenizeLineResult, IToken, StackElement as StackElementDef} from './main';
+import {IN_DEBUG_MODE} from './debug';
 
 export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRepository): IGrammar {
 	return new Grammar(grammar, grammarRepository);
@@ -456,6 +457,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	}
 
 	function scanNext() : void {
+		if (IN_DEBUG_MODE) {
+			console.log('@@scanNext: |||' + getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|||');
+		}
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 		if (!r) {
