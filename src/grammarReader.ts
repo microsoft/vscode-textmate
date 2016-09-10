@@ -87,5 +87,8 @@ function parseJSONGrammar(contents:string, filename:string): IRawGrammar {
 }
 
 function parsePLISTGrammar(contents:string, filename:string): IRawGrammar {
+	if (CAPTURE_METADATA) {
+		return <IRawGrammar>plist.parseWithLocation(contents, filename, '$vscodeTextmateLocation');
+	}
 	return <IRawGrammar>plist.parse(contents);
 }
