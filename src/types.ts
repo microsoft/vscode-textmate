@@ -5,7 +5,17 @@
 
 // -- raw grammar typings
 
-export interface IRawGrammar {
+export interface ILocation {
+	filename: string;
+	line: number;
+	char: number;
+}
+
+export interface ILocatable {
+	$vscodeTextmateLocation?:ILocation;
+}
+
+export interface IRawGrammar extends ILocatable {
 	repository: IRawRepository;
 	scopeName: string;
 	patterns: IRawRule[];
@@ -17,13 +27,13 @@ export interface IRawGrammar {
 	firstLineMatch?: string;
 }
 
-export interface IRawRepository {
+export interface IRawRepository extends ILocatable {
 	[name:string]: IRawRule;
 	$self: IRawRule;
 	$base: IRawRule;
 }
 
-export interface IRawRule {
+export interface IRawRule extends ILocatable {
 	id?: number;
 
 	include?: string;
@@ -45,6 +55,6 @@ export interface IRawRule {
 	applyEndPatternLast?:boolean;
 }
 
-export interface IRawCaptures {
+export interface IRawCaptures extends ILocatable {
 	[captureId:string]: IRawRule;
 }

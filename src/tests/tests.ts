@@ -156,7 +156,7 @@ describe('Matcher', () => {
 describe('JSON', () => {
 	function isValid(json: string): void {
 		let expected = JSON.parse(json);
-		let actual = JSONparse(json, false);
+		let actual = JSONparse(json, null, false);
 		assert.deepEqual(actual, expected);
 
 		// let actual2 = JSONparse(json, true);
@@ -166,8 +166,7 @@ describe('JSON', () => {
 	function isInvalid(json: string): void {
 		let hadErr = false;
 		try {
-			var actual = JSONparse(json, false);
-			console.log('it parsed!!!');
+			var actual = JSONparse(json, null, false);
 		} catch(err) {
 			hadErr = true;
 		}

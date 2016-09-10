@@ -233,7 +233,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		lineText = lineText + '\n';
 		let onigLineText = createOnigString(lineText);
 		let lineLength = getString(onigLineText).length;
-		let lineTokens = new LineTokens();
+		let lineTokens = new LineTokens(lineText);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
 
 		let _produced = lineTokens.getResult(nextState, lineLength);
@@ -250,6 +250,7 @@ function initGrammar(grammar:IRawGrammar, base:IRawRule): IRawGrammar {
 
 	grammar.repository = grammar.repository || <any>{};
 	grammar.repository.$self = {
+		$vscodeTextmateLocation: grammar.$vscodeTextmateLocation,
 		patterns: grammar.patterns,
 		name: grammar.scopeName
 	};
@@ -458,11 +459,15 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 	function scanNext() : void {
 		if (IN_DEBUG_MODE) {
-			console.log('@@scanNext: |||' + getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|||');
+			console.log('');
+			console.log('@@scanNext: |' + getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|');
 		}
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 		if (!r) {
+			if (IN_DEBUG_MODE) {
+				console.log('  no more matches.');
+			}
 			// No match
 			lineTokens.produce(stack, lineLength);
 			STOP = true;
@@ -477,6 +482,10 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 		if (matchedRuleId === -1) {
 			// We matched the `end` for this rule => pop it
 			let poppedRule = <BeginEndRule>stack.getRule(grammar);
+
+			if (IN_DEBUG_MODE) {
+				console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
+			}
 
 			lineTokens.produce(stack, captureIndices[0].start);
 			stack = stack.withContentName(null);
@@ -500,6 +509,11 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				return;
 			}
 		} else if (matchedRuleId === -3) {
+
+			if (IN_DEBUG_MODE) {
+				console.log('  popping because a while clause no longer matches.');
+			}
+
 			// A while clause failed
 			stack = stack.pop();
 			return;
@@ -516,6 +530,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
+				if (IN_DEBUG_MODE) {
+					console.log('  pushing ' + pushedRule.debugName + ' - ' + pushedRule.debugBeginRegExp);
+				}
 
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
@@ -536,6 +553,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				}
 			} else if (_rule instanceof BeginWhileRule) {
 				let pushedRule = <BeginWhileRule>_rule;
+				if (IN_DEBUG_MODE) {
+					console.log('  pushing ' + pushedRule.debugName);
+				}
 
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
@@ -556,6 +576,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				}
 			} else {
 				let matchingRule = <MatchRule>_rule;
+				if (IN_DEBUG_MODE) {
+					console.log('  matched ' + matchingRule.debugName + ' - ' + matchingRule.debugMatchRegExp);
+				}
 
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
@@ -741,10 +764,14 @@ class LocalStackElement {
 
 class LineTokens {
 
+	private _lineText: string;
 	private _tokens: IToken[];
 	private _lastTokenEndIndex: number;
 
-	constructor() {
+	constructor(lineText:string) {
+		if (IN_DEBUG_MODE) {
+			this._lineText = lineText;
+		}
 		this._tokens = [];
 		this._lastTokenEndIndex = 0;
 	}
@@ -761,6 +788,13 @@ class LineTokens {
 		if (extraScopes) {
 			for (let i = 0; i < extraScopes.length; i++) {
 				scopes[outIndex++] = extraScopes[i].scopeName;
+			}
+		}
+
+		if (IN_DEBUG_MODE) {
+			console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
+			for (var k = 0; k < scopes.length; k++) {
+				console.log('      * ' + scopes[k]);
 			}
 		}
 

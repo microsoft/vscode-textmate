@@ -4,17 +4,20 @@
 'use strict';
 
 import * as fs from 'fs';
+import * as path from 'path';
 import {IRawGrammar} from './types';
 import * as plist from 'fast-plist';
 import {CAPTURE_METADATA} from './debug';
 import {parse as manualParseJSON} from './json';
 
 export function readGrammar(filePath:string, callback:(error:any, grammar:IRawGrammar)=>void): void {
+	filePath = path.join(process.cwd(), filePath);
 	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
 	reader.load(callback);
 }
 
 export function readGrammarSync(filePath:string): IRawGrammar {
+	filePath = path.join(process.cwd(), filePath);
 	try {
 		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
 		return reader.load();
@@ -24,7 +27,7 @@ export function readGrammarSync(filePath:string): IRawGrammar {
 }
 
 interface IGrammarParser {
-	(contents:string): IRawGrammar;
+	(contents:string, filename:string): IRawGrammar;
 }
 
 class AsyncGrammarReader {
@@ -44,7 +47,7 @@ class AsyncGrammarReader {
 			}
 			let r:IRawGrammar;
 			try {
-				r = this._parser(contents.toString());
+				r = this._parser(contents.toString(), this._filePath);
 			} catch (err) {
 				callback(err, null);
 				return;
@@ -65,7 +68,7 @@ class SyncGrammarReader {
 
 	public load(): IRawGrammar {
 		let contents = fs.readFileSync(this._filePath)
-		return this._parser(contents.toString());
+		return this._parser(contents.toString(), this._filePath);
 	}
 }
 
@@ -76,13 +79,13 @@ function getGrammarParser(filePath:string): IGrammarParser {
 	return parsePLISTGrammar;
 }
 
-function parseJSONGrammar(contents:string): IRawGrammar {
+function parseJSONGrammar(contents:string, filename:string): IRawGrammar {
 	if (CAPTURE_METADATA) {
-		return <IRawGrammar>manualParseJSON(contents, true);
+		return <IRawGrammar>manualParseJSON(contents, filename, true);
 	}
 	return <IRawGrammar>JSON.parse(contents);
 }
 
-function parsePLISTGrammar(contents:string): IRawGrammar {
+function parsePLISTGrammar(contents:string, filename:string): IRawGrammar {
 	return <IRawGrammar>plist.parse(contents);
 }

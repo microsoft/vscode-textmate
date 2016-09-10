@@ -8,7 +8,13 @@ function doFail(streamState:JSONStreamState, msg:string): void {
 	throw new Error('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
 }
 
-export function parse(source:string, withMetadata:boolean): any {
+export interface ILocation {
+	filename: string;
+	line: number;
+	char: number;
+}
+
+export function parse(source:string, filename:string, withMetadata:boolean): any {
 	let streamState = new JSONStreamState(source);
 	let token = new JSONToken();
 	let state = JSONState.ROOT_STATE;
@@ -41,6 +47,7 @@ export function parse(source:string, withMetadata:boolean): any {
 
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
 				cur = {};
+				cur.$vscodeTextmateLocation = token.toLocation(filename);
 				pushState(JSONState.DICT_STATE, cur);
 				continue;
 			}
@@ -117,7 +124,8 @@ export function parse(source:string, withMetadata:boolean): any {
 					continue;
 				}
 				if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
-					let newDict = {};
+					let newDict:any = {};
+					newDict.$vscodeTextmateLocation = token.toLocation(filename);
 					cur[keyValue] = newDict;
 					pushState(JSONState.DICT_STATE, newDict);
 					continue;
@@ -179,7 +187,8 @@ export function parse(source:string, withMetadata:boolean): any {
 				continue;
 			}
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
-				let newDict = {};
+				let newDict:any = {};
+				newDict.$vscodeTextmateLocation = token.toLocation(filename);
 				cur.push(newDict);
 				pushState(JSONState.DICT_STATE, newDict);
 				continue;
@@ -292,6 +301,14 @@ class JSONToken {
 		this.len = -1;
 		this.line = -1;
 		this.char = -1;
+	}
+
+	toLocation(filename:string): ILocation {
+		return {
+			filename: filename,
+			line: this.line,
+			char: this.char
+		};
 	}
 }
 

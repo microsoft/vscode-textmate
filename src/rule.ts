@@ -3,8 +3,9 @@
  *--------------------------------------------------------*/
 'use strict';
 
+import * as path from 'path';
 import {RegexSource, mergeObjects} from './utils';
-import {IRawGrammar, IRawRepository, IRawRule, IRawCaptures} from './types';
+import {ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures} from './types';
 import {OnigString, OnigScanner, IOnigCaptureIndex} from 'oniguruma';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
@@ -27,8 +28,9 @@ export interface ICompiledRule {
 	rules: number[];
 }
 
-export class Rule {
+export abstract class Rule {
 
+	public $location:ILocation;
 	public id:number;
 
 	private _nameIsCapturing: boolean;
@@ -37,12 +39,17 @@ export class Rule {
 	private _contentNameIsCapturing: boolean;
 	private _contentName: string;
 
-	constructor(id:number, name:string, contentName:string) {
+	constructor($location:ILocation, id:number, name:string, contentName:string) {
+		this.$location = $location;
 		this.id = id;
 		this._name = name || null;
 		this._nameIsCapturing = RegexSource.hasCaptures(this._name);
 		this._contentName = contentName || null;
 		this._contentNameIsCapturing = RegexSource.hasCaptures(this._contentName);
+	}
+
+	public get debugName(): string {
+		return `${(<any>this.constructor).name}#${this.id} @ ${path.basename(this.$location.filename)}:${this.$location.line}`;
 	}
 
 	public getName(lineText: string, captureIndices:IOnigCaptureIndex[]): string {
@@ -77,8 +84,8 @@ export class CaptureRule extends Rule {
 
 	public retokenizeCapturedWithRuleId: number;
 
-	constructor(id:number, name:string, contentName:string, retokenizeCapturedWithRuleId:number) {
-		super(id, name, contentName);
+	constructor($location:ILocation, id:number, name:string, contentName:string, retokenizeCapturedWithRuleId:number) {
+		super($location, id, name, contentName);
 		this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
 	}
 }
@@ -380,11 +387,15 @@ export class MatchRule extends Rule {
 	public captures: CaptureRule[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
-	constructor(id: number, name: string, match: string, captures: CaptureRule[]) {
-		super(id, name, null);
+	constructor($location:ILocation, id: number, name: string, match: string, captures: CaptureRule[]) {
+		super($location, id, name, null);
 		this._match = new RegExpSource(match, this.id);
 		this.captures = captures;
 		this._cachedCompiledPatterns = null;
+	}
+
+	public get debugMatchRegExp(): string {
+		return `${this._match.source}`;
 	}
 
 	public collectPatternsRecursive(grammar:IRuleRegistry, out:RegExpSourceList, isFirst:boolean) {
@@ -405,8 +416,8 @@ export class IncludeOnlyRule extends Rule {
 	public patterns: number[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
-	constructor(id: number, name: string, contentName: string, patterns: ICompilePatternsResult) {
-		super(id, name, contentName);
+	constructor($location:ILocation, id: number, name: string, contentName: string, patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName);
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
@@ -447,8 +458,8 @@ export class BeginEndRule extends Rule {
 	public patterns: number[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
-	constructor(id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], end: string, endCaptures: CaptureRule[], applyEndPatternLast: boolean, patterns: ICompilePatternsResult) {
-		super(id, name, contentName);
+	constructor($location:ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], end: string, endCaptures: CaptureRule[], applyEndPatternLast: boolean, patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
 		this._end = new RegExpSource(end, -1);
@@ -458,6 +469,14 @@ export class BeginEndRule extends Rule {
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
+	}
+
+	public get debugBeginRegExp(): string {
+		return `${this._begin.source}`;
+	}
+
+	public get debugEndRegExp(): string {
+		return `${this._end.source}`;
 	}
 
 	public getEndWithResolvedBackReferences(lineText:string, captureIndices:IOnigCaptureIndex[]): string {
@@ -518,8 +537,8 @@ export class BeginWhileRule extends Rule {
 	private _cachedCompiledPatterns: RegExpSourceList;
 	private _cachedCompiledWhilePatterns: RegExpSourceList;
 
-	constructor(id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, patterns: ICompilePatternsResult) {
-		super(id, name, contentName);
+	constructor($location:ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
 		this._while = new RegExpSource(_while, -2);
@@ -581,9 +600,9 @@ export class BeginWhileRule extends Rule {
 
 export class RuleFactory {
 
-	public static createCaptureRule(helper: IRuleFactoryHelper, name:string, contentName:string, retokenizeCapturedWithRuleId:number): CaptureRule {
+	public static createCaptureRule(helper: IRuleFactoryHelper, $location:ILocation, name:string, contentName:string, retokenizeCapturedWithRuleId:number): CaptureRule {
 		return helper.registerRule((id) => {
-			return new CaptureRule(id, name, contentName, retokenizeCapturedWithRuleId);
+			return new CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId);
 		});
 	}
 
@@ -594,6 +613,7 @@ export class RuleFactory {
 
 				if (desc.match) {
 					return new MatchRule(
+						desc.$vscodeTextmateLocation,
 						desc.id,
 						desc.name,
 						desc.match,
@@ -606,6 +626,7 @@ export class RuleFactory {
 						repository = mergeObjects({}, repository, desc.repository);
 					}
 					return new IncludeOnlyRule(
+						desc.$vscodeTextmateLocation,
 						desc.id,
 						desc.name,
 						desc.contentName,
@@ -615,6 +636,7 @@ export class RuleFactory {
 
 				if (desc.while) {
 					return new BeginWhileRule(
+						desc.$vscodeTextmateLocation,
 						desc.id,
 						desc.name,
 						desc.contentName,
@@ -625,6 +647,7 @@ export class RuleFactory {
 				}
 
 				return new BeginEndRule(
+					desc.$vscodeTextmateLocation,
 					desc.id,
 					desc.name,
 					desc.contentName,
@@ -650,6 +673,9 @@ export class RuleFactory {
 			// Find the maximum capture id
 			maximumCaptureId = 0;
 			for (captureId in captures) {
+				if (captureId === '$vscodeTextmateLocation') {
+					continue;
+				}
 				numericCaptureId = parseInt(captureId, 10);
 				if (numericCaptureId > maximumCaptureId) {
 					maximumCaptureId = numericCaptureId;
@@ -663,12 +689,15 @@ export class RuleFactory {
 
 			// Fill out result
 			for (captureId in captures) {
+				if (captureId === '$vscodeTextmateLocation') {
+					continue;
+				}
 				numericCaptureId = parseInt(captureId, 10);
 				let retokenizeCapturedWithRuleId = 0;
 				if (captures[captureId].patterns) {
 					retokenizeCapturedWithRuleId = RuleFactory.getCompiledRuleId(captures[captureId], helper, repository);
 				}
-				r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].name, captures[captureId].contentName, retokenizeCapturedWithRuleId);
+				r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].$vscodeTextmateLocation, captures[captureId].name, captures[captureId].contentName, retokenizeCapturedWithRuleId);
 			}
 		}
 
