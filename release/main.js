@@ -936,9 +936,11 @@ var RegExpSourceList = (function () {
     RegExpSourceList.prototype.compile = function (grammar, allowA, allowG) {
         if (!this._hasAnchors) {
             if (!this._cached) {
+                var regExps = this._items.map(function (e) { return e.source; });
                 this._cached = {
-                    scanner: createOnigScanner(this._items.map(function (e) { return e.source; })),
-                    rules: this._items.map(function (e) { return e.ruleId; })
+                    scanner: createOnigScanner(regExps),
+                    rules: this._items.map(function (e) { return e.ruleId; }),
+                    debugRegExps: regExps
                 };
             }
             return this._cached;
@@ -969,9 +971,11 @@ var RegExpSourceList = (function () {
         }
     };
     RegExpSourceList.prototype._resolveAnchors = function (allowA, allowG) {
+        var regExps = this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); });
         return {
-            scanner: createOnigScanner(this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); })),
-            rules: this._items.map(function (e) { return e.ruleId; })
+            scanner: createOnigScanner(regExps),
+            rules: this._items.map(function (e) { return e.ruleId; }),
+            debugRegExps: regExps
         };
     };
     return RegExpSourceList;
@@ -1551,6 +1555,13 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         localStack.pop();
     }
 }
+function debugCompiledRuleToString(ruleScanner) {
+    var r = [];
+    for (var i = 0, len = ruleScanner.rules.length; i < len; i++) {
+        r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);
+    }
+    return r.join('\n');
+}
 function matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     // The lower the better
     var bestMatchRating = Number.MAX_VALUE;
@@ -1561,6 +1572,10 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
         var injection = injections[i];
         var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
         var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        if (debug_1.IN_DEBUG_MODE) {
+            console.log('  scanning for injections');
+            console.log(debugCompiledRuleToString(ruleScanner));
+        }
         if (!matchResult) {
             continue;
         }
@@ -1591,6 +1606,10 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     if (rule instanceof rule_1.BeginWhileRule && stack.getEnterPos() === -1) {
         var ruleScanner_1 = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
         var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
+        if (debug_1.IN_DEBUG_MODE) {
+            console.log('  scanning for while rule');
+            console.log(debugCompiledRuleToString(ruleScanner_1));
+        }
         var doNotContinue = {
             captureIndices: null,
             matchedRuleId: -3
@@ -1608,6 +1627,10 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     }
     var ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+    if (debug_1.IN_DEBUG_MODE) {
+        console.log('  scanning for');
+        console.log(debugCompiledRuleToString(ruleScanner));
+    }
     if (r) {
         return {
             captureIndices: r.captureIndices,

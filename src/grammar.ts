@@ -327,6 +327,14 @@ interface IMatchInjectionsResult {
 	matchedRuleId: number;
 }
 
+function debugCompiledRuleToString(ruleScanner:ICompiledRule): string {
+	let r:string[] = [];
+	for (let i = 0, len = ruleScanner.rules.length; i < len; i++) {
+		r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);
+	}
+	return r.join('\n');
+}
+
 function matchInjections(injections:Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition:number): IMatchInjectionsResult {
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
@@ -338,6 +346,10 @@ function matchInjections(injections:Injection[], grammar: Grammar, lineText: Oni
 		let injection = injections[i];
 		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
 		let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+		if (IN_DEBUG_MODE) {
+			console.log('  scanning for injections');
+			console.log(debugCompiledRuleToString(ruleScanner));
+		}
 
 		if (!matchResult) {
 			continue;
@@ -383,6 +395,10 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 
 		let ruleScanner = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+		if (IN_DEBUG_MODE) {
+			console.log('  scanning for while rule');
+			console.log(debugCompiledRuleToString(ruleScanner));
+		}
 
 		let doNotContinue: IMatchResult = {
 			captureIndices: null,
@@ -403,6 +419,10 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 
 	let ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+	if (IN_DEBUG_MODE) {
+		console.log('  scanning for');
+		console.log(debugCompiledRuleToString(ruleScanner));
+	}
 
 	if (r) {
 		return {

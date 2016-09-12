@@ -26,6 +26,7 @@ export interface IRuleFactoryHelper extends IRuleRegistry, IGrammarRegistry {
 export interface ICompiledRule {
 	scanner: OnigScanner;
 	rules: number[];
+	debugRegExps: string[]
 }
 
 export abstract class Rule {
@@ -344,9 +345,11 @@ export class RegExpSourceList {
 	public compile(grammar:IRuleRegistry, allowA:boolean, allowG:boolean): ICompiledRule {
 		if (!this._hasAnchors) {
 			if (!this._cached) {
+				let regExps = this._items.map(e => e.source);
 				this._cached = {
-					scanner: createOnigScanner(this._items.map(e => e.source)),
-					rules: this._items.map(e => e.ruleId)
+					scanner: createOnigScanner(regExps),
+					rules: this._items.map(e => e.ruleId),
+					debugRegExps: regExps
 				};
 			}
 			return this._cached;
@@ -375,9 +378,11 @@ export class RegExpSourceList {
 	}
 
 	private _resolveAnchors(allowA:boolean, allowG:boolean): ICompiledRule {
+		let regExps = this._items.map(e => e.resolveAnchors(allowA, allowG));
 		return {
-			scanner: createOnigScanner(this._items.map(e => e.resolveAnchors(allowA, allowG))),
-			rules: this._items.map(e => e.ruleId)
+			scanner: createOnigScanner(regExps),
+			rules: this._items.map(e => e.ruleId),
+			debugRegExps: regExps
 		};
 	}
 }
