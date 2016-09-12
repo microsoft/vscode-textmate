@@ -11,13 +11,11 @@ import {CAPTURE_METADATA} from './debug';
 import {parse as manualParseJSON} from './json';
 
 export function readGrammar(filePath:string, callback:(error:any, grammar:IRawGrammar)=>void): void {
-	filePath = path.join(process.cwd(), filePath);
 	let reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
 	reader.load(callback);
 }
 
 export function readGrammarSync(filePath:string): IRawGrammar {
-	filePath = path.join(process.cwd(), filePath);
 	try {
 		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
 		return reader.load();

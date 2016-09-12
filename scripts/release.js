@@ -16,6 +16,8 @@ if (!fs.existsSync(RELEASE_FOLDER)) {
 var sources = [
 	'utils.js',
 	'matcher.js',
+	'debug.js',
+	'json.js',
 	'grammarReader.js',
 	'rule.js',
 	'grammar.js',

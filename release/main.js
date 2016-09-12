@@ -178,6 +178,420 @@ function newTokenizer(input) {
 }
 //# sourceMappingURL=matcher.js.map
 });
+$load('./debug', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+exports.CAPTURE_METADATA = !!process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.IN_DEBUG_MODE = !!process.env['VSCODE_TEXTMATE_DEBUG'];
+//# sourceMappingURL=debug.js.map
+});
+$load('./json', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+function doFail(streamState, msg) {
+    // console.log('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
+    throw new Error('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
+}
+function parse(source, filename, withMetadata) {
+    var streamState = new JSONStreamState(source);
+    var token = new JSONToken();
+    var state = 0 /* ROOT_STATE */;
+    var cur = null;
+    var stateStack = [];
+    var objStack = [];
+    function pushState(newState, newCur) {
+        stateStack.push(state);
+        objStack.push(cur);
+        state = newState;
+        cur = newCur;
+    }
+    function popState() {
+        state = stateStack.pop();
+        cur = objStack.pop();
+    }
+    function fail(msg) {
+        doFail(streamState, msg);
+    }
+    while (nextJSONToken(streamState, token)) {
+        if (state === 0 /* ROOT_STATE */) {
+            if (cur !== null) {
+                fail('too many constructs in root');
+            }
+            if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
+                cur = {};
+                cur.$vscodeTextmateLocation = token.toLocation(filename);
+                pushState(1 /* DICT_STATE */, cur);
+                continue;
+            }
+            if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
+                cur = [];
+                pushState(4 /* ARR_STATE */, cur);
+                continue;
+            }
+            fail('unexpected token in root');
+        }
+        if (state === 2 /* DICT_STATE_COMMA */) {
+            if (token.type === 5 /* RIGHT_CURLY_BRACKET */) {
+                popState();
+                continue;
+            }
+            if (token.type === 7 /* COMMA */) {
+                state = 3 /* DICT_STATE_NO_CLOSE */;
+                continue;
+            }
+            fail('expected , or }');
+        }
+        if (state === 1 /* DICT_STATE */ || state === 3 /* DICT_STATE_NO_CLOSE */) {
+            if (state === 1 /* DICT_STATE */ && token.type === 5 /* RIGHT_CURLY_BRACKET */) {
+                popState();
+                continue;
+            }
+            if (token.type === 1 /* STRING */) {
+                var keyValue = token.value;
+                if (!nextJSONToken(streamState, token) || token.type !== 6 /* COLON */) {
+                    fail('expected colon');
+                }
+                if (!nextJSONToken(streamState, token)) {
+                    fail('expected value');
+                }
+                state = 2 /* DICT_STATE_COMMA */;
+                if (token.type === 1 /* STRING */) {
+                    cur[keyValue] = token.value;
+                    continue;
+                }
+                if (token.type === 8 /* NULL */) {
+                    cur[keyValue] = null;
+                    continue;
+                }
+                if (token.type === 9 /* TRUE */) {
+                    cur[keyValue] = true;
+                    continue;
+                }
+                if (token.type === 10 /* FALSE */) {
+                    cur[keyValue] = false;
+                    continue;
+                }
+                if (token.type === 11 /* NUMBER */) {
+                    cur[keyValue] = parseFloat(token.value);
+                    continue;
+                }
+                if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
+                    var newArr = [];
+                    cur[keyValue] = newArr;
+                    pushState(4 /* ARR_STATE */, newArr);
+                    continue;
+                }
+                if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
+                    var newDict = {};
+                    newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                    cur[keyValue] = newDict;
+                    pushState(1 /* DICT_STATE */, newDict);
+                    continue;
+                }
+            }
+            fail('unexpected token in dict');
+        }
+        if (state === 5 /* ARR_STATE_COMMA */) {
+            if (token.type === 4 /* RIGHT_SQUARE_BRACKET */) {
+                popState();
+                continue;
+            }
+            if (token.type === 7 /* COMMA */) {
+                state = 6 /* ARR_STATE_NO_CLOSE */;
+                continue;
+            }
+            fail('expected , or ]');
+        }
+        if (state === 4 /* ARR_STATE */ || state === 6 /* ARR_STATE_NO_CLOSE */) {
+            if (state === 4 /* ARR_STATE */ && token.type === 4 /* RIGHT_SQUARE_BRACKET */) {
+                popState();
+                continue;
+            }
+            state = 5 /* ARR_STATE_COMMA */;
+            if (token.type === 1 /* STRING */) {
+                cur.push(token.value);
+                continue;
+            }
+            if (token.type === 8 /* NULL */) {
+                cur.push(null);
+                continue;
+            }
+            if (token.type === 9 /* TRUE */) {
+                cur.push(true);
+                continue;
+            }
+            if (token.type === 10 /* FALSE */) {
+                cur.push(false);
+                continue;
+            }
+            if (token.type === 11 /* NUMBER */) {
+                cur.push(parseFloat(token.value));
+                continue;
+            }
+            if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
+                var newArr = [];
+                cur.push(newArr);
+                pushState(4 /* ARR_STATE */, newArr);
+                continue;
+            }
+            if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
+                var newDict = {};
+                newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                cur.push(newDict);
+                pushState(1 /* DICT_STATE */, newDict);
+                continue;
+            }
+            fail('unexpected token in array');
+        }
+        fail('unknown state');
+    }
+    if (objStack.length !== 0) {
+        fail('unclosed constructs');
+    }
+    return cur;
+}
+exports.parse = parse;
+var JSONStreamState = (function () {
+    function JSONStreamState(source) {
+        this.source = source;
+        this.pos = 0;
+        this.len = source.length;
+        this.line = 1;
+        this.char = 0;
+    }
+    return JSONStreamState;
+}());
+var JSONToken = (function () {
+    function JSONToken() {
+        this.value = null;
+        this.offset = -1;
+        this.len = -1;
+        this.line = -1;
+        this.char = -1;
+    }
+    JSONToken.prototype.toLocation = function (filename) {
+        return {
+            filename: filename,
+            line: this.line,
+            char: this.char
+        };
+    };
+    return JSONToken;
+}());
+/**
+ * precondition: the string is known to be valid JSON (https://www.ietf.org/rfc/rfc4627.txt)
+ */
+function nextJSONToken(_state, _out) {
+    _out.value = null;
+    _out.type = 0 /* UNKNOWN */;
+    _out.offset = -1;
+    _out.len = -1;
+    _out.line = -1;
+    _out.char = -1;
+    var source = _state.source;
+    var pos = _state.pos;
+    var len = _state.len;
+    var line = _state.line;
+    var char = _state.char;
+    //------------------------ skip whitespace
+    var chCode;
+    do {
+        if (pos >= len) {
+            return false; /*EOS*/
+        }
+        chCode = source.charCodeAt(pos);
+        if (chCode === 32 /* SPACE */ || chCode === 9 /* HORIZONTAL_TAB */ || chCode === 13 /* CARRIAGE_RETURN */) {
+            // regular whitespace
+            pos++;
+            char++;
+            continue;
+        }
+        if (chCode === 10 /* LINE_FEED */) {
+            // newline
+            pos++;
+            line++;
+            char = 0;
+            continue;
+        }
+        // not whitespace
+        break;
+    } while (true);
+    _out.offset = pos;
+    _out.line = line;
+    _out.char = char;
+    if (chCode === 34 /* QUOTATION_MARK */) {
+        //------------------------ strings
+        _out.type = 1 /* STRING */;
+        pos++;
+        char++;
+        do {
+            if (pos >= len) {
+                return false; /*EOS*/
+            }
+            chCode = source.charCodeAt(pos);
+            pos++;
+            char++;
+            if (chCode === 92 /* BACKSLASH */) {
+                // skip next char
+                pos++;
+                char++;
+                continue;
+            }
+            if (chCode === 34 /* QUOTATION_MARK */) {
+                // end of the string
+                break;
+            }
+        } while (true);
+        _out.value = source.substring(_out.offset + 1, pos - 1).replace(/\\u([0-9A-Fa-f]{4})/g, function (_, m0) {
+            return String.fromCodePoint(parseInt(m0, 16));
+        }).replace(/\\(.)/g, function (_, m0) {
+            switch (m0) {
+                case '"': return '"';
+                case '\\': return '\\';
+                case '/': return '/';
+                case 'b': return '\b';
+                case 'f': return '\f';
+                case 'n': return '\n';
+                case 'r': return '\r';
+                case 't': return '\t';
+                default: doFail(_state, 'invalid escape sequence');
+            }
+        });
+    }
+    else if (chCode === 91 /* LEFT_SQUARE_BRACKET */) {
+        _out.type = 2 /* LEFT_SQUARE_BRACKET */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 123 /* LEFT_CURLY_BRACKET */) {
+        _out.type = 3 /* LEFT_CURLY_BRACKET */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 93 /* RIGHT_SQUARE_BRACKET */) {
+        _out.type = 4 /* RIGHT_SQUARE_BRACKET */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 125 /* RIGHT_CURLY_BRACKET */) {
+        _out.type = 5 /* RIGHT_CURLY_BRACKET */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 58 /* COLON */) {
+        _out.type = 6 /* COLON */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 44 /* COMMA */) {
+        _out.type = 7 /* COMMA */;
+        pos++;
+        char++;
+    }
+    else if (chCode === 110 /* n */) {
+        //------------------------ null
+        _out.type = 8 /* NULL */;
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 117 /* u */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 108 /* l */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 108 /* l */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+    }
+    else if (chCode === 116 /* t */) {
+        //------------------------ true
+        _out.type = 9 /* TRUE */;
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 114 /* r */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 117 /* u */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 101 /* e */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+    }
+    else if (chCode === 102 /* f */) {
+        //------------------------ false
+        _out.type = 10 /* FALSE */;
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 97 /* a */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 108 /* l */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 115 /* s */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+        chCode = source.charCodeAt(pos);
+        if (chCode !== 101 /* e */)
+            return false; /* INVALID */
+        pos++;
+        char++;
+    }
+    else {
+        //------------------------ numbers
+        _out.type = 11 /* NUMBER */;
+        do {
+            if (pos >= len)
+                return false; /*EOS*/
+            chCode = source.charCodeAt(pos);
+            if (chCode === 46 /* DOT */
+                || (chCode >= 48 /* D0 */ && chCode <= 57 /* D9 */)
+                || (chCode === 101 /* e */ || chCode === 69 /* E */)
+                || (chCode === 45 /* MINUS */ || chCode === 43 /* PLUS */)) {
+                // looks like a piece of a number
+                pos++;
+                char++;
+                continue;
+            }
+            // pos--; char--;
+            break;
+        } while (true);
+    }
+    _out.len = pos - _out.offset;
+    if (_out.value === null) {
+        _out.value = source.substr(_out.offset, _out.len);
+    }
+    _state.pos = pos;
+    _state.line = line;
+    _state.char = char;
+    // console.log('PRODUCING TOKEN: ', _out.value, JSONTokenType[_out.type]);
+    return true;
+}
+//# sourceMappingURL=json.js.map
+});
 $load('./grammarReader', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -185,6 +599,8 @@ $load('./grammarReader', function(require, module, exports) {
 'use strict';
 var fs = require('fs');
 var plist = require('fast-plist');
+var debug_1 = require('./debug');
+var json_1 = require('./json');
 function readGrammar(filePath, callback) {
     var reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
     reader.load(callback);
@@ -214,7 +630,7 @@ var AsyncGrammarReader = (function () {
             }
             var r;
             try {
-                r = _this._parser(contents.toString());
+                r = _this._parser(contents.toString(), _this._filePath);
             }
             catch (err) {
                 callback(err, null);
@@ -232,7 +648,7 @@ var SyncGrammarReader = (function () {
     }
     SyncGrammarReader.prototype.load = function () {
         var contents = fs.readFileSync(this._filePath);
-        return this._parser(contents.toString());
+        return this._parser(contents.toString(), this._filePath);
     };
     return SyncGrammarReader;
 }());
@@ -242,10 +658,16 @@ function getGrammarParser(filePath) {
     }
     return parsePLISTGrammar;
 }
-function parseJSONGrammar(contents) {
+function parseJSONGrammar(contents, filename) {
+    if (debug_1.CAPTURE_METADATA) {
+        return json_1.parse(contents, filename, true);
+    }
     return JSON.parse(contents);
 }
-function parsePLISTGrammar(contents) {
+function parsePLISTGrammar(contents, filename) {
+    if (debug_1.CAPTURE_METADATA) {
+        return plist.parseWithLocation(contents, filename, '$vscodeTextmateLocation');
+    }
     return plist.parse(contents);
 }
 //# sourceMappingURL=grammarReader.js.map
@@ -260,17 +682,26 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
+var path = require('path');
 var utils_1 = require('./utils');
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
 var Rule = (function () {
-    function Rule(id, name, contentName) {
+    function Rule($location, id, name, contentName) {
+        this.$location = $location;
         this.id = id;
         this._name = name || null;
         this._nameIsCapturing = utils_1.RegexSource.hasCaptures(this._name);
         this._contentName = contentName || null;
         this._contentNameIsCapturing = utils_1.RegexSource.hasCaptures(this._contentName);
     }
+    Object.defineProperty(Rule.prototype, "debugName", {
+        get: function () {
+            return this.constructor.name + "#" + this.id + " @ " + path.basename(this.$location.filename) + ":" + this.$location.line;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Rule.prototype.getName = function (lineText, captureIndices) {
         if (!this._nameIsCapturing) {
             return this._name;
@@ -294,8 +725,8 @@ var Rule = (function () {
 exports.Rule = Rule;
 var CaptureRule = (function (_super) {
     __extends(CaptureRule, _super);
-    function CaptureRule(id, name, contentName, retokenizeCapturedWithRuleId) {
-        _super.call(this, id, name, contentName);
+    function CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId) {
+        _super.call(this, $location, id, name, contentName);
         this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
     }
     return CaptureRule;
@@ -548,12 +979,19 @@ var RegExpSourceList = (function () {
 exports.RegExpSourceList = RegExpSourceList;
 var MatchRule = (function (_super) {
     __extends(MatchRule, _super);
-    function MatchRule(id, name, match, captures) {
-        _super.call(this, id, name, null);
+    function MatchRule($location, id, name, match, captures) {
+        _super.call(this, $location, id, name, null);
         this._match = new RegExpSource(match, this.id);
         this.captures = captures;
         this._cachedCompiledPatterns = null;
     }
+    Object.defineProperty(MatchRule.prototype, "debugMatchRegExp", {
+        get: function () {
+            return "" + this._match.source;
+        },
+        enumerable: true,
+        configurable: true
+    });
     MatchRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         out.push(this._match);
     };
@@ -569,8 +1007,8 @@ var MatchRule = (function (_super) {
 exports.MatchRule = MatchRule;
 var IncludeOnlyRule = (function (_super) {
     __extends(IncludeOnlyRule, _super);
-    function IncludeOnlyRule(id, name, contentName, patterns) {
-        _super.call(this, id, name, contentName);
+    function IncludeOnlyRule($location, id, name, contentName, patterns) {
+        _super.call(this, $location, id, name, contentName);
         this.patterns = patterns.patterns;
         this.hasMissingPatterns = patterns.hasMissingPatterns;
         this._cachedCompiledPatterns = null;
@@ -597,8 +1035,8 @@ function escapeRegExpCharacters(value) {
 }
 var BeginEndRule = (function (_super) {
     __extends(BeginEndRule, _super);
-    function BeginEndRule(id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
-        _super.call(this, id, name, contentName);
+    function BeginEndRule($location, id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
+        _super.call(this, $location, id, name, contentName);
         this._begin = new RegExpSource(begin, this.id);
         this.beginCaptures = beginCaptures;
         this._end = new RegExpSource(end, -1);
@@ -609,6 +1047,20 @@ var BeginEndRule = (function (_super) {
         this.hasMissingPatterns = patterns.hasMissingPatterns;
         this._cachedCompiledPatterns = null;
     }
+    Object.defineProperty(BeginEndRule.prototype, "debugBeginRegExp", {
+        get: function () {
+            return "" + this._begin.source;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BeginEndRule.prototype, "debugEndRegExp", {
+        get: function () {
+            return "" + this._end.source;
+        },
+        enumerable: true,
+        configurable: true
+    });
     BeginEndRule.prototype.getEndWithResolvedBackReferences = function (lineText, captureIndices) {
         return this._end.resolveBackReferences(lineText, captureIndices);
     };
@@ -654,8 +1106,8 @@ var BeginEndRule = (function (_super) {
 exports.BeginEndRule = BeginEndRule;
 var BeginWhileRule = (function (_super) {
     __extends(BeginWhileRule, _super);
-    function BeginWhileRule(id, name, contentName, begin, beginCaptures, _while, patterns) {
-        _super.call(this, id, name, contentName);
+    function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, patterns) {
+        _super.call(this, $location, id, name, contentName);
         this._begin = new RegExpSource(begin, this.id);
         this.beginCaptures = beginCaptures;
         this._while = new RegExpSource(_while, -2);
@@ -709,9 +1161,9 @@ exports.BeginWhileRule = BeginWhileRule;
 var RuleFactory = (function () {
     function RuleFactory() {
     }
-    RuleFactory.createCaptureRule = function (helper, name, contentName, retokenizeCapturedWithRuleId) {
+    RuleFactory.createCaptureRule = function (helper, $location, name, contentName, retokenizeCapturedWithRuleId) {
         return helper.registerRule(function (id) {
-            return new CaptureRule(id, name, contentName, retokenizeCapturedWithRuleId);
+            return new CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId);
         });
     };
     RuleFactory.getCompiledRuleId = function (desc, helper, repository) {
@@ -719,18 +1171,18 @@ var RuleFactory = (function () {
             helper.registerRule(function (id) {
                 desc.id = id;
                 if (desc.match) {
-                    return new MatchRule(desc.id, desc.name, desc.match, RuleFactory._compileCaptures(desc.captures, helper, repository));
+                    return new MatchRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.match, RuleFactory._compileCaptures(desc.captures, helper, repository));
                 }
                 if (!desc.begin) {
                     if (desc.repository) {
                         repository = utils_1.mergeObjects({}, repository, desc.repository);
                     }
-                    return new IncludeOnlyRule(desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                    return new IncludeOnlyRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
                 if (desc.while) {
-                    return new BeginWhileRule(desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                    return new BeginWhileRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
-                return new BeginEndRule(desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository), desc.applyEndPatternLast, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                return new BeginEndRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository), desc.applyEndPatternLast, RuleFactory._compilePatterns(desc.patterns, helper, repository));
             });
         }
         return desc.id;
@@ -741,6 +1193,9 @@ var RuleFactory = (function () {
             // Find the maximum capture id
             maximumCaptureId = 0;
             for (captureId in captures) {
+                if (captureId === '$vscodeTextmateLocation') {
+                    continue;
+                }
                 numericCaptureId = parseInt(captureId, 10);
                 if (numericCaptureId > maximumCaptureId) {
                     maximumCaptureId = numericCaptureId;
@@ -752,12 +1207,15 @@ var RuleFactory = (function () {
             }
             // Fill out result
             for (captureId in captures) {
+                if (captureId === '$vscodeTextmateLocation') {
+                    continue;
+                }
                 numericCaptureId = parseInt(captureId, 10);
                 var retokenizeCapturedWithRuleId = 0;
                 if (captures[captureId].patterns) {
                     retokenizeCapturedWithRuleId = RuleFactory.getCompiledRuleId(captures[captureId], helper, repository);
                 }
-                r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].name, captures[captureId].contentName, retokenizeCapturedWithRuleId);
+                r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].$vscodeTextmateLocation, captures[captureId].name, captures[captureId].contentName, retokenizeCapturedWithRuleId);
             }
         }
         return r;
@@ -847,6 +1305,7 @@ $load('./grammar', function(require, module, exports) {
 var utils_1 = require('./utils');
 var rule_1 = require('./rule');
 var matcher_1 = require('./matcher');
+var debug_1 = require('./debug');
 function createGrammar(grammar, grammarRepository) {
     return new Grammar(grammar, grammarRepository);
 }
@@ -1024,7 +1483,7 @@ var Grammar = (function () {
         lineText = lineText + '\n';
         var onigLineText = rule_1.createOnigString(lineText);
         var lineLength = rule_1.getString(onigLineText).length;
-        var lineTokens = new LineTokens();
+        var lineTokens = new LineTokens(lineText);
         var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
         var _produced = lineTokens.getResult(nextState, lineLength);
         return {
@@ -1038,6 +1497,7 @@ function initGrammar(grammar, base) {
     grammar = utils_1.clone(grammar);
     grammar.repository = grammar.repository || {};
     grammar.repository.$self = {
+        $vscodeTextmateLocation: grammar.$vscodeTextmateLocation,
         patterns: grammar.patterns,
         name: grammar.scopeName
     };
@@ -1191,8 +1651,15 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         scanNext(); // potentially modifies linePos && anchorPosition
     }
     function scanNext() {
+        if (debug_1.IN_DEBUG_MODE) {
+            console.log('');
+            console.log('@@scanNext: |' + rule_1.getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|');
+        }
         var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
         if (!r) {
+            if (debug_1.IN_DEBUG_MODE) {
+                console.log('  no more matches.');
+            }
             // No match
             lineTokens.produce(stack, lineLength);
             STOP = true;
@@ -1204,6 +1671,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         if (matchedRuleId === -1) {
             // We matched the `end` for this rule => pop it
             var poppedRule = stack.getRule(grammar);
+            if (debug_1.IN_DEBUG_MODE) {
+                console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
+            }
             lineTokens.produce(stack, captureIndices[0].start);
             stack = stack.withContentName(null);
             handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
@@ -1223,6 +1693,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             }
         }
         else if (matchedRuleId === -3) {
+            if (debug_1.IN_DEBUG_MODE) {
+                console.log('  popping because a while clause no longer matches.');
+            }
             // A while clause failed
             stack = stack.pop();
             return;
@@ -1236,6 +1709,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             stack = stack.push(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
+                if (debug_1.IN_DEBUG_MODE) {
+                    console.log('  pushing ' + pushedRule.debugName + ' - ' + pushedRule.debugBeginRegExp);
+                }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
@@ -1254,6 +1730,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             }
             else if (_rule instanceof rule_1.BeginWhileRule) {
                 var pushedRule = _rule;
+                if (debug_1.IN_DEBUG_MODE) {
+                    console.log('  pushing ' + pushedRule.debugName);
+                }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
@@ -1272,6 +1751,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             }
             else {
                 var matchingRule = _rule;
+                if (debug_1.IN_DEBUG_MODE) {
+                    console.log('  matched ' + matchingRule.debugName + ' - ' + matchingRule.debugMatchRegExp);
+                }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 // pop rule immediately since it is a MatchRule
@@ -1415,7 +1897,10 @@ var LocalStackElement = (function () {
     return LocalStackElement;
 }());
 var LineTokens = (function () {
-    function LineTokens() {
+    function LineTokens(lineText) {
+        if (debug_1.IN_DEBUG_MODE) {
+            this._lineText = lineText;
+        }
         this._tokens = [];
         this._lastTokenEndIndex = 0;
     }
@@ -1429,6 +1914,12 @@ var LineTokens = (function () {
         if (extraScopes) {
             for (var i = 0; i < extraScopes.length; i++) {
                 scopes[outIndex++] = extraScopes[i].scopeName;
+            }
+        }
+        if (debug_1.IN_DEBUG_MODE) {
+            console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
+            for (var k = 0; k < scopes.length; k++) {
+                console.log('      * ' + scopes[k]);
             }
         }
         this._tokens.push({

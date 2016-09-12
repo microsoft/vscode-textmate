@@ -7,7 +7,8 @@
 		"**/node_modules": true,
 		"**/bower_components": true,
 		"out/**": true,
-		"release/**": true
+		"release/**": true,
+		"coverage/**": true
 	},
 	"lcov.sourceMaps": true
 }
