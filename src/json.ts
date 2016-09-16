@@ -47,7 +47,9 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
 				cur = {};
-				cur.$vscodeTextmateLocation = token.toLocation(filename);
+				if (withMetadata) {
+					cur.$vscodeTextmateLocation = token.toLocation(filename);
+				}
 				pushState(JSONState.DICT_STATE, cur);
 				continue;
 			}
@@ -125,7 +127,9 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 				}
 				if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
 					let newDict:any = {};
-					newDict.$vscodeTextmateLocation = token.toLocation(filename);
+					if (withMetadata) {
+						newDict.$vscodeTextmateLocation = token.toLocation(filename);
+					}
 					cur[keyValue] = newDict;
 					pushState(JSONState.DICT_STATE, newDict);
 					continue;
@@ -188,7 +192,9 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 			}
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
 				let newDict:any = {};
-				newDict.$vscodeTextmateLocation = token.toLocation(filename);
+				if (withMetadata) {
+					newDict.$vscodeTextmateLocation = token.toLocation(filename);
+				}
 				cur.push(newDict);
 				pushState(JSONState.DICT_STATE, newDict);
 				continue;
