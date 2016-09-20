@@ -31,7 +31,7 @@
         <key>group</key>
         <dict>
             <key>begin</key>
-			<string>(^)(\()</string>
+            <string>(^)(\()</string>
             <key>patterns</key>
             <array>
                 <dict>
