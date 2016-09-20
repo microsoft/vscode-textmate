@@ -1015,5 +1015,73 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/whileLang.plist"
+		],
+		"grammarPath": "fixtures/whileLang.plist",
+		"desc": "TODO",
+		"lines": [
+			{
+				"line": "(1",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang",
+							"group"
+						],
+						"value": "("
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"group",
+							"number"
+						],
+						"value": "1"
+					}
+				]
+			},
+			{
+				"line": "23",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang",
+							"group",
+							"number"
+						],
+						"value": "2"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"group",
+							"number"
+						],
+						"value": "3"
+					}
+				]
+			},
+			{
+				"line": ") 4",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang"
+						],
+						"value": ") "
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"number"
+						],
+						"value": "4"
+					}
+				]
+			}
+		]
 	}
 ]

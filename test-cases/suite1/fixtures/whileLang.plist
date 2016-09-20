@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>fileTypes</key>
+    <array>
+        <string>whileLang</string>
+    </array>
+    <key>name</key>
+    <string>whileLang</string>
+    <key>patterns</key>
+    <array>
+        <dict>
+            <key>include</key>
+            <string>#group</string>
+        </dict>
+         <dict>
+            <key>include</key>
+            <string>#number</string>
+        </dict>
+    </array>
+    <key>repository</key>
+    <dict>
+        <key>number</key>
+        <dict>
+            <key>match</key>
+            <string>[0-9]</string>
+            <key>name</key>
+            <string>number</string>
+        </dict>
+        <key>group</key>
+        <dict>
+            <key>begin</key>
+			<string>(^)(\()</string>
+            <key>patterns</key>
+            <array>
+                <dict>
+                    <key>include</key>
+                    <string>#number</string>
+                </dict>
+            </array>
+            <key>name</key>
+            <string>group</string>
+            <key>while</key>
+            <string>(^|\G)(?!\))</string>
+        </dict>
+    </dict>
+    <key>scopeName</key>
+    <string>text.whileLang</string>
+    <key>uuid</key>
+    <string>159375af-d9b4-448c-a9da-d235eadf3556</string>
+</dict>
+</plist>
