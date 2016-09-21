@@ -223,7 +223,9 @@ function parse(source, filename, withMetadata) {
             }
             if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
                 cur = {};
-                cur.$vscodeTextmateLocation = token.toLocation(filename);
+                if (withMetadata) {
+                    cur.$vscodeTextmateLocation = token.toLocation(filename);
+                }
                 pushState(1 /* DICT_STATE */, cur);
                 continue;
             }
@@ -287,7 +289,9 @@ function parse(source, filename, withMetadata) {
                 }
                 if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
                     var newDict = {};
-                    newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                    if (withMetadata) {
+                        newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                    }
                     cur[keyValue] = newDict;
                     pushState(1 /* DICT_STATE */, newDict);
                     continue;
@@ -340,7 +344,9 @@ function parse(source, filename, withMetadata) {
             }
             if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
                 var newDict = {};
-                newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                if (withMetadata) {
+                    newDict.$vscodeTextmateLocation = token.toLocation(filename);
+                }
                 cur.push(newDict);
                 pushState(1 /* DICT_STATE */, newDict);
                 continue;
@@ -1603,7 +1609,8 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 }
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var rule = stack.getRule(grammar);
-    if (rule instanceof rule_1.BeginWhileRule && stack.getEnterPos() === -1) {
+    // Check while rule only on new lines after the line containing the begin clause
+    if (rule instanceof rule_1.BeginWhileRule && stack.getEnterPos() === -1 && linePos === 0) {
         var ruleScanner_1 = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
         var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
         if (debug_1.IN_DEBUG_MODE) {
