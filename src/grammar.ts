@@ -391,7 +391,8 @@ interface IMatchResult {
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition:number): IMatchResult {
 	let rule = stack.getRule(grammar);
 
-	if (rule instanceof BeginWhileRule && stack.getEnterPos() === -1) {
+	// Check while rule only on new lines after the line containing the begin clause
+	if (rule instanceof BeginWhileRule && stack.getEnterPos() === -1 && linePos === 0) {
 
 		let ruleScanner = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
