@@ -1021,22 +1021,29 @@
 			"fixtures/whileLang.plist"
 		],
 		"grammarPath": "fixtures/whileLang.plist",
-		"desc": "TODO",
+		"desc": "Tests that matching of while only tests on first line",
 		"lines": [
 			{
-				"line": "(1",
+				"line": "L 1",
 				"tokens": [
 					{
 						"scopes": [
 							"text.whileLang",
-							"group"
+							"list"
 						],
-						"value": "("
+						"value": "L"
 					},
 					{
 						"scopes": [
 							"text.whileLang",
-							"group",
+							"list"
+						],
+						"value": " "
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"list",
 							"number"
 						],
 						"value": "1"
@@ -1044,12 +1051,19 @@
 				]
 			},
 			{
-				"line": "23",
+				"line": "  23",
 				"tokens": [
 					{
 						"scopes": [
 							"text.whileLang",
-							"group",
+							"list"
+						],
+						"value": "  "
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"list",
 							"number"
 						],
 						"value": "2"
@@ -1057,7 +1071,7 @@
 					{
 						"scopes": [
 							"text.whileLang",
-							"group",
+							"list",
 							"number"
 						],
 						"value": "3"
@@ -1065,14 +1079,8 @@
 				]
 			},
 			{
-				"line": ") 4",
+				"line": "4",
 				"tokens": [
-					{
-						"scopes": [
-							"text.whileLang"
-						],
-						"value": ") "
-					},
 					{
 						"scopes": [
 							"text.whileLang",

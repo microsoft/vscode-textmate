@@ -12,7 +12,7 @@
     <array>
         <dict>
             <key>include</key>
-            <string>#group</string>
+            <string>#list</string>
         </dict>
          <dict>
             <key>include</key>
@@ -28,21 +28,25 @@
             <key>name</key>
             <string>number</string>
         </dict>
-        <key>group</key>
+        <key>list</key>
         <dict>
             <key>begin</key>
-            <string>(^)(\()</string>
+            <string>(^)(\L)</string>
             <key>patterns</key>
             <array>
                 <dict>
                     <key>include</key>
                     <string>#number</string>
                 </dict>
+                <dict>
+                    <key>include</key>
+                    <string>#list</string>
+                </dict>
             </array>
             <key>name</key>
-            <string>group</string>
+            <string>list</string>
             <key>while</key>
-            <string>(^|\G)(?!\))</string>
+            <string>(^|\G)[ ]{2}</string>
         </dict>
     </dict>
     <key>scopeName</key>
