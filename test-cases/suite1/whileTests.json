@@ -170,7 +170,14 @@
 							"text.whileLang",
 							"alist"
 						],
-						"value": "xa"
+						"value": "x"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"alist"
+						],
+						"value": "a"
 					},
 					{
 						"scopes": [
@@ -285,10 +292,25 @@
 					{
 						"scopes": [
 							"text.whileLang",
+							"alist"
+						],
+						"value": "a"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
 							"alist",
 							"blist"
 						],
-						"value": "abx"
+						"value": "b"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"alist",
+							"blist"
+						],
+						"value": "x"
 					},
 					{
 						"scopes": [
@@ -378,7 +400,14 @@
 							"text.whileLang",
 							"alist"
 						],
-						"value": "ba"
+						"value": "b"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"alist"
+						],
+						"value": "a"
 					},
 					{
 						"scopes": [

@@ -447,6 +447,7 @@ interface IWhileStack {
 interface IWhileCheckResult {
 	stack: StackElement;
 	linePos: number;
+	anchorPosition: number;
 }
 
 /**
@@ -455,6 +456,7 @@ interface IWhileCheckResult {
  * may also advance the linePosition.
  */
 function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
+	let anchorPosition = -1;
 	let whileRules: IWhileStack[] = [];
 	for (let node = stack; node; node = node.pop()) {
 		let nodeRule = node.getRule(grammar);
@@ -483,6 +485,10 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 			}
 			if (r.captureIndices && r.captureIndices.length) {
 				linePos = r.captureIndices[0].end;
+				anchorPosition = linePos;
+				lineTokens.produce(whileRule.stack, r.captureIndices[0].start);
+				handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, whileRule.rule.whileCaptures, r.captureIndices);
+				lineTokens.produce(whileRule.stack, r.captureIndices[0].end);
 			}
 		} else {
 			stack = whileRule.stack.pop();
@@ -490,18 +496,18 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 		}
 	}
 
-	return { stack: stack, linePos: linePos };
+	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition };
 }
 
 function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): StackElement {
 	const lineLength = getString(lineText).length;
 
-	let anchorPosition = -1;
 	let STOP = false;
 
 	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
 	stack = whileCheckResult.stack;
 	linePos = whileCheckResult.linePos;
+	let anchorPosition = whileCheckResult.anchorPosition;
 
 	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
