@@ -300,7 +300,8 @@
 						"scopes": [
 							"text.whileLang",
 							"alist",
-							"blist"
+							"blist",
+							"bstart"
 						],
 						"value": "b"
 					},

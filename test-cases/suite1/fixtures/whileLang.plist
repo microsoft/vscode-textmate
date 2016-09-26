@@ -80,8 +80,16 @@
             </array>
             <key>name</key>
             <string>blist</string>
+            <key>whileCaptures</key>
+            <dict>
+                <key>1</key>
+                <dict>
+                    <key>name</key>
+                    <string>bstart</string>
+                </dict>
+            </dict>
             <key>while</key>
-            <string>b</string>
+            <string>(b)</string>
         </dict>
     </dict>
     <key>scopeName</key>
