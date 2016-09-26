@@ -648,7 +648,7 @@ export class RuleFactory {
 						desc.name,
 						desc.contentName,
 						desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
-						desc.while, RuleFactory._compileCaptures(desc.captures, helper, repository),
+						desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository),
 						RuleFactory._compilePatterns(desc.patterns, helper, repository)
 					);
 				}

@@ -48,6 +48,7 @@ export interface IRawRule extends ILocatable {
 	end?:string;
 	endCaptures?: IRawCaptures;
 	while?:string;
+	whileCaptures?: IRawCaptures;
 	patterns?: IRawRule[];
 
 	repository?: IRawRepository;
