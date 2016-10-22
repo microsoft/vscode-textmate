@@ -10,5 +10,6 @@
 		"release/**": true,
 		"coverage/**": true
 	},
-	"lcov.sourceMaps": true
+	"lcov.sourceMaps": true,
+	"typescript.tsdk": "./node_modules/typescript/lib"
 }

@@ -1116,10 +1116,11 @@ var BeginEndRule = (function (_super) {
 exports.BeginEndRule = BeginEndRule;
 var BeginWhileRule = (function (_super) {
     __extends(BeginWhileRule, _super);
-    function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, patterns) {
+    function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, whileCaptures, patterns) {
         _super.call(this, $location, id, name, contentName);
         this._begin = new RegExpSource(begin, this.id);
         this.beginCaptures = beginCaptures;
+        this.whileCaptures = whileCaptures;
         this._while = new RegExpSource(_while, -2);
         this.whileHasBackReferences = this._while.hasBackReferences;
         this.patterns = patterns.patterns;
@@ -1190,7 +1191,7 @@ var RuleFactory = (function () {
                     return new IncludeOnlyRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
                 if (desc.while) {
-                    return new BeginWhileRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                    return new BeginWhileRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository), RuleFactory._compilePatterns(desc.patterns, helper, repository));
                 }
                 return new BeginEndRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository), desc.applyEndPatternLast, RuleFactory._compilePatterns(desc.patterns, helper, repository));
             });
@@ -1609,29 +1610,6 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 }
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var rule = stack.getRule(grammar);
-    // Check while rule only on new lines after the line containing the begin clause
-    if (rule instanceof rule_1.BeginWhileRule && stack.getEnterPos() === -1 && linePos === 0) {
-        var ruleScanner_1 = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
-        var r_1 = ruleScanner_1.scanner._findNextMatchSync(lineText, linePos);
-        if (debug_1.IN_DEBUG_MODE) {
-            console.log('  scanning for while rule');
-            console.log(debugCompiledRuleToString(ruleScanner_1));
-        }
-        var doNotContinue = {
-            captureIndices: null,
-            matchedRuleId: -3
-        };
-        if (r_1) {
-            var matchedRuleId = ruleScanner_1.rules[r_1.index];
-            if (matchedRuleId != -2) {
-                // we shouldn't end up here
-                return doNotContinue;
-            }
-        }
-        else {
-            return doNotContinue;
-        }
-    }
     var ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
     if (debug_1.IN_DEBUG_MODE) {
@@ -1673,10 +1651,59 @@ function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, a
     }
     return matchResult;
 }
+/**
+ * Walk the stack from bottom to top, and check each while condition in this order.
+ * If any fails, cut off the entire stack above the failed while condition. While conditions
+ * may also advance the linePosition.
+ */
+function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
+    var anchorPosition = -1;
+    var whileRules = [];
+    for (var node = stack; node; node = node.pop()) {
+        var nodeRule = node.getRule(grammar);
+        if (nodeRule instanceof rule_1.BeginWhileRule) {
+            whileRules.push({
+                rule: nodeRule,
+                stack: node
+            });
+        }
+    }
+    for (var whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
+        var ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, false);
+        var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        if (debug_1.IN_DEBUG_MODE) {
+            console.log('  scanning for while rule');
+            console.log(debugCompiledRuleToString(ruleScanner));
+        }
+        if (r) {
+            var matchedRuleId = ruleScanner.rules[r.index];
+            if (matchedRuleId != -2) {
+                // we shouldn't end up here
+                stack = whileRule.stack.pop();
+                break;
+            }
+            if (r.captureIndices && r.captureIndices.length) {
+                linePos = r.captureIndices[0].end;
+                anchorPosition = linePos;
+                lineTokens.produce(whileRule.stack, r.captureIndices[0].start);
+                handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, whileRule.rule.whileCaptures, r.captureIndices);
+                lineTokens.produce(whileRule.stack, r.captureIndices[0].end);
+            }
+        }
+        else {
+            stack = whileRule.stack.pop();
+            break;
+        }
+    }
+    return { stack: stack, linePos: linePos, anchorPosition: anchorPosition };
+}
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
     var lineLength = rule_1.getString(lineText).length;
-    var anchorPosition = -1;
     var STOP = false;
+    var whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+    stack = whileCheckResult.stack;
+    linePos = whileCheckResult.linePos;
+    var anchorPosition = whileCheckResult.anchorPosition;
     while (!STOP) {
         scanNext(); // potentially modifies linePos && anchorPosition
     }
@@ -1721,14 +1748,6 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 STOP = true;
                 return;
             }
-        }
-        else if (matchedRuleId === -3) {
-            if (debug_1.IN_DEBUG_MODE) {
-                console.log('  popping because a while clause no longer matches.');
-            }
-            // A while clause failed
-            stack = stack.pop();
-            return;
         }
         else {
             // We matched a rule!
