@@ -100,6 +100,7 @@ describe('Tokenization /first-mate/', () => {
 
 describe('Tokenization /suite1/', () => {
 	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/tests.json'));
+	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/whileTests.json'));
 });
 
 describe('Matcher', () => {

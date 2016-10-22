@@ -535,6 +535,7 @@ export class BeginEndRule extends Rule {
 export class BeginWhileRule extends Rule {
 	private _begin: RegExpSource;
 	public beginCaptures: CaptureRule[];
+	public whileCaptures: CaptureRule[];
 	private _while: RegExpSource;
 	public whileHasBackReferences: boolean;
 	public hasMissingPatterns: boolean;
@@ -542,10 +543,11 @@ export class BeginWhileRule extends Rule {
 	private _cachedCompiledPatterns: RegExpSourceList;
 	private _cachedCompiledWhilePatterns: RegExpSourceList;
 
-	constructor($location:ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, patterns: ICompilePatternsResult) {
+	constructor($location:ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, whileCaptures: CaptureRule[], patterns: ICompilePatternsResult) {
 		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
+		this.whileCaptures = whileCaptures;
 		this._while = new RegExpSource(_while, -2);
 		this.whileHasBackReferences = this._while.hasBackReferences;
 		this.patterns = patterns.patterns;
@@ -646,7 +648,7 @@ export class RuleFactory {
 						desc.name,
 						desc.contentName,
 						desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
-						desc.while,
+						desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository),
 						RuleFactory._compilePatterns(desc.patterns, helper, repository)
 					);
 				}

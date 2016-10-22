@@ -12,11 +12,11 @@
     <array>
         <dict>
             <key>include</key>
-            <string>#group</string>
+            <string>#alist</string>
         </dict>
          <dict>
             <key>include</key>
-            <string>#number</string>
+            <string>#blist</string>
         </dict>
     </array>
     <key>repository</key>
@@ -28,21 +28,68 @@
             <key>name</key>
             <string>number</string>
         </dict>
-        <key>group</key>
+        <key>letter</key>
+        <dict>
+            <key>match</key>
+            <string>x</string>
+            <key>name</key>
+            <string>letter</string>
+        </dict>
+        <key>alist</key>
         <dict>
             <key>begin</key>
-            <string>(^)(\()</string>
+            <string>A</string>
             <key>patterns</key>
             <array>
+                <dict>
+                    <key>include</key>
+                    <string>#alist</string>
+                </dict>
+                <dict>
+                    <key>include</key>
+                    <string>#blist</string>
+                </dict>
+                <dict>
+                    <key>include</key>
+                    <string>#letter</string>
+                </dict>
+            </array>
+            <key>name</key>
+            <string>alist</string>
+            <key>while</key>
+            <string>a</string>
+        </dict>
+        <key>blist</key>
+        <dict>
+            <key>begin</key>
+            <string>B</string>
+            <key>patterns</key>
+            <array>
+                <dict>
+                    <key>include</key>
+                    <string>#alist</string>
+                </dict>
+                <dict>
+                    <key>include</key>
+                    <string>#blist</string>
+                </dict>
                 <dict>
                     <key>include</key>
                     <string>#number</string>
                 </dict>
             </array>
             <key>name</key>
-            <string>group</string>
+            <string>blist</string>
+            <key>whileCaptures</key>
+            <dict>
+                <key>1</key>
+                <dict>
+                    <key>name</key>
+                    <string>bstart</string>
+                </dict>
+            </dict>
             <key>while</key>
-            <string>(^|\G)(?!\))</string>
+            <string>(b)</string>
         </dict>
     </dict>
     <key>scopeName</key>

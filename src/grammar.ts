@@ -390,34 +390,6 @@ interface IMatchResult {
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition:number): IMatchResult {
 	let rule = stack.getRule(grammar);
-
-	// Check while rule only on new lines after the line containing the begin clause
-	if (rule instanceof BeginWhileRule && stack.getEnterPos() === -1 && linePos === 0) {
-
-		let ruleScanner = rule.compileWhile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
-		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
-		if (IN_DEBUG_MODE) {
-			console.log('  scanning for while rule');
-			console.log(debugCompiledRuleToString(ruleScanner));
-		}
-
-		let doNotContinue: IMatchResult = {
-			captureIndices: null,
-			matchedRuleId: -3
-		};
-
-		if (r) {
-			let matchedRuleId = ruleScanner.rules[r.index];
-			if (matchedRuleId != -2) {
-				// we shouldn't end up here
-				return doNotContinue;
-			}
-		} else {
-			return doNotContinue;
-		}
-	}
-
-
 	let ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 	if (IN_DEBUG_MODE) {
@@ -464,15 +436,78 @@ function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLi
 		// injection won!
 		return injectionResult;
 	}
-
 	return matchResult;
+}
+
+interface IWhileStack {
+	stack: StackElement;
+	rule: BeginWhileRule;
+}
+
+interface IWhileCheckResult {
+	stack: StackElement;
+	linePos: number;
+	anchorPosition: number;
+}
+
+/**
+ * Walk the stack from bottom to top, and check each while condition in this order.
+ * If any fails, cut off the entire stack above the failed while condition. While conditions
+ * may also advance the linePosition.
+ */
+function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
+	let anchorPosition = -1;
+	let whileRules: IWhileStack[] = [];
+	for (let node = stack; node; node = node.pop()) {
+		let nodeRule = node.getRule(grammar);
+		if (nodeRule instanceof BeginWhileRule) {
+			whileRules.push({
+				rule: nodeRule,
+				stack: node
+			});
+		}
+	}
+
+	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
+		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, false);
+		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+		if (IN_DEBUG_MODE) {
+			console.log('  scanning for while rule');
+			console.log(debugCompiledRuleToString(ruleScanner));
+		}
+
+		if (r) {
+			let matchedRuleId = ruleScanner.rules[r.index];
+			if (matchedRuleId != -2) {
+				// we shouldn't end up here
+				stack = whileRule.stack.pop();
+				break;
+			}
+			if (r.captureIndices && r.captureIndices.length) {
+				linePos = r.captureIndices[0].end;
+				anchorPosition = linePos;
+				lineTokens.produce(whileRule.stack, r.captureIndices[0].start);
+				handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, whileRule.rule.whileCaptures, r.captureIndices);
+				lineTokens.produce(whileRule.stack, r.captureIndices[0].end);
+			}
+		} else {
+			stack = whileRule.stack.pop();
+			break;
+		}
+	}
+
+	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition };
 }
 
 function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): StackElement {
 	const lineLength = getString(lineText).length;
 
-	let anchorPosition = -1;
 	let STOP = false;
+
+	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+	stack = whileCheckResult.stack;
+	linePos = whileCheckResult.linePos;
+	let anchorPosition = whileCheckResult.anchorPosition;
 
 	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
@@ -529,16 +564,6 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				STOP = true;
 				return;
 			}
-		} else if (matchedRuleId === -3) {
-
-			if (IN_DEBUG_MODE) {
-				console.log('  popping because a while clause no longer matches.');
-			}
-
-			// A while clause failed
-			stack = stack.pop();
-			return;
-
 		} else {
 			// We matched a rule!
 			let _rule = grammar.getRule(matchedRuleId);
