@@ -448,6 +448,7 @@ interface IWhileCheckResult {
 	stack: StackElement;
 	linePos: number;
 	anchorPosition: number;
+	isFirstLine: boolean;
 }
 
 /**
@@ -469,7 +470,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	}
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
-		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, false);
+		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, anchorPosition === linePos);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 		if (IN_DEBUG_MODE) {
 			console.log('  scanning for while rule');
@@ -484,11 +485,14 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 				break;
 			}
 			if (r.captureIndices && r.captureIndices.length) {
-				linePos = r.captureIndices[0].end;
-				anchorPosition = linePos;
 				lineTokens.produce(whileRule.stack, r.captureIndices[0].start);
 				handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, whileRule.rule.whileCaptures, r.captureIndices);
 				lineTokens.produce(whileRule.stack, r.captureIndices[0].end);
+				anchorPosition = r.captureIndices[0].end;
+				if (r.captureIndices[0].end > linePos) {
+					linePos = r.captureIndices[0].end;
+					isFirstLine = false;
+				}
 			}
 		} else {
 			stack = whileRule.stack.pop();
@@ -496,7 +500,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 		}
 	}
 
-	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition };
+	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 
 function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): StackElement {
@@ -507,6 +511,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
 	stack = whileCheckResult.stack;
 	linePos = whileCheckResult.linePos;
+	isFirstLine = whileCheckResult.isFirstLine;
 	let anchorPosition = whileCheckResult.anchorPosition;
 
 	while (!STOP) {

@@ -421,5 +421,94 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/whileLang.plist"
+		],
+		"grammarPath": "fixtures/whileLang.plist",
+		"desc": "Nested whiles should check line for outer most while to inner most while",
+		"lines": [
+			{
+				"line": "AB",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang",
+							"alist"
+						],
+						"value": "A"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"alist",
+							"blist"
+						],
+						"value": "B"
+					}
+				]
+			},
+			{
+				"line": "b1",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang"
+						],
+						"value": "b1"
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/whileLang.plist"
+		],
+		"grammarPath": "fixtures/whileLang.plist",
+		"desc": "Should Correctly handle anchor in while rule",
+		"lines": [
+			{
+				"line": "BB",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang",
+							"blist"
+						],
+						"value": "B"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"blist",
+							"blist"
+						],
+						"value": "B"
+					}
+				]
+			},
+			{
+				"line": "b b",
+				"tokens": [
+					{
+						"scopes": [
+							"text.whileLang",
+							"blist",
+							"bstart"
+						],
+						"value": "b"
+					},
+					{
+						"scopes": [
+							"text.whileLang",
+							"blist"
+						],
+						"value": " b"
+					}
+				]
+			}
+		]
 	}
 ]
