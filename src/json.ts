@@ -90,7 +90,7 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 			if (token.type === JSONTokenType.STRING) {
 				let keyValue = token.value;
 
-				if (!nextJSONToken(streamState, token) || token.type !== JSONTokenType.COLON) {
+				if (!nextJSONToken(streamState, token) || (/*TS bug*/<any>token.type) !== JSONTokenType.COLON) {
 					fail('expected colon');
 				}
 				if (!nextJSONToken(streamState, token)) {

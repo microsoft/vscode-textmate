@@ -7,10 +7,6 @@ import {SyncRegistry as SyncRegistry} from './registry';
 import {readGrammar, readGrammarSync} from './grammarReader';
 import {IRawGrammar} from './types';
 
-interface IBarrier {
-	(): void;
-}
-
 let DEFAULT_LOCATOR:IGrammarLocator = {
 	getFilePath: (scopeName:string) => null,
 	getInjections: (scopeName:string) => null
