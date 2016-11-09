@@ -11,9 +11,9 @@ import {IGrammar} from './main';
 
 export class SyncRegistry implements IGrammarRepository {
 
-	private _grammars: {[scopeName:string]:IGrammar;};
-	private _rawGrammars: {[scopeName:string]:IRawGrammar;};
-	private _injectionGrammars: {[scopeName:string]:string[];};
+	private readonly _grammars: {[scopeName:string]:IGrammar;};
+	private readonly _rawGrammars: {[scopeName:string]:IRawGrammar;};
+	private readonly _injectionGrammars: {[scopeName:string]:string[];};
 
 	constructor() {
 		this._grammars = {};

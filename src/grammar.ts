@@ -93,10 +93,10 @@ export function collectIncludedScopes(result: IScopeNameSet, grammar:IRawGrammar
 }
 
 interface Injection {
-	matcher: Matcher<StackElement>;
-	priorityMatch: boolean,
-	ruleId:number;
-	grammar: IRawGrammar;
+	readonly matcher: Matcher<StackElement>;
+	readonly priorityMatch: boolean,
+	readonly ruleId:number;
+	readonly grammar: IRawGrammar;
 }
 
 function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar) : void {
@@ -142,10 +142,10 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 
 	private _rootId: number;
 	private _lastRuleId: number;
-	private _ruleId2desc: Rule[];
-	private _includedGrammars: { [scopeName:string]:IRawGrammar; };
-	private _grammarRepository: IGrammarRepository;
-	private _grammar: IRawGrammar;
+	private readonly _ruleId2desc: Rule[];
+	private readonly _includedGrammars: { [scopeName:string]:IRawGrammar; };
+	private readonly _grammarRepository: IGrammarRepository;
+	private readonly _grammar: IRawGrammar;
 	private _injections : Injection[];
 
 	constructor(grammar:IRawGrammar, grammarRepository:IGrammarRepository) {
@@ -322,9 +322,9 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 }
 
 interface IMatchInjectionsResult {
-	priorityMatch: boolean;
-	captureIndices: IOnigCaptureIndex[];
-	matchedRuleId: number;
+	readonly priorityMatch: boolean;
+	readonly captureIndices: IOnigCaptureIndex[];
+	readonly matchedRuleId: number;
 }
 
 function debugCompiledRuleToString(ruleScanner:ICompiledRule): string {
@@ -384,8 +384,8 @@ function matchInjections(injections:Injection[], grammar: Grammar, lineText: Oni
 }
 
 interface IMatchResult {
-	captureIndices: IOnigCaptureIndex[];
-	matchedRuleId: number;
+	readonly captureIndices: IOnigCaptureIndex[];
+	readonly matchedRuleId: number;
 }
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition:number): IMatchResult {
@@ -440,15 +440,15 @@ function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLi
 }
 
 interface IWhileStack {
-	stack: StackElement;
-	rule: BeginWhileRule;
+	readonly stack: StackElement;
+	readonly rule: BeginWhileRule;
 }
 
 interface IWhileCheckResult {
-	stack: StackElement;
-	linePos: number;
-	anchorPosition: number;
-	isFirstLine: boolean;
+	readonly stack: StackElement;
+	readonly linePos: number;
+	readonly anchorPosition: number;
+	readonly isFirstLine: boolean;
 }
 
 /**
@@ -664,12 +664,12 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 export class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
-	public _parent: StackElement;
+	public readonly _parent: StackElement;
 	private _enterPos: number;
-	private _ruleId: number;
-	private _endRule: string;
-	private _scopeName: string;
-	private _contentName: string;
+	private readonly _ruleId: number;
+	private readonly _endRule: string;
+	private readonly _scopeName: string;
+	private readonly _contentName: string;
 
 	constructor(parent:StackElement, ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string) {
 		this._parent = parent;
@@ -801,8 +801,8 @@ export class StackElement implements StackElementDef {
 }
 
 class LocalStackElement {
-	public scopeName: string;
-	public endPos: number;
+	public readonly scopeName: string;
+	public readonly endPos: number;
 
 	constructor (scopeName: string, endPos: number) {
 		if (typeof scopeName !== 'string') {
@@ -815,8 +815,8 @@ class LocalStackElement {
 
 class LineTokens {
 
-	private _lineText: string;
-	private _tokens: IToken[];
+	private readonly _lineText: string;
+	private readonly _tokens: IToken[];
 	private _lastTokenEndIndex: number;
 
 	constructor(lineText:string) {

@@ -6,25 +6,25 @@
 // -- raw grammar typings
 
 export interface ILocation {
-	filename: string;
-	line: number;
-	char: number;
+	readonly filename: string;
+	readonly line: number;
+	readonly char: number;
 }
 
 export interface ILocatable {
-	$vscodeTextmateLocation?:ILocation;
+	readonly $vscodeTextmateLocation?:ILocation;
 }
 
 export interface IRawGrammar extends ILocatable {
 	repository: IRawRepository;
-	scopeName: string;
-	patterns: IRawRule[];
-	injections?: { [expression:string]: IRawRule };
-	injectionSelector?: string;
+	readonly scopeName: string;
+	readonly patterns: IRawRule[];
+	readonly injections?: { [expression:string]: IRawRule };
+	readonly injectionSelector?: string;
 
-	fileTypes?: string[];
-	name?: string;
-	firstLineMatch?: string;
+	readonly fileTypes?: string[];
+	readonly name?: string;
+	readonly firstLineMatch?: string;
 }
 
 export interface IRawRepository extends ILocatable {
@@ -36,24 +36,24 @@ export interface IRawRepository extends ILocatable {
 export interface IRawRule extends ILocatable {
 	id?: number;
 
-	include?: string;
+	readonly include?: string;
 
-	name?: string;
-	contentName?: string;
+	readonly name?: string;
+	readonly contentName?: string;
 
-	match?:string;
-	captures?: IRawCaptures;
-	begin?:string;
-	beginCaptures?: IRawCaptures;
-	end?:string;
-	endCaptures?: IRawCaptures;
-	while?:string;
-	whileCaptures?: IRawCaptures;
-	patterns?: IRawRule[];
+	readonly match?:string;
+	readonly captures?: IRawCaptures;
+	readonly begin?:string;
+	readonly beginCaptures?: IRawCaptures;
+	readonly end?:string;
+	readonly endCaptures?: IRawCaptures;
+	readonly while?:string;
+	readonly whileCaptures?: IRawCaptures;
+	readonly patterns?: IRawRule[];
 
-	repository?: IRawRepository;
+	readonly repository?: IRawRepository;
 
-	applyEndPatternLast?:boolean;
+	readonly applyEndPatternLast?:boolean;
 }
 
 export interface IRawCaptures extends ILocatable {

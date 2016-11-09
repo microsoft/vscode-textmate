@@ -25,8 +25,8 @@ export interface IGrammarLocator {
  */
 export class Registry {
 
-	private _locator: IGrammarLocator;
-	private _syncRegistry: SyncRegistry;
+	private readonly _locator: IGrammarLocator;
+	private readonly _syncRegistry: SyncRegistry;
 
 	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR) {
 		this._locator = locator;
@@ -100,10 +100,10 @@ export class Registry {
 }
 
 export interface IGrammarInfo {
-	fileTypes: string[];
-	name: string;
-	scopeName: string;
-	firstLineMatch: string;
+	readonly fileTypes: string[];
+	readonly name: string;
+	readonly scopeName: string;
+	readonly firstLineMatch: string;
 }
 
 /**
@@ -117,25 +117,25 @@ export interface IGrammar {
 }
 
 export interface ITokenizeLineResult {
-	tokens: IToken[];
+	readonly tokens: IToken[];
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
-	ruleStack: StackElement;
+	readonly ruleStack: StackElement;
 }
 
 export interface IToken {
 	startIndex: number;
-	endIndex: number;
-	scopes: string[];
+	readonly endIndex: number;
+	readonly scopes: string[];
 }
 
 /**
  * **IMPORTANT** - Immutable!
  */
 export interface StackElement {
-	_parent: StackElement;
 	_stackElementBrand: void;
+	readonly _parent: StackElement;
 
 	equals(other:StackElement): boolean;
 }

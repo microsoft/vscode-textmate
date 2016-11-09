@@ -9,8 +9,8 @@ export interface IGrammarLocator {
  * The registry that will hold all grammars.
  */
 export declare class Registry {
-    private _locator;
-    private _syncRegistry;
+    private readonly _locator;
+    private readonly _syncRegistry;
     constructor(locator?: IGrammarLocator);
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
@@ -26,10 +26,10 @@ export declare class Registry {
     grammarForScopeName(scopeName: string): IGrammar;
 }
 export interface IGrammarInfo {
-    fileTypes: string[];
-    name: string;
-    scopeName: string;
-    firstLineMatch: string;
+    readonly fileTypes: string[];
+    readonly name: string;
+    readonly scopeName: string;
+    readonly firstLineMatch: string;
 }
 /**
  * A grammar
@@ -41,22 +41,22 @@ export interface IGrammar {
     tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
 }
 export interface ITokenizeLineResult {
-    tokens: IToken[];
+    readonly tokens: IToken[];
     /**
      * The `prevState` to be passed on to the next line tokenization.
      */
-    ruleStack: StackElement;
+    readonly ruleStack: StackElement;
 }
 export interface IToken {
     startIndex: number;
-    endIndex: number;
-    scopes: string[];
+    readonly endIndex: number;
+    readonly scopes: string[];
 }
 /**
  * **IMPORTANT** - Immutable!
  */
 export interface StackElement {
-    _parent: StackElement;
     _stackElementBrand: void;
+    readonly _parent: StackElement;
     equals(other: StackElement): boolean;
 }

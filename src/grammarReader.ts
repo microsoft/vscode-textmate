@@ -29,8 +29,8 @@ interface IGrammarParser {
 }
 
 class AsyncGrammarReader {
-	private _filePath: string;
-	private _parser: IGrammarParser;
+	private readonly _filePath: string;
+	private readonly _parser: IGrammarParser;
 
 	constructor(filePath:string, parser:IGrammarParser) {
 		this._filePath = filePath;
@@ -56,8 +56,8 @@ class AsyncGrammarReader {
 }
 
 class SyncGrammarReader {
-	private _filePath: string;
-	private _parser: IGrammarParser;
+	private readonly _filePath: string;
+	private readonly _parser: IGrammarParser;
 
 	constructor(filePath:string, parser:IGrammarParser) {
 		this._filePath = filePath;

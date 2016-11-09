@@ -9,9 +9,9 @@ function doFail(streamState:JSONStreamState, msg:string): void {
 }
 
 export interface ILocation {
-	filename: string;
-	line: number;
-	char: number;
+	readonly filename: string;
+	readonly line: number;
+	readonly char: number;
 }
 
 export function parse(source:string, filename:string, withMetadata:boolean): any {

@@ -24,21 +24,21 @@ export interface IRuleFactoryHelper extends IRuleRegistry, IGrammarRegistry {
 }
 
 export interface ICompiledRule {
-	scanner: OnigScanner;
-	rules: number[];
-	debugRegExps: string[]
+	readonly scanner: OnigScanner;
+	readonly rules: number[];
+	readonly debugRegExps: string[]
 }
 
 export abstract class Rule {
 
-	public $location:ILocation;
-	public id:number;
+	public readonly $location:ILocation;
+	public readonly id:number;
 
-	private _nameIsCapturing: boolean;
-	private _name: string;
+	private readonly _nameIsCapturing: boolean;
+	private readonly _name: string;
 
-	private _contentNameIsCapturing: boolean;
-	private _contentName: string;
+	private readonly _contentNameIsCapturing: boolean;
+	private readonly _contentName: string;
 
 	constructor($location:ILocation, id:number, name:string, contentName:string) {
 		this.$location = $location;
@@ -77,13 +77,13 @@ export abstract class Rule {
 }
 
 export interface ICompilePatternsResult {
-	patterns: number[];
-	hasMissingPatterns: boolean;
+	readonly patterns: number[];
+	readonly hasMissingPatterns: boolean;
 }
 
 export class CaptureRule extends Rule {
 
-	public retokenizeCapturedWithRuleId: number;
+	public readonly retokenizeCapturedWithRuleId: number;
 
 	constructor($location:ILocation, id:number, name:string, contentName:string, retokenizeCapturedWithRuleId:number) {
 		super($location, id, name, contentName);
@@ -92,18 +92,18 @@ export class CaptureRule extends Rule {
 }
 
 interface IRegExpSourceAnchorCache {
-	A0_G0: string;
-	A0_G1: string;
-	A1_G0: string;
-	A1_G1: string;
+	readonly A0_G0: string;
+	readonly A0_G1: string;
+	readonly A1_G0: string;
+	readonly A1_G1: string;
 }
 
 export class RegExpSource {
 
 	public source: string;
-	public ruleId: number;
+	public readonly ruleId: number;
 	public hasAnchor: boolean;
-	public hasBackReferences: boolean;
+	public readonly hasBackReferences: boolean;
 	private _anchorCache: IRegExpSourceAnchorCache;
 
 	constructor(regExpSource:string, ruleId:number, handleAnchors:boolean = true) {
@@ -297,11 +297,11 @@ export function getString(str:OnigString): string {
 
 export class RegExpSourceList {
 
-	private _items: RegExpSource[];
+	private readonly _items: RegExpSource[];
 	private _hasAnchors: boolean;
 	private _cached: ICompiledRule;
 	private _anchorCache: IRegExpSourceListAnchorCache;
-	private _cachedSources: string[];
+	private readonly _cachedSources: string[];
 
 	constructor() {
 		this._items = [];
@@ -388,8 +388,8 @@ export class RegExpSourceList {
 }
 
 export class MatchRule extends Rule {
-	private _match: RegExpSource;
-	public captures: CaptureRule[];
+	private readonly _match: RegExpSource;
+	public readonly captures: CaptureRule[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
 	constructor($location:ILocation, id: number, name: string, match: string, captures: CaptureRule[]) {
@@ -417,8 +417,8 @@ export class MatchRule extends Rule {
 }
 
 export class IncludeOnlyRule extends Rule {
-	public hasMissingPatterns: boolean;
-	public patterns: number[];
+	public readonly hasMissingPatterns: boolean;
+	public readonly patterns: number[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
 	constructor($location:ILocation, id: number, name: string, contentName: string, patterns: ICompilePatternsResult) {
@@ -453,14 +453,14 @@ function escapeRegExpCharacters(value: string): string {
 }
 
 export class BeginEndRule extends Rule {
-	private _begin: RegExpSource;
-	public beginCaptures: CaptureRule[];
-	private _end: RegExpSource;
-	public endHasBackReferences:boolean;
-	public endCaptures: CaptureRule[];
-	public applyEndPatternLast: boolean;
-	public hasMissingPatterns: boolean;
-	public patterns: number[];
+	private readonly _begin: RegExpSource;
+	public readonly beginCaptures: CaptureRule[];
+	private readonly _end: RegExpSource;
+	public readonly endHasBackReferences:boolean;
+	public readonly endCaptures: CaptureRule[];
+	public readonly applyEndPatternLast: boolean;
+	public readonly hasMissingPatterns: boolean;
+	public readonly patterns: number[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 
 	constructor($location:ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], end: string, endCaptures: CaptureRule[], applyEndPatternLast: boolean, patterns: ICompilePatternsResult) {
@@ -533,13 +533,13 @@ export class BeginEndRule extends Rule {
 }
 
 export class BeginWhileRule extends Rule {
-	private _begin: RegExpSource;
-	public beginCaptures: CaptureRule[];
-	public whileCaptures: CaptureRule[];
-	private _while: RegExpSource;
-	public whileHasBackReferences: boolean;
-	public hasMissingPatterns: boolean;
-	public patterns: number[];
+	private readonly _begin: RegExpSource;
+	public readonly beginCaptures: CaptureRule[];
+	public readonly whileCaptures: CaptureRule[];
+	private readonly _while: RegExpSource;
+	public readonly whileHasBackReferences: boolean;
+	public readonly hasMissingPatterns: boolean;
+	public readonly patterns: number[];
 	private _cachedCompiledPatterns: RegExpSourceList;
 	private _cachedCompiledWhilePatterns: RegExpSourceList;
 
