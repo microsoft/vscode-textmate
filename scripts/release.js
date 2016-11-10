@@ -15,6 +15,7 @@ if (!fs.existsSync(RELEASE_FOLDER)) {
 
 var sources = [
 	'utils.js',
+	'theme.js',
 	'matcher.js',
 	'debug.js',
 	'json.js',

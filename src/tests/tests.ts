@@ -9,6 +9,7 @@ import * as assert from 'assert';
 import {Registry, IToken, IGrammar, IGrammarLocator, StackElement} from '../main';
 import {createMatcher} from '../matcher';
 import {parse as JSONparse} from '../json';
+import './themes.test';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 

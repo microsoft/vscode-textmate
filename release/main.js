@@ -97,6 +97,298 @@ var RegexSource = (function () {
 exports.RegexSource = RegexSource;
 //# sourceMappingURL=utils.js.map
 });
+$load('./theme', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+var ParsedThemeRule = (function () {
+    function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
+        this.scope = scope;
+        this.parentScopes = parentScopes;
+        this.index = index;
+        this.fontStyle = fontStyle;
+        this.foreground = foreground;
+        this.background = background;
+    }
+    return ParsedThemeRule;
+}());
+exports.ParsedThemeRule = ParsedThemeRule;
+/**
+ * Parse a raw theme into rules.
+ */
+function parseTheme(source) {
+    if (!source) {
+        return [];
+    }
+    if (!source.settings || !Array.isArray(source.settings)) {
+        return [];
+    }
+    var settings = source.settings;
+    var result = [], resultLen = 0;
+    for (var i = 0, len = settings.length; i < len; i++) {
+        var entry = settings[i];
+        if (!entry.settings) {
+            continue;
+        }
+        var scopes = void 0;
+        if (typeof entry.scope === 'string') {
+            scopes = entry.scope.split(',');
+        }
+        else if (Array.isArray(entry.scope)) {
+            scopes = entry.scope;
+        }
+        else {
+            scopes = [''];
+        }
+        var fontStyle = -1 /* NotSet */;
+        if (typeof entry.settings.fontStyle === 'string') {
+            fontStyle = 0 /* None */;
+            var segments = entry.settings.fontStyle.split(' ');
+            for (var j = 0, lenJ = segments.length; j < lenJ; j++) {
+                var segment = segments[j];
+                switch (segment) {
+                    case 'italic':
+                        fontStyle = fontStyle | 1 /* Italic */;
+                        break;
+                    case 'bold':
+                        fontStyle = fontStyle | 2 /* Bold */;
+                        break;
+                    case 'underline':
+                        fontStyle = fontStyle | 4 /* Underline */;
+                        break;
+                }
+            }
+        }
+        var foreground = null;
+        if (typeof entry.settings.foreground === 'string') {
+            foreground = entry.settings.foreground;
+        }
+        var background = null;
+        if (typeof entry.settings.background === 'string') {
+            background = entry.settings.background;
+        }
+        for (var j = 0, lenJ = scopes.length; j < lenJ; j++) {
+            var _scope = scopes[j].trim();
+            var segments = _scope.split(' ');
+            var scope = segments[segments.length - 1];
+            var parentScopes = null;
+            if (segments.length > 1) {
+                parentScopes = segments.slice(0, segments.length - 1);
+                parentScopes.reverse();
+            }
+            result[resultLen++] = new ParsedThemeRule(scope, parentScopes, i, fontStyle, foreground, background);
+        }
+    }
+    return result;
+}
+exports.parseTheme = parseTheme;
+/**
+ * Resolve rules (i.e. inheritance).
+ */
+function resolveParsedThemeRules(parsedThemeRules) {
+    // Sort rules lexicographically, and then by index if necessary
+    parsedThemeRules.sort(function (a, b) {
+        var r = strcmp(a.scope, b.scope);
+        if (r !== 0) {
+            return r;
+        }
+        r = strArrCmp(a.parentScopes, b.parentScopes);
+        if (r !== 0) {
+            return r;
+        }
+        return a.index - b.index;
+    });
+    var defaults;
+    if (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
+        var incomingDefaults = parsedThemeRules.shift();
+        var fontStyle = incomingDefaults.fontStyle;
+        var foreground = incomingDefaults.foreground;
+        var background = incomingDefaults.background;
+        if (fontStyle === -1 /* NotSet */) {
+            fontStyle = 0 /* None */;
+        }
+        if (foreground === null) {
+            foreground = '#000000';
+        }
+        if (background === null) {
+            background = '#ffffff';
+        }
+        defaults = new ParsedThemeRule('', null, incomingDefaults.index, fontStyle, foreground, background);
+    }
+    else {
+        defaults = new ParsedThemeRule('', null, -1, 0 /* None */, '#000000', '#ffffff');
+    }
+    var root = new ThemeTrieElement(new ThemeTrieElementRule(null, defaults.fontStyle, defaults.foreground, defaults.background), []);
+    for (var i = 0, len = parsedThemeRules.length; i < len; i++) {
+        root.insert(parsedThemeRules[i]);
+    }
+    return root;
+}
+exports.resolveParsedThemeRules = resolveParsedThemeRules;
+var Theme = (function () {
+    function Theme(source) {
+        this._root = resolveParsedThemeRules(parseTheme(source));
+        this._cache = {};
+    }
+    Theme.prototype.match = function (scopeName) {
+        if (!this._cache.hasOwnProperty(scopeName)) {
+            this._cache[scopeName] = this._root.match(scopeName);
+        }
+        return this._cache[scopeName];
+    };
+    return Theme;
+}());
+exports.Theme = Theme;
+function strcmp(a, b) {
+    if (a < b) {
+        return -1;
+    }
+    if (a > b) {
+        return 1;
+    }
+    return 0;
+}
+exports.strcmp = strcmp;
+function strArrCmp(a, b) {
+    if (a === null && b === null) {
+        return 0;
+    }
+    if (!a) {
+        return -1;
+    }
+    if (!b) {
+        return 1;
+    }
+    var len1 = a.length;
+    var len2 = b.length;
+    if (len1 === len2) {
+        for (var i = 0; i < len1; i++) {
+            var res = strcmp(a[i], b[i]);
+            if (res !== 0) {
+                return res;
+            }
+        }
+        return 0;
+    }
+    return len1 - len2;
+}
+exports.strArrCmp = strArrCmp;
+var ThemeTrieElementRule = (function () {
+    function ThemeTrieElementRule(parentScopes, fontStyle, foreground, background) {
+        this.parentScopes = parentScopes;
+        this.fontStyle = fontStyle;
+        this.foreground = foreground;
+        this.background = background;
+    }
+    ThemeTrieElementRule.prototype.clone = function () {
+        return new ThemeTrieElementRule(this.parentScopes, this.fontStyle, this.foreground, this.background);
+    };
+    ThemeTrieElementRule.prototype.acceptOverwrite = function (fontStyle, foreground, background) {
+        if (fontStyle !== -1 /* NotSet */) {
+            this.fontStyle = fontStyle;
+        }
+        if (foreground !== null) {
+            this.foreground = foreground;
+        }
+        if (background !== null) {
+            this.background = background;
+        }
+    };
+    return ThemeTrieElementRule;
+}());
+exports.ThemeTrieElementRule = ThemeTrieElementRule;
+var ThemeTrieElement = (function () {
+    function ThemeTrieElement(mainRule, rulesWithParentScopes, children) {
+        if (rulesWithParentScopes === void 0) { rulesWithParentScopes = []; }
+        if (children === void 0) { children = {}; }
+        this._mainRule = mainRule;
+        this._rulesWithParentScopes = rulesWithParentScopes;
+        this._children = children;
+    }
+    ThemeTrieElement.prototype.match = function (scope) {
+        if (scope === '') {
+            return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+        }
+        var dotIndex = scope.indexOf('.');
+        var head;
+        var tail;
+        if (dotIndex === -1) {
+            head = scope;
+            tail = '';
+        }
+        else {
+            head = scope.substring(0, dotIndex);
+            tail = scope.substring(dotIndex + 1);
+        }
+        if (this._children.hasOwnProperty(head)) {
+            return this._children[head].match(tail);
+        }
+        return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+    };
+    ThemeTrieElement.prototype.insert = function (rule) {
+        this._doInsert(rule.scope, rule.parentScopes, rule.fontStyle, rule.foreground, rule.background);
+    };
+    ThemeTrieElement.prototype._doInsert = function (scope, parentScopes, fontStyle, foreground, background) {
+        if (scope === '') {
+            this._doInsertHere(parentScopes, fontStyle, foreground, background);
+            return;
+        }
+        var dotIndex = scope.indexOf('.');
+        var head;
+        var tail;
+        if (dotIndex === -1) {
+            head = scope;
+            tail = '';
+        }
+        else {
+            head = scope.substring(0, dotIndex);
+            tail = scope.substring(dotIndex + 1);
+        }
+        var child;
+        if (this._children[head]) {
+            child = this._children[head];
+        }
+        else {
+            child = new ThemeTrieElement(this._mainRule.clone());
+            this._children[head] = child;
+        }
+        // TODO: In the case that this element has `parentScopes`, should we generate one insert for each parentScope ?
+        child._doInsert(tail, parentScopes, fontStyle, foreground, background);
+    };
+    ThemeTrieElement.prototype._doInsertHere = function (parentScopes, fontStyle, foreground, background) {
+        if (parentScopes === null) {
+            // Merge into the main rule
+            this._mainRule.acceptOverwrite(fontStyle, foreground, background);
+            return;
+        }
+        // Try to merge into existing rule
+        for (var i = 0, len = this._rulesWithParentScopes.length; i < len; i++) {
+            var rule = this._rulesWithParentScopes[i];
+            if (strArrCmp(rule.parentScopes, parentScopes) === 0) {
+                // bingo! => we get to merge this into an existing one
+                rule.acceptOverwrite(fontStyle, foreground, background);
+                return;
+            }
+        }
+        // Must add a new rule
+        // Inherit from main rule
+        if (fontStyle === -1 /* NotSet */) {
+            fontStyle = this._mainRule.fontStyle;
+        }
+        if (foreground === null) {
+            foreground = this._mainRule.foreground;
+        }
+        if (background === null) {
+            background = this._mainRule.background;
+        }
+        this._rulesWithParentScopes.push(new ThemeTrieElementRule(parentScopes, fontStyle, foreground, background));
+    };
+    return ThemeTrieElement;
+}());
+exports.ThemeTrieElement = ThemeTrieElement;
+//# sourceMappingURL=theme.js.map
+});
 $load('./matcher', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
