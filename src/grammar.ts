@@ -6,7 +6,7 @@
 import {clone} from './utils';
 import {IRawGrammar, IRawRepository, IRawRule} from './types';
 import {IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
-import {IOnigCaptureIndex, IOnigNextMatchResult, OnigString} from 'oniguruma';
+import {IOnigCaptureIndex, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
 import {IGrammar, ITokenizeLineResult, IToken, StackElement as StackElementDef} from './main';
 import {IN_DEBUG_MODE} from './debug';
@@ -94,7 +94,7 @@ export function collectIncludedScopes(result: IScopeNameSet, grammar:IRawGrammar
 
 interface Injection {
 	readonly matcher: Matcher<StackElement>;
-	readonly priorityMatch: boolean,
+	readonly priorityMatch: boolean;
 	readonly ruleId:number;
 	readonly grammar: IRawGrammar;
 }
@@ -127,7 +127,7 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 
 	var subExpressions = selector.split(',');
 	subExpressions.forEach(subExpression => {
-		var expressionString = subExpression.replace(/L:/g, '')
+		var expressionString = subExpression.replace(/L:/g, '');
 
 		result.push({
 			matcher: createMatcher(expressionString, nameMatcher),
@@ -202,8 +202,6 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	}
 
 	public getExternalGrammar(scopeName:string, repository?:IRawRepository): IRawGrammar {
-		let actualGrammar: IRawGrammar = null;
-
 		if (this._includedGrammars[scopeName]) {
 			return this._includedGrammars[scopeName];
 		} else if (this._grammarRepository) {
@@ -479,7 +477,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 
 		if (r) {
 			let matchedRuleId = ruleScanner.rules[r.index];
-			if (matchedRuleId != -2) {
+			if (matchedRuleId !== -2) {
 				// we shouldn't end up here
 				stack = whileRule.stack.pop();
 				break;
@@ -664,7 +662,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 export class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
+	public readonly depth: number;
 	public readonly _parent: StackElement;
+
 	private _enterPos: number;
 	private readonly _ruleId: number;
 	private readonly _endRule: string;
@@ -673,6 +673,7 @@ export class StackElement implements StackElementDef {
 
 	constructor(parent:StackElement, ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string) {
 		this._parent = parent;
+		this.depth = (this._parent ? this._parent.depth + 1 : 1);
 		this._ruleId = ruleId;
 		this._enterPos = enterPos;
 		this._endRule = endRule;
@@ -680,26 +681,32 @@ export class StackElement implements StackElementDef {
 		this._contentName = contentName;
 	}
 
-	public equals(other:StackElement): boolean {
-		if (!this._shallowEquals(other)) {
-			return false;
-		}
-		if (!this._parent && !other._parent) {
-			return true;
-		}
-		if (!this._parent || !other._parent) {
-			return false;
-		}
-		return this._parent.equals(other._parent);
+	private static _equals(a:StackElement, b:StackElement): boolean {
+		do {
+			if (
+				a.depth !== b.depth
+				|| a._ruleId !== b._ruleId
+				|| a._endRule !== b._endRule
+				|| a._scopeName !== b._scopeName
+				|| a._contentName !== b._contentName
+			) {
+				return false;
+			}
+
+			a = a._parent;
+			b = b._parent;
+
+			if (!a && !b) {
+				return true;
+			}
+			if (!a || !b) {
+				return false;
+			}
+		} while (true);
 	}
 
-	private _shallowEquals(other:StackElement): boolean {
-		return (
-			this._ruleId === other._ruleId
-			&& this._endRule === other._endRule
-			&& this._scopeName === other._scopeName
-			&& this._contentName === other._contentName
-		);
+	public equals(other:StackElement): boolean {
+		return StackElement._equals(this, other);
 	}
 
 	public reset(): void {

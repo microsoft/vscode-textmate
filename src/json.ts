@@ -440,11 +440,11 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 
 		_out.type = JSONTokenType.NULL;
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.u) return false; /* INVALID */
+		if (chCode !== ChCode.u) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.l) return false; /* INVALID */
+		if (chCode !== ChCode.l) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.l) return false; /* INVALID */
+		if (chCode !== ChCode.l) { return false; /* INVALID */ }
 		pos++; char++;
 
 	} else if (chCode === ChCode.t) {
@@ -452,11 +452,11 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 
 		_out.type = JSONTokenType.TRUE;
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.r) return false; /* INVALID */
+		if (chCode !== ChCode.r) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.u) return false; /* INVALID */
+		if (chCode !== ChCode.u) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.e) return false; /* INVALID */
+		if (chCode !== ChCode.e) { return false; /* INVALID */ }
 		pos++; char++;
 
 	} else if (chCode === ChCode.f) {
@@ -464,13 +464,13 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 
 		_out.type = JSONTokenType.FALSE;
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.a) return false; /* INVALID */
+		if (chCode !== ChCode.a) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.l) return false; /* INVALID */
+		if (chCode !== ChCode.l) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.s) return false; /* INVALID */
+		if (chCode !== ChCode.s) { return false; /* INVALID */ }
 		pos++; char++; chCode = source.charCodeAt(pos);
-		if (chCode !== ChCode.e) return false; /* INVALID */
+		if (chCode !== ChCode.e) { return false; /* INVALID */ }
 		pos++; char++;
 
 	} else {
@@ -478,7 +478,7 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 
 		_out.type = JSONTokenType.NUMBER;
 		do {
-			if (pos >= len) return false; /*EOS*/
+			if (pos >= len) { return false; /*EOS*/ }
 
 			chCode = source.charCodeAt(pos);
 			if (

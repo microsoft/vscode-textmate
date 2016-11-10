@@ -4,7 +4,6 @@
 'use strict';
 
 import * as fs from 'fs';
-import * as path from 'path';
 import {IRawGrammar} from './types';
 import * as plist from 'fast-plist';
 import {CAPTURE_METADATA} from './debug';
@@ -65,7 +64,7 @@ class SyncGrammarReader {
 	}
 
 	public load(): IRawGrammar {
-		let contents = fs.readFileSync(this._filePath)
+		let contents = fs.readFileSync(this._filePath);
 		return this._parser(contents.toString(), this._filePath);
 	}
 }

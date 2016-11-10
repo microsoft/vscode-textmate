@@ -20,7 +20,7 @@ export function createMatcher<T>(expression: string, matchesName: (names: string
 		if (token === '(') {
 			token = tokenizer.next();
 			var expressionInParents = parseExpression('|');
-			if (token == ')') {
+			if (token === ')') {
 				token = tokenizer.next();
 			}
 			return expressionInParents;
@@ -60,7 +60,7 @@ export function createMatcher<T>(expression: string, matchesName: (names: string
 		}
 		return matcherInput => matchers.some(matcher => matcher(matcherInput)); // or
 	}
-	
+
 	return parseExpression() || (matcherInput => false);
 }
 
@@ -80,5 +80,5 @@ function newTokenizer(input: string) : { next: () => string } {
 			match = regex.exec(input);
 			return res;
 		}
-	}
+	};
 }

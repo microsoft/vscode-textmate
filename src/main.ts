@@ -4,8 +4,7 @@
 'use strict';
 
 import {SyncRegistry as SyncRegistry} from './registry';
-import {readGrammar, readGrammarSync} from './grammarReader';
-import {IRawGrammar} from './types';
+import {readGrammarSync} from './grammarReader';
 
 let DEFAULT_LOCATOR:IGrammarLocator = {
 	getFilePath: (scopeName:string) => null,
@@ -99,13 +98,6 @@ export class Registry {
 	}
 }
 
-export interface IGrammarInfo {
-	readonly fileTypes: string[];
-	readonly name: string;
-	readonly scopeName: string;
-	readonly firstLineMatch: string;
-}
-
 /**
  * A grammar
  */
@@ -135,7 +127,7 @@ export interface IToken {
  */
 export interface StackElement {
 	_stackElementBrand: void;
-	readonly _parent: StackElement;
+	readonly depth: number;
 
 	equals(other:StackElement): boolean;
 }

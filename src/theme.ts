@@ -10,7 +10,7 @@ export interface IRawThemeSetting {
 		readonly fontStyle?: string;
 		readonly foreground?: string;
 		readonly background?: string;
-	}
+	};
 }
 export interface IRawTheme {
 	readonly name?: string;
@@ -191,7 +191,7 @@ export function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Th
 export class Theme {
 
 	private _root: ThemeTrieElement;
-	private _cache: { [scopeName: string]: ThemeTrieElementRule[]; }
+	private _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
 
 	constructor(source: IRawTheme) {
 		this._root = resolveParsedThemeRules(parseTheme(source));

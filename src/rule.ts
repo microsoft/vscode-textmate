@@ -26,7 +26,7 @@ export interface IRuleFactoryHelper extends IRuleRegistry, IGrammarRegistry {
 export interface ICompiledRule {
 	readonly scanner: OnigScanner;
 	readonly rules: number[];
-	readonly debugRegExps: string[]
+	readonly debugRegExps: string[];
 }
 
 export abstract class Rule {
@@ -238,7 +238,7 @@ export class RegExpSource {
 			A0_G1: A0_G1_result.join(''),
 			A1_G0: A1_G0_result.join(''),
 			A1_G1: A1_G1_result.join('')
-		}
+		};
 	}
 
 	public resolveAnchors(allowA:boolean, allowG:boolean): string {
@@ -276,7 +276,7 @@ let getOnigModule = (function() {
 			onigurumaModule = require('oniguruma');
 		}
 		return onigurumaModule;
-	}
+	};
 })();
 
 function createOnigScanner(sources:string[]): OnigScanner {
