@@ -6,17 +6,24 @@
 import {createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet} from './grammar';
 import {IRawGrammar} from './types';
 import {IGrammar} from './main';
+import {Theme} from './theme';
 
 export class SyncRegistry implements IGrammarRepository {
 
 	private readonly _grammars: {[scopeName:string]:IGrammar;};
 	private readonly _rawGrammars: {[scopeName:string]:IRawGrammar;};
 	private readonly _injectionGrammars: {[scopeName:string]:string[];};
+	private _theme: Theme;
 
-	constructor() {
+	constructor(theme: Theme) {
+		this._theme = theme;
 		this._grammars = {};
 		this._rawGrammars = {};
 		this._injectionGrammars = {};
+	}
+
+	public setTheme(theme: Theme): void {
+		this._theme = theme;
 	}
 
 	/**

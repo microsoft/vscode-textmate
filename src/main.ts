@@ -3,18 +3,41 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import {SyncRegistry as SyncRegistry} from './registry';
+import {SyncRegistry} from './registry';
 import {readGrammarSync} from './grammarReader';
+import {Theme} from './theme';
 
-let DEFAULT_LOCATOR:IGrammarLocator = {
+let DEFAULT_OPTIONS:RegistryOptions = {
 	getFilePath: (scopeName:string) => null,
 	getInjections: (scopeName:string) => null
 };
 
 /**
+ * A single theme setting.
+ */
+export interface IRawThemeSetting {
+	readonly name?: string;
+	readonly scope?: string | string[];
+	readonly settings: {
+		readonly fontStyle?: string;
+		readonly foreground?: string;
+		readonly background?: string;
+	};
+}
+
+/**
+ * A TextMate theme.
+ */
+export interface IRawTheme {
+	readonly name?: string;
+	readonly settings: IRawThemeSetting[];
+}
+
+/**
  * A registry helper that can locate grammar file paths given scope names.
  */
-export interface IGrammarLocator {
+export interface RegistryOptions {
+	theme?: IRawTheme;
 	getFilePath(scopeName:string): string;
 	getInjections?(scopeName:string): string[];
 }
@@ -24,12 +47,20 @@ export interface IGrammarLocator {
  */
 export class Registry {
 
-	private readonly _locator: IGrammarLocator;
+	private readonly _locator: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
+	private theme: Theme;
 
-	constructor(locator:IGrammarLocator = DEFAULT_LOCATOR) {
+	constructor(locator:RegistryOptions = DEFAULT_OPTIONS) {
 		this._locator = locator;
-		this._syncRegistry = new SyncRegistry();
+		this._syncRegistry = new SyncRegistry(new Theme(null));
+	}
+
+	/**
+	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
+	 */
+	public setTheme(theme: IRawTheme): void {
+		this._syncRegistry.setTheme(new Theme(theme));
 	}
 
 	/**

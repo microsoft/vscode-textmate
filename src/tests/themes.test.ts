@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IToken, IGrammar, IGrammarLocator, StackElement } from '../main';
+import { Registry, IToken, IGrammar, RegistryOptions, StackElement } from '../main';
 import { createMatcher } from '../matcher';
 import { parse as JSONparse } from '../json';
 import {
@@ -22,7 +22,9 @@ const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 describe('Theme', () => {
 
 	let light_vs = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_vs.json')).toString());
-	let light_vs_theme = new Theme(light_vs);
+	// let light_vs_theme = new Theme(light_vs);
+
+
 
 	// console.log(light_vs_theme);
 
@@ -31,7 +33,11 @@ describe('Theme', () => {
 	// var light_vs
 
 	it('works', () => {
-		console.log('hello world!');
+		let registry = new Registry();
+		registry.setTheme(light_vs);
+		let grammar = registry.loadGrammarFromPathSync(path.join(THEMES_TEST_PATH, 'go/go.json'));
+
+		console.log(grammar);
 	});
 
 });

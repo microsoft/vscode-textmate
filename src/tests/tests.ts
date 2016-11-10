@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import {Registry, IToken, IGrammar, IGrammarLocator, StackElement} from '../main';
+import {Registry, IToken, IGrammar, RegistryOptions, StackElement} from '../main';
 import {createMatcher} from '../matcher';
 import {parse as JSONparse} from '../json';
 import './themes.test';
@@ -36,7 +36,7 @@ function assertTokenizationSuite(testLocation: string): void {
 
 	tests.forEach((test) => {
 		it (test.desc, () => {
-			let locator : IGrammarLocator = {
+			let locator : RegistryOptions = {
 				getFilePath: (scopeName:string) => null,
 				getInjections: (scopeName:string) => {
 					if (scopeName === test.grammarScopeName) {

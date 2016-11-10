@@ -3,19 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-export interface IRawThemeSetting {
-	readonly name?: string;
-	readonly scope?: string | string[];
-	readonly settings: {
-		readonly fontStyle?: string;
-		readonly foreground?: string;
-		readonly background?: string;
-	};
-}
-export interface IRawTheme {
-	readonly name?: string;
-	readonly settings: IRawThemeSetting[];
-}
+import { IRawTheme } from './main';
 
 export const enum FontStyle {
 	NotSet = -1,
