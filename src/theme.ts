@@ -163,14 +163,44 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
 			defaultBackground = incomingDefaults.background;
 		}
 	}
-	let defaults = new ThemeTrieElementRule(null, defaultFontStyle, defaultForeground, defaultBackground);
+	let colorMap = new ColorMap();
+	let defaults = new ThemeTrieElementRule(null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
 
-	let root = new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), []);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, 0, 0), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
-		root.insert(parsedThemeRules[i]);
+		let rule = parsedThemeRules[i];
+		root.insert(rule.scope, rule.parentScopes, rule.fontStyle, colorMap.getId(rule.foreground), colorMap.getId(rule.background));
 	}
 
-	return new Theme(defaults, root);
+	return new Theme(colorMap, defaults, root);
+}
+
+export class ColorMap {
+
+	private _lastColorId: number;
+	private _id2color: string[];
+	private _color2id: { [color: string]: number; };
+
+	constructor() {
+		this._lastColorId = 0;
+		this._id2color = [];
+		this._color2id = Object.create(null);
+	}
+
+	public getId(color: string): number {
+		if (color === null) {
+			return 0;
+		}
+		let value = this._color2id[color];
+		if (value) {
+			return value;
+		}
+		value = ++this._lastColorId;
+		this._color2id[color] = value;
+		this._id2color[value] = color;
+		return value;
+	}
+
 }
 
 export class Theme {
@@ -183,14 +213,20 @@ export class Theme {
 		return resolveParsedThemeRules(source);
 	}
 
-	private _root: ThemeTrieElement;
-	private _defaults: ThemeTrieElementRule;
-	private _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
+	private readonly _colorMap: ColorMap;
+	private readonly _root: ThemeTrieElement;
+	private readonly _defaults: ThemeTrieElementRule;
+	private readonly _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
 
-	constructor(defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
+	constructor(colorMap: ColorMap, defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
+		this._colorMap = colorMap;
 		this._root = root;
 		this._defaults = defaults;
 		this._cache = {};
+	}
+
+	public getDefaults(): ThemeTrieElementRule {
+		return this._defaults;
 	}
 
 	public match(scopeName: string): ThemeTrieElementRule[] {
@@ -240,10 +276,10 @@ export class ThemeTrieElementRule {
 
 	parentScopes: string[];
 	fontStyle: number;
-	foreground: string;
-	background: string;
+	foreground: number;
+	background: number;
 
-	constructor(parentScopes: string[], fontStyle: number, foreground: string, background: string) {
+	constructor(parentScopes: string[], fontStyle: number, foreground: number, background: number) {
 		this.parentScopes = parentScopes;
 		this.fontStyle = fontStyle;
 		this.foreground = foreground;
@@ -254,14 +290,14 @@ export class ThemeTrieElementRule {
 		return new ThemeTrieElementRule(this.parentScopes, this.fontStyle, this.foreground, this.background);
 	}
 
-	public acceptOverwrite(fontStyle: number, foreground: string, background: string): void {
+	public acceptOverwrite(fontStyle: number, foreground: number, background: number): void {
 		if (fontStyle !== FontStyle.NotSet) {
 			this.fontStyle = fontStyle;
 		}
-		if (foreground !== null) {
+		if (foreground !== 0) {
 			this.foreground = foreground;
 		}
-		if (background !== null) {
+		if (background !== 0) {
 			this.background = background;
 		}
 	}
@@ -311,11 +347,11 @@ export class ThemeTrieElement {
 		return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
 	}
 
-	public insert(rule: ParsedThemeRule): void {
-		this._doInsert(rule.scope, rule.parentScopes, rule.fontStyle, rule.foreground, rule.background);
-	}
+	// public insert(rule: ParsedThemeRule): void {
+	// 	this._doInsert(rule.scope, rule.parentScopes, rule.fontStyle, rule.foreground, rule.background);
+	// }
 
-	private _doInsert(scope: string, parentScopes: string[], fontStyle: number, foreground: string, background: string): void {
+	public insert(scope: string, parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
 		if (scope === '') {
 			this._doInsertHere(parentScopes, fontStyle, foreground, background);
 			return;
@@ -341,10 +377,10 @@ export class ThemeTrieElement {
 		}
 
 		// TODO: In the case that this element has `parentScopes`, should we generate one insert for each parentScope ?
-		child._doInsert(tail, parentScopes, fontStyle, foreground, background);
+		child.insert(tail, parentScopes, fontStyle, foreground, background);
 	}
 
-	private _doInsertHere(parentScopes: string[], fontStyle: number, foreground: string, background: string): void {
+	private _doInsertHere(parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule
@@ -369,10 +405,10 @@ export class ThemeTrieElement {
 		if (fontStyle === FontStyle.NotSet) {
 			fontStyle = this._mainRule.fontStyle;
 		}
-		if (foreground === null) {
+		if (foreground === 0) {
 			foreground = this._mainRule.foreground;
 		}
-		if (background === null) {
+		if (background === 0) {
 			background = this._mainRule.background;
 		}
 

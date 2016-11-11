@@ -59,6 +59,13 @@ export class SyncRegistry implements IGrammarRepository {
 	}
 
 	/**
+	 * Get the default theme settings
+	 */
+	public getDefaults(): ThemeTrieElementRule {
+		return this._theme.getDefaults();
+	}
+
+	/**
 	 * Match a scope in the theme.
 	 */
 	public themeMatch(scopeName: string): ThemeTrieElementRule[] {

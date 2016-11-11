@@ -18,6 +18,7 @@ export function createGrammar(grammar: IRawGrammar, initialLanguage: number, emb
 
 export interface IThemeProvider {
 	themeMatch(scopeName: string): ThemeTrieElementRule[];
+	getDefaults(): ThemeTrieElementRule;
 }
 
 export interface IGrammarRepository {
@@ -143,14 +144,14 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 	});
 }
 
-class ScopeMetadata {
+export class ScopeMetadata {
 	public readonly languageId: number;
-	public readonly standardTokenType: number;
+	public readonly tokenType: number;
 	public readonly themeData: ThemeTrieElementRule[];
 
-	constructor(languageId: number, standardTokenType: number, themeData: ThemeTrieElementRule[]) {
+	constructor(languageId: number, tokenType: number, themeData: ThemeTrieElementRule[]) {
 		this.languageId = languageId;
-		this.standardTokenType = standardTokenType;
+		this.tokenType = tokenType;
 		this.themeData = themeData;
 	}
 }
@@ -159,12 +160,18 @@ class ScopeMetadataProvider {
 
 	private readonly _themeProvider: IThemeProvider;
 	private readonly _cache: { [scopeName: string]: ScopeMetadata; };
+	private readonly _rootMetaData: ScopeMetadata;
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp;
 
-	constructor(themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
+	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
 		this._themeProvider = themeProvider;
 		this._cache = Object.create(null);
+		this._rootMetaData = new ScopeMetadata(
+			initialLanguage,
+			StandardTokenType.Other,
+			[this._themeProvider.getDefaults()]
+		);
 
 		// embeddedLanguages handling
 		this._embeddedLanguages = Object.create(null);
@@ -196,6 +203,10 @@ class ScopeMetadataProvider {
 		}
 	}
 
+	public getRootMetadata(): ScopeMetadata {
+		return this._rootMetaData;
+	}
+
 	/**
 	 * Escapes regular expression characters in a given string
 	 */
@@ -203,7 +214,11 @@ class ScopeMetadataProvider {
 		return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 	}
 
+	private static _NULL_SCOPE_METADATA = new ScopeMetadata(0, 0, null);
 	public getMetadataForScope(scopeName: string): ScopeMetadata {
+		if (scopeName === null) {
+			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
+		}
 		let value = this._cache[scopeName];
 		if (value) {
 			return value;
@@ -277,7 +292,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 
 	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider) {
-		this._scopeMetadataProvider = new ScopeMetadataProvider(grammarRepository, embeddedLanguages);
+		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
 		this._rootId = -1;
 		this._lastRuleId = 0;
@@ -285,6 +300,10 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
+	}
+
+	public getMetadataForScope(scope: string): ScopeMetadata {
+		return this._scopeMetadataProvider.getMetadataForScope(scope);
 	}
 
 	public getInjections(states: StackElement): Injection[] {
@@ -352,7 +371,15 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		let isFirstLine: boolean;
 		if (!prevState) {
 			isFirstLine = true;
-			prevState = new StackElement(null, this._rootId, -1, null, this.getRule(this._rootId).getName(null, null), null);
+			let rootMetadata = this._scopeMetadataProvider.getRootMetadata();
+			let themeData = rootMetadata.themeData[0];
+			let _rootMetadata = StackElementMetadata.set(0, rootMetadata.languageId, rootMetadata.tokenType, themeData.fontStyle, themeData.foreground, themeData.background);
+
+			let scopeName = this.getRule(this._rootId).getName(null, null);
+			let scopeNameMetadata = this._scopeMetadataProvider.getMetadataForScope(scopeName);
+			let _scopeNameMetadata = StackElementMetadata.merge(_rootMetadata, scopeNameMetadata);
+
+			prevState = new StackElement(null, this._rootId, -1, null, scopeName, _scopeNameMetadata, null, _scopeNameMetadata);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
@@ -425,7 +452,11 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
-			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(getString(lineText), captureIndices), captureRule.getContentName(getString(lineText), captureIndices));
+			let scopeName = captureRule.getName(getString(lineText), captureIndices);
+			let scopeNameMetadata = grammar.getMetadataForScope(scopeName);
+			let contentName = captureRule.getContentName(getString(lineText), captureIndices);
+			let contentNameMetadata = grammar.getMetadataForScope(contentName);
+			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, scopeName, scopeNameMetadata, contentName, contentNameMetadata);
 			_tokenizeString(grammar,
 				createOnigString(
 					getString(lineText).substring(0, captureIndex.end)
@@ -677,7 +708,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			}
 
 			lineTokens.produce(stack, captureIndices[0].start);
-			stack = stack.withContentName(null);
+			stack = stack.withContentName(null, null);
 			handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
 			lineTokens.produce(stack, captureIndices[0].end);
 
@@ -691,7 +722,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 				// See https://github.com/Microsoft/vscode-textmate/issues/12
 				// Let's assume this was a mistake by the grammar author and the intent was to continue in this state
-				stack = stack.pushElement(popped);
+				stack = popped;
 
 				lineTokens.produce(stack, lineLength);
 				STOP = true;
@@ -705,7 +736,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 			let beforePush = stack;
 			// push it on the stack rule
-			stack = stack.push(matchedRuleId, linePos, null, _rule.getName(getString(lineText), captureIndices), null);
+			let scopeName = _rule.getName(getString(lineText), captureIndices);
+			let scopeNameMetadata = grammar.getMetadataForScope(scopeName);
+			stack = stack.push(matchedRuleId, linePos, null, scopeName, scopeNameMetadata, null, null);
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -716,7 +749,10 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				stack = stack.withContentName(pushedRule.getContentName(getString(lineText), captureIndices));
+
+				let contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+				let contentNameMetadata = grammar.getMetadataForScope(contentName);
+				stack = stack.withContentName(contentName, contentNameMetadata);
 
 				if (pushedRule.endHasBackReferences) {
 					stack = stack.withEndRule(pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices));
@@ -739,7 +775,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				stack = stack.withContentName(pushedRule.getContentName(getString(lineText), captureIndices));
+				let contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+				let contentNameMetadata = grammar.getMetadataForScope(contentName);
+				stack = stack.withContentName(contentName, contentNameMetadata);
 
 				if (pushedRule.whileHasBackReferences) {
 					stack = stack.withEndRule(pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices));
@@ -872,9 +910,6 @@ export class StackElementMetadata {
 			_background = background;
 		}
 
-		// console.log('HERE I AM: ' + _languageId, _tokenType, _fontStyle, _foreground, _background)
-		// console.log('TEST: ' + _languageId << MetadataConsts.LANGUAGEID_OFFSET)
-
 		return (
 			(_languageId << MetadataConsts.LANGUAGEID_OFFSET)
 			| (_tokenType << MetadataConsts.TOKEN_TYPE_OFFSET)
@@ -882,6 +917,29 @@ export class StackElementMetadata {
 			| (_foreground << MetadataConsts.FOREGROUND_OFFSET)
 			| (_background << MetadataConsts.BACKGROUND_OFFSET)
 		) >>> 0;
+	}
+
+	public static merge(metadata: number, source: ScopeMetadata): number {
+		if (source === null) {
+			return metadata;
+		}
+
+		let fontStyle = FontStyle.NotSet;
+		let foreground = 0;
+		let background = 0;
+
+		if (source.themeData === null || source.themeData.length === 0) {
+			// No themeing...
+		} else if (source.themeData.length === 1 && source.themeData[0].parentScopes === null) {
+			let themeData = source.themeData[0];
+			fontStyle = themeData.fontStyle;
+			foreground = themeData.foreground;
+			background = themeData.background;
+		} else {
+			console.warn('CANNOT HONOUR THEME RULE THAT INVOLVES PARENT SCOPES...');
+		}
+
+		return this.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background);
 	}
 
 }
@@ -892,39 +950,44 @@ export class StackElementMetadata {
 class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
-	public readonly depth: number;
-	private readonly _parent: StackElement;
-
 	private _enterPos: number;
-	private readonly _ruleId: number;
-	public readonly endRule: string;
-	private readonly _scopeName: string;
-	private readonly _contentName: string;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, endRule: string, scopeName: string, contentName: string) {
-		this._parent = parent;
-		this.depth = (this._parent ? this._parent.depth + 1 : 1);
-		this._ruleId = ruleId;
+	public readonly depth: number;
+	public readonly parent: StackElement;
+
+	public readonly ruleId: number;
+	public readonly endRule: string;
+	public readonly scopeName: string;
+	public readonly scopeMetadata: number;
+	public readonly contentName: string;
+	public readonly contentMetadata: number;
+
+	constructor(parent: StackElement, ruleId: number, enterPos: number, endRule: string, scopeName: string, scopeMetadata: number, contentName: string, contentMetadata: number) {
+		this.parent = parent;
+		this.depth = (this.parent ? this.parent.depth + 1 : 1);
+		this.ruleId = ruleId;
 		this._enterPos = enterPos;
 		this.endRule = endRule;
-		this._scopeName = scopeName;
-		this._contentName = contentName;
+		this.scopeName = scopeName;
+		this.scopeMetadata = scopeMetadata;
+		this.contentName = contentName;
+		this.contentMetadata = contentMetadata;
 	}
 
 	private static _equals(a: StackElement, b: StackElement): boolean {
 		do {
 			if (
 				a.depth !== b.depth
-				|| a._ruleId !== b._ruleId
+				|| a.ruleId !== b.ruleId
 				|| a.endRule !== b.endRule
-				|| a._scopeName !== b._scopeName
-				|| a._contentName !== b._contentName
+				|| a.scopeName !== b.scopeName
+				|| a.contentName !== b.contentName
 			) {
 				return false;
 			}
 
-			a = a._parent;
-			b = b._parent;
+			a = a.parent;
+			b = b.parent;
 
 			if (!a && !b) {
 				return true;
@@ -942,7 +1005,7 @@ class StackElement implements StackElementDef {
 	private static _reset(el: StackElement): void {
 		while (el) {
 			el._enterPos = -1;
-			el = el._parent;
+			el = el.parent;
 		}
 	}
 
@@ -951,22 +1014,24 @@ class StackElement implements StackElementDef {
 	}
 
 	public pop(): StackElement {
-		return this._parent;
+		return this.parent;
 	}
 
 	public safePop(): StackElement {
-		if (this._parent) {
-			return this._parent;
+		if (this.parent) {
+			return this.parent;
 		}
 		return this;
 	}
 
-	public pushElement(what: StackElement): StackElement {
-		return this.push(what._ruleId, what._enterPos, what.endRule, what._scopeName, what._contentName);
+	public push(ruleId: number, enterPos: number, endRule: string, scopeName: string, scopeNameMetadata: ScopeMetadata, contentName: string, contentNameMetadata: ScopeMetadata): StackElement {
+		let _scopeNameMetadata = StackElementMetadata.merge(this.contentMetadata, scopeNameMetadata);
+		return this._push(ruleId, enterPos, endRule, scopeName, _scopeNameMetadata, contentName, contentNameMetadata);
 	}
 
-	public push(ruleId: number, enterPos: number, endRule: string, scopeName: string, contentName: string): StackElement {
-		return new StackElement(this, ruleId, enterPos, endRule, scopeName, contentName);
+	private _push(ruleId: number, enterPos: number, endRule: string, scopeName: string, scopeMetadata: number, contentName: string, contentNameMetadata: ScopeMetadata): StackElement {
+		let _contentNameMetadata = StackElementMetadata.merge(scopeMetadata, contentNameMetadata);
+		return new StackElement(this, ruleId, enterPos, endRule, scopeName, scopeMetadata, contentName, _contentNameMetadata);
 	}
 
 	public getEnterPos(): number {
@@ -974,15 +1039,15 @@ class StackElement implements StackElementDef {
 	}
 
 	public getRule(grammar: IRuleRegistry): Rule {
-		return grammar.getRule(this._ruleId);
+		return grammar.getRule(this.ruleId);
 	}
 
 	private _writeString(res: string[], outIndex: number): number {
-		if (this._parent) {
-			outIndex = this._parent._writeString(res, outIndex);
+		if (this.parent) {
+			outIndex = this.parent._writeString(res, outIndex);
 		}
 
-		res[outIndex++] = `(${this._ruleId}, ${this._scopeName}, ${this._contentName})`;
+		res[outIndex++] = `(${this.ruleId}, ${this.scopeName}, ${this.contentName})`;
 
 		return outIndex;
 	}
@@ -993,31 +1058,31 @@ class StackElement implements StackElementDef {
 		return '[' + r.join(',') + ']';
 	}
 
-	public withContentName(contentName: string): StackElement {
-		if (this._contentName === contentName) {
+	public withContentName(contentName: string, contentNameMetadata: ScopeMetadata): StackElement {
+		if (this.contentName === contentName) {
 			return this;
 		}
-		return new StackElement(this._parent, this._ruleId, this._enterPos, this.endRule, this._scopeName, contentName);
+		return this.parent._push(this.ruleId, this._enterPos, this.endRule, this.scopeName, this.scopeMetadata, contentName, contentNameMetadata);
 	}
 
 	public withEndRule(endRule: string): StackElement {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this._parent, this._ruleId, this._enterPos, endRule, this._scopeName, this._contentName);
+		return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.scopeName, this.scopeMetadata, this.contentName, this.contentMetadata);
 	}
 
 	private _writeScopes(scopes: string[], outIndex: number): number {
-		if (this._parent) {
-			outIndex = this._parent._writeScopes(scopes, outIndex);
+		if (this.parent) {
+			outIndex = this.parent._writeScopes(scopes, outIndex);
 		}
 
-		if (this._scopeName) {
-			scopes[outIndex++] = this._scopeName;
+		if (this.scopeName) {
+			scopes[outIndex++] = this.scopeName;
 		}
 
-		if (this._contentName) {
-			scopes[outIndex++] = this._contentName;
+		if (this.contentName) {
+			scopes[outIndex++] = this.contentName;
 		}
 
 		return outIndex;
@@ -1033,7 +1098,7 @@ class StackElement implements StackElementDef {
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {
-		return this._ruleId === other._ruleId;
+		return this.ruleId === other.ruleId;
 	}
 }
 
@@ -1065,7 +1130,7 @@ class LineTokens {
 	}
 
 	public produce(stack: StackElement, endIndex: number, extraScopes?: LocalStackElement[]): void {
-		// console.log('PRODUCE TOKEN: lastTokenEndIndex: ' + lastTokenEndIndex + ', endIndex: ' + endIndex);
+		// console.log('PRODUCE TOKEN: lastTokenEndIndex: ' + this._lastTokenEndIndex + ', endIndex: ' + endIndex);
 		if (this._lastTokenEndIndex >= endIndex) {
 			return;
 		}
