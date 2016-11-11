@@ -49,18 +49,17 @@ export class Registry {
 
 	private readonly _locator: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
-	private theme: Theme;
 
 	constructor(locator:RegistryOptions = DEFAULT_OPTIONS) {
 		this._locator = locator;
-		this._syncRegistry = new SyncRegistry(new Theme(null));
+		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme));
 	}
 
 	/**
 	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
 	 */
 	public setTheme(theme: IRawTheme): void {
-		this._syncRegistry.setTheme(new Theme(theme));
+		this._syncRegistry.setTheme(Theme.createFromRawTheme(theme));
 	}
 
 	/**

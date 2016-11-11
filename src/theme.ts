@@ -132,7 +132,7 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 /**
  * Resolve rules (i.e. inheritance).
  */
-export function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): ThemeTrieElement {
+function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
 
 	// Sort rules lexicographically, and then by index if necessary
 	parsedThemeRules.sort((a, b) => {
@@ -147,42 +147,49 @@ export function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Th
 		return a.index - b.index;
 	});
 
-	let defaults: ParsedThemeRule;
-
-	if (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
+	// Determine defaults
+	let defaultFontStyle = FontStyle.None;
+	let defaultForeground = '#000000';
+	let defaultBackground = '#ffffff';
+	while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
 		let incomingDefaults = parsedThemeRules.shift();
-		let fontStyle = incomingDefaults.fontStyle;
-		let foreground = incomingDefaults.foreground;
-		let background = incomingDefaults.background;
-		if (fontStyle === FontStyle.NotSet) {
-			fontStyle = FontStyle.None;
+		if (incomingDefaults.fontStyle !== FontStyle.NotSet) {
+			defaultFontStyle = incomingDefaults.fontStyle;
 		}
-		if (foreground === null) {
-			foreground = '#000000';
+		if (incomingDefaults.foreground !== null) {
+			defaultForeground = incomingDefaults.foreground;
 		}
-		if (background === null) {
-			background = '#ffffff';
+		if (incomingDefaults.background !== null) {
+			defaultBackground = incomingDefaults.background;
 		}
-		defaults = new ParsedThemeRule('', null, incomingDefaults.index, fontStyle, foreground, background);
-	} else {
-		defaults = new ParsedThemeRule('', null, -1, FontStyle.None, '#000000', '#ffffff');
 	}
+	let defaults = new ThemeTrieElementRule(null, defaultFontStyle, defaultForeground, defaultBackground);
 
-	let root = new ThemeTrieElement(new ThemeTrieElementRule(null, defaults.fontStyle, defaults.foreground, defaults.background), []);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		root.insert(parsedThemeRules[i]);
 	}
 
-	return root;
+	return new Theme(defaults, root);
 }
 
 export class Theme {
 
+	public static createFromRawTheme(source: IRawTheme): Theme {
+		return this.createFromParsedTheme(parseTheme(source));
+	}
+
+	public static createFromParsedTheme(source: ParsedThemeRule[]): Theme {
+		return resolveParsedThemeRules(source);
+	}
+
 	private _root: ThemeTrieElement;
+	private _defaults: ThemeTrieElementRule;
 	private _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
 
-	constructor(source: IRawTheme) {
-		this._root = resolveParsedThemeRules(parseTheme(source));
+	constructor(defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
+		this._root = root;
+		this._defaults = defaults;
 		this._cache = {};
 	}
 

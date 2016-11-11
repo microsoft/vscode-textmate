@@ -11,7 +11,7 @@ import { createMatcher } from '../matcher';
 import { parse as JSONparse } from '../json';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
-	parseTheme, resolveParsedThemeRules, ParsedThemeRule,
+	parseTheme, ParsedThemeRule,
 	FontStyle
 } from '../theme';
 
@@ -37,14 +37,14 @@ describe('Theme', () => {
 		registry.setTheme(light_vs);
 		let grammar = registry.loadGrammarFromPathSync(path.join(THEMES_TEST_PATH, 'go/go.json'));
 
-		console.log(grammar);
+		// console.log(grammar);
 	});
 
 });
 
 describe('Theme matching', () => {
 	it('can match', () => {
-		let theme = new Theme({
+		let theme = Theme.createFromRawTheme({
 			settings: [
 				{ settings: { foreground: '#F8F8F2', background: '#272822' } },
 				{ scope: 'source, something', settings: { background: '#100000' } },
@@ -61,7 +61,7 @@ describe('Theme matching', () => {
 
 		function assertMatch(scopeName: string, expected: ThemeTrieElementRule[]): void {
 			let actual = theme.match(scopeName);
-			assert.deepEqual(actual, expected, 'when matching ' + scopeName);
+			assert.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
 		}
 
 		function assertSimpleMatch(scopeName: string, fontStyle: FontStyle, foreground: string, background: string): void {
@@ -70,60 +70,66 @@ describe('Theme matching', () => {
 			]);
 		}
 
+		function assertNoMatch(scopeName: string): void {
+			assertMatch(scopeName, [
+				new ThemeTrieElementRule(null, FontStyle.NotSet, null, null)
+			]);
+		}
+
 		// matches defaults
-		assertSimpleMatch('', FontStyle.None, '#F8F8F2', '#272822');
-		assertSimpleMatch('bazz', FontStyle.None, '#F8F8F2', '#272822');
-		assertSimpleMatch('asdfg', FontStyle.None, '#F8F8F2', '#272822');
+		assertNoMatch('');
+		assertNoMatch('bazz');
+		assertNoMatch('asdfg');
 
 		// matches source
-		assertSimpleMatch('source', FontStyle.None, '#F8F8F2', '#100000');
-		assertSimpleMatch('source.ts', FontStyle.None, '#F8F8F2', '#100000');
-		assertSimpleMatch('source.tss', FontStyle.None, '#F8F8F2', '#100000');
+		assertSimpleMatch('source', FontStyle.NotSet, null, '#100000');
+		assertSimpleMatch('source.ts', FontStyle.NotSet, null, '#100000');
+		assertSimpleMatch('source.tss', FontStyle.NotSet, null, '#100000');
 
 		// matches something
-		assertSimpleMatch('something', FontStyle.None, '#F8F8F2', '#100000');
-		assertSimpleMatch('something.ts', FontStyle.None, '#F8F8F2', '#100000');
-		assertSimpleMatch('something.tss', FontStyle.None, '#F8F8F2', '#100000');
+		assertSimpleMatch('something', FontStyle.NotSet, null, '#100000');
+		assertSimpleMatch('something.ts', FontStyle.NotSet, null, '#100000');
+		assertSimpleMatch('something.tss', FontStyle.NotSet, null, '#100000');
 
 		// matches baz
-		assertSimpleMatch('baz', FontStyle.None, '#F8F8F2', '#200000');
-		assertSimpleMatch('baz.ts', FontStyle.None, '#F8F8F2', '#200000');
-		assertSimpleMatch('baz.tss', FontStyle.None, '#F8F8F2', '#200000');
+		assertSimpleMatch('baz', FontStyle.NotSet, null, '#200000');
+		assertSimpleMatch('baz.ts', FontStyle.NotSet, null, '#200000');
+		assertSimpleMatch('baz.tss', FontStyle.NotSet, null, '#200000');
 
 		// matches constant
-		assertSimpleMatch('constant', FontStyle.Italic, '#300000', '#272822');
-		assertSimpleMatch('constant.string', FontStyle.Italic, '#300000', '#272822');
-		assertSimpleMatch('constant.hex', FontStyle.Italic, '#300000', '#272822');
+		assertSimpleMatch('constant', FontStyle.Italic, '#300000', null);
+		assertSimpleMatch('constant.string', FontStyle.Italic, '#300000', null);
+		assertSimpleMatch('constant.hex', FontStyle.Italic, '#300000', null);
 
 		// matches constant.numeric
-		assertSimpleMatch('constant.numeric', FontStyle.Italic, '#400000', '#272822');
-		assertSimpleMatch('constant.numeric.baz', FontStyle.Italic, '#400000', '#272822');
+		assertSimpleMatch('constant.numeric', FontStyle.Italic, '#400000', null);
+		assertSimpleMatch('constant.numeric.baz', FontStyle.Italic, '#400000', null);
 
 		// matches constant.numeric.hex
-		assertSimpleMatch('constant.numeric.hex', FontStyle.Bold, '#400000', '#272822');
-		assertSimpleMatch('constant.numeric.hex.baz', FontStyle.Bold, '#400000', '#272822');
+		assertSimpleMatch('constant.numeric.hex', FontStyle.Bold, '#400000', null);
+		assertSimpleMatch('constant.numeric.hex.baz', FontStyle.Bold, '#400000', null);
 
 		// matches constant.numeric.oct
-		assertSimpleMatch('constant.numeric.oct', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#400000', '#272822');
-		assertSimpleMatch('constant.numeric.oct.baz', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#400000', '#272822');
+		assertSimpleMatch('constant.numeric.oct', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#400000', null);
+		assertSimpleMatch('constant.numeric.oct.baz', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#400000', null);
 
 		// matches constant.numeric.dec
-		assertSimpleMatch('constant.numeric.dec', FontStyle.None, '#500000', '#272822');
-		assertSimpleMatch('constant.numeric.dec.baz', FontStyle.None, '#500000', '#272822');
+		assertSimpleMatch('constant.numeric.dec', FontStyle.None, '#500000', null);
+		assertSimpleMatch('constant.numeric.dec.baz', FontStyle.None, '#500000', null);
 
 		// matches storage.object.bar
-		assertSimpleMatch('storage.object.bar', FontStyle.None, '#600000', '#272822');
-		assertSimpleMatch('storage.object.bar.baz', FontStyle.None, '#600000', '#272822');
+		assertSimpleMatch('storage.object.bar', FontStyle.None, '#600000', null);
+		assertSimpleMatch('storage.object.bar.baz', FontStyle.None, '#600000', null);
 
 		// does not match storage.object.bar
-		assertSimpleMatch('storage.object.bart', FontStyle.None, '#F8F8F2', '#272822');
-		assertSimpleMatch('storage.object', FontStyle.None, '#F8F8F2', '#272822');
-		assertSimpleMatch('storage', FontStyle.None, '#F8F8F2', '#272822');
+		assertSimpleMatch('storage.object.bart', FontStyle.NotSet, null, null);
+		assertSimpleMatch('storage.object', FontStyle.NotSet, null, null);
+		assertSimpleMatch('storage', FontStyle.NotSet, null, null);
 
 
 		assertMatch('bar', [
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#200000'),
-			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, '#F8F8F2', '#200000')
+			new ThemeTrieElementRule(null, FontStyle.NotSet, null, '#200000'),
+			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, null, '#200000')
 		]);
 	});
 });
@@ -195,124 +201,130 @@ describe('Theme resolving', () => {
 	});
 
 	it('always has defaults', () => {
-		let actual = resolveParsedThemeRules([]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff')
+		let actual = Theme.createFromParsedTheme([]);
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('respects incoming defaults 1', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, null)
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff')
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('respects incoming defaults 2', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.None, null, null)
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff')
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ffffff'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('respects incoming defaults 3', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null)
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.Bold, '#000000', '#ffffff')
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.Bold, '#000000', '#ffffff'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('respects incoming defaults 4', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#ff0000', null)
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#ff0000', '#ffffff')
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#ff0000', '#ffffff'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('respects incoming defaults 5', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000')
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ff0000')
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#000000', '#ff0000'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('can merge incoming defaults', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000'),
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#00ff00', null),
 			new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null),
 		]);
-		let expected = new ThemeTrieElement(
+		let expected = new Theme(
 			new ThemeTrieElementRule(null, FontStyle.Bold, '#00ff00', '#ff0000'),
-			[],
-			{}
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null))
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('defaults are inherited', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 			new ParsedThemeRule('var', null, -1, FontStyle.NotSet, '#ff0000', null)
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'), [],
-			{
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.None, '#ff0000', '#272822'))
-			}
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, '#ff0000', null))
+			})
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('same rules get merged', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 			new ParsedThemeRule('var', null, 1, FontStyle.Bold, null, null),
 			new ParsedThemeRule('var', null, 0, FontStyle.NotSet, '#ff0000', null),
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'), [],
-			{
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', '#272822'))
-			}
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', null))
+			})
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('rules are inherited', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 			new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
 			new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null),
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', '#272822'), [], {
-					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#00ff00', '#272822'))
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', null), [], {
+					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#00ff00', null))
 				})
-			}
+			})
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('rules are inherited', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 			new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
 			new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null),
@@ -322,44 +334,46 @@ describe('Theme resolving', () => {
 			new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null),
 			new ParsedThemeRule('constant.numeric.dec', null, 8, FontStyle.None, '#300000', null),
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', '#272822'), [], {
-					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#00ff00', '#272822'))
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#ff0000', null), [], {
+					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#00ff00', null))
 				}),
-				'constant': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, '#100000', '#272822'), [], {
-					'numeric': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, '#200000', '#272822'), [], {
-						'hex': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#200000', '#272822')),
-						'oct': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#200000', '#272822')),
-						'dec': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.None, '#300000', '#272822')),
+				'constant': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, '#100000', null), [], {
+					'numeric': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, '#200000', null), [], {
+						'hex': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, '#200000', null)),
+						'oct': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, '#200000', null)),
+						'dec': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.None, '#300000', null)),
 					})
 				})
-			}
+			})
 		);
 		assert.deepEqual(actual, expected);
 	});
 
 	it('rules with parent scopes', () => {
-		let actual = resolveParsedThemeRules([
+		let actual = Theme.createFromParsedTheme([
 			new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 			new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#100000', null),
 			new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#200000', null),
 			new ParsedThemeRule('var', ['source.css'], 1, FontStyle.Italic, '#300000', null),
 			new ParsedThemeRule('var', ['source.css'], 2, FontStyle.Underline, null, null),
 		]);
-		let expected = new ThemeTrieElement(
-			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'), [], {
+		let expected = new Theme(
+			new ThemeTrieElementRule(null, FontStyle.None, '#F8F8F2', '#272822'),
+			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, null, null), [], {
 				'var': new ThemeTrieElement(
-					new ThemeTrieElementRule(null, FontStyle.Bold, '#100000', '#272822'),
-					[new ThemeTrieElementRule(['source.css'], FontStyle.Underline, '#300000', '#272822')],
+					new ThemeTrieElementRule(null, FontStyle.Bold, '#100000', null),
+					[new ThemeTrieElementRule(['source.css'], FontStyle.Underline, '#300000', null)],
 					{
 						'identifier': new ThemeTrieElement(
-							new ThemeTrieElementRule(null, FontStyle.Bold, '#200000', '#272822'),
-							[/*new ThemeTrieElementRule(['source.css'], FontStyle.Underline, '#200000', '#272822')*/]
+							new ThemeTrieElementRule(null, FontStyle.Bold, '#200000', null),
+							[/*new ThemeTrieElementRule(['source.css'], FontStyle.Underline, '#200000', null)*/]
 						)
 					}
 				)
-			}
+			})
 		);
 		assert.deepEqual(actual, expected);
 	});
