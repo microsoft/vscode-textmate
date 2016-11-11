@@ -3,13 +3,13 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import {IOnigCaptureIndex} from 'oniguruma';
+import { IOnigCaptureIndex } from 'oniguruma';
 
-export function clone<T>(something:T): T {
+export function clone<T>(something: T): T {
 	return doClone(something);
 }
 
-function doClone(something:any): any {
+function doClone(something: any): any {
 	if (Array.isArray(something)) {
 		return cloneArray(something);
 	}
@@ -19,15 +19,15 @@ function doClone(something:any): any {
 	return something;
 }
 
-function cloneArray(arr:any[]): any[] {
-	let r:any[] = [];
+function cloneArray(arr: any[]): any[] {
+	let r: any[] = [];
 	for (let i = 0, len = arr.length; i < len; i++) {
 		r[i] = doClone(arr[i]);
 	}
 	return r;
 }
 
-function cloneObj(obj:any): any {
+function cloneObj(obj: any): any {
 	let r: any = {};
 	for (let key in obj) {
 		r[key] = doClone(obj[key]);
@@ -35,7 +35,7 @@ function cloneObj(obj:any): any {
 	return r;
 }
 
-export function mergeObjects(target:any, ...sources:any[]): any {
+export function mergeObjects(target: any, ...sources: any[]): any {
 	sources.forEach(source => {
 		for (let key in source) {
 			target[key] = source[key];
@@ -52,8 +52,8 @@ export class RegexSource {
 		return CAPTURING_REGEX_SOURCE.test(regexSource);
 	}
 
-	public static replaceCaptures(regexSource: string, captureSource: string, captureIndices:IOnigCaptureIndex[]): string {
-		return regexSource.replace(CAPTURING_REGEX_SOURCE, (match:string, index:string, commandIndex:string, command:string) => {
+	public static replaceCaptures(regexSource: string, captureSource: string, captureIndices: IOnigCaptureIndex[]): string {
+		return regexSource.replace(CAPTURING_REGEX_SOURCE, (match: string, index: string, commandIndex: string, command: string) => {
 			let capture = captureIndices[parseInt(index || commandIndex, 10)];
 			if (capture) {
 				let result = captureSource.substring(capture.start, capture.end);

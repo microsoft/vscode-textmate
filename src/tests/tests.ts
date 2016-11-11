@@ -6,9 +6,9 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import {Registry, IToken, IGrammar, RegistryOptions, StackElement} from '../main';
-import {createMatcher} from '../matcher';
-import {parse as JSONparse} from '../json';
+import { Registry, IToken, IGrammar, RegistryOptions, StackElement } from '../main';
+import { createMatcher } from '../matcher';
+import { parse as JSONparse } from '../json';
 import './themes.test';
 import './grammar.test';
 
@@ -33,13 +33,13 @@ function assertTokenizationSuite(testLocation: string): void {
 		scopes: string[];
 	}
 
-	let tests:IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
+	let tests: IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
 
 	tests.forEach((test) => {
-		it (test.desc, () => {
-			let locator : RegistryOptions = {
-				getFilePath: (scopeName:string) => null,
-				getInjections: (scopeName:string) => {
+		it(test.desc, () => {
+			let locator: RegistryOptions = {
+				getFilePath: (scopeName: string) => null,
+				getInjections: (scopeName: string) => {
 					if (scopeName === test.grammarScopeName) {
 						return test.grammarInjections;
 					}
@@ -72,10 +72,10 @@ function assertTokenizationSuite(testLocation: string): void {
 		});
 	});
 
-	function assertLineTokenization(grammar:IGrammar, testCase:IRawTestLine, prevState: StackElement): StackElement {
+	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement): StackElement {
 		let actual = grammar.tokenizeLine(testCase.line, prevState);
 
-		let actualTokens:IRawToken[] = actual.tokens.map((token) => {
+		let actualTokens: IRawToken[] = actual.tokens.map((token) => {
 			return {
 				value: testCase.line.substring(token.startIndex, token.endIndex),
 				scopes: token.scopes
@@ -170,22 +170,22 @@ describe('JSON', () => {
 		let hadErr = false;
 		try {
 			var actual = JSONparse(json, null, false);
-		} catch(err) {
+		} catch (err) {
 			hadErr = true;
 		}
 		assert.equal(hadErr, true, 'expected invalid: ' + json);
 	}
 
-	it('Invalid body', function() {
+	it('Invalid body', function () {
 		isInvalid('{}[]');
 		isInvalid('*');
 	});
 
-	it('Trailing Whitespace', function() {
+	it('Trailing Whitespace', function () {
 		isValid('{}\n\n');
 	});
 
-	it('Objects', function() {
+	it('Objects', function () {
 		isValid('{}');
 		isValid('{"key": "value"}');
 		isValid('{"key1": true, "key2": 3, "key3": [null], "key4": { "nested": {}}}');
@@ -200,7 +200,7 @@ describe('JSON', () => {
 		isInvalid('{"key:42');
 	});
 
-	it('Arrays', function() {
+	it('Arrays', function () {
 		isValid('[]');
 		isValid('[1, 2]');
 		isValid('[1, "string", false, {}, [null]]');
@@ -215,7 +215,7 @@ describe('JSON', () => {
 		isInvalid('[magic]');
 	});
 
-	it('Strings', function() {
+	it('Strings', function () {
 		isValid('["string"]');
 		isValid('["\\"\\\\\\/\\b\\f\\n\\r\\t\\u1234\\u12AB"]');
 		isValid('["\\\\"]');
@@ -229,7 +229,7 @@ describe('JSON', () => {
 		isInvalid('[\'string\']');
 	});
 
-	it('Numbers', function() {
+	it('Numbers', function () {
 		isValid('[0, -1, 186.1, 0.123, -1.583e+4, 1.583E-4, 5e8]');
 
 		// isInvalid('[+1]');
@@ -240,7 +240,7 @@ describe('JSON', () => {
 		// isInvalid('[-A]');
 	});
 
-	it('misc', function() {
+	it('misc', function () {
 		isValid('{}');
 		isValid('[null]');
 		isValid('{"a":true}');

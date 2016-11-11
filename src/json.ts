@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-function doFail(streamState:JSONStreamState, msg:string): void {
+function doFail(streamState: JSONStreamState, msg: string): void {
 	// console.log('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
 	throw new Error('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
 }
@@ -14,15 +14,15 @@ export interface ILocation {
 	readonly char: number;
 }
 
-export function parse(source:string, filename:string, withMetadata:boolean): any {
+export function parse(source: string, filename: string, withMetadata: boolean): any {
 	let streamState = new JSONStreamState(source);
 	let token = new JSONToken();
 	let state = JSONState.ROOT_STATE;
-	let cur:any = null;
-	let stateStack:JSONState[] = [];
-	let objStack:any[] = [];
+	let cur: any = null;
+	let stateStack: JSONState[] = [];
+	let objStack: any[] = [];
 
-	function pushState(newState:JSONState, newCur:any): void {
+	function pushState(newState: JSONState, newCur: any): void {
 		stateStack.push(state);
 		objStack.push(cur);
 		state = newState;
@@ -34,7 +34,7 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 		cur = objStack.pop();
 	}
 
-	function fail(msg:string): void {
+	function fail(msg: string): void {
 		doFail(streamState, msg);
 	}
 
@@ -120,13 +120,13 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 					continue;
 				}
 				if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
-					let newArr:any[] = [];
+					let newArr: any[] = [];
 					cur[keyValue] = newArr;
 					pushState(JSONState.ARR_STATE, newArr);
 					continue;
 				}
 				if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
-					let newDict:any = {};
+					let newDict: any = {};
 					if (withMetadata) {
 						newDict.$vscodeTextmateLocation = token.toLocation(filename);
 					}
@@ -185,13 +185,13 @@ export function parse(source:string, filename:string, withMetadata:boolean): any
 			}
 
 			if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
-				let newArr:any[] = [];
+				let newArr: any[] = [];
 				cur.push(newArr);
 				pushState(JSONState.ARR_STATE, newArr);
 				continue;
 			}
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
-				let newDict:any = {};
+				let newDict: any = {};
 				if (withMetadata) {
 					newDict.$vscodeTextmateLocation = token.toLocation(filename);
 				}
@@ -222,7 +222,7 @@ class JSONStreamState {
 	line: number;
 	char: number;
 
-	constructor(source:string) {
+	constructor(source: string) {
 		this.source = source;
 		this.pos = 0;
 		this.len = source.length;
@@ -309,7 +309,7 @@ class JSONToken {
 		this.char = -1;
 	}
 
-	toLocation(filename:string): ILocation {
+	toLocation(filename: string): ILocation {
 		return {
 			filename: filename,
 			line: this.line,
@@ -321,7 +321,7 @@ class JSONToken {
 /**
  * precondition: the string is known to be valid JSON (https://www.ietf.org/rfc/rfc4627.txt)
  */
-function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
+function nextJSONToken(_state: JSONStreamState, _out: JSONToken): boolean {
 	_out.value = null;
 	_out.type = JSONTokenType.UNKNOWN;
 	_out.offset = -1;
@@ -336,7 +336,7 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 	let char = _state.char;
 
 	//------------------------ skip whitespace
-	let chCode:number;
+	let chCode: number;
 	do {
 		if (pos >= len) {
 			return false; /*EOS*/
@@ -392,7 +392,7 @@ function nextJSONToken(_state:JSONStreamState, _out:JSONToken): boolean {
 		_out.value = source.substring(_out.offset + 1, pos - 1).replace(/\\u([0-9A-Fa-f]{4})/g, (_, m0) => {
 			return (<any>String).fromCodePoint(parseInt(m0, 16));
 		}).replace(/\\(.)/g, (_, m0) => {
-			switch(m0) {
+			switch (m0) {
 				case '"': return '"';
 				case '\\': return '\\';
 				case '/': return '/';

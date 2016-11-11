@@ -8,20 +8,20 @@ interface IModule {
 }
 
 interface IModuleMap {
-	[path:string]: IModule;
+	[path: string]: IModule;
 }
 
 interface IFactoryFunc {
-	(require:IFactoryRequireFunc, module: IModule, exports: any): void;
+	(require: IFactoryRequireFunc, module: IModule, exports: any): void;
 }
 
 interface IFactoryRequireFunc {
-	(name:string): any;
+	(name: string): any;
 }
 
-let $map:IModuleMap = {};
+let $map: IModuleMap = {};
 
-function $load(name:string, factory:IFactoryFunc) {
+function $load(name: string, factory: IFactoryFunc) {
 	let mod: IModule = {
 		exports: {}
 	};

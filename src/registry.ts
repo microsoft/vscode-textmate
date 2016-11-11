@@ -3,16 +3,16 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import {createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet} from './grammar';
-import {IRawGrammar} from './types';
-import {IGrammar, IEmbeddedLanguagesMap} from './main';
-import {Theme, ThemeTrieElementRule} from './theme';
+import { createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet } from './grammar';
+import { IRawGrammar } from './types';
+import { IGrammar, IEmbeddedLanguagesMap } from './main';
+import { Theme, ThemeTrieElementRule } from './theme';
 
 export class SyncRegistry implements IGrammarRepository {
 
-	private readonly _grammars: {[scopeName:string]:IGrammar;};
-	private readonly _rawGrammars: {[scopeName:string]:IRawGrammar;};
-	private readonly _injectionGrammars: {[scopeName:string]:string[];};
+	private readonly _grammars: { [scopeName: string]: IGrammar; };
+	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
+	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
 
 	constructor(theme: Theme) {
@@ -29,7 +29,7 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Add `grammar` to registry and return a list of referenced scope names
 	 */
-	public addGrammar(grammar:IRawGrammar, injectionScopeNames?: string[]): string[] {
+	public addGrammar(grammar: IRawGrammar, injectionScopeNames?: string[]): string[] {
 		this._rawGrammars[grammar.scopeName] = grammar;
 
 		let includedScopes: IScopeNameSet = {};
@@ -47,21 +47,21 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Lookup a raw grammar.
 	 */
-	public lookup(scopeName:string): IRawGrammar {
+	public lookup(scopeName: string): IRawGrammar {
 		return this._rawGrammars[scopeName];
 	}
 
 	/**
 	 * Returns the injections for the given grammar
 	 */
-	public injections(targetScope:string): string[] {
+	public injections(targetScope: string): string[] {
 		return this._injectionGrammars[targetScope];
 	}
 
 	/**
 	 * Match a scope in the theme.
 	 */
-	public themeMatch(scopeName:string): ThemeTrieElementRule[] {
+	public themeMatch(scopeName: string): ThemeTrieElementRule[] {
 		return this._theme.match(scopeName);
 	}
 
@@ -69,7 +69,7 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Lookup a grammar.
 	 */
-	public grammarForScopeName(scopeName:string, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap): IGrammar {
+	public grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): IGrammar {
 		if (!this._grammars[scopeName]) {
 			let rawGrammar = this._rawGrammars[scopeName];
 			if (!rawGrammar) {

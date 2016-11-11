@@ -3,13 +3,13 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import {SyncRegistry} from './registry';
-import {readGrammarSync} from './grammarReader';
-import {Theme} from './theme';
+import { SyncRegistry } from './registry';
+import { readGrammarSync } from './grammarReader';
+import { Theme } from './theme';
 
-let DEFAULT_OPTIONS:RegistryOptions = {
-	getFilePath: (scopeName:string) => null,
-	getInjections: (scopeName:string) => null
+let DEFAULT_OPTIONS: RegistryOptions = {
+	getFilePath: (scopeName: string) => null,
+	getInjections: (scopeName: string) => null
 };
 
 /**
@@ -38,8 +38,8 @@ export interface IRawTheme {
  */
 export interface RegistryOptions {
 	theme?: IRawTheme;
-	getFilePath(scopeName:string): string;
-	getInjections?(scopeName:string): string[];
+	getFilePath(scopeName: string): string;
+	getInjections?(scopeName: string): string[];
 }
 
 /**
@@ -64,7 +64,7 @@ export class Registry {
 	private readonly _locator: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
 
-	constructor(locator:RegistryOptions = DEFAULT_OPTIONS) {
+	constructor(locator: RegistryOptions = DEFAULT_OPTIONS) {
 		this._locator = locator;
 		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme));
 	}
@@ -80,7 +80,7 @@ export class Registry {
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 * Please do not use language id 0.
 	 */
-	public loadGrammarWithEmbeddedLanguages(initialScopeName:string, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap, callback:(err:any, grammar:IGrammar)=>void): void {
+	public loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, callback: (err: any, grammar: IGrammar) => void): void {
 		this._loadGrammar(initialScopeName, (err) => {
 			if (err) {
 				callback(err, null);
@@ -94,7 +94,7 @@ export class Registry {
 	/**
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 */
-	public loadGrammar(initialScopeName:string, callback:(err:any, grammar:IGrammar)=>void): void {
+	public loadGrammar(initialScopeName: string, callback: (err: any, grammar: IGrammar) => void): void {
 		this._loadGrammar(initialScopeName, (err) => {
 			if (err) {
 				callback(err, null);
@@ -105,11 +105,11 @@ export class Registry {
 		});
 	}
 
-	private _loadGrammar(initialScopeName:string, callback:(err:any)=>void): void {
+	private _loadGrammar(initialScopeName: string, callback: (err: any) => void): void {
 
-		let remainingScopeNames = [ initialScopeName ];
+		let remainingScopeNames = [initialScopeName];
 
-		let seenScopeNames : {[name:string]: boolean;} = {};
+		let seenScopeNames: { [name: string]: boolean; } = {};
 		seenScopeNames[initialScopeName] = true;
 
 		while (remainingScopeNames.length > 0) {
@@ -139,7 +139,7 @@ export class Registry {
 						remainingScopeNames.push(dep);
 					}
 				});
-			} catch(err) {
+			} catch (err) {
 				if (scopeName === initialScopeName) {
 					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
 					return;
@@ -153,7 +153,7 @@ export class Registry {
 	/**
 	 * Load the grammar at `path` synchronously.
 	 */
-	public loadGrammarFromPathSync(path:string, initialLanguage:number = 0, embeddedLanguages:IEmbeddedLanguagesMap = null): IGrammar {
+	public loadGrammarFromPathSync(path: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): IGrammar {
 		let rawGrammar = readGrammarSync(path);
 		let injections = this._locator.getInjections(rawGrammar.scopeName);
 		this._syncRegistry.addGrammar(rawGrammar, injections);
@@ -163,7 +163,7 @@ export class Registry {
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
 	 */
-	public grammarForScopeName(scopeName:string, initialLanguage:number = 0, embeddedLanguages:IEmbeddedLanguagesMap = null): IGrammar {
+	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): IGrammar {
 		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages);
 	}
 }
@@ -199,5 +199,5 @@ export interface StackElement {
 	_stackElementBrand: void;
 	readonly depth: number;
 
-	equals(other:StackElement): boolean;
+	equals(other: StackElement): boolean;
 }
