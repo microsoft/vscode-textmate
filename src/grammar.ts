@@ -8,11 +8,16 @@ import {IRawGrammar, IRawRepository, IRawRule} from './types';
 import {IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString} from './rule';
 import {IOnigCaptureIndex, OnigString} from 'oniguruma';
 import {createMatcher, Matcher} from './matcher';
-import {IGrammar, ITokenizeLineResult, IToken, StackElement as StackElementDef} from './main';
+import {IGrammar, ITokenizeLineResult, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef} from './main';
 import {IN_DEBUG_MODE} from './debug';
+import {FontStyle, ThemeTrieElementRule} from './theme';
 
-export function createGrammar(grammar:IRawGrammar, grammarRepository:IGrammarRepository): IGrammar {
-	return new Grammar(grammar, grammarRepository);
+export function createGrammar(grammar:IRawGrammar, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap, grammarRepository:IGrammarRepository & IThemeProvider): IGrammar {
+	return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
+}
+
+export interface IThemeProvider {
+	themeMatch(scopeName:string): ThemeTrieElementRule[];
 }
 
 export interface IGrammarRepository {
@@ -138,6 +143,128 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 	});
 }
 
+class ScopeMetadata {
+	public readonly languageId: number;
+	public readonly standardTokenType: number;
+	public readonly themeData: ThemeTrieElementRule[];
+
+	constructor(languageId:number, standardTokenType: number, themeData: ThemeTrieElementRule[]) {
+		this.languageId = languageId;
+		this.standardTokenType = standardTokenType;
+		this.themeData = themeData;
+	}
+}
+
+class ScopeMetadataProvider {
+
+	private readonly _themeProvider: IThemeProvider;
+	private readonly _cache: {[scopeName:string]:ScopeMetadata;};
+	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
+	private readonly _embeddedLanguagesRegex: RegExp;
+
+	constructor(themeProvider: IThemeProvider, embeddedLanguages:IEmbeddedLanguagesMap) {
+		this._themeProvider = themeProvider;
+		this._cache = Object.create(null);
+
+		// embeddedLanguages handling
+		this._embeddedLanguages = Object.create(null);
+
+		if (embeddedLanguages) {
+			// If embeddedLanguages are configured, fill in `this._embeddedLanguages`
+			let scopes = Object.keys(embeddedLanguages);
+			for (let i = 0, len = scopes.length; i < len; i++) {
+				let scope = scopes[i];
+				let language = embeddedLanguages[scope];
+				if (typeof language !== 'number' || language === 0) {
+					console.warn('Invalid embedded language found at scope ' + scope + ': <<' + language + '>>');
+					// never hurts to be too careful
+					continue;
+				}
+				this._embeddedLanguages[scope] = language;
+			}
+		}
+
+		// create the regex
+		let escapedScopes = Object.keys(this._embeddedLanguages).map((scopeName) => ScopeMetadataProvider._escapeRegExpCharacters(scopeName));
+		if (escapedScopes.length === 0) {
+			// no scopes registered
+			this._embeddedLanguagesRegex = null;
+		} else {
+			escapedScopes.sort();
+			escapedScopes.reverse();
+			this._embeddedLanguagesRegex = new RegExp(`^((${escapedScopes.join(')|(')}))($|\\.)`, '');
+		}
+	}
+
+	/**
+	 * Escapes regular expression characters in a given string
+	 */
+	private static _escapeRegExpCharacters(value: string): string {
+		return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+	}
+
+	public getMetadataForScope(scopeName:string): ScopeMetadata {
+		let value = this._cache[scopeName];
+		if (value) {
+			return value;
+		}
+		value = this._doGetMetadataForScope(scopeName);
+		this._cache[scopeName] = value;
+		return value;
+	}
+
+	private _doGetMetadataForScope(scopeName: string): ScopeMetadata {
+		let languageId = this._scopeToLanguage(scopeName);
+		let standardTokenType = ScopeMetadataProvider._toStandardTokenType(scopeName);
+		let themeData = this._themeProvider.themeMatch(scopeName);
+
+		return new ScopeMetadata(languageId, standardTokenType, themeData);
+	}
+
+	/**
+	 * Given a produced TM scope, return the language that token describes or null if unknown.
+	 * e.g. source.html => html, source.css.embedded.html => css, punctuation.definition.tag.html => null
+	 */
+	private _scopeToLanguage(scope: string): number {
+		if (!scope) {
+			return 0;
+		}
+		if (!this._embeddedLanguagesRegex) {
+			// no scopes registered
+			return 0;
+		}
+		let m = scope.match(this._embeddedLanguagesRegex);
+		if (!m) {
+			// no scopes matched
+			return 0;
+		}
+
+		let language = this._embeddedLanguages[m[1]] || 0;
+		if (!language) {
+			return 0;
+		}
+
+		return language;
+	}
+
+	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
+	private static _toStandardTokenType(tokenType: string): StandardTokenType {
+		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
+		if (!m) {
+			return StandardTokenType.Other;
+		}
+		switch (m[1]) {
+			case 'comment':
+				return StandardTokenType.Comment;
+			case 'string':
+				return StandardTokenType.String;
+			case 'regex':
+				return StandardTokenType.RegEx;
+		}
+		throw new Error('Unexpected match for standard token type!');
+	}
+}
+
 class Grammar implements IGrammar, IRuleFactoryHelper {
 
 	private _rootId: number;
@@ -147,8 +274,11 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	private readonly _grammarRepository: IGrammarRepository;
 	private readonly _grammar: IRawGrammar;
 	private _injections : Injection[];
+	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 
-	constructor(grammar:IRawGrammar, grammarRepository:IGrammarRepository) {
+	constructor(grammar:IRawGrammar, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap, grammarRepository:IGrammarRepository & IThemeProvider) {
+		this._scopeMetadataProvider = new ScopeMetadataProvider(grammarRepository, embeddedLanguages);
+
 		this._rootId = -1;
 		this._lastRuleId = 0;
 		this._ruleId2desc = [];
@@ -388,7 +518,7 @@ interface IMatchResult {
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition:number): IMatchResult {
 	let rule = stack.getRule(grammar);
-	let ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
+	let ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 	if (IN_DEBUG_MODE) {
 		console.log('  scanning for');
@@ -468,7 +598,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	}
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
-		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, anchorPosition === linePos);
+		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
 		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 		if (IN_DEBUG_MODE) {
 			console.log('  scanning for while rule');
@@ -657,17 +787,117 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 }
 
 /**
+ * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
+ * The following assumptions have been made:
+ *  - languageId < 256 => needs 8 bits
+ *  - unique color count < 512 => needs 9 bits
+ *
+ * The binary format is:
+ * --------------------------------------------
+ *   3322 2222 2222 1111 1111 1100 0000 0000
+ *   1098 7654 3210 9876 5432 1098 7654 3210
+ * --------------------------------------------
+ *   xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+ *   bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ * --------------------------------------------
+ *   L = LanguageId (8 bits)
+ *   T = StandardTokenType (3 bits)
+ *   F = FontStyle (3 bits)
+ *   f = foreground color (9 bits)
+ *   b = background color (9 bits)
+ */
+export const enum MetadataConsts {
+	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
+	TOKEN_TYPE_MASK = 0b00000000000000000000011100000000,
+	FONT_STYLE_MASK = 0b00000000000000000011100000000000,
+	FOREGROUND_MASK = 0b00000000011111111100000000000000,
+	BACKGROUND_MASK = 0b11111111100000000000000000000000,
+
+	LANGUAGEID_OFFSET =  0,
+	TOKEN_TYPE_OFFSET =  8,
+	FONT_STYLE_OFFSET = 11,
+	FOREGROUND_OFFSET = 14,
+	BACKGROUND_OFFSET = 23
+}
+export class StackElementMetadata {
+
+	public static toBinaryStr(metadata:number): string {
+		let r = metadata.toString(2);
+		while (r.length < 32) {
+			r = '0' + r;
+		}
+		return r;
+	}
+
+	public static getLanguageId(metadata:number): number {
+		return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
+	}
+
+	public static getTokenType(metadata:number): number {
+		return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
+	}
+
+	public static getFontStyle(metadata:number): number {
+		return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
+	}
+
+	public static getForeground(metadata:number): number {
+		return (metadata & MetadataConsts.FOREGROUND_MASK) >>> MetadataConsts.FOREGROUND_OFFSET;
+	}
+
+	public static getBackground(metadata:number): number {
+		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
+	}
+
+	public static set(metadata:number, languageId: number, tokenType:StandardTokenType, fontStyle:FontStyle, foreground:number, background:number): number {
+		let _languageId = StackElementMetadata.getLanguageId(metadata);
+		let _tokenType = StackElementMetadata.getTokenType(metadata);
+		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
+		let _foreground = StackElementMetadata.getForeground(metadata);
+		let _background = StackElementMetadata.getBackground(metadata);
+
+		if (languageId !== 0) {
+			_languageId = languageId;
+		}
+		if (tokenType !== StandardTokenType.Other) {
+			_tokenType = tokenType;
+		}
+		if (fontStyle !== FontStyle.NotSet) {
+			_fontStyle = fontStyle;
+		}
+		if (foreground !== 0) {
+			_foreground = foreground;
+		}
+		if (background !== 0) {
+			_background = background;
+		}
+
+		// console.log('HERE I AM: ' + _languageId, _tokenType, _fontStyle, _foreground, _background)
+		// console.log('TEST: ' + _languageId << MetadataConsts.LANGUAGEID_OFFSET)
+
+		return (
+			(_languageId << MetadataConsts.LANGUAGEID_OFFSET)
+			| (_tokenType << MetadataConsts.TOKEN_TYPE_OFFSET)
+			| (_fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
+			| (_foreground << MetadataConsts.FOREGROUND_OFFSET)
+			| (_background << MetadataConsts.BACKGROUND_OFFSET)
+		) >>> 0;
+	}
+
+}
+
+/**
  * **IMPORTANT** - Immutable!
  */
-export class StackElement implements StackElementDef {
+class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
 	public readonly depth: number;
-	public readonly _parent: StackElement;
+	private readonly _parent: StackElement;
 
 	private _enterPos: number;
 	private readonly _ruleId: number;
-	private readonly _endRule: string;
+	public readonly endRule: string;
 	private readonly _scopeName: string;
 	private readonly _contentName: string;
 
@@ -676,7 +906,7 @@ export class StackElement implements StackElementDef {
 		this.depth = (this._parent ? this._parent.depth + 1 : 1);
 		this._ruleId = ruleId;
 		this._enterPos = enterPos;
-		this._endRule = endRule;
+		this.endRule = endRule;
 		this._scopeName = scopeName;
 		this._contentName = contentName;
 	}
@@ -686,7 +916,7 @@ export class StackElement implements StackElementDef {
 			if (
 				a.depth !== b.depth
 				|| a._ruleId !== b._ruleId
-				|| a._endRule !== b._endRule
+				|| a.endRule !== b.endRule
 				|| a._scopeName !== b._scopeName
 				|| a._contentName !== b._contentName
 			) {
@@ -709,11 +939,15 @@ export class StackElement implements StackElementDef {
 		return StackElement._equals(this, other);
 	}
 
-	public reset(): void {
-		this._enterPos = -1;
-		if (this._parent) {
-			this._parent.reset();
+	private static _reset(el:StackElement): void {
+		while(el) {
+			el._enterPos = -1;
+			el = el._parent;
 		}
+	}
+
+	public reset(): void {
+		StackElement._reset(this);
 	}
 
 	public pop(): StackElement {
@@ -728,7 +962,7 @@ export class StackElement implements StackElementDef {
 	}
 
 	public pushElement(what:StackElement): StackElement {
-		return this.push(what._ruleId, what._enterPos, what._endRule, what._scopeName, what._contentName);
+		return this.push(what._ruleId, what._enterPos, what.endRule, what._scopeName, what._contentName);
 	}
 
 	public push(ruleId:number, enterPos:number, endRule:string, scopeName:string, contentName: string): StackElement {
@@ -741,10 +975,6 @@ export class StackElement implements StackElementDef {
 
 	public getRule(grammar:IRuleRegistry): Rule {
 		return grammar.getRule(this._ruleId);
-	}
-
-	public getEndRule(): string {
-		return this._endRule;
 	}
 
 	private _writeString(res:string[], outIndex:number): number {
@@ -767,11 +997,11 @@ export class StackElement implements StackElementDef {
 		if (this._contentName === contentName) {
 			return this;
 		}
-		return new StackElement(this._parent, this._ruleId, this._enterPos, this._endRule, this._scopeName, contentName);
+		return new StackElement(this._parent, this._ruleId, this._enterPos, this.endRule, this._scopeName, contentName);
 	}
 
 	public withEndRule(endRule:string): StackElement {
-		if (this._endRule === endRule) {
+		if (this.endRule === endRule) {
 			return this;
 		}
 		return new StackElement(this._parent, this._ruleId, this._enterPos, endRule, this._scopeName, this._contentName);

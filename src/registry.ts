@@ -5,8 +5,8 @@
 
 import {createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet} from './grammar';
 import {IRawGrammar} from './types';
-import {IGrammar} from './main';
-import {Theme} from './theme';
+import {IGrammar, IEmbeddedLanguagesMap} from './main';
+import {Theme, ThemeTrieElementRule} from './theme';
 
 export class SyncRegistry implements IGrammarRepository {
 
@@ -59,16 +59,24 @@ export class SyncRegistry implements IGrammarRepository {
 	}
 
 	/**
+	 * Match a scope in the theme.
+	 */
+	public themeMatch(scopeName:string): ThemeTrieElementRule[] {
+		return this._theme.match(scopeName);
+	}
+
+
+	/**
 	 * Lookup a grammar.
 	 */
-	public grammarForScopeName(scopeName:string): IGrammar {
+	public grammarForScopeName(scopeName:string, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap): IGrammar {
 		if (!this._grammars[scopeName]) {
 			let rawGrammar = this._rawGrammars[scopeName];
 			if (!rawGrammar) {
 				return null;
 			}
 
-			this._grammars[scopeName] = createGrammar(rawGrammar, this);
+			this._grammars[scopeName] = createGrammar(rawGrammar, initialLanguage, embeddedLanguages, this);
 		}
 		return this._grammars[scopeName];
 	}

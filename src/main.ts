@@ -43,6 +43,20 @@ export interface RegistryOptions {
 }
 
 /**
+ * A map from scope name to a language id. Please do not use language id 0.
+ */
+export interface IEmbeddedLanguagesMap {
+	[scopeName: string]: number;
+}
+
+export const enum StandardTokenType {
+	Other = 0,
+	Comment = 1,
+	String = 2,
+	RegEx = 4
+}
+
+/**
  * The registry that will hold all grammars.
  */
 export class Registry {
@@ -64,8 +78,34 @@ export class Registry {
 
 	/**
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+	 * Please do not use language id 0.
+	 */
+	public loadGrammarWithEmbeddedLanguages(initialScopeName:string, initialLanguage:number, embeddedLanguages:IEmbeddedLanguagesMap, callback:(err:any, grammar:IGrammar)=>void): void {
+		this._loadGrammar(initialScopeName, (err) => {
+			if (err) {
+				callback(err, null);
+				return;
+			}
+
+			callback(null, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages));
+		});
+	}
+
+	/**
+	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 */
 	public loadGrammar(initialScopeName:string, callback:(err:any, grammar:IGrammar)=>void): void {
+		this._loadGrammar(initialScopeName, (err) => {
+			if (err) {
+				callback(err, null);
+				return;
+			}
+
+			callback(null, this.grammarForScopeName(initialScopeName));
+		});
+	}
+
+	private _loadGrammar(initialScopeName:string, callback:(err:any)=>void): void {
 
 		let remainingScopeNames = [ initialScopeName ];
 
@@ -82,7 +122,7 @@ export class Registry {
 			let filePath = this._locator.getFilePath(scopeName);
 			if (!filePath) {
 				if (scopeName === initialScopeName) {
-					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
 					return;
 				}
 				continue;
@@ -101,30 +141,30 @@ export class Registry {
 				});
 			} catch(err) {
 				if (scopeName === initialScopeName) {
-					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
 					return;
 				}
 			}
 		}
 
-		callback(null, this.grammarForScopeName(initialScopeName));
+		callback(null);
 	}
 
 	/**
 	 * Load the grammar at `path` synchronously.
 	 */
-	public loadGrammarFromPathSync(path:string): IGrammar {
+	public loadGrammarFromPathSync(path:string, initialLanguage:number = 0, embeddedLanguages:IEmbeddedLanguagesMap = null): IGrammar {
 		let rawGrammar = readGrammarSync(path);
 		let injections = this._locator.getInjections(rawGrammar.scopeName);
 		this._syncRegistry.addGrammar(rawGrammar, injections);
-		return this.grammarForScopeName(rawGrammar.scopeName);
+		return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
 	}
 
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
 	 */
-	public grammarForScopeName(scopeName:string): IGrammar {
-		return this._syncRegistry.grammarForScopeName(scopeName);
+	public grammarForScopeName(scopeName:string, initialLanguage:number = 0, embeddedLanguages:IEmbeddedLanguagesMap = null): IGrammar {
+		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages);
 	}
 }
 

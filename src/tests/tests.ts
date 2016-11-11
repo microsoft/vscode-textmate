@@ -10,6 +10,7 @@ import {Registry, IToken, IGrammar, RegistryOptions, StackElement} from '../main
 import {createMatcher} from '../matcher';
 import {parse as JSONparse} from '../json';
 import './themes.test';
+import './grammar.test';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 
