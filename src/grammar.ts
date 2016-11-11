@@ -388,10 +388,11 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		lineText = lineText + '\n';
 		let onigLineText = createOnigString(lineText);
 		let lineLength = getString(onigLineText).length;
-		let lineTokens = new LineTokens(lineText);
+		let lineTokens = new LineTokens(/*true*/false, lineText);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
 
 		let _produced = lineTokens.getResult(nextState, lineLength);
+		// let _produced = lineTokens.getBinaryResult(nextState, lineLength);
 
 		return {
 			tokens: _produced,
@@ -469,7 +470,10 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		let captureRuleScopeName = captureRule.getName(getString(lineText), captureIndices);
 		if (captureRuleScopeName !== null) {
 			// push
-			localStack.push(new LocalStackElement(captureRuleScopeName, captureIndex.end));
+			let captureRuleScopeNameMetadata = grammar.getMetadataForScope(captureRuleScopeName);
+			let base = localStack.length === 0 ? stack.contentMetadata : localStack[localStack.length - 1].scopeMetadata;
+			let _captureRuleScopeNameMetadata = StackElementMetadata.merge(base, captureRuleScopeNameMetadata);
+			localStack.push(new LocalStackElement(captureRuleScopeName, _captureRuleScopeNameMetadata, captureIndex.end));
 		}
 	}
 
@@ -867,6 +871,22 @@ export class StackElementMetadata {
 		return r;
 	}
 
+	public static printMetadata(metadata: number): void {
+		let languageId = StackElementMetadata.getLanguageId(metadata);
+		let tokenType = StackElementMetadata.getTokenType(metadata);
+		let fontStyle = StackElementMetadata.getFontStyle(metadata);
+		let foreground = StackElementMetadata.getForeground(metadata);
+		let background = StackElementMetadata.getBackground(metadata);
+
+		console.log({
+			languageId: languageId,
+			tokenType: tokenType,
+			fontStyle: fontStyle,
+			foreground: foreground,
+			background: background,
+		});
+	}
+
 	public static getLanguageId(metadata: number): number {
 		return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
 	}
@@ -1104,34 +1124,94 @@ class StackElement implements StackElementDef {
 
 class LocalStackElement {
 	public readonly scopeName: string;
+	public readonly scopeMetadata: number;
 	public readonly endPos: number;
 
-	constructor(scopeName: string, endPos: number) {
-		if (typeof scopeName !== 'string') {
-			throw new Error('bubu');
-		}
+	constructor(scopeName: string, scopeMetadata: number, endPos: number) {
 		this.scopeName = scopeName;
+		this.scopeMetadata = scopeMetadata;
 		this.endPos = endPos;
 	}
 }
 
 class LineTokens {
 
+	private readonly _emitBinaryTokens: boolean;
+	/**
+	 * defined only if `IN_DEBUG_MODE`.
+	 */
 	private readonly _lineText: string;
+	/**
+	 * used only if `_emitBinaryTokens` is false.
+	 */
 	private readonly _tokens: IToken[];
+	/**
+	 * used only if `_emitBinaryTokens` is true.
+	 */
+	private readonly _binaryTokens: number[];
+
 	private _lastTokenEndIndex: number;
 
-	constructor(lineText: string) {
+	constructor(emitBinaryTokens: boolean, lineText: string) {
+		this._emitBinaryTokens = emitBinaryTokens;
 		if (IN_DEBUG_MODE) {
 			this._lineText = lineText;
 		}
-		this._tokens = [];
+		if (this._emitBinaryTokens) {
+			this._binaryTokens = [];
+		} else {
+			this._tokens = [];
+		}
 		this._lastTokenEndIndex = 0;
 	}
 
 	public produce(stack: StackElement, endIndex: number, extraScopes?: LocalStackElement[]): void {
 		// console.log('PRODUCE TOKEN: lastTokenEndIndex: ' + this._lastTokenEndIndex + ', endIndex: ' + endIndex);
 		if (this._lastTokenEndIndex >= endIndex) {
+			return;
+		}
+
+		if (this._emitBinaryTokens) {
+			let metadata:number;
+			if (extraScopes && extraScopes.length > 0) {
+				metadata = extraScopes[extraScopes.length - 1].scopeMetadata;
+			} else {
+				metadata = stack.contentMetadata;
+			}
+
+			let tokenStartIndex = this._lastTokenEndIndex;
+			let token = tokenStartIndex * ((1<<31)>>>0) + metadata;
+
+			this._binaryTokens.push(token);
+
+			// let token = 0;
+			console.log('produce token: from ', this._lastTokenEndIndex, ' to ', endIndex);
+			console.log('OTHER HERE =>');
+			StackElementMetadata.printMetadata(metadata);
+
+			this._lastTokenEndIndex = endIndex;
+
+			// languageId, tokenType, fontStyle, foreground, background
+
+	// 			public static getLanguageId(metadata: number): number {
+	// 	return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
+	// }
+
+	// public static getTokenType(metadata: number): number {
+	// 	return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
+	// }
+
+	// public static getFontStyle(metadata: number): number {
+	// 	return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
+	// }
+
+	// public static getForeground(metadata: number): number {
+	// 	return (metadata & MetadataConsts.FOREGROUND_MASK) >>> MetadataConsts.FOREGROUND_OFFSET;
+	// }
+
+	// public static getBackground(metadata: number): number {
+	// 	return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
+	// }
 			return;
 		}
 
@@ -1174,5 +1254,11 @@ class LineTokens {
 		}
 
 		return this._tokens;
+	}
+
+	public getBinaryResult(stack: StackElement, lineLength: number): number[] {
+		console.log('TODO!');
+
+		return this._binaryTokens;
 	}
 }

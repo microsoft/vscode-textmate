@@ -32,10 +32,28 @@ describe('Theme', () => {
 
 	// var light_vs
 
+	// console.log(light_vs._colorMap);
+
 	it('works', () => {
 		let registry = new Registry();
 		registry.setTheme(light_vs);
+		// console.log(registry._syncRegistry._theme._colorMap);
 		let grammar = registry.loadGrammarFromPathSync(path.join(THEMES_TEST_PATH, 'go/go.json'));
+
+		let testFile = fs.readFileSync(path.join(THEMES_TEST_PATH, 'go/colorize-fixtures/test.go')).toString('utf8');
+		let testLines = testFile.split(/\r\n|\r|\n/);
+
+		let prevState:StackElement = null;
+		for (let i = 0, len = testLines.length; i < len; i++) {
+
+			let r = grammar.tokenizeLine(testLines[i], prevState);
+			// console.log(JSON.stringify(r, null, '\t'));
+			prevState = r.ruleStack;
+
+			if (i === 0) {
+				break;
+			}
+		}
 
 		// console.log(grammar);
 	});
