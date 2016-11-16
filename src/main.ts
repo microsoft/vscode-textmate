@@ -77,6 +77,13 @@ export class Registry {
 	}
 
 	/**
+	 * Returns a lookup array for color ids.
+	 */
+	public getColorMap(): string[] {
+		return this._syncRegistry.getColorMap();
+	}
+
+	/**
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 * Please do not use language id 0.
 	 */
@@ -141,7 +148,7 @@ export class Registry {
 				});
 			} catch (err) {
 				if (scopeName === initialScopeName) {
-					callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
+					callback(new Error('Unknown injections for grammar <' + initialScopeName + '>'));
 					return;
 				}
 			}
@@ -176,10 +183,70 @@ export interface IGrammar {
 	 * Tokenize `lineText` using previous line state `prevState`.
 	 */
 	tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
+
+	/**
+	 * Tokenize `lineText` using previous line state `prevState`.
+	 * The result contains the tokens in binary format, resolved with the following information:
+	 *  - language
+	 *  - token type (regex, string, comment, other)
+	 *  - font style
+	 *  - foreground color
+	 *  - background color
+	 * e.g. for getting the languageId: `(metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET`
+	 */
+	tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2;
 }
 
 export interface ITokenizeLineResult {
 	readonly tokens: IToken[];
+	/**
+	 * The `prevState` to be passed on to the next line tokenization.
+	 */
+	readonly ruleStack: StackElement;
+}
+
+/**
+ * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
+ * The following assumptions have been made:
+ *  - languageId < 256 => needs 8 bits
+ *  - unique color count < 512 => needs 9 bits
+ *
+ * The binary format is:
+ * --------------------------------------------
+ *   3322 2222 2222 1111 1111 1100 0000 0000
+ *   1098 7654 3210 9876 5432 1098 7654 3210
+ * --------------------------------------------
+ *   xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+ *   bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ * --------------------------------------------
+ *   L = LanguageId (8 bits)
+ *   T = StandardTokenType (3 bits)
+ *   F = FontStyle (3 bits)
+ *   f = foreground color (9 bits)
+ *   b = background color (9 bits)
+ */
+export const enum MetadataConsts {
+	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
+	TOKEN_TYPE_MASK = 0b00000000000000000000011100000000,
+	FONT_STYLE_MASK = 0b00000000000000000011100000000000,
+	FOREGROUND_MASK = 0b00000000011111111100000000000000,
+	BACKGROUND_MASK = 0b11111111100000000000000000000000,
+
+	LANGUAGEID_OFFSET = 0,
+	TOKEN_TYPE_OFFSET = 8,
+	FONT_STYLE_OFFSET = 11,
+	FOREGROUND_OFFSET = 14,
+	BACKGROUND_OFFSET = 23
+}
+
+export interface ITokenizeLineResult2 {
+	/**
+	 * The tokens in binary format. Each token occupies two array indices. For token i:
+	 *  - at offset 2*i => startIndex
+	 *  - at offset 2*i + 1 => metadata
+	 *
+	 */
+	readonly tokens: number[];
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */

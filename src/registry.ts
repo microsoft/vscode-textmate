@@ -26,6 +26,10 @@ export class SyncRegistry implements IGrammarRepository {
 		this._theme = theme;
 	}
 
+	public getColorMap(): string[] {
+		return this._theme.getColorMap();
+	}
+
 	/**
 	 * Add `grammar` to registry and return a list of referenced scope names
 	 */

@@ -191,6 +191,7 @@ export class ColorMap {
 		if (color === null) {
 			return 0;
 		}
+		color = color.toUpperCase();
 		let value = this._color2id[color];
 		if (value) {
 			return value;
@@ -199,6 +200,10 @@ export class ColorMap {
 		this._color2id[color] = value;
 		this._id2color[value] = color;
 		return value;
+	}
+
+	public getColorMap(): string[] {
+		return this._id2color.slice(0);
 	}
 
 }
@@ -223,6 +228,10 @@ export class Theme {
 		this._root = root;
 		this._defaults = defaults;
 		this._cache = {};
+	}
+
+	public getColorMap(): string[] {
+		return this._colorMap.getColorMap();
 	}
 
 	public getDefaults(): ThemeTrieElementRule {
@@ -346,10 +355,6 @@ export class ThemeTrieElement {
 
 		return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
 	}
-
-	// public insert(rule: ParsedThemeRule): void {
-	// 	this._doInsert(rule.scope, rule.parentScopes, rule.fontStyle, rule.foreground, rule.background);
-	// }
 
 	public insert(scope: string, parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
 		if (scope === '') {

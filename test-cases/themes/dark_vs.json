@@ -2,6 +2,11 @@
 	"name": "Dark Visual Studio",
 	"settings": [
 		{
+			"settings": {
+				"foreground": "#D4D4D4"
+			}
+		},
+		{
 			"scope": "emphasis",
 			"settings": {
 				"fontStyle": "italic"

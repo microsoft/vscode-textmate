@@ -8,7 +8,7 @@ import { IRawGrammar, IRawRepository, IRawRule } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString } from './rule';
 import { IOnigCaptureIndex, OnigString } from 'oniguruma';
 import { createMatcher, Matcher } from './matcher';
-import { IGrammar, ITokenizeLineResult, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef } from './main';
+import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef } from './main';
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
@@ -364,6 +364,22 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 	}
 
 	public tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult {
+		let r = this._tokenize(lineText, prevState, false);
+		return {
+			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
+			ruleStack: r.ruleStack
+		};
+	}
+
+	public tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2 {
+		let r = this._tokenize(lineText, prevState, true);
+		return {
+			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
+			ruleStack: r.ruleStack
+		};
+	}
+
+	private _tokenize(lineText: string, prevState: StackElement, emitBinaryTokens: boolean): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; } {
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
 		}
@@ -388,14 +404,12 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 		lineText = lineText + '\n';
 		let onigLineText = createOnigString(lineText);
 		let lineLength = getString(onigLineText).length;
-		let lineTokens = new LineTokens(/*true*/false, lineText);
+		let lineTokens = new LineTokens(emitBinaryTokens, lineText);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
 
-		let _produced = lineTokens.getResult(nextState, lineLength);
-		// let _produced = lineTokens.getBinaryResult(nextState, lineLength);
-
 		return {
-			tokens: _produced,
+			lineLength: lineLength,
+			lineTokens: lineTokens,
 			ruleStack: nextState
 		};
 	}
@@ -828,39 +842,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	return stack;
 }
 
-/**
- * Helpers to manage the "collapsed" metadata of an entire StackElement stack.
- * The following assumptions have been made:
- *  - languageId < 256 => needs 8 bits
- *  - unique color count < 512 => needs 9 bits
- *
- * The binary format is:
- * --------------------------------------------
- *   3322 2222 2222 1111 1111 1100 0000 0000
- *   1098 7654 3210 9876 5432 1098 7654 3210
- * --------------------------------------------
- *   xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *   bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
- * --------------------------------------------
- *   L = LanguageId (8 bits)
- *   T = StandardTokenType (3 bits)
- *   F = FontStyle (3 bits)
- *   f = foreground color (9 bits)
- *   b = background color (9 bits)
- */
-export const enum MetadataConsts {
-	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
-	TOKEN_TYPE_MASK = 0b00000000000000000000011100000000,
-	FONT_STYLE_MASK = 0b00000000000000000011100000000000,
-	FOREGROUND_MASK = 0b00000000011111111100000000000000,
-	BACKGROUND_MASK = 0b11111111100000000000000000000000,
 
-	LANGUAGEID_OFFSET = 0,
-	TOKEN_TYPE_OFFSET = 8,
-	FONT_STYLE_OFFSET = 11,
-	FOREGROUND_OFFSET = 14,
-	BACKGROUND_OFFSET = 23
-}
 export class StackElementMetadata {
 
 	public static toBinaryStr(metadata: number): string {
@@ -1166,52 +1148,27 @@ class LineTokens {
 	}
 
 	public produce(stack: StackElement, endIndex: number, extraScopes?: LocalStackElement[]): void {
-		// console.log('PRODUCE TOKEN: lastTokenEndIndex: ' + this._lastTokenEndIndex + ', endIndex: ' + endIndex);
 		if (this._lastTokenEndIndex >= endIndex) {
 			return;
 		}
 
 		if (this._emitBinaryTokens) {
-			let metadata:number;
+			let metadata: number;
 			if (extraScopes && extraScopes.length > 0) {
 				metadata = extraScopes[extraScopes.length - 1].scopeMetadata;
 			} else {
 				metadata = stack.contentMetadata;
 			}
 
-			let tokenStartIndex = this._lastTokenEndIndex;
-			let token = tokenStartIndex * ((1<<31)>>>0) + metadata;
+			if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
+				// no need to push a token with the same metadata
+				return;
+			}
 
-			this._binaryTokens.push(token);
-
-			// let token = 0;
-			console.log('produce token: from ', this._lastTokenEndIndex, ' to ', endIndex);
-			console.log('OTHER HERE =>');
-			StackElementMetadata.printMetadata(metadata);
+			this._binaryTokens.push(this._lastTokenEndIndex);
+			this._binaryTokens.push(metadata);
 
 			this._lastTokenEndIndex = endIndex;
-
-			// languageId, tokenType, fontStyle, foreground, background
-
-	// 			public static getLanguageId(metadata: number): number {
-	// 	return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
-	// }
-
-	// public static getTokenType(metadata: number): number {
-	// 	return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
-	// }
-
-	// public static getFontStyle(metadata: number): number {
-	// 	return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
-	// }
-
-	// public static getForeground(metadata: number): number {
-	// 	return (metadata & MetadataConsts.FOREGROUND_MASK) >>> MetadataConsts.FOREGROUND_OFFSET;
-	// }
-
-	// public static getBackground(metadata: number): number {
-	// 	return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
-	// }
 			return;
 		}
 
@@ -1257,7 +1214,17 @@ class LineTokens {
 	}
 
 	public getBinaryResult(stack: StackElement, lineLength: number): number[] {
-		console.log('TODO!');
+		if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === lineLength - 1) {
+			// pop produced token for newline
+			this._binaryTokens.pop();
+			this._binaryTokens.pop();
+		}
+
+		if (this._binaryTokens.length === 0) {
+			this._lastTokenEndIndex = -1;
+			this.produce(stack, lineLength, null);
+			this._binaryTokens[this._binaryTokens.length - 2] = 0;
+		}
 
 		return this._binaryTokens;
 	}

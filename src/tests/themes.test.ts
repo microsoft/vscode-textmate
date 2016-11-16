@@ -6,9 +6,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IToken, IGrammar, RegistryOptions, StackElement } from '../main';
+import { Registry, IToken, IGrammar, RegistryOptions, StackElement, IRawTheme, IRawThemeSetting } from '../main';
 import { createMatcher } from '../matcher';
 import { parse as JSONparse } from '../json';
+import { StackElementMetadata } from '../grammar';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule,
@@ -19,46 +20,304 @@ const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
 // console.log(THEMES_TEST_PATH);
 
-describe('Theme', () => {
+interface ILanguageRegistration {
+	id: string;
+	extensions: string[];
+}
 
-	let light_vs = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_vs.json')).toString());
-	// let light_vs_theme = new Theme(light_vs);
+interface IGrammarRegistration {
+	language: string;
+	scopeName: string;
+	path: string;
+	embeddedLanguages: { [scopeName: string]: string; };
+}
 
+interface IExpected {
+	[theme: string]: IExpectedTokenization[];
+}
 
+interface IExpectedTokenization {
+	content: string;
+	color: string;
+}
 
-	// console.log(light_vs_theme);
+class Resolver implements RegistryOptions {
+	public readonly language2id: { [languages: string]: number; };
+	private _lastLanguageId: number;
+	private _id2language: string[];
+	private readonly _grammars: IGrammarRegistration[];
+	private readonly _languages: ILanguageRegistration[];
 
-	// console.log(light_vs);
+	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[]) {
+		this._grammars = grammars;
+		this._languages = languages;
 
-	// var light_vs
+		this.language2id = Object.create(null);
+		this._lastLanguageId = 0;
+		this._id2language = [];
 
-	// console.log(light_vs._colorMap);
+		for (let i = 0; i < this._languages.length; i++) {
+			let languageId = ++this._lastLanguageId;
+			this.language2id[this._languages[i].id] = languageId;
+			this._id2language[languageId] = this._languages[i].id;
+		}
+	}
 
-	it('works', () => {
-		let registry = new Registry();
-		registry.setTheme(light_vs);
-		// console.log(registry._syncRegistry._theme._colorMap);
-		let grammar = registry.loadGrammarFromPathSync(path.join(THEMES_TEST_PATH, 'go/go.json'));
+	public findLanguageByExtension(fileExtension: string): string {
+		for (let i = 0; i < this._languages.length; i++) {
+			let language = this._languages[i];
 
-		let testFile = fs.readFileSync(path.join(THEMES_TEST_PATH, 'go/colorize-fixtures/test.go')).toString('utf8');
-		let testLines = testFile.split(/\r\n|\r|\n/);
+			if (!language.extensions) {
+				continue;
+			}
 
-		let prevState:StackElement = null;
-		for (let i = 0, len = testLines.length; i < len; i++) {
+			for (let j = 0; j < language.extensions.length; j++) {
+				let extension = language.extensions[j];
 
-			let r = grammar.tokenizeLine(testLines[i], prevState);
-			// console.log(JSON.stringify(r, null, '\t'));
-			prevState = r.ruleStack;
-
-			if (i === 0) {
-				break;
+				if (extension === fileExtension) {
+					return language.id;
+				}
 			}
 		}
 
-		// console.log(grammar);
-	});
+		throw new Error('Could not findLanguageByExtension for ' + fileExtension);
+	}
 
-});
+	public findGrammarByLanguage(language: string): IGrammarRegistration {
+		for (let i = 0; i < this._grammars.length; i++) {
+			let grammar = this._grammars[i];
+
+			if (grammar.language === language) {
+				return grammar;
+			}
+		}
+
+		throw new Error('Could not findGrammarByLanguage for ' + language);
+	}
+
+	public getFilePath(scopeName: string): string {
+		for (let i = 0; i < this._grammars.length; i++) {
+			let grammar = this._grammars[i];
+
+			if (grammar.scopeName === scopeName) {
+				return path.join(THEMES_TEST_PATH, grammar.path);
+			}
+		}
+		console.warn('missing gramamr for ' + scopeName);
+	}
+}
+
+interface IExplainedThemeScope {
+	scopeName: string;
+	themeMatches: IRawThemeSetting[];
+}
+
+function explainThemeScope(theme: IRawTheme, scope: string): IRawThemeSetting[] {
+	let result: IRawThemeSetting[] = [], resultLen = 0;
+	for (let i = 0, len = theme.settings.length; i < len; i++) {
+		let setting = theme.settings[i];
+		let selectors: string[];
+		if (typeof setting.scope === 'string') {
+			selectors = setting.scope.split(/,/).map(scope => scope.trim());
+		} else if (Array.isArray(setting.scope)) {
+			selectors = setting.scope;
+		} else {
+			continue;
+		}
+		for (let j = 0, lenJ = selectors.length; j < lenJ; j++) {
+			let selector = selectors[j];
+			let selectorPrefix = selector + '.';
+
+			if (selector === scope || scope.substring(0, selectorPrefix.length) === selectorPrefix) {
+				// match!
+				result[resultLen++] = setting;
+			}
+
+		}
+	}
+	return result;
+}
+
+function explainThemeScopes(theme: IRawTheme, scopes: string[]): IExplainedThemeScope[] {
+	return scopes.map(scope => {
+		return {
+			scopeName: scope,
+			themeMatches: explainThemeScope(theme, scope)
+		};
+	});
+}
+
+function assertTokenization(theme: IRawTheme, colorMap: string[], fileContents: string, grammar: IGrammar, expected: IExpectedTokenization[]): void {
+
+	interface ITokenExplanation {
+		content: string;
+		scopes: IExplainedThemeScope[];
+	}
+	interface IToken {
+		content: string;
+		color: string;
+		explanation: ITokenExplanation[];
+	}
+	let lines = fileContents.split(/\r\n|\r|\n/);
+
+	let ruleStack: StackElement = null;
+	let actual: IToken[] = [], actualLen = 0;
+
+	for (let i = 0, len = lines.length; i < len; i++) {
+		let line = lines[i];
+		let resultWithScopes = grammar.tokenizeLine(line, ruleStack);
+		let tokensWithScopes = resultWithScopes.tokens;
+
+		let result = grammar.tokenizeLine2(line, ruleStack);
+
+		let tokensLength = result.tokens.length / 2;
+		let tokensWithScopesIndex = 0;
+		for (let j = 0; j < tokensLength; j++) {
+			let startIndex = result.tokens[2 * j];
+			let nextStartIndex = j + 1 < tokensLength ? result.tokens[2 * j + 2] : line.length;
+			let tokenText = line.substring(startIndex, nextStartIndex);
+			if (tokenText === '') {
+				continue;
+			}
+			let metadata = result.tokens[2 * j + 1];
+			let foreground = StackElementMetadata.getForeground(metadata);
+			let foregroundColor = colorMap[foreground];
+
+			let explanation: ITokenExplanation[] = [];
+			let tmpTokenText = tokenText;
+			while (tmpTokenText.length > 0) {
+				let tokenWithScopes = tokensWithScopes[tokensWithScopesIndex];
+
+				let tokenWithScopesText = line.substring(tokenWithScopes.startIndex, tokenWithScopes.endIndex);
+				tmpTokenText = tmpTokenText.substring(tokenWithScopesText.length);
+				explanation.push({
+					content: tokenWithScopesText,
+					scopes: explainThemeScopes(theme, tokenWithScopes.scopes)
+				});
+
+				tokensWithScopesIndex++;
+			}
+			actual[actualLen++] = {
+				content: tokenText,
+				color: foregroundColor,
+				explanation: explanation
+			};
+		}
+		ruleStack = result.ruleStack;
+	}
+
+	let fail = (reason: string) => {
+		fs.writeFileSync('actual.txt', JSON.stringify(actual, null, '\t'));
+		fs.writeFileSync('expected.txt', JSON.stringify(expected, null, '\t'));
+		assert.fail(reason);
+	};
+
+	let i = 0, j = 0, len = actual.length, lenJ = expected.length;
+	do {
+		if (i >= len && j >= lenJ) {
+			// ok
+			break;
+		}
+
+		if (i >= len) {
+			// will fail
+			fail('reached end of actual before end of expected');
+			break;
+		}
+
+		if (j >= lenJ) {
+			// will fail
+			fail('reached end of expected before end of actual');
+			break;
+		}
+
+		let actualContent = actual[i].content;
+		let actualColor = actual[i].color;
+
+		while (actualContent.length > 0 && j < lenJ) {
+			let expectedContent = expected[j].content;
+			let expectedColor = expected[j].color;
+
+			if (actualColor !== expectedColor) {
+				fail('at ' + actualContent + ', color mismatch: ' + actualColor + ', ' + expectedColor);
+				break;
+			}
+
+			if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
+				fail('at ' + actualContent + ', content mismatch: ' + actualContent + ', ' + expectedContent);
+				break;
+			}
+
+			actualContent = actualContent.substr(expectedContent.length);
+
+			j++;
+		}
+
+		i++;
+	} while (true);
+}
+
+function assertThemeTokenization(themeName:string, theme: IRawTheme, resolver: Resolver): void {
+	describe('Theme suite ' + themeName, () => {
+		let registry = new Registry(resolver);
+		registry.setTheme(theme);
+
+		let colorMap = registry.getColorMap();
+
+		// Discover all tests
+		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
+		testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
+		testFiles.forEach((testFile) => {
+			it(testFile, (done) => {
+				let testFileContents = fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile)).toString('utf8');
+				let testFileExpected: IExpected = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile + '.result')).toString('utf8'));
+
+				// Determine the language
+				let testFileExtension = path.extname(testFile);
+
+				let language = resolver.findLanguageByExtension(testFileExtension);
+				let grammar = resolver.findGrammarByLanguage(language);
+
+				let embeddedLanguages: { [scopeName: string]: number; } = Object.create(null);
+				if (grammar.embeddedLanguages) {
+					for (let scopeName in grammar.embeddedLanguages) {
+						embeddedLanguages[scopeName] = resolver.language2id[grammar.embeddedLanguages[scopeName]];
+					}
+				}
+
+				registry.loadGrammarWithEmbeddedLanguages(grammar.scopeName, resolver.language2id[language], embeddedLanguages, (err, grammar) => {
+					if (err) {
+						return done(err);
+					}
+					assertTokenization(theme, colorMap, testFileContents, grammar, testFileExpected[themeName]);
+					done();
+				});
+			});
+		});
+	});
+}
+
+(function() {
+	// Load all themes
+	let light_vs: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_vs.json')).toString());
+	let light_plus: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_plus.json')).toString());
+	(<any>light_plus).settings = light_vs.settings.concat(light_plus.settings);
+	let dark_vs: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'dark_vs.json')).toString());
+	let dark_plus: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'dark_plus.json')).toString());
+	(<any>dark_plus).settings = dark_vs.settings.concat(dark_plus.settings);
+	let hc_black: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'hc_black.json')).toString());
+
+	// Load all language/grammar metadata
+	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
+	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
+	let resolver = new Resolver(_grammars, _languages);
+
+	assertThemeTokenization('light_vs', light_vs, resolver);
+	assertThemeTokenization('light_plus', light_plus, resolver);
+	assertThemeTokenization('dark_vs', dark_vs, resolver);
+	assertThemeTokenization('dark_plus', dark_plus, resolver);
+	assertThemeTokenization('hc_black', hc_black, resolver);
+})();
 
 describe('Theme matching', () => {
 	it('can match', () => {
