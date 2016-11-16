@@ -1,0 +1,2112 @@
+{
+	"dark_vs": [
+		{
+			"content": "all",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " hello",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "hello",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " main.o factorial.o hello.o",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "main.o",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " main.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "factorial.o",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " factorial.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "hello.o",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " hello.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "clean",
+			"color": "#D4D4D4",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "define",
+			"color": "#569CD6",
+			"_t": "conditional.control.define.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "defined",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.other.scope.variable",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\t",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "info",
+			"color": "#CE9178",
+			"_t": "conditional.function.function-call.info.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " Checkng existance of ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\t",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "if",
+			"color": "#CE9178",
+			"_t": "conditional.function.function-call.if.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " ifeq \"",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "flavor ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\" \"undefined\",0,1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "endef",
+			"color": "#569CD6",
+			"_t": "conditional.control.keyword.makefile.meta.override.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#569CD6",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " (",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "call",
+			"color": "#CE9178",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " defined,TOP_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ",0)",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "endif",
+			"color": "#569CD6",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": "include",
+			"color": "#569CD6",
+			"_t": "control.include.keyword.makefile",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "TOP_DIR",
+			"color": "#CE9178",
+			"_t": "interpolated.makefile.other.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#569CD6",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " (",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "call",
+			"color": "#CE9178",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " defined,CODIT_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ",0)",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "endif",
+			"color": "#569CD6",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": "all",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " hello",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "hello",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " main.o factorial.o hello.o",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "main.o",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " main.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "factorial.o",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " factorial.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "hello.o",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " hello.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "clean",
+			"color": "#000000",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "define",
+			"color": "#0000FF",
+			"_t": "conditional.control.define.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "defined",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.other.scope.variable",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "info",
+			"color": "#A31515",
+			"_t": "conditional.function.function-call.info.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": " Checkng existance of ",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "1",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "if",
+			"color": "#A31515",
+			"_t": "conditional.function.function-call.if.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": " ifeq \"",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "flavor ",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "1",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\" \"undefined\",0,1",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "endef",
+			"color": "#0000FF",
+			"_t": "conditional.control.keyword.makefile.meta.override.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#0000FF",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": " (",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "call",
+			"color": "#A31515",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": " defined,TOP_DIR",
+			"color": "#A31515",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "endif",
+			"color": "#0000FF",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": "include",
+			"color": "#0000FF",
+			"_t": "control.include.keyword.makefile",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "TOP_DIR",
+			"color": "#A31515",
+			"_t": "interpolated.makefile.other.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#0000FF",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		},
+		{
+			"content": " (",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#A31515",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "call",
+			"color": "#A31515",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": " defined,CODIT_DIR",
+			"color": "#A31515",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#A31515",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "endif",
+			"color": "#0000FF",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": "all",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " hello",
+			"color": "#FFFFFF",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "hello",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " main.o factorial.o hello.o",
+			"color": "#FFFFFF",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "main.o",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " main.cpp",
+			"color": "#FFFFFF",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "factorial.o",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " factorial.cpp",
+			"color": "#FFFFFF",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "hello.o",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": " hello.cpp",
+			"color": "#FFFFFF",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "clean",
+			"color": "#FFFFFF",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ":",
+			"color": "#FFFFFF",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "define",
+			"color": "#569CD6",
+			"_t": "conditional.control.define.keyword.makefile.meta.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "defined",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.other.scope.variable",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\t",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "info",
+			"color": "#CE9178",
+			"_t": "conditional.function.function-call.info.interpolated.makefile.meta.scope.string.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " Checkng existance of ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\t",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "if",
+			"color": "#CE9178",
+			"_t": "conditional.function.function-call.if.interpolated.makefile.meta.scope.string.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " ifeq \"",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "flavor ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\" \"undefined\",0,1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "endef",
+			"color": "#569CD6",
+			"_t": "conditional.control.keyword.makefile.meta.override.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#569CD6",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " (",
+			"color": "#FFFFFF",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "call",
+			"color": "#CE9178",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " defined,TOP_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ",0)",
+			"color": "#FFFFFF",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "endif",
+			"color": "#569CD6",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": "include",
+			"color": "#569CD6",
+			"_t": "control.include.keyword.makefile",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " ",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "TOP_DIR",
+			"color": "#CE9178",
+			"_t": "interpolated.makefile.other.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#569CD6",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		},
+		{
+			"content": " (",
+			"color": "#FFFFFF",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "$(",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "call",
+			"color": "#CE9178",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": " defined,CODIT_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#CE9178",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ",0)",
+			"color": "#FFFFFF",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#FFFFFF",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "endif",
+			"color": "#569CD6",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": "all",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " hello",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "hello",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " main.o factorial.o hello.o",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "main.o",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " main.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "factorial.o",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " factorial.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "hello.o",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": " hello.cpp",
+			"color": "#D4D4D4",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "clean",
+			"color": "#DCDCAA",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+		},
+		{
+			"content": ":",
+			"color": "#D4D4D4",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "define",
+			"color": "#C586C0",
+			"_t": "conditional.control.define.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "defined",
+			"color": "#9CDCFE",
+			"_t": "conditional.makefile.meta.other.scope.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "\t",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "info",
+			"color": "#DCDCAA",
+			"_t": "conditional.function.function-call.info.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+		},
+		{
+			"content": " Checkng existance of ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "1",
+			"color": "#9CDCFE",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "\t",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "if",
+			"color": "#DCDCAA",
+			"_t": "conditional.function.function-call.if.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+		},
+		{
+			"content": " ifeq \"",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "flavor ",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "1",
+			"color": "#9CDCFE",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "\" \"undefined\",0,1",
+			"color": "#CE9178",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "endef",
+			"color": "#C586C0",
+			"_t": "conditional.control.keyword.makefile.meta.override.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#C586C0",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": " (",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "call",
+			"color": "#DCDCAA",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+		},
+		{
+			"content": " defined,TOP_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ",0)",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "endif",
+			"color": "#C586C0",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": "include",
+			"color": "#C586C0",
+			"_t": "control.include.keyword.makefile",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": " ",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "TOP_DIR",
+			"color": "#9CDCFE",
+			"_t": "interpolated.makefile.other.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#C586C0",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		},
+		{
+			"content": " (",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "$(",
+			"color": "#9CDCFE",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": "call",
+			"color": "#DCDCAA",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+		},
+		{
+			"content": " defined,CODIT_DIR",
+			"color": "#CE9178",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": ")",
+			"color": "#9CDCFE",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable rgb(156, 220, 254)"
+		},
+		{
+			"content": ",0)",
+			"color": "#D4D4D4",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#D4D4D4",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "endif",
+			"color": "#C586C0",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": "all",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " hello",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "hello",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " main.o factorial.o hello.o",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "main.o",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " main.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "factorial.o",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " factorial.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "hello.o",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": " hello.cpp",
+			"color": "#000000",
+			"_t": "makefile.meta.prerequisites.scope.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "clean",
+			"color": "#795E26",
+			"_t": "entity.function.makefile.meta.name.scope.target",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+		},
+		{
+			"content": ":",
+			"color": "#000000",
+			"_t": "key-value.makefile.meta.punctuation.scope.separator.target",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "define",
+			"color": "#AF00DB",
+			"_t": "conditional.control.define.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "defined",
+			"color": "#001080",
+			"_t": "conditional.makefile.meta.other.scope.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "info",
+			"color": "#795E26",
+			"_t": "conditional.function.function-call.info.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+		},
+		{
+			"content": " Checkng existance of ",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "1",
+			"color": "#001080",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "if",
+			"color": "#795E26",
+			"_t": "conditional.function.function-call.if.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+		},
+		{
+			"content": " ifeq \"",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "flavor ",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "1",
+			"color": "#001080",
+			"_t": "conditional.function-call.interpolated.makefile.meta.other.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.other.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "conditional.definition.function-call.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "\" \"undefined\",0,1",
+			"color": "#A31515",
+			"_t": "conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "endef",
+			"color": "#AF00DB",
+			"_t": "conditional.control.keyword.makefile.meta.override.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#AF00DB",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": " (",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "call",
+			"color": "#795E26",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+		},
+		{
+			"content": " defined,TOP_DIR",
+			"color": "#A31515",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "endif",
+			"color": "#AF00DB",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": "include",
+			"color": "#AF00DB",
+			"_t": "control.include.keyword.makefile",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": " ",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "TOP_DIR",
+			"color": "#001080",
+			"_t": "interpolated.makefile.other.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "definition.interpolated.makefile.punctuation.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "ifeq",
+			"color": "#AF00DB",
+			"_t": "conditional.control.ifeq.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		},
+		{
+			"content": " (",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "$(",
+			"color": "#001080",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": "call",
+			"color": "#795E26",
+			"_t": "call.condition.conditional.function.function-call.interpolated.makefile.meta.scope.string.support",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+		},
+		{
+			"content": " defined,CODIT_DIR",
+			"color": "#A31515",
+			"_t": "condition.conditional.function-call.interpolated.makefile.meta.scope.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": ")",
+			"color": "#001080",
+			"_t": "condition.conditional.definition.interpolated.makefile.meta.punctuation.scope.string.variable",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable rgb(0, 16, 128)"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000",
+			"_t": "condition.conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#000000",
+			"_t": "conditional.makefile.meta.scope",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "endif",
+			"color": "#AF00DB",
+			"_t": "conditional.control.endif.keyword.makefile.meta.scope",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+		}
+	]
+}

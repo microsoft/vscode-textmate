@@ -1,0 +1,822 @@
+{
+	"dark_vs": [
+		{
+			"content": ";",
+			"color": "#608B4E",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " last modified 1 April 2001 by John Doe",
+			"color": "#608B4E",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "[",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "owner",
+			"color": "#D4D4D4",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "]",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "name",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "John Doe",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "organization",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Acme Widgets Inc.",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "[",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "database",
+			"color": "#D4D4D4",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "]",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#608B4E",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " use IP address in case network name resolution is not working",
+			"color": "#608B4E",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "server",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "192.0.2.62",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "port",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "143",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "file",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.ini.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "payroll.dat",
+			"color": "#CE9178",
+			"_t": "double.ini.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.ini.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"light_vs": [
+		{
+			"content": ";",
+			"color": "#008000",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " last modified 1 April 2001 by John Doe",
+			"color": "#008000",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "[",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "owner",
+			"color": "#000000",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "]",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "name",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "John Doe",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "organization",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Acme Widgets Inc.",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "[",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "database",
+			"color": "#000000",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "]",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#008000",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " use IP address in case network name resolution is not working",
+			"color": "#008000",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "server",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "192.0.2.62",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "port",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "143",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "file",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.definition.double.ini.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "payroll.dat",
+			"color": "#A31515",
+			"_t": "double.ini.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "definition.double.end.ini.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+		}
+	],
+	"hc_black": [
+		{
+			"content": ";",
+			"color": "#7CA668",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " last modified 1 April 2001 by John Doe",
+			"color": "#7CA668",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "[",
+			"color": "#FFFFFF",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "owner",
+			"color": "#FFFFFF",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "]",
+			"color": "#FFFFFF",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "name",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#FFFFFF",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "John Doe",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "organization",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#FFFFFF",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "Acme Widgets Inc.",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "[",
+			"color": "#FFFFFF",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "database",
+			"color": "#FFFFFF",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "]",
+			"color": "#FFFFFF",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": ";",
+			"color": "#7CA668",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": " use IP address in case network name resolution is not working",
+			"color": "#7CA668",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+		},
+		{
+			"content": "server",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#FFFFFF",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "192.0.2.62",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "port",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#FFFFFF",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "143",
+			"color": "#FFFFFF",
+			"_t": "",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "file",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#FFFFFF",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".hc-black .token rgb(255, 255, 255)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.ini.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "payroll.dat",
+			"color": "#CE9178",
+			"_t": "double.ini.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.ini.punctuation.quoted.string",
+			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"dark_plus": [
+		{
+			"content": ";",
+			"color": "#608B4E",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " last modified 1 April 2001 by John Doe",
+			"color": "#608B4E",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "[",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "owner",
+			"color": "#D4D4D4",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "]",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "name",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "John Doe",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "organization",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "Acme Widgets Inc.",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "[",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "database",
+			"color": "#D4D4D4",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "]",
+			"color": "#D4D4D4",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": ";",
+			"color": "#608B4E",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": " use IP address in case network name resolution is not working",
+			"color": "#608B4E",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+		},
+		{
+			"content": "server",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "192.0.2.62",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "port",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "143",
+			"color": "#D4D4D4",
+			"_t": "",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "file",
+			"color": "#569CD6",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+		},
+		{
+			"content": "=",
+			"color": "#D4D4D4",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs-dark .token rgb(212, 212, 212)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "begin.definition.double.ini.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "payroll.dat",
+			"color": "#CE9178",
+			"_t": "double.ini.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		},
+		{
+			"content": "\"",
+			"color": "#CE9178",
+			"_t": "definition.double.end.ini.punctuation.quoted.string",
+			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+		}
+	],
+	"light_plus": [
+		{
+			"content": ";",
+			"color": "#008000",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " last modified 1 April 2001 by John Doe",
+			"color": "#008000",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "[",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "owner",
+			"color": "#000000",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "]",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "name",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "John Doe",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "organization",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "Acme Widgets Inc.",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "[",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "database",
+			"color": "#000000",
+			"_t": "entity.group-title.ini.name.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "]",
+			"color": "#000000",
+			"_t": "definition.entity.group-title.ini.name.punctuation.section",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": ";",
+			"color": "#008000",
+			"_t": "comment.definition.ini.line.punctuation.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": " use IP address in case network name resolution is not working",
+			"color": "#008000",
+			"_t": "comment.ini.line.semicolon",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+		},
+		{
+			"content": "server",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "192.0.2.62",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "port",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "143",
+			"color": "#000000",
+			"_t": "",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "file",
+			"color": "#0000FF",
+			"_t": "definition.ini.keyword.other",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+		},
+		{
+			"content": "=",
+			"color": "#000000",
+			"_t": "ini.key-value.punctuation.separator",
+			"_r": ".vs .token rgb(0, 0, 0)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "begin.definition.double.ini.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "payroll.dat",
+			"color": "#A31515",
+			"_t": "double.ini.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515",
+			"_t": "definition.double.end.ini.punctuation.quoted.string",
+			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+		}
+	]
+}
