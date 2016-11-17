@@ -15,6 +15,7 @@ import {
 	parseTheme, ParsedThemeRule,
 	FontStyle, ColorMap
 } from '../theme';
+import * as plist from 'fast-plist';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
@@ -23,6 +24,7 @@ const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 interface ILanguageRegistration {
 	id: string;
 	extensions: string[];
+	filenames: string[];
 }
 
 interface IGrammarRegistration {
@@ -80,7 +82,27 @@ class Resolver implements RegistryOptions {
 			}
 		}
 
-		throw new Error('Could not findLanguageByExtension for ' + fileExtension);
+		return null;
+	}
+
+	public findLanguageByFilename(filename: string): string {
+		for (let i = 0; i < this._languages.length; i++) {
+			let language = this._languages[i];
+
+			if (!language.filenames) {
+				continue;
+			}
+
+			for (let j = 0; j < language.filenames.length; j++) {
+				let lFilename = language.filenames[j];
+
+				if (filename === lFilename) {
+					return language.id;
+				}
+			}
+		}
+
+		return null;
 	}
 
 	public findGrammarByLanguage(language: string): IGrammarRegistration {
@@ -125,12 +147,22 @@ function explainThemeScope(theme: IRawTheme, scope: string): IRawThemeSetting[] 
 			continue;
 		}
 		for (let j = 0, lenJ = selectors.length; j < lenJ; j++) {
-			let selector = selectors[j];
+			let rawSelector = selectors[j];
+
+			let selector: string;
+			let lastSpaceIndex = rawSelector.lastIndexOf(' ');
+			if (lastSpaceIndex >= 0) {
+				selector = rawSelector.substr(lastSpaceIndex + 1);
+			} else {
+				selector = rawSelector;
+			}
 			let selectorPrefix = selector + '.';
 
 			if (selector === scope || scope.substring(0, selectorPrefix.length) === selectorPrefix) {
 				// match!
 				result[resultLen++] = setting;
+				// break the loop
+				j = lenJ;
 			}
 
 		}
@@ -238,13 +270,14 @@ function assertTokenization(theme: IRawTheme, colorMap: string[], fileContents: 
 			let expectedContent = expected[j].content;
 			let expectedColor = expected[j].color;
 
-			if (actualColor !== expectedColor) {
-				fail('at ' + actualContent + ', color mismatch: ' + actualColor + ', ' + expectedColor);
+			let contentIsInvisible = /^\s+$/.test(expectedContent);
+			if (!contentIsInvisible && actualColor !== expectedColor) {
+				fail(`at ${actualContent} (${i}-${j}), color mismatch: ${actualColor}, ${expectedColor}`);
 				break;
 			}
 
 			if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
-				fail('at ' + actualContent + ', content mismatch: ' + actualContent + ', ' + expectedContent);
+				fail(`at ${actualContent} (${i}-${j}), content mismatch: ${actualContent}, ${expectedContent}`);
 				break;
 			}
 
@@ -275,7 +308,10 @@ function assertThemeTokenization(themeName:string, theme: IRawTheme, resolver: R
 				// Determine the language
 				let testFileExtension = path.extname(testFile);
 
-				let language = resolver.findLanguageByExtension(testFileExtension);
+				let language = resolver.findLanguageByExtension(testFileExtension) || resolver.findLanguageByFilename(testFile);
+				if (!language) {
+					throw new Error('Could not determine language for ' + testFile);
+				}
 				let grammar = resolver.findGrammarByLanguage(language);
 
 				let embeddedLanguages: { [scopeName: string]: number; } = Object.create(null);
@@ -307,16 +343,21 @@ function assertThemeTokenization(themeName:string, theme: IRawTheme, resolver: R
 	(<any>dark_plus).settings = dark_vs.settings.concat(dark_plus.settings);
 	let hc_black: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'hc_black.json')).toString());
 
+	let abyss: IRawTheme = plist.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'Abyss.tmTheme')).toString());
+	let monokai: IRawTheme = plist.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'Monokai.tmTheme')).toString());
+
 	// Load all language/grammar metadata
 	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 	let resolver = new Resolver(_grammars, _languages);
 
-	assertThemeTokenization('light_vs', light_vs, resolver);
-	assertThemeTokenization('light_plus', light_plus, resolver);
-	assertThemeTokenization('dark_vs', dark_vs, resolver);
-	assertThemeTokenization('dark_plus', dark_plus, resolver);
-	assertThemeTokenization('hc_black', hc_black, resolver);
+	// assertThemeTokenization('abyss', abyss, resolver);
+	// assertThemeTokenization('light_vs', light_vs, resolver);
+	// assertThemeTokenization('light_plus', light_plus, resolver);
+	// assertThemeTokenization('dark_vs', dark_vs, resolver);
+	// assertThemeTokenization('dark_plus', dark_plus, resolver);
+	// assertThemeTokenization('hc_black', hc_black, resolver);
+	// assertThemeTokenization('monokai', monokai, resolver);
 })();
 
 describe('Theme matching', () => {
@@ -416,8 +457,8 @@ describe('Theme matching', () => {
 
 
 		assertMatch('bar', [
-			new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _C),
 			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C)
+			new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _C),
 		]);
 	});
 });
