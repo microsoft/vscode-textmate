@@ -145,11 +145,13 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 }
 
 export class ScopeMetadata {
+	public readonly scopeName: string;
 	public readonly languageId: number;
 	public readonly tokenType: number;
 	public readonly themeData: ThemeTrieElementRule[];
 
-	constructor(languageId: number, tokenType: number, themeData: ThemeTrieElementRule[]) {
+	constructor(scopeName: string, languageId: number, tokenType: number, themeData: ThemeTrieElementRule[]) {
+		this.scopeName = scopeName;
 		this.languageId = languageId;
 		this.tokenType = tokenType;
 		this.themeData = themeData;
@@ -168,6 +170,7 @@ class ScopeMetadataProvider {
 		this._themeProvider = themeProvider;
 		this._cache = Object.create(null);
 		this._rootMetaData = new ScopeMetadata(
+			'',
 			initialLanguage,
 			StandardTokenType.Other,
 			[this._themeProvider.getDefaults()]
@@ -214,7 +217,7 @@ class ScopeMetadataProvider {
 		return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 	}
 
-	private static _NULL_SCOPE_METADATA = new ScopeMetadata(0, 0, null);
+	private static _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
 	public getMetadataForScope(scopeName: string): ScopeMetadata {
 		if (scopeName === null) {
 			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
@@ -233,7 +236,7 @@ class ScopeMetadataProvider {
 		let standardTokenType = ScopeMetadataProvider._toStandardTokenType(scopeName);
 		let themeData = this._themeProvider.themeMatch(scopeName);
 
-		return new ScopeMetadata(languageId, standardTokenType, themeData);
+		return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
 	}
 
 	/**
@@ -393,7 +396,7 @@ class Grammar implements IGrammar, IRuleFactoryHelper {
 
 			let scopeName = this.getRule(this._rootId).getName(null, null);
 			let scopeNameMetadata = this._scopeMetadataProvider.getMetadataForScope(scopeName);
-			let _scopeNameMetadata = StackElementMetadata.merge(_rootMetadata, scopeNameMetadata);
+			let _scopeNameMetadata = StackElementMetadata.merge(_rootMetadata, scopeNameMetadata, null);
 
 			prevState = new StackElement(null, this._rootId, -1, null, scopeName, _scopeNameMetadata, null, _scopeNameMetadata);
 		} else {
@@ -486,7 +489,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			// push
 			let captureRuleScopeNameMetadata = grammar.getMetadataForScope(captureRuleScopeName);
 			let base = localStack.length === 0 ? stack.contentMetadata : localStack[localStack.length - 1].scopeMetadata;
-			let _captureRuleScopeNameMetadata = StackElementMetadata.merge(base, captureRuleScopeNameMetadata);
+			let _captureRuleScopeNameMetadata = StackElementMetadata.merge(base, captureRuleScopeNameMetadata, new ScopeListProvider(stack, localStack, null));
 			localStack.push(new LocalStackElement(captureRuleScopeName, _captureRuleScopeNameMetadata, captureIndex.end));
 		}
 	}
@@ -921,7 +924,7 @@ export class StackElementMetadata {
 		) >>> 0;
 	}
 
-	public static merge(metadata: number, source: ScopeMetadata): number {
+	public static merge(metadata: number, source: ScopeMetadata, scopeList: ScopeListProvider): number {
 		if (source === null) {
 			return metadata;
 		}
@@ -938,7 +941,16 @@ export class StackElementMetadata {
 			foreground = themeData.foreground;
 			background = themeData.background;
 		} else {
-			console.warn('CANNOT HONOUR THEME RULE THAT INVOLVES PARENT SCOPES...');
+			// find the first themeData that matches
+			for (let i = 0, len = source.themeData.length; i < len; i++) {
+				let themeData = source.themeData[i];
+				if (scopeList && scopeList.matches(themeData.parentScopes)) {
+					fontStyle = themeData.fontStyle;
+					foreground = themeData.foreground;
+					background = themeData.background;
+					break;
+				}
+			}
 		}
 
 		return this.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background);
@@ -949,7 +961,7 @@ export class StackElementMetadata {
 /**
  * **IMPORTANT** - Immutable!
  */
-class StackElement implements StackElementDef {
+export class StackElement implements StackElementDef {
 	public _stackElementBrand: void;
 
 	private _enterPos: number;
@@ -1027,12 +1039,12 @@ class StackElement implements StackElementDef {
 	}
 
 	public push(ruleId: number, enterPos: number, endRule: string, scopeName: string, scopeNameMetadata: ScopeMetadata, contentName: string, contentNameMetadata: ScopeMetadata): StackElement {
-		let _scopeNameMetadata = StackElementMetadata.merge(this.contentMetadata, scopeNameMetadata);
+		let _scopeNameMetadata = StackElementMetadata.merge(this.contentMetadata, scopeNameMetadata, new ScopeListProvider(this, null, null));
 		return this._push(ruleId, enterPos, endRule, scopeName, _scopeNameMetadata, contentName, contentNameMetadata);
 	}
 
 	private _push(ruleId: number, enterPos: number, endRule: string, scopeName: string, scopeMetadata: number, contentName: string, contentNameMetadata: ScopeMetadata): StackElement {
-		let _contentNameMetadata = StackElementMetadata.merge(scopeMetadata, contentNameMetadata);
+		let _contentNameMetadata = StackElementMetadata.merge(scopeMetadata, contentNameMetadata, new ScopeListProvider(this, null, scopeName));
 		return new StackElement(this, ruleId, enterPos, endRule, scopeName, scopeMetadata, contentName, _contentNameMetadata);
 	}
 
@@ -1104,7 +1116,7 @@ class StackElement implements StackElementDef {
 	}
 }
 
-class LocalStackElement {
+export class LocalStackElement {
 	public readonly scopeName: string;
 	public readonly scopeMetadata: number;
 	public readonly endPos: number;
@@ -1162,6 +1174,7 @@ class LineTokens {
 
 			if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
 				// no need to push a token with the same metadata
+				this._lastTokenEndIndex = endIndex;
 				return;
 			}
 
@@ -1228,4 +1241,81 @@ class LineTokens {
 
 		return this._binaryTokens;
 	}
+}
+
+export class ScopeListProvider {
+
+	private _stack: StackElement;
+	private _localStack: LocalStackElement[];
+	private _extraScope: string;
+
+	constructor(stack: StackElement, localStack: LocalStackElement[], extraScope: string) {
+		this._stack = stack;
+		this._localStack = localStack;
+		this._extraScope = extraScope;
+	}
+
+	private static _matches(scope: string, selector: string, selectorPrefix: string): boolean {
+		return (
+			scope !== null
+			&& (selector === scope || scope.substring(0, selectorPrefix.length) === selectorPrefix)
+		);
+	}
+
+	public matches(parentScopes:string[]): boolean {
+		if (parentScopes === null) {
+			return true;
+		}
+
+		let len = parentScopes.length;
+		let index = 0;
+		let selector = parentScopes[index];
+		let selectorPrefix = selector + '.';
+
+		if (ScopeListProvider._matches(this._extraScope, selector, selectorPrefix)) {
+			index++;
+			if (index === len) {
+				return true;
+			}
+			selector = parentScopes[index];
+			selectorPrefix = selector + '.';
+		}
+
+		if (this._localStack) {
+			for (let j = this._localStack.length - 1; j >= 0; j--) {
+				if (ScopeListProvider._matches(this._localStack[j].scopeName, selector, selectorPrefix)) {
+					index++;
+					if (index === len) {
+						return true;
+					}
+					selector = parentScopes[index];
+					selectorPrefix = selector + '.';
+				}
+			}
+		}
+
+		let stack = this._stack;
+		while (stack) {
+			if (ScopeListProvider._matches(stack.contentName, selector, selectorPrefix)) {
+				index++;
+				if (index === len) {
+					return true;
+				}
+				selector = parentScopes[index];
+				selectorPrefix = selector + '.';
+			}
+			if (ScopeListProvider._matches(stack.scopeName, selector, selectorPrefix)) {
+				index++;
+				if (index === len) {
+					return true;
+				}
+				selector = parentScopes[index];
+				selectorPrefix = selector + '.';
+			}
+			stack = stack.parent;
+		}
+
+		return false;
+	}
+
 }

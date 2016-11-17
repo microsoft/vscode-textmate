@@ -7,9 +7,10 @@
 		"sourceMap": true,
 		"declaration": true
 	},
-    "exclude": [
-        "node_modules",
-        "release",
-		"out"
-    ]
+	"exclude": [
+		"node_modules",
+		"release",
+		"out",
+		"test-cases"
+	]
 }

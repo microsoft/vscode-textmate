@@ -333,9 +333,25 @@ export class ThemeTrieElement {
 		this._children = children;
 	}
 
+	private static _sortBySpecificity(arr: ThemeTrieElementRule[]): ThemeTrieElementRule[] {
+		if (arr.length === 1) {
+			return arr;
+		}
+
+		arr.sort(this._cmpBySpecificity);
+
+		return arr;
+	}
+
+	private static _cmpBySpecificity(a: ThemeTrieElementRule, b: ThemeTrieElementRule): number {
+		let aValue = a.parentScopes === null ? 0 : a.parentScopes.length;
+		let bValue = b.parentScopes === null ? 0 : b.parentScopes.length;
+		return bValue - aValue;
+	}
+
 	public match(scope: string): ThemeTrieElementRule[] {
 		if (scope === '') {
-			return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+			return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
 		}
 
 		let dotIndex = scope.indexOf('.');
@@ -353,7 +369,7 @@ export class ThemeTrieElement {
 			return this._children[head].match(tail);
 		}
 
-		return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+		return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
 	}
 
 	public insert(scope: string, parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
