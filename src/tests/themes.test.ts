@@ -6,20 +6,15 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IToken, IGrammar, RegistryOptions, StackElement, IRawTheme, IRawThemeSetting } from '../main';
-import { createMatcher } from '../matcher';
-import { parse as JSONparse } from '../json';
-import { StackElementMetadata } from '../grammar';
+import { Registry, RegistryOptions, IRawTheme, IEmbeddedLanguagesMap } from '../main';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
-	parseTheme, ParsedThemeRule,
-	FontStyle, ColorMap
+	parseTheme, ParsedThemeRule, FontStyle, ColorMap
 } from '../theme';
 import * as plist from 'fast-plist';
+import { tokenizeWithTheme, IThemedToken } from './themedTokenizer';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
-
-// console.log(THEMES_TEST_PATH);
 
 interface ILanguageRegistration {
 	id: string;
@@ -129,235 +124,225 @@ class Resolver implements RegistryOptions {
 	}
 }
 
-interface IExplainedThemeScope {
-	scopeName: string;
-	themeMatches: IRawThemeSetting[];
+interface ThemeData {
+	themeName: string;
+	theme: IRawTheme;
+	registry: Registry;
 }
 
-function explainThemeScope(theme: IRawTheme, scope: string): IRawThemeSetting[] {
-	let result: IRawThemeSetting[] = [], resultLen = 0;
-	for (let i = 0, len = theme.settings.length; i < len; i++) {
-		let setting = theme.settings[i];
-		let selectors: string[];
-		if (typeof setting.scope === 'string') {
-			selectors = setting.scope.split(/,/).map(scope => scope.trim());
-		} else if (Array.isArray(setting.scope)) {
-			selectors = setting.scope;
-		} else {
-			continue;
+interface ITestData {
+	testName: string;
+	contents: string;
+	initialScopeName: string;
+	initialLanguage: number;
+	embeddedLanguages: IEmbeddedLanguagesMap;
+
+	expected: { [themeName: string]: IExpectedTokenization[]; };
+}
+
+function assertTokenizationIsEquivalent(testName: string, _actual: { [themeName: string]: IThemedToken[]; }, _expected: { [themeName: string]: IExpectedTokenization[]; }): void {
+
+	let fail = (themeName: string, reason: string) => {
+		let fakeActual: { [themeName: string]: IThemedToken[]; } = {};
+		for (let otherThemeName in _expected) {
+			fakeActual[otherThemeName] = <any>_expected[otherThemeName];
 		}
-		for (let j = 0, lenJ = selectors.length; j < lenJ; j++) {
-			let rawSelector = selectors[j];
+		fakeActual[themeName] = _actual[themeName];
 
-			let selector: string;
-			let lastSpaceIndex = rawSelector.lastIndexOf(' ');
-			if (lastSpaceIndex >= 0) {
-				selector = rawSelector.substr(lastSpaceIndex + 1);
-			} else {
-				selector = rawSelector;
+		console.log('testName -> ' + testName);
+		fs.writeFileSync(path.join(THEMES_TEST_PATH, 'tests', testName + '.actual'), JSON.stringify(fakeActual, null, '\t'));
+		assert.fail(themeName + ': ' + reason);
+	};
+
+	for (let themeName in _actual) {
+		let actual = _actual[themeName];
+		let expected = _expected[themeName];
+
+		let i = 0, j = 0, len = actual.length, lenJ = expected.length;
+		do {
+			if (i >= len && j >= lenJ) {
+				// ok
+				break;
 			}
-			let selectorPrefix = selector + '.';
 
-			if (selector === scope || scope.substring(0, selectorPrefix.length) === selectorPrefix) {
-				// match!
-				result[resultLen++] = setting;
-				// break the loop
-				j = lenJ;
+			if (i >= len) {
+				// will fail
+				fail(themeName, 'reached end of actual before end of expected');
+				break;
 			}
 
-		}
+			if (j >= lenJ) {
+				// will fail
+				fail(themeName, 'reached end of expected before end of actual');
+				break;
+			}
+
+			let actualContent = actual[i].content;
+			let actualColor = actual[i].color;
+
+			while (actualContent.length > 0 && j < lenJ) {
+				let expectedContent = expected[j].content;
+				let expectedColor = expected[j].color;
+
+				let contentIsInvisible = /^\s+$/.test(expectedContent);
+				if (!contentIsInvisible && actualColor !== expectedColor) {
+					fail(themeName, `at ${actualContent} (${i}-${j}), color mismatch: ${actualColor}, ${expectedColor}`);
+					break;
+				}
+
+				if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
+					fail(themeName, `at ${actualContent} (${i}-${j}), content mismatch: ${actualContent}, ${expectedContent}`);
+					break;
+				}
+
+				actualContent = actualContent.substr(expectedContent.length);
+
+				j++;
+			}
+
+			i++;
+		} while (true);
 	}
-	return result;
 }
 
-function explainThemeScopes(theme: IRawTheme, scopes: string[]): IExplainedThemeScope[] {
-	return scopes.map(scope => {
-		return {
-			scopeName: scope,
-			themeMatches: explainThemeScope(theme, scope)
-		};
+function tokenizeWithThemeAsync(test: ITestData, themeData: ThemeData, callback: (err: any, res: IThemedToken[]) => void): void {
+	themeData.registry.loadGrammarWithEmbeddedLanguages(test.initialScopeName, test.initialLanguage, test.embeddedLanguages, (err, grammar) => {
+		if (err) {
+			return callback(err, null);
+		}
+		let actual = tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), test.contents, grammar);
+		return callback(null, actual);
 	});
 }
 
-function assertTokenization(theme: IRawTheme, colorMap: string[], fileContents: string, grammar: IGrammar, expected: IExpectedTokenization[]): void {
-
-	interface ITokenExplanation {
-		content: string;
-		scopes: IExplainedThemeScope[];
-	}
-	interface IToken {
-		content: string;
-		color: string;
-		explanation: ITokenExplanation[];
-	}
-	let lines = fileContents.split(/\r\n|\r|\n/);
-
-	let ruleStack: StackElement = null;
-	let actual: IToken[] = [], actualLen = 0;
-
-	for (let i = 0, len = lines.length; i < len; i++) {
-		let line = lines[i];
-		let resultWithScopes = grammar.tokenizeLine(line, ruleStack);
-		let tokensWithScopes = resultWithScopes.tokens;
-
-		let result = grammar.tokenizeLine2(line, ruleStack);
-
-		let tokensLength = result.tokens.length / 2;
-		let tokensWithScopesIndex = 0;
-		for (let j = 0; j < tokensLength; j++) {
-			let startIndex = result.tokens[2 * j];
-			let nextStartIndex = j + 1 < tokensLength ? result.tokens[2 * j + 2] : line.length;
-			let tokenText = line.substring(startIndex, nextStartIndex);
-			if (tokenText === '') {
-				continue;
-			}
-			let metadata = result.tokens[2 * j + 1];
-			let foreground = StackElementMetadata.getForeground(metadata);
-			let foregroundColor = colorMap[foreground];
-
-			let explanation: ITokenExplanation[] = [];
-			let tmpTokenText = tokenText;
-			while (tmpTokenText.length > 0) {
-				let tokenWithScopes = tokensWithScopes[tokensWithScopesIndex];
-
-				let tokenWithScopesText = line.substring(tokenWithScopes.startIndex, tokenWithScopes.endIndex);
-				tmpTokenText = tmpTokenText.substring(tokenWithScopesText.length);
-				explanation.push({
-					content: tokenWithScopesText,
-					scopes: explainThemeScopes(theme, tokenWithScopes.scopes)
-				});
-
-				tokensWithScopesIndex++;
-			}
-			actual[actualLen++] = {
-				content: tokenText,
-				color: foregroundColor,
-				explanation: explanation
-			};
+function tokenizeWithThemesAsync(test: ITestData, themeDatas: ThemeData[], callback: (err: any, res: { [themeName: string]: IThemedToken[]; }) => void): void {
+	let remaining = themeDatas.length;
+	let result: { [themeName: string]: IThemedToken[]; } = {};
+	let receiveResult = (themeName: string, err: any, res: IThemedToken[]) => {
+		if (err) {
+			return callback(err, null);
 		}
-		ruleStack = result.ruleStack;
-	}
-
-	let fail = (reason: string) => {
-		fs.writeFileSync('actual.txt', JSON.stringify(actual, null, '\t'));
-		fs.writeFileSync('expected.txt', JSON.stringify(expected, null, '\t'));
-		assert.fail(reason);
+		result[themeName] = res;
+		remaining--;
+		if (remaining === 0) {
+			callback(null, result);
+		}
 	};
 
-	let i = 0, j = 0, len = actual.length, lenJ = expected.length;
-	do {
-		if (i >= len && j >= lenJ) {
-			// ok
-			break;
-		}
-
-		if (i >= len) {
-			// will fail
-			fail('reached end of actual before end of expected');
-			break;
-		}
-
-		if (j >= lenJ) {
-			// will fail
-			fail('reached end of expected before end of actual');
-			break;
-		}
-
-		let actualContent = actual[i].content;
-		let actualColor = actual[i].color;
-
-		while (actualContent.length > 0 && j < lenJ) {
-			let expectedContent = expected[j].content;
-			let expectedColor = expected[j].color;
-
-			let contentIsInvisible = /^\s+$/.test(expectedContent);
-			if (!contentIsInvisible && actualColor !== expectedColor) {
-				fail(`at ${actualContent} (${i}-${j}), color mismatch: ${actualColor}, ${expectedColor}`);
-				break;
-			}
-
-			if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
-				fail(`at ${actualContent} (${i}-${j}), content mismatch: ${actualContent}, ${expectedContent}`);
-				break;
-			}
-
-			actualContent = actualContent.substr(expectedContent.length);
-
-			j++;
-		}
-
-		i++;
-	} while (true);
+	for (let i = 0, len = themeDatas.length; i < len; i++) {
+		tokenizeWithThemeAsync(test, themeDatas[i], receiveResult.bind(null, themeDatas[i].themeName));
+	}
 }
 
-function assertThemeTokenization(themeName:string, theme: IRawTheme, resolver: Resolver): void {
-	describe('Theme suite ' + themeName, () => {
-		let registry = new Registry(resolver);
-		registry.setTheme(theme);
+function assertTokenizationForThemes(test: ITestData, themeDatas: ThemeData[]): void {
+	it(test.testName, (done) => {
+		tokenizeWithThemesAsync(test, themeDatas, (err, res) => {
+			if (err) {
+				return done(err);
+			}
 
-		let colorMap = registry.getColorMap();
-
-		// Discover all tests
-		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
-		testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
-		testFiles.forEach((testFile) => {
-			it(testFile, (done) => {
-				let testFileContents = fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile)).toString('utf8');
-				let testFileExpected: IExpected = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile + '.result')).toString('utf8'));
-
-				// Determine the language
-				let testFileExtension = path.extname(testFile);
-
-				let language = resolver.findLanguageByExtension(testFileExtension) || resolver.findLanguageByFilename(testFile);
-				if (!language) {
-					throw new Error('Could not determine language for ' + testFile);
-				}
-				let grammar = resolver.findGrammarByLanguage(language);
-
-				let embeddedLanguages: { [scopeName: string]: number; } = Object.create(null);
-				if (grammar.embeddedLanguages) {
-					for (let scopeName in grammar.embeddedLanguages) {
-						embeddedLanguages[scopeName] = resolver.language2id[grammar.embeddedLanguages[scopeName]];
-					}
-				}
-
-				registry.loadGrammarWithEmbeddedLanguages(grammar.scopeName, resolver.language2id[language], embeddedLanguages, (err, grammar) => {
-					if (err) {
-						return done(err);
-					}
-					assertTokenization(theme, colorMap, testFileContents, grammar, testFileExpected[themeName]);
-					done();
-				});
-			});
+			assertTokenizationIsEquivalent(test.testName, res, test.expected)
+			done();
 		});
 	});
 }
 
-(function() {
-	// Load all themes
-	let light_vs: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_vs.json')).toString());
-	let light_plus: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'light_plus.json')).toString());
-	(<any>light_plus).settings = light_vs.settings.concat(light_plus.settings);
-	let dark_vs: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'dark_vs.json')).toString());
-	let dark_plus: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'dark_plus.json')).toString());
-	(<any>dark_plus).settings = dark_vs.settings.concat(dark_plus.settings);
-	let hc_black: IRawTheme = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'hc_black.json')).toString());
+class ThemeInfo {
+	private _themeName: string;
+	private _filename: string;
+	private _includeFilename: string;
 
-	let abyss: IRawTheme = plist.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'Abyss.tmTheme')).toString());
-	let monokai: IRawTheme = plist.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'Monokai.tmTheme')).toString());
+	constructor(themeName: string, filename: string, includeFilename?: string) {
+		this._themeName = themeName;
+		this._filename = filename;
+		this._includeFilename = includeFilename;
+	}
+
+	private static _loadThemeFile(filename: string): IRawTheme {
+		let fullPath = path.join(THEMES_TEST_PATH, filename);
+		let fileContents = fs.readFileSync(fullPath).toString();
+
+		if (/\.json$/.test(filename)) {
+			return JSON.parse(fileContents);
+		}
+		return plist.parse(fileContents);
+	}
+
+	public create(resolver: Resolver): ThemeData {
+		let theme: IRawTheme = ThemeInfo._loadThemeFile(this._filename);
+		if (this._includeFilename) {
+			let includeTheme: IRawTheme = ThemeInfo._loadThemeFile(this._includeFilename);
+			(<any>theme).settings = includeTheme.settings.concat(theme.settings);
+		}
+
+		let registry = new Registry(resolver);
+		registry.setTheme(theme);
+
+		return {
+			themeName: this._themeName,
+			theme: theme,
+			registry: registry
+		};
+	}
+}
+
+(function () {
+	let THEMES = [
+		// new ThemeInfo('light_vs', 'light_vs.json'),
+		// new ThemeInfo('light_plus', 'light_plus.json', 'light_vs.json'),
+		// new ThemeInfo('dark_vs', 'dark_vs.json'),
+		// new ThemeInfo('dark_plus', 'dark_plus.json', 'dark_vs.json'),
+		// new ThemeInfo('hc_black', 'hc_black.json'),
+		// new ThemeInfo('abyss', 'Abyss.tmTheme'),
+		new ThemeInfo('monokai', 'Monokai.tmTheme'),
+	];
 
 	// Load all language/grammar metadata
 	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 	let resolver = new Resolver(_grammars, _languages);
 
-	// assertThemeTokenization('abyss', abyss, resolver);
-	// assertThemeTokenization('light_vs', light_vs, resolver);
-	// assertThemeTokenization('light_plus', light_plus, resolver);
-	// assertThemeTokenization('dark_vs', dark_vs, resolver);
-	// assertThemeTokenization('dark_plus', dark_plus, resolver);
-	// assertThemeTokenization('hc_black', hc_black, resolver);
-	// assertThemeTokenization('monokai', monokai, resolver);
+	let themeDatas: ThemeData[] = THEMES.map(theme => theme.create(resolver));
+
+	describe('Theme suite', () => {
+		// Discover all tests
+		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
+		testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
+		testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
+		testFiles.forEach((testFile) => {
+			let testFileContents = fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile)).toString('utf8');
+			let testFileExpected: IExpected = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile + '.result')).toString('utf8'));
+
+			// Determine the language
+			let testFileExtension = path.extname(testFile);
+
+			let language = resolver.findLanguageByExtension(testFileExtension) || resolver.findLanguageByFilename(testFile);
+			if (!language) {
+				throw new Error('Could not determine language for ' + testFile);
+			}
+			let grammar = resolver.findGrammarByLanguage(language);
+
+			let embeddedLanguages: IEmbeddedLanguagesMap = Object.create(null);
+			if (grammar.embeddedLanguages) {
+				for (let scopeName in grammar.embeddedLanguages) {
+					embeddedLanguages[scopeName] = resolver.language2id[grammar.embeddedLanguages[scopeName]];
+				}
+			}
+
+			let test: ITestData = {
+				testName: testFile,
+				contents: testFileContents,
+				initialScopeName: grammar.scopeName,
+				initialLanguage: resolver.language2id[language],
+				embeddedLanguages: embeddedLanguages,
+
+				expected: testFileExpected
+			};
+
+			assertTokenizationForThemes(test, themeDatas);
+		});
+
+	});
 })();
 
 describe('Theme matching', () => {
@@ -457,7 +442,7 @@ describe('Theme matching', () => {
 
 
 		assertMatch('bar', [
-			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C)
+			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C),
 			new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _C),
 		]);
 	});
