@@ -6,39 +6,30 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, RegistryOptions, IRawTheme, IEmbeddedLanguagesMap } from '../main';
+import { Registry, RegistryOptions, IRawTheme } from '../main';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule, FontStyle, ColorMap
 } from '../theme';
 import * as plist from 'fast-plist';
-import { tokenizeWithTheme, IThemedToken } from './themedTokenizer';
+import { ThemeTest } from './themeTest';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
-interface ILanguageRegistration {
+export interface ILanguageRegistration {
 	id: string;
 	extensions: string[];
 	filenames: string[];
 }
 
-interface IGrammarRegistration {
+export interface IGrammarRegistration {
 	language: string;
 	scopeName: string;
 	path: string;
 	embeddedLanguages: { [scopeName: string]: string; };
 }
 
-interface IExpected {
-	[theme: string]: IExpectedTokenization[];
-}
-
-interface IExpectedTokenization {
-	content: string;
-	color: string;
-}
-
-class Resolver implements RegistryOptions {
+export class Resolver implements RegistryOptions {
 	public readonly language2id: { [languages: string]: number; };
 	private _lastLanguageId: number;
 	private _id2language: string[];
@@ -124,127 +115,10 @@ class Resolver implements RegistryOptions {
 	}
 }
 
-interface ThemeData {
+export interface ThemeData {
 	themeName: string;
 	theme: IRawTheme;
 	registry: Registry;
-}
-
-interface ITestData {
-	testName: string;
-	contents: string;
-	initialScopeName: string;
-	initialLanguage: number;
-	embeddedLanguages: IEmbeddedLanguagesMap;
-
-	expected: { [themeName: string]: IExpectedTokenization[]; };
-}
-
-function assertTokenizationIsEquivalent(testName: string, _actual: { [themeName: string]: IThemedToken[]; }, _expected: { [themeName: string]: IExpectedTokenization[]; }): void {
-
-	let fail = (themeName: string, reason: string) => {
-		let fakeActual: { [themeName: string]: IThemedToken[]; } = {};
-		for (let otherThemeName in _expected) {
-			fakeActual[otherThemeName] = <any>_expected[otherThemeName];
-		}
-		fakeActual[themeName] = _actual[themeName];
-
-		console.log('testName -> ' + testName);
-		fs.writeFileSync(path.join(THEMES_TEST_PATH, 'tests', testName + '.actual'), JSON.stringify(fakeActual, null, '\t'));
-		assert.fail(themeName + ': ' + reason);
-	};
-
-	for (let themeName in _actual) {
-		let actual = _actual[themeName];
-		let expected = _expected[themeName];
-
-		let i = 0, j = 0, len = actual.length, lenJ = expected.length;
-		do {
-			if (i >= len && j >= lenJ) {
-				// ok
-				break;
-			}
-
-			if (i >= len) {
-				// will fail
-				fail(themeName, 'reached end of actual before end of expected');
-				break;
-			}
-
-			if (j >= lenJ) {
-				// will fail
-				fail(themeName, 'reached end of expected before end of actual');
-				break;
-			}
-
-			let actualContent = actual[i].content;
-			let actualColor = actual[i].color;
-
-			while (actualContent.length > 0 && j < lenJ) {
-				let expectedContent = expected[j].content;
-				let expectedColor = expected[j].color;
-
-				let contentIsInvisible = /^\s+$/.test(expectedContent);
-				if (!contentIsInvisible && actualColor !== expectedColor) {
-					fail(themeName, `at ${actualContent} (${i}-${j}), color mismatch: ${actualColor}, ${expectedColor}`);
-					break;
-				}
-
-				if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
-					fail(themeName, `at ${actualContent} (${i}-${j}), content mismatch: ${actualContent}, ${expectedContent}`);
-					break;
-				}
-
-				actualContent = actualContent.substr(expectedContent.length);
-
-				j++;
-			}
-
-			i++;
-		} while (true);
-	}
-}
-
-function tokenizeWithThemeAsync(test: ITestData, themeData: ThemeData, callback: (err: any, res: IThemedToken[]) => void): void {
-	themeData.registry.loadGrammarWithEmbeddedLanguages(test.initialScopeName, test.initialLanguage, test.embeddedLanguages, (err, grammar) => {
-		if (err) {
-			return callback(err, null);
-		}
-		let actual = tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), test.contents, grammar);
-		return callback(null, actual);
-	});
-}
-
-function tokenizeWithThemesAsync(test: ITestData, themeDatas: ThemeData[], callback: (err: any, res: { [themeName: string]: IThemedToken[]; }) => void): void {
-	let remaining = themeDatas.length;
-	let result: { [themeName: string]: IThemedToken[]; } = {};
-	let receiveResult = (themeName: string, err: any, res: IThemedToken[]) => {
-		if (err) {
-			return callback(err, null);
-		}
-		result[themeName] = res;
-		remaining--;
-		if (remaining === 0) {
-			callback(null, result);
-		}
-	};
-
-	for (let i = 0, len = themeDatas.length; i < len; i++) {
-		tokenizeWithThemeAsync(test, themeDatas[i], receiveResult.bind(null, themeDatas[i].themeName));
-	}
-}
-
-function assertTokenizationForThemes(test: ITestData, themeDatas: ThemeData[]): void {
-	it(test.testName, (done) => {
-		tokenizeWithThemesAsync(test, themeDatas, (err, res) => {
-			if (err) {
-				return done(err);
-			}
-
-			assertTokenizationIsEquivalent(test.testName, res, test.expected)
-			done();
-		});
-	});
 }
 
 class ThemeInfo {
@@ -275,6 +149,8 @@ class ThemeInfo {
 			(<any>theme).settings = includeTheme.settings.concat(theme.settings);
 		}
 
+		// console.log(JSON.stringify(theme, null, '\t')); process.exit(0);
+
 		let registry = new Registry(resolver);
 		registry.setTheme(theme);
 
@@ -286,15 +162,36 @@ class ThemeInfo {
 	}
 }
 
+function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
+	it(test.testName, (done) => {
+		test.evaluate(themeDatas, (err) => {
+			console.log('HERE I AM!!');
+
+			test.writeDiffPage();
+
+			assert.ok(!test.hasDiff(), 'no more unpatched differences');
+
+			done();
+		});
+	}).timeout(5000);
+}
+
 (function () {
 	let THEMES = [
-		// new ThemeInfo('light_vs', 'light_vs.json'),
-		// new ThemeInfo('light_plus', 'light_plus.json', 'light_vs.json'),
-		// new ThemeInfo('dark_vs', 'dark_vs.json'),
-		// new ThemeInfo('dark_plus', 'dark_plus.json', 'dark_vs.json'),
-		// new ThemeInfo('hc_black', 'hc_black.json'),
-		// new ThemeInfo('abyss', 'Abyss.tmTheme'),
+		new ThemeInfo('abyss', 'Abyss.tmTheme'),
+		new ThemeInfo('dark_vs', 'dark_vs.json'),
+		new ThemeInfo('light_vs', 'light_vs.json'),
+		new ThemeInfo('hc_black', 'hc_black.json'),
+		new ThemeInfo('dark_plus', 'dark_plus.json', 'dark_vs.json'),
+		new ThemeInfo('light_plus', 'light_plus.json', 'light_vs.json'),
+		new ThemeInfo('kimbie_dark', 'Kimbie_dark.tmTheme'),
 		new ThemeInfo('monokai', 'Monokai.tmTheme'),
+		new ThemeInfo('monokai_dimmed', 'dimmed-monokai.tmTheme'),
+		new ThemeInfo('quietlight', 'QuietLight.tmTheme'),
+		new ThemeInfo('red', 'red.tmTheme'),
+		new ThemeInfo('solarized_dark', 'Solarized-dark.tmTheme'),
+		new ThemeInfo('solarized_light', 'Solarized-light.tmTheme'),
+		new ThemeInfo('tomorrow_night_blue', 'Tomorrow-Night-Blue.tmTheme'),
 	];
 
 	// Load all language/grammar metadata
@@ -308,38 +205,12 @@ class ThemeInfo {
 		// Discover all tests
 		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
 		testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
+		testFiles = testFiles.filter(testFile => !/\.result.patch$/.test(testFile));
 		testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
+		testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
 		testFiles.forEach((testFile) => {
-			let testFileContents = fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile)).toString('utf8');
-			let testFileExpected: IExpected = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'tests', testFile + '.result')).toString('utf8'));
-
-			// Determine the language
-			let testFileExtension = path.extname(testFile);
-
-			let language = resolver.findLanguageByExtension(testFileExtension) || resolver.findLanguageByFilename(testFile);
-			if (!language) {
-				throw new Error('Could not determine language for ' + testFile);
-			}
-			let grammar = resolver.findGrammarByLanguage(language);
-
-			let embeddedLanguages: IEmbeddedLanguagesMap = Object.create(null);
-			if (grammar.embeddedLanguages) {
-				for (let scopeName in grammar.embeddedLanguages) {
-					embeddedLanguages[scopeName] = resolver.language2id[grammar.embeddedLanguages[scopeName]];
-				}
-			}
-
-			let test: ITestData = {
-				testName: testFile,
-				contents: testFileContents,
-				initialScopeName: grammar.scopeName,
-				initialLanguage: resolver.language2id[language],
-				embeddedLanguages: embeddedLanguages,
-
-				expected: testFileExpected
-			};
-
-			assertTokenizationForThemes(test, themeDatas);
+			let themesTest = new ThemeTest(THEMES_TEST_PATH, testFile, resolver);
+			assertThemeTest(themesTest, themeDatas);
 		});
 
 	});

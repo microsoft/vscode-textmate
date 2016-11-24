@@ -390,7 +390,7 @@ export class ThemeTrieElement {
 		}
 
 		let child: ThemeTrieElement;
-		if (this._children[head]) {
+		if (this._children.hasOwnProperty(head)) {
 			child = this._children[head];
 		} else {
 			child = new ThemeTrieElement(this._mainRule.clone());

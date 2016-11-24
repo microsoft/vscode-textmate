@@ -3,7 +3,8 @@
 	"settings": [
 		{
 			"settings": {
-				"foreground": "#FFFFFF"
+				"foreground": "#FFFFFF",
+				"background": "#000000"
 			}
 		},
 		{
