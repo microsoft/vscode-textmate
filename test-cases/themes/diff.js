@@ -1,6 +1,12 @@
 var _allData = JSON.parse(atob(self.allData));
 var output = document.createElement('div');
 document.body.appendChild(output);
+var escape = document.createElement('textarea');
+function escapeHTML(str) {
+    str = str.replace(/\t/g, '    ');
+    escape.textContent = str;
+    return escape.innerHTML;
+}
 function renderTestCase(data) {
     var content = data.testContent;
     var output = [];
@@ -16,7 +22,7 @@ function renderTestCase(data) {
         while (actualLine.length > 0) {
             var actualToken = actual[actualIndex++];
             actualLine = actualLine.substr(actualToken.content.length);
-            actualLineOutput.push("<span style=\"color:" + actualToken.color.substring(0, 7) + "\" data-actual-index=\"" + (actualIndex - 1) + "\">" + actualToken.content + "</span>");
+            actualLineOutput.push("<span style=\"color:" + actualToken.color.substring(0, 7) + "\" data-actual-index=\"" + (actualIndex - 1) + "\">" + escapeHTML(actualToken.content) + "</span>");
         }
         actualLineOutput.push('</div>');
         var expectedLineOutput = [];
@@ -24,15 +30,15 @@ function renderTestCase(data) {
         while (expectedLine.length > 0) {
             var expectedToken = expected[expectedIndex++];
             expectedLine = expectedLine.substr(expectedToken.content.length);
-            expectedLineOutput.push("<span style=\"color:" + expectedToken.color + "\" data-expected-index=\"" + (expectedIndex - 1) + "\">" + expectedToken.content + "</span>");
+            expectedLineOutput.push("<span style=\"color:" + expectedToken.color + "\" data-expected-index=\"" + (expectedIndex - 1) + "\">" + escapeHTML(expectedToken.content) + "</span>");
         }
         expectedLineOutput.push('</div>');
         var diffOutput = [];
         while (diffIndex < diff.length && diff[diffIndex].oldIndex < expectedIndex) {
             diffOutput.push('<tr><td style="width:500px">');
-            diffOutput.push(JSON.stringify(diff[diffIndex].newToken, null, '  '));
+            diffOutput.push(escapeHTML(JSON.stringify(diff[diffIndex].newToken, null, '  ')));
             diffOutput.push('</td><td style="width:500px">');
-            diffOutput.push(JSON.stringify(diff[diffIndex].oldToken, null, '  '));
+            diffOutput.push(escapeHTML(JSON.stringify(diff[diffIndex].oldToken, null, '  ')));
             diffOutput.push('</td></tr>');
             diffIndex++;
         }
@@ -102,17 +108,13 @@ document.body.onclick = function (e) {
         targetDiff.className = 'diff collapsed';
     }
 };
-var acceptBtn = document.createElement('button');
-acceptBtn.innerHTML = 'Accept diff';
-acceptBtn.style.position = 'fixed';
-acceptBtn.style.top = '10px';
-acceptBtn.style.right = '10px';
-acceptBtn.style.fontSize = '150%';
-document.body.appendChild(acceptBtn);
-acceptBtn.onclick = function () {
+var acceptDiffContent = (function () {
     var result = {};
     for (var i = 0, len = _allData.length; i < len; i++) {
         var data = _allData[i];
+        if (!data.actual) {
+            continue;
+        }
         result[data.themeName] = data.diff.map(function (diffEntry) {
             return {
                 index: diffEntry.oldIndex,
@@ -122,7 +124,24 @@ acceptBtn.onclick = function () {
             };
         });
     }
-    console.log(JSON.stringify(result, null, '\t'));
+    return JSON.stringify(result, null, '\t');
+})();
+var diffTA = document.createElement('textarea');
+diffTA.value = acceptDiffContent;
+document.body.appendChild(diffTA);
+document.body.oncopy = function (e) {
+    e.clipboardData.setData('text', acceptDiffContent);
+};
+var acceptBtn = document.createElement('button');
+acceptBtn.innerHTML = 'Accept diff';
+acceptBtn.style.position = 'fixed';
+acceptBtn.style.top = '10px';
+acceptBtn.style.right = '10px';
+acceptBtn.style.fontSize = '150%';
+document.body.appendChild(acceptBtn);
+acceptBtn.onclick = function () {
+    diffTA.select();
+    console.log(acceptDiffContent);
 };
 var patchedBtn = document.createElement('button');
 patchedBtn.innerHTML = 'View patched diff';
@@ -143,6 +162,9 @@ originalBtn.onclick = renderOriginalDiff;
 function renderOriginalDiff() {
     output.innerHTML = '';
     _allData.forEach(function (data) {
+        if (!data.actual) {
+            return;
+        }
         output.appendChild(renderTestCase({
             testContent: data.testContent,
             themeName: data.themeName,
@@ -156,6 +178,9 @@ function renderOriginalDiff() {
 function renderPatchedDiff() {
     output.innerHTML = '';
     _allData.forEach(function (data) {
+        if (!data.actual) {
+            return;
+        }
         output.appendChild(renderTestCase({
             testContent: data.testContent,
             themeName: data.themeName,

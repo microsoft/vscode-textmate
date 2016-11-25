@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import { Registry, RegistryOptions, IRawTheme } from '../main';
+import { ScopeListElement, ScopeMetadata, StackElementMetadata } from '../grammar';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule, FontStyle, ColorMap
@@ -111,7 +112,7 @@ export class Resolver implements RegistryOptions {
 				return path.join(THEMES_TEST_PATH, grammar.path);
 			}
 		}
-		console.warn('missing gramamr for ' + scopeName);
+		// console.warn('missing grammar for ' + scopeName);
 	}
 }
 
@@ -165,12 +166,8 @@ class ThemeInfo {
 function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 	it(test.testName, (done) => {
 		test.evaluate(themeDatas, (err) => {
-			console.log('HERE I AM!!');
-
 			test.writeDiffPage();
-
 			assert.ok(!test.hasDiff(), 'no more unpatched differences');
-
 			done();
 		});
 	}).timeout(5000);
@@ -217,6 +214,49 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 })();
 
 describe('Theme matching', () => {
+	it('gives higher priority to parent matches 1', () => {
+		let theme = Theme.createFromRawTheme({
+			settings: [
+				{ settings: { foreground: '#100000', background: '#200000' } },
+				{ scope: 'c a', settings: { foreground: '#300000' } },
+				{ scope: 'd a.b', settings: { foreground: '#400000' } },
+				{ scope: 'a', settings: { foreground: '#500000' } },
+			]
+		});
+
+		let colorMap = new ColorMap();
+		const _NOT_SET = 0;
+		const _A = colorMap.getId('#100000');
+		const _B = colorMap.getId('#200000');
+		const _C = colorMap.getId('#500000');
+		const _D = colorMap.getId('#300000');
+		const _E = colorMap.getId('#400000');
+
+		let actual = theme.match('a.b');
+
+		assert.deepEqual(actual, [
+			new ThemeTrieElementRule(['d'], FontStyle.NotSet, _E, _NOT_SET),
+			new ThemeTrieElementRule(['c'], FontStyle.NotSet, _D, _NOT_SET),
+			new ThemeTrieElementRule(null, FontStyle.NotSet, _C, _NOT_SET),
+		]);
+	});
+
+	it('gives higher priority to parent matches 3', () => {
+		let theme = Theme.createFromRawTheme({
+			settings: [
+				{ settings: { foreground: '#100000', background: '#200000' } },
+				{ scope: 'meta.tag entity', settings: { foreground: '#300000' } },
+				{ scope: 'meta.selector.css entity.name.tag', settings: { foreground: '#400000' } },
+				{ scope: 'entity', settings: { foreground: '#500000' } },
+			]
+		});
+
+		let root = new ScopeListElement(null, 'text.html.cshtml', 0);
+		let parent = new ScopeListElement(root, 'meta.tag.structure.any.html', 0);
+		let r = ScopeListElement.mergeMetadata(0, parent, new ScopeMetadata('entity.name.tag.structure.any.html', 0, 0, theme.match('entity.name.tag.structure.any.html')));
+		let colorMap = theme.getColorMap();
+		assert.equal(colorMap[StackElementMetadata.getForeground(r)], '#300000');
+	});
 	it('can match', () => {
 		let theme = Theme.createFromRawTheme({
 			settings: [

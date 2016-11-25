@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { IEmbeddedLanguagesMap } from '../main';
-import { tokenizeWithTheme, IThemedToken } from './themedTokenizer';
+import { tokenizeWithTheme, IThemedToken, IThemedTokenScopeExplanation } from './themedTokenizer';
 import { Resolver, ThemeData } from './themes.test';
 
 interface IExpected {
@@ -69,7 +69,6 @@ export class ThemeTest {
 		const testFileExpected = ThemeTest._readJSONFile<IExpected>(EXPECTED_FILE_PATH);
 
 		const EXPECTED_PATCH_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile + '.result.patch');
-		console.log(EXPECTED_PATCH_FILE_PATH);
 		const testFileExpectedPatch = ThemeTest._readJSONFile<IExpectedPatch>(EXPECTED_PATCH_FILE_PATH);
 
 		// Determine the language
@@ -142,7 +141,8 @@ export class ThemeTest {
 
 	public hasDiff(): boolean {
 		for (let i = 0; i < this.tests.length; i++) {
-			if (this.tests[i].patchedDiff.length > 0) {
+			let test = this.tests[i];
+			if (test.patchedDiff && test.patchedDiff.length > 0) {
 				return true;
 			}
 		}
@@ -162,10 +162,22 @@ export class ThemeTest {
 	}
 }
 
+interface IActualCanonicalToken {
+	content: string;
+	color: string;
+	scopes: IThemedTokenScopeExplanation[];
+}
+interface IExpectedCanonicalToken {
+	oldIndex: number;
+	content: string;
+	color: string;
+	_r: string;
+	_t: string;
+}
 interface ITokenizationDiff {
 	oldIndex: number;
 	oldToken: IExpectedTokenization;
-	newToken: IThemedToken;
+	newToken: IActualCanonicalToken;
 }
 
 interface IDiffPageData {
@@ -215,16 +227,46 @@ class SingleThemeTest {
 		this.expected = expected;
 		this.expectedPatch = expectedPatch;
 
-		this.patchedExpected = this.expected.slice(0);
-		for (let i = 0; i < this.expectedPatch.length; i++) {
-			let patch = this.expectedPatch[i];
+		this.patchedExpected = [];
+		let patchIndex = this.expectedPatch.length - 1;
+		for (let i = this.expected.length - 1; i >= 0; i--) {
+			let expectedElement = this.expected[i];
+			let content = expectedElement.content;
+			while (patchIndex >= 0 && i === this.expectedPatch[patchIndex].index) {
+				let patch = this.expectedPatch[patchIndex];
 
-			this.patchedExpected[patch.index] = {
-				_r: this.patchedExpected[patch.index]._r,
-				_t: this.patchedExpected[patch.index]._t,
-				content: patch.content,
-				color: patch.newColor
-			};
+				let patchContentIndex = content.lastIndexOf(patch.content);
+
+				let afterContent = content.substr(patchContentIndex + patch.content.length);
+				if (afterContent.length > 0) {
+					this.patchedExpected.unshift({
+						_r: expectedElement._r,
+						_t: expectedElement._t,
+						content: afterContent,
+						color: expectedElement.color
+					});
+				}
+
+				this.patchedExpected.unshift({
+					_r: expectedElement._r,
+					_t: expectedElement._t,
+					content: patch.content,
+					color: patch.newColor
+				});
+
+				content = content.substr(0, patchContentIndex);
+
+				patchIndex--;
+			}
+
+			if (content.length > 0) {
+				this.patchedExpected.unshift({
+					_r: expectedElement._r,
+					_t: expectedElement._t,
+					content: content,
+					color: expectedElement.color
+				});
+			}
 		}
 
 		this.backgroundColor = null;
@@ -272,67 +314,69 @@ class SingleThemeTest {
 		});
 	}
 
-	private static computeThemeTokenizationDiff(actual: IThemedToken[], expected: IExpectedTokenization[]): ITokenizationDiff[] {
+	private static computeThemeTokenizationDiff(_actual: IThemedToken[], _expected: IExpectedTokenization[]): ITokenizationDiff[] {
+		let canonicalTokens: string[] = [];
+		for (let i = 0, len = _actual.length; i < len; i++) {
+			let explanation = _actual[i].explanation;
+			for (let j = 0, lenJ = explanation.length; j < lenJ; j++) {
+				canonicalTokens.push(explanation[j].content);
+			}
+		}
+
+		let actual: IActualCanonicalToken[] = [];
+		for (let i = 0, len = _actual.length; i < len; i++) {
+			let item = _actual[i];
+
+			for (let j = 0, lenJ = item.explanation.length; j < lenJ; j++) {
+				actual.push({
+					content: item.explanation[j].content,
+					color: item.color,
+					scopes: item.explanation[j].scopes
+				});
+			}
+		}
+
+		let expected: IExpectedCanonicalToken[] = [];
+		for (let i = 0, len = _expected.length, canonicalIndex = 0; i < len; i++) {
+			let item = _expected[i];
+
+			let content = item.content;
+			while (content.length > 0) {
+				expected.push({
+					oldIndex: i,
+					content: canonicalTokens[canonicalIndex],
+					color: item.color,
+					_t: item._t,
+					_r: item._r
+				});
+				content = content.substr(canonicalTokens[canonicalIndex].length);
+				canonicalIndex++;
+			}
+		}
+
+		if (actual.length !== expected.length) {
+			throw new Error('Content mismatch');
+		}
+
 		let diffs: ITokenizationDiff[] = [];
 
-		let i = 0, j = 0, len = actual.length, lenJ = expected.length;
-		do {
-			if (i >= len && j >= lenJ) {
-				// ok
-				break;
+		for (let i = 0, len = actual.length; i < len; i++) {
+			let expectedItem = expected[i];
+			let actualItem = actual[i];
+
+			let contentIsInvisible = /^\s+$/.test(expectedItem.content);
+			if (contentIsInvisible) {
+				continue;
 			}
 
-			if (i >= len) {
-				// will fail
-				throw new Error('Reached end of actual before end of expected');
+			if (actualItem.color.substr(0, 7) !== expectedItem.color) {
+				diffs.push({
+					oldIndex: expectedItem.oldIndex,
+					oldToken: expectedItem,
+					newToken: actualItem
+				});
 			}
-
-			if (j >= lenJ) {
-				// will fail
-				throw new Error('Reached end of expected before end of actual');
-			}
-
-			let actualContent = actual[i].content;
-			let actualColor = actual[i].color;
-			if (actualColor.length > 7) {
-				// TODO: remove alpha to match expected tests format
-				actualColor = actualColor.substring(0, 7);
-			}
-
-			while (actualContent.length > 0 && j < lenJ) {
-				let expectedContent = expected[j].content;
-				let expectedColor = expected[j].color;
-
-				let contentIsInvisible = /^\s+$/.test(expectedContent);
-				if (!contentIsInvisible && actualColor !== expectedColor) {
-					// console.log('COLOR MISMATCH: ', actualColor, expectedColor);
-					// select the same token from the explanation
-					let reducedExplanation = actual[i].explanation.filter((e) => e.content === expectedContent);
-					if (reducedExplanation.length === 0) {
-						reducedExplanation = actual[i].explanation;
-					}
-					diffs.push({
-						oldIndex: j,
-						oldToken: expected[j],
-						newToken: {
-							content: actual[i].content,
-							color: actual[i].color,
-							explanation: reducedExplanation
-						}
-					});
-				}
-
-				if (actualContent.substr(0, expectedContent.length) !== expectedContent) {
-					throw new Error(`at ${actualContent} (${i}-${j}), content mismatch: ${actualContent}, ${expectedContent}`);
-				}
-
-				actualContent = actualContent.substr(expectedContent.length);
-
-				j++;
-			}
-
-			i++;
-		} while (true);
+		}
 
 		return diffs;
 	}

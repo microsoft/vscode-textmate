@@ -299,6 +299,14 @@ export class ThemeTrieElementRule {
 		return new ThemeTrieElementRule(this.parentScopes, this.fontStyle, this.foreground, this.background);
 	}
 
+	public static cloneArr(arr:ThemeTrieElementRule[]): ThemeTrieElementRule[] {
+		let r: ThemeTrieElementRule[] = [];
+		for (let i = 0, len = arr.length; i < len; i++) {
+			r[i] = arr[i].clone();
+		}
+		return r;
+	}
+
 	public acceptOverwrite(fontStyle: number, foreground: number, background: number): void {
 		if (fontStyle !== FontStyle.NotSet) {
 			this.fontStyle = fontStyle;
@@ -393,11 +401,10 @@ export class ThemeTrieElement {
 		if (this._children.hasOwnProperty(head)) {
 			child = this._children[head];
 		} else {
-			child = new ThemeTrieElement(this._mainRule.clone());
+			child = new ThemeTrieElement(this._mainRule.clone(), ThemeTrieElementRule.cloneArr(this._rulesWithParentScopes));
 			this._children[head] = child;
 		}
 
-		// TODO: In the case that this element has `parentScopes`, should we generate one insert for each parentScope ?
 		child.insert(tail, parentScopes, fontStyle, foreground, background);
 	}
 

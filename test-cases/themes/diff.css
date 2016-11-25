@@ -10,6 +10,7 @@
 	white-space: pre;
 }
 .actual-line::before, .expected-line::before {
+	cursor: text;
 	content: '✓BOTH';
 	color: green;
 	width: 70px;

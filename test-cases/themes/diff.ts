@@ -61,6 +61,13 @@ interface ITestCaseData {
 	diff: ITokenizationDiff[];
 }
 
+var escape = document.createElement('textarea');
+function escapeHTML(str:string): string {
+	str = str.replace(/\t/g, '    ');
+	escape.textContent = str;
+	return escape.innerHTML;
+}
+
 function renderTestCase(data: ITestCaseData): HTMLElement {
 	let content = data.testContent;
 
@@ -79,7 +86,7 @@ function renderTestCase(data: ITestCaseData): HTMLElement {
 		while (actualLine.length > 0) {
 			let actualToken = actual[actualIndex++];
 			actualLine = actualLine.substr(actualToken.content.length);
-			actualLineOutput.push(`<span style="color:${actualToken.color.substring(0, 7)}" data-actual-index="${actualIndex - 1}">${actualToken.content}</span>`);
+			actualLineOutput.push(`<span style="color:${actualToken.color.substring(0, 7)}" data-actual-index="${actualIndex - 1}">${escapeHTML(actualToken.content)}</span>`);
 		}
 		actualLineOutput.push('</div>');
 
@@ -88,16 +95,16 @@ function renderTestCase(data: ITestCaseData): HTMLElement {
 		while (expectedLine.length > 0) {
 			let expectedToken = expected[expectedIndex++];
 			expectedLine = expectedLine.substr(expectedToken.content.length);
-			expectedLineOutput.push(`<span style="color:${expectedToken.color}" data-expected-index="${expectedIndex - 1}">${expectedToken.content}</span>`);
+			expectedLineOutput.push(`<span style="color:${expectedToken.color}" data-expected-index="${expectedIndex - 1}">${escapeHTML(expectedToken.content)}</span>`);
 		}
 		expectedLineOutput.push('</div>');
 
 		let diffOutput: string[] = [];
 		while (diffIndex < diff.length && diff[diffIndex].oldIndex < expectedIndex) {
 			diffOutput.push('<tr><td style="width:500px">');
-			diffOutput.push(JSON.stringify(diff[diffIndex].newToken, null, '  '));
+			diffOutput.push(escapeHTML(JSON.stringify(diff[diffIndex].newToken, null, '  ')));
 			diffOutput.push('</td><td style="width:500px">');
-			diffOutput.push(JSON.stringify(diff[diffIndex].oldToken, null, '  '));
+			diffOutput.push(escapeHTML(JSON.stringify(diff[diffIndex].oldToken, null, '  ')));
 			diffOutput.push('</td></tr>');
 			diffIndex++;
 		}
@@ -170,17 +177,14 @@ document.body.onclick = function (e) {
 	}
 };
 
-let acceptBtn = document.createElement('button');
-acceptBtn.innerHTML = 'Accept diff';
-acceptBtn.style.position = 'fixed';
-acceptBtn.style.top = '10px';
-acceptBtn.style.right = '10px';
-acceptBtn.style.fontSize = '150%';
-document.body.appendChild(acceptBtn);
-acceptBtn.onclick = function () {
+let acceptDiffContent = (function() {
 	let result = {};
 	for (let i = 0, len = _allData.length; i < len; i++) {
 		let data = _allData[i];
+
+		if (!data.actual) {
+			continue;
+		}
 
 		result[data.themeName] = data.diff.map(function (diffEntry) {
 			return {
@@ -191,8 +195,25 @@ acceptBtn.onclick = function () {
 			};
 		});
 	}
+	return JSON.stringify(result, null, '\t');
+})();
+let diffTA = document.createElement('textarea');
+diffTA.value = acceptDiffContent;
+document.body.appendChild(diffTA);
+document.body.oncopy = function(e) {
+	e.clipboardData.setData('text', acceptDiffContent);
+};
 
-	console.log(JSON.stringify(result, null, '\t'));
+let acceptBtn = document.createElement('button');
+acceptBtn.innerHTML = 'Accept diff';
+acceptBtn.style.position = 'fixed';
+acceptBtn.style.top = '10px';
+acceptBtn.style.right = '10px';
+acceptBtn.style.fontSize = '150%';
+document.body.appendChild(acceptBtn);
+acceptBtn.onclick = function () {
+	diffTA.select();
+	console.log(acceptDiffContent);
 };
 
 let patchedBtn = document.createElement('button');
@@ -216,6 +237,9 @@ originalBtn.onclick = renderOriginalDiff;
 function renderOriginalDiff() {
 	output.innerHTML = '';
 	_allData.forEach(function (data) {
+		if (!data.actual) {
+			return;
+		}
 		output.appendChild(renderTestCase({
 			testContent: data.testContent,
 			themeName: data.themeName,
@@ -230,6 +254,9 @@ function renderOriginalDiff() {
 function renderPatchedDiff() {
 	output.innerHTML = '';
 	_allData.forEach(function (data) {
+		if (!data.actual) {
+			return;
+		}
 		output.appendChild(renderTestCase({
 			testContent: data.testContent,
 			themeName: data.themeName,
