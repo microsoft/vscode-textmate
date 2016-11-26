@@ -170,7 +170,7 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 			assert.ok(!test.hasDiff(), 'no more unpatched differences');
 			done();
 		});
-	}).timeout(5000);
+	}).timeout(20000);
 }
 
 (function () {
@@ -214,6 +214,33 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 })();
 
 describe('Theme matching', () => {
+
+	it('gives higher priority to deeper matches', () => {
+		let theme = Theme.createFromRawTheme({
+			settings: [
+				{ settings: { foreground: '#100000', background: '#200000' } },
+				{ scope: 'punctuation.definition.string.begin.html', settings: { foreground: '#300000' } },
+				{ scope: 'meta.tag punctuation.definition.string', settings: { foreground: '#400000' } },
+				// { scope: 'a', settings: { foreground: '#500000' } },
+			]
+		});
+
+		let colorMap = new ColorMap();
+		const _NOT_SET = 0;
+		const _A = colorMap.getId('#100000');
+		const _B = colorMap.getId('#200000');
+		const _C = colorMap.getId('#400000');
+		const _D = colorMap.getId('#300000');
+
+		let actual = theme.match('punctuation.definition.string.begin.html');
+		// console.log(actual); process.exit(0);
+
+		assert.deepEqual(actual, [
+			new ThemeTrieElementRule(5, null, FontStyle.NotSet, _D, _NOT_SET),
+			new ThemeTrieElementRule(3, ['meta.tag'], FontStyle.NotSet, _C, _NOT_SET),
+		]);
+	});
+
 	it('gives higher priority to parent matches 1', () => {
 		let theme = Theme.createFromRawTheme({
 			settings: [
@@ -235,13 +262,13 @@ describe('Theme matching', () => {
 		let actual = theme.match('a.b');
 
 		assert.deepEqual(actual, [
-			new ThemeTrieElementRule(['d'], FontStyle.NotSet, _E, _NOT_SET),
-			new ThemeTrieElementRule(['c'], FontStyle.NotSet, _D, _NOT_SET),
-			new ThemeTrieElementRule(null, FontStyle.NotSet, _C, _NOT_SET),
+			new ThemeTrieElementRule(2, ['d'], FontStyle.NotSet, _E, _NOT_SET),
+			new ThemeTrieElementRule(1, ['c'], FontStyle.NotSet, _D, _NOT_SET),
+			new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET),
 		]);
 	});
 
-	it('gives higher priority to parent matches 3', () => {
+	it('gives higher priority to parent matches 2', () => {
 		let theme = Theme.createFromRawTheme({
 			settings: [
 				{ settings: { foreground: '#100000', background: '#200000' } },
@@ -257,6 +284,7 @@ describe('Theme matching', () => {
 		let colorMap = theme.getColorMap();
 		assert.equal(colorMap[StackElementMetadata.getForeground(r)], '#300000');
 	});
+
 	it('can match', () => {
 		let theme = Theme.createFromRawTheme({
 			settings: [
@@ -289,15 +317,15 @@ describe('Theme matching', () => {
 			assert.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
 		}
 
-		function assertSimpleMatch(scopeName: string, fontStyle: FontStyle, foreground: number, background: number): void {
+		function assertSimpleMatch(scopeName: string, scopeDepth: number, fontStyle: FontStyle, foreground: number, background: number): void {
 			assertMatch(scopeName, [
-				new ThemeTrieElementRule(null, fontStyle, foreground, background)
+				new ThemeTrieElementRule(scopeDepth, null, fontStyle, foreground, background)
 			]);
 		}
 
 		function assertNoMatch(scopeName: string): void {
 			assertMatch(scopeName, [
-				new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET)
+				new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET)
 			]);
 		}
 
@@ -307,54 +335,54 @@ describe('Theme matching', () => {
 		assertNoMatch('asdfg');
 
 		// matches source
-		assertSimpleMatch('source', FontStyle.NotSet, _NOT_SET, _G);
-		assertSimpleMatch('source.ts', FontStyle.NotSet, _NOT_SET, _G);
-		assertSimpleMatch('source.tss', FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('source', 1, FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('source.ts', 1, FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('source.tss', 1, FontStyle.NotSet, _NOT_SET, _G);
 
 		// matches something
-		assertSimpleMatch('something', FontStyle.NotSet, _NOT_SET, _G);
-		assertSimpleMatch('something.ts', FontStyle.NotSet, _NOT_SET, _G);
-		assertSimpleMatch('something.tss', FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('something', 1, FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('something.ts', 1, FontStyle.NotSet, _NOT_SET, _G);
+		assertSimpleMatch('something.tss', 1, FontStyle.NotSet, _NOT_SET, _G);
 
 		// matches baz
-		assertSimpleMatch('baz', FontStyle.NotSet, _NOT_SET, _C);
-		assertSimpleMatch('baz.ts', FontStyle.NotSet, _NOT_SET, _C);
-		assertSimpleMatch('baz.tss', FontStyle.NotSet, _NOT_SET, _C);
+		assertSimpleMatch('baz', 1, FontStyle.NotSet, _NOT_SET, _C);
+		assertSimpleMatch('baz.ts', 1, FontStyle.NotSet, _NOT_SET, _C);
+		assertSimpleMatch('baz.tss', 1, FontStyle.NotSet, _NOT_SET, _C);
 
 		// matches constant
-		assertSimpleMatch('constant', FontStyle.Italic, _D, _NOT_SET);
-		assertSimpleMatch('constant.string', FontStyle.Italic, _D, _NOT_SET);
-		assertSimpleMatch('constant.hex', FontStyle.Italic, _D, _NOT_SET);
+		assertSimpleMatch('constant', 1, FontStyle.Italic, _D, _NOT_SET);
+		assertSimpleMatch('constant.string', 1, FontStyle.Italic, _D, _NOT_SET);
+		assertSimpleMatch('constant.hex', 1, FontStyle.Italic, _D, _NOT_SET);
 
 		// matches constant.numeric
-		assertSimpleMatch('constant.numeric', FontStyle.Italic, _E, _NOT_SET);
-		assertSimpleMatch('constant.numeric.baz', FontStyle.Italic, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric', 2, FontStyle.Italic, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric.baz', 2, FontStyle.Italic, _E, _NOT_SET);
 
 		// matches constant.numeric.hex
-		assertSimpleMatch('constant.numeric.hex', FontStyle.Bold, _E, _NOT_SET);
-		assertSimpleMatch('constant.numeric.hex.baz', FontStyle.Bold, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric.hex', 3, FontStyle.Bold, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric.hex.baz', 3, FontStyle.Bold, _E, _NOT_SET);
 
 		// matches constant.numeric.oct
-		assertSimpleMatch('constant.numeric.oct', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _NOT_SET);
-		assertSimpleMatch('constant.numeric.oct.baz', FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric.oct', 3, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _NOT_SET);
+		assertSimpleMatch('constant.numeric.oct.baz', 3, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _E, _NOT_SET);
 
 		// matches constant.numeric.dec
-		assertSimpleMatch('constant.numeric.dec', FontStyle.None, _F, _NOT_SET);
-		assertSimpleMatch('constant.numeric.dec.baz', FontStyle.None, _F, _NOT_SET);
+		assertSimpleMatch('constant.numeric.dec', 3, FontStyle.None, _F, _NOT_SET);
+		assertSimpleMatch('constant.numeric.dec.baz', 3, FontStyle.None, _F, _NOT_SET);
 
 		// matches storage.object.bar
-		assertSimpleMatch('storage.object.bar', FontStyle.None, _H, _NOT_SET);
-		assertSimpleMatch('storage.object.bar.baz', FontStyle.None, _H, _NOT_SET);
+		assertSimpleMatch('storage.object.bar', 3, FontStyle.None, _H, _NOT_SET);
+		assertSimpleMatch('storage.object.bar.baz', 3, FontStyle.None, _H, _NOT_SET);
 
 		// does not match storage.object.bar
-		assertSimpleMatch('storage.object.bart', FontStyle.NotSet, _NOT_SET, _NOT_SET);
-		assertSimpleMatch('storage.object', FontStyle.NotSet, _NOT_SET, _NOT_SET);
-		assertSimpleMatch('storage', FontStyle.NotSet, _NOT_SET, _NOT_SET);
+		assertSimpleMatch('storage.object.bart', 0, FontStyle.NotSet, _NOT_SET, _NOT_SET);
+		assertSimpleMatch('storage.object', 0, FontStyle.NotSet, _NOT_SET, _NOT_SET);
+		assertSimpleMatch('storage', 0, FontStyle.NotSet, _NOT_SET, _NOT_SET);
 
 
 		assertMatch('bar', [
-			new ThemeTrieElementRule(['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C),
-			new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _C),
+			new ThemeTrieElementRule(1, ['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C),
+			new ThemeTrieElementRule(1, null, FontStyle.NotSet, _NOT_SET, _C),
 		]);
 	});
 });
@@ -433,8 +461,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ffffff');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -449,8 +477,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ffffff');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -465,8 +493,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ffffff');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -481,8 +509,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ffffff');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.Bold, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.Bold, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -497,8 +525,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ffffff');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -513,8 +541,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ff0000');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -531,8 +559,8 @@ describe('Theme resolving', () => {
 		const _B = colorMap.getId('#ff0000');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.Bold, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.Bold, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 		);
 		assert.deepEqual(actual, expected);
 	});
@@ -549,9 +577,9 @@ describe('Theme resolving', () => {
 		const _C = colorMap.getId('#ff0000');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _C, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET))
 			})
 		);
 		assert.deepEqual(actual, expected);
@@ -570,9 +598,9 @@ describe('Theme resolving', () => {
 		const _C = colorMap.getId('#ff0000');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _C, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET))
 			})
 		);
 		assert.deepEqual(actual, expected);
@@ -592,10 +620,10 @@ describe('Theme resolving', () => {
 		const _D = colorMap.getId('#00ff00');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _C, _NOT_SET), [], {
-					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _D, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET), [], {
+					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _D, _NOT_SET))
 				})
 			})
 		);
@@ -624,16 +652,16 @@ describe('Theme resolving', () => {
 		const _G = colorMap.getId('#00ff00');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-				'var': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _F, _NOT_SET), [], {
-					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _G, _NOT_SET))
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+				'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _F, _NOT_SET), [], {
+					'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _G, _NOT_SET))
 				}),
-				'constant': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, _C, _NOT_SET), [], {
-					'numeric': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Italic, _D, _NOT_SET), [], {
-						'hex': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold, _D, _NOT_SET)),
-						'oct': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NOT_SET)),
-						'dec': new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.None, _E, _NOT_SET)),
+				'constant': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Italic, _C, _NOT_SET), [], {
+					'numeric': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Italic, _D, _NOT_SET), [], {
+						'hex': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold, _D, _NOT_SET)),
+						'oct': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NOT_SET)),
+						'dec': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.None, _E, _NOT_SET)),
 					})
 				})
 			})
@@ -658,15 +686,15 @@ describe('Theme resolving', () => {
 		const _E = colorMap.getId('#200000');
 		let expected = new Theme(
 			colorMap,
-			new ThemeTrieElementRule(null, FontStyle.None, _A, _B),
-			new ThemeTrieElement(new ThemeTrieElementRule(null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+			new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
+			new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 				'var': new ThemeTrieElement(
-					new ThemeTrieElementRule(null, FontStyle.Bold, _C, 0),
-					[new ThemeTrieElementRule(['source.css'], FontStyle.Underline, _D, _NOT_SET)],
+					new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, 0),
+					[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NOT_SET)],
 					{
 						'identifier': new ThemeTrieElement(
-							new ThemeTrieElementRule(null, FontStyle.Bold, _E, _NOT_SET),
-							[/*new ThemeTrieElementRule(['source.css'], FontStyle.Underline, '#200000', null)*/]
+							new ThemeTrieElementRule(2, null, FontStyle.Bold, _E, _NOT_SET),
+							[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NOT_SET)]
 						)
 					}
 				)
