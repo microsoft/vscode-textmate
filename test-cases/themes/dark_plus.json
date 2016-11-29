@@ -19,8 +19,19 @@
 				"support.class",
 				"support.type",
 				"entity.name.type",
+
 				"storage.type.cs",
-				"storage.type.java"
+				"storage.type.generic.cs",
+				"storage.type.modifier.cs",
+				"storage.type.variable.cs",
+
+				"storage.type.annotation.java",
+				"storage.type.generic.java",
+				"storage.type.java",
+				"storage.type.object.array.java",
+				"storage.type.primitive.array.java",
+				"storage.type.primitive.java",
+				"storage.type.token.java"
 			],
 			"settings": {
 				"foreground": "#4EC9B0"
@@ -53,6 +64,7 @@
 				"variable.parameter",
 				"variable",
 				"variable.name",
+				"meta.definition.variable.name.groovy",
 				"support.variable"
 			],
 			"settings": {
@@ -61,7 +73,12 @@
 		},
 		{
 			"name": "Object keys, TS gammar specific",
-			"scope": "object-literal.member.key",
+			"scope": [
+				"object-literal.member.key",
+				"meta.object-literal.key.js",
+				"meta.object-literal.key.ts",
+				"meta.object-literal.key.js entity.name.function.js"
+			],
 			"settings": {
 				"foreground": "#9CDCFE"
 			}
@@ -69,10 +86,15 @@
 		{
 			"name": "CSS property value",
 			"scope": [
-				"support.property-value",
-				"constant.rgb-value",
-				"support.property-value.scss",
-				"constant.rgb-value.scss"
+				"constant.other.color.rgb-value.css",
+				"constant.other.rgb-value.css",
+				"meta.property-value.css support.function",
+				"meta.property-value.css support",
+
+				"constant.numeric.color.rgb-value.scss",
+				"constant.rgb-value.scss",
+				"meta.property-value.scss support.function",
+				"meta.property-value.scss support"
 			],
 			"settings": {
 				"foreground": "#CE9178"

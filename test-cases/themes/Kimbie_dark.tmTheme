@@ -350,7 +350,7 @@
 			<key>name</key>
 			<string>Code</string>
 			<key>scope</key>
-			<string>markup.raw.inline</string>
+			<string>markup.inline.raw</string>
 			<key>settings</key>
 			<dict>
 				<key>foreground</key>
