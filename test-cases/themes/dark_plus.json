@@ -70,10 +70,8 @@
 		{
 			"name": "Variable and parameter name",
 			"scope": [
-				"variable.parameter",
 				"variable",
-				"variable.name",
-				"meta.definition.variable.name.groovy",
+				"meta.definition.variable.name",
 				"support.variable"
 			],
 			"settings": {
@@ -81,12 +79,10 @@
 			}
 		},
 		{
-			"name": "Object keys, TS gammar specific",
+			"name": "Object keys, TS grammar specific",
 			"scope": [
-				"object-literal.member.key",
-				"meta.object-literal.key.js",
-				"meta.object-literal.key.ts",
-				"meta.object-literal.key.js entity.name.function.js"
+				"meta.object-literal.key",
+				"meta.object-literal.key entity.name.function"
 			],
 			"settings": {
 				"foreground": "#9CDCFE"
@@ -107,13 +103,6 @@
 			],
 			"settings": {
 				"foreground": "#CE9178"
-			}
-		},
-		{
-			"name": "JSX Tag names, workaround for flattening match with function",
-			"scope": "entity.name.function.tag",
-			"settings": {
-				"foreground": "#569cd6"
 			}
 		}
 	]

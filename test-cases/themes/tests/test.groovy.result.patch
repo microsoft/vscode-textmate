@@ -631,22 +631,10 @@
 	],
 	"light_plus": [
 		{
-			"index": 13,
-			"content": "x",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 25,
 			"content": "java.util.Date",
 			"color": "#0000FF",
 			"newColor": "#267F99"
-		},
-		{
-			"index": 56,
-			"content": "technologies",
-			"color": "#001080",
-			"newColor": "#000000"
 		},
 		{
 			"index": 60,
@@ -677,12 +665,6 @@
 			"content": "Random",
 			"color": "#0000FF",
 			"newColor": "#267F99"
-		},
-		{
-			"index": 239,
-			"content": "devMap",
-			"color": "#001080",
-			"newColor": "#000000"
 		},
 		{
 			"index": 243,
@@ -721,12 +703,6 @@
 			"newColor": "#267F99"
 		},
 		{
-			"index": 358,
-			"content": "name",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 362,
 			"content": "\"",
 			"color": "#001080",
@@ -751,40 +727,10 @@
 			"newColor": "#267F99"
 		},
 		{
-			"index": 371,
-			"content": "language",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 373,
 			"content": "protected",
 			"color": "#267F99",
 			"newColor": "#0000FF"
-		},
-		{
-			"index": 397,
-			"content": "lastName",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 406,
-			"content": "x",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 450,
-			"content": "y",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 457,
-			"content": "x",
-			"color": "#001080",
-			"newColor": "#000000"
 		},
 		{
 			"index": 460,
@@ -839,18 +785,6 @@
 			"content": "\"",
 			"color": "#001080",
 			"newColor": "#A31515"
-		},
-		{
-			"index": 519,
-			"content": "x",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 594,
-			"content": "map",
-			"color": "#001080",
-			"newColor": "#000000"
 		},
 		{
 			"index": 598,
@@ -1003,12 +937,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 642,
-			"content": "technologies",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 646,
 			"content": "[",
 			"color": "#001080",
@@ -1087,12 +1015,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 670,
-			"content": "user",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 674,
 			"content": "User",
 			"color": "#0000FF",
@@ -1117,12 +1039,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 682,
-			"content": "username",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 685,
 			"content": " user",
 			"color": "#001080",
@@ -1131,12 +1047,6 @@
 		{
 			"index": 687,
 			"content": "username",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 690,
-			"content": "clos",
 			"color": "#001080",
 			"newColor": "#000000"
 		},
@@ -1177,12 +1087,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 702,
-			"content": "sum",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 705,
 			"content": "{",
 			"color": "#001080",
@@ -1219,18 +1123,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 726,
-			"content": "x",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 733,
-			"content": "multiplyBy",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 736,
 			"content": "{",
 			"color": "#001080",
@@ -1255,12 +1147,6 @@
 			"newColor": "#000000"
 		},
 		{
-			"index": 752,
-			"content": "clos",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
 			"index": 755,
 			"content": "{",
 			"color": "#001080",
@@ -1281,12 +1167,6 @@
 		{
 			"index": 757,
 			"content": "}",
-			"color": "#001080",
-			"newColor": "#000000"
-		},
-		{
-			"index": 768,
-			"content": "cl",
 			"color": "#001080",
 			"newColor": "#000000"
 		},
