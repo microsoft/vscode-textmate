@@ -7,12 +7,6 @@
 	"light_plus": [],
 	"kimbie_dark": [
 		{
-			"index": 24,
-			"content": "Array",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 26,
 			"content": "number",
 			"color": "#F06431",
@@ -23,34 +17,14 @@
 	"monokai_dimmed": [],
 	"quietlight": [],
 	"red": [],
-	"solarized_dark": [
-		{
-			"index": 24,
-			"content": "Array",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		}
-	],
-	"solarized_light": [
-		{
-			"index": 24,
-			"content": "Array",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		}
-	],
+	"solarized_dark": [],
+	"solarized_light": [],
 	"tomorrow_night_blue": [
 		{
 			"index": 22,
 			"content": ":",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 24,
-			"content": "Array",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		}
 	]
 }

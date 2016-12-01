@@ -1,6 +1,18 @@
 {
 	"abyss": [
 		{
+			"index": 8,
+			"content": "Conway",
+			"color": "#6688CC",
+			"newColor": "#FFEEBB"
+		},
+		{
+			"index": 1033,
+			"content": "Conway",
+			"color": "#6688CC",
+			"newColor": "#FFEEBB"
+		},
+		{
 			"index": 1035,
 			"content": "GameOfLife",
 			"color": "#6688CC",
@@ -75,6 +87,12 @@
 		}
 	],
 	"kimbie_dark": [
+		{
+			"index": 8,
+			"content": "Conway",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		},
 		{
 			"index": 25,
 			"content": "number",
@@ -184,12 +202,6 @@
 			"newColor": "#8AB1B0"
 		},
 		{
-			"index": 299,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 312,
 			"content": "Math",
 			"color": "#F06431",
@@ -212,12 +224,6 @@
 			"content": "travelWorld",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
-		},
-		{
-			"index": 362,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
 		},
 		{
 			"index": 389,
@@ -244,34 +250,16 @@
 			"newColor": "#8AB1B0"
 		},
 		{
-			"index": 441,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 454,
 			"content": "countNeighbors",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
 		},
 		{
-			"index": 468,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 541,
 			"content": "countNeighbors",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
-		},
-		{
-			"index": 547,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
 		},
 		{
 			"index": 634,
@@ -310,22 +298,10 @@
 			"newColor": "#8AB1B0"
 		},
 		{
-			"index": 838,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 872,
 			"content": "draw",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
-		},
-		{
-			"index": 878,
-			"content": "Cell",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
 		},
 		{
 			"index": 926,
@@ -338,9 +314,33 @@
 			"content": "fillRect",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
+		},
+		{
+			"index": 1033,
+			"content": "Conway",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		},
+		{
+			"index": 1035,
+			"content": "GameOfLife",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
 		}
 	],
 	"monokai": [
+		{
+			"index": 8,
+			"content": "Conway",
+			"color": "#F8F8F2",
+			"newColor": "#A6E22E"
+		},
+		{
+			"index": 1033,
+			"content": "Conway",
+			"color": "#F8F8F2",
+			"newColor": "#A6E22E"
+		},
 		{
 			"index": 1035,
 			"content": "GameOfLife",
@@ -505,10 +505,10 @@
 	"red": [],
 	"solarized_dark": [
 		{
-			"index": 299,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
+			"index": 8,
+			"content": "Conway",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
 		},
 		{
 			"index": 312,
@@ -523,34 +523,10 @@
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 362,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
 			"index": 409,
 			"content": "setTimeout",
 			"color": "#859900",
 			"newColor": "#268BD2"
-		},
-		{
-			"index": 441,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
-			"index": 468,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
-			"index": 547,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
 		},
 		{
 			"index": 832,
@@ -559,30 +535,30 @@
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 838,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
 			"index": 855,
 			"content": "push",
 			"color": "#859900",
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 878,
-			"content": "Cell",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
+			"index": 1033,
+			"content": "Conway",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
+		},
+		{
+			"index": 1035,
+			"content": "GameOfLife",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
 		}
 	],
 	"solarized_light": [
 		{
-			"index": 299,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
+			"index": 8,
+			"content": "Conway",
+			"color": "#586E75",
+			"newColor": "#268BD2"
 		},
 		{
 			"index": 312,
@@ -597,34 +573,10 @@
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 362,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
-		{
 			"index": 409,
 			"content": "setTimeout",
 			"color": "#859900",
 			"newColor": "#268BD2"
-		},
-		{
-			"index": 441,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
-		{
-			"index": 468,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
-		{
-			"index": 547,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
 		},
 		{
 			"index": 832,
@@ -633,25 +585,31 @@
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 838,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
-		{
 			"index": 855,
 			"content": "push",
 			"color": "#859900",
 			"newColor": "#268BD2"
 		},
 		{
-			"index": 878,
-			"content": "Cell",
-			"color": "#268BD2",
-			"newColor": "#586E75"
+			"index": 1033,
+			"content": "Conway",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 1035,
+			"content": "GameOfLife",
+			"color": "#586E75",
+			"newColor": "#268BD2"
 		}
 	],
 	"tomorrow_night_blue": [
+		{
+			"index": 8,
+			"content": "Conway",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		},
 		{
 			"index": 23,
 			"content": ":",
@@ -815,12 +773,6 @@
 			"newColor": "#99FFFF"
 		},
 		{
-			"index": 299,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
-		},
-		{
 			"index": 310,
 			"content": "=",
 			"color": "#FFFFFF",
@@ -857,12 +809,6 @@
 			"newColor": "#99FFFF"
 		},
 		{
-			"index": 362,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
-		},
-		{
 			"index": 371,
 			"content": "=",
 			"color": "#FFFFFF",
@@ -873,12 +819,6 @@
 			"content": ":",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 441,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		},
 		{
 			"index": 450,
@@ -897,12 +837,6 @@
 			"content": "new",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 468,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		},
 		{
 			"index": 490,
@@ -945,12 +879,6 @@
 			"content": ":",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 547,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		},
 		{
 			"index": 556,
@@ -1151,22 +1079,10 @@
 			"newColor": "#99FFFF"
 		},
 		{
-			"index": 838,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
-		},
-		{
 			"index": 876,
 			"content": ":",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 878,
-			"content": "Cell",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		},
 		{
 			"index": 889,
@@ -1233,6 +1149,18 @@
 			"content": "*",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
+		},
+		{
+			"index": 1033,
+			"content": "Conway",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		},
+		{
+			"index": 1035,
+			"content": "GameOfLife",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
 		}
 	]
 }

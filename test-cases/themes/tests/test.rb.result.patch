@@ -1,6 +1,12 @@
 {
 	"abyss": [
 		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#6688CC",
+			"newColor": "#FFEEBB"
+		},
+		{
 			"index": 39,
 			"content": "Models",
 			"color": "#F280D0",
@@ -43,6 +49,12 @@
 	"dark_plus": [],
 	"light_plus": [],
 	"kimbie_dark": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		},
 		{
 			"index": 39,
 			"content": "Models",
@@ -105,6 +117,12 @@
 		}
 	],
 	"monokai": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#F8F8F2",
+			"newColor": "#A6E22E"
+		},
 		{
 			"index": 39,
 			"content": "Models",
@@ -318,6 +336,12 @@
 	],
 	"solarized_dark": [
 		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
+		},
+		{
 			"index": 39,
 			"content": "Models",
 			"color": "#CB4B16",
@@ -356,6 +380,36 @@
 	],
 	"solarized_light": [
 		{
+			"index": 10,
+			"content": "Azure",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 11,
+			"content": "::",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 12,
+			"content": "ARM",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 13,
+			"content": "::",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		},
+		{
 			"index": 39,
 			"content": "Models",
 			"color": "#CB4B16",
@@ -393,6 +447,12 @@
 		}
 	],
 	"tomorrow_night_blue": [
+		{
+			"index": 14,
+			"content": "Scheduler",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		},
 		{
 			"index": 27,
 			"content": "<",

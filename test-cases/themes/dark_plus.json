@@ -19,6 +19,7 @@
 				"support.class",
 				"support.type",
 				"entity.name.type",
+				"entity.name.class",
 
 				"storage.type.cs",
 				"storage.type.generic.cs",
@@ -31,7 +32,15 @@
 				"storage.type.object.array.java",
 				"storage.type.primitive.array.java",
 				"storage.type.primitive.java",
-				"storage.type.token.java"
+				"storage.type.token.java",
+
+				"storage.type.groovy",
+				"storage.type.annotation.groovy",
+				"storage.type.parameters.groovy",
+				"storage.type.generic.groovy",
+				"storage.type.object.array.groovy",
+				"storage.type.primitive.array.groovy",
+				"storage.type.primitive.groovy"
 			],
 			"settings": {
 				"foreground": "#4EC9B0"

@@ -1,18 +1,6 @@
 {
 	"abyss": [
 		{
-			"index": 62,
-			"content": "Car",
-			"color": "#FFEEBB",
-			"newColor": "#6688CC"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#FFEEBB",
-			"newColor": "#6688CC"
-		},
-		{
 			"index": 125,
 			"content": "#",
 			"color": "#22AA44",
@@ -253,18 +241,6 @@
 			"newColor": "#DC3958"
 		},
 		{
-			"index": 62,
-			"content": "Car",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
-		},
-		{
 			"index": 120,
 			"content": "(",
 			"color": "#D3AF86",
@@ -357,18 +333,6 @@
 	],
 	"monokai": [
 		{
-			"index": 62,
-			"content": "Car",
-			"color": "#A6E22E",
-			"newColor": "#F8F8F2"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#A6E22E",
-			"newColor": "#F8F8F2"
-		},
-		{
 			"index": 125,
 			"content": "#",
 			"color": "#E6DB74",
@@ -406,18 +370,6 @@
 		}
 	],
 	"monokai_dimmed": [
-		{
-			"index": 62,
-			"content": "Car",
-			"color": "#9B0000",
-			"newColor": "#C5C8C6"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#9B0000",
-			"newColor": "#C5C8C6"
-		},
 		{
 			"index": 125,
 			"content": "#",
@@ -641,18 +593,6 @@
 	],
 	"solarized_dark": [
 		{
-			"index": 62,
-			"content": "Car",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		},
-		{
 			"index": 122,
 			"content": "+",
 			"color": "#D30102",
@@ -708,18 +648,6 @@
 		}
 	],
 	"solarized_light": [
-		{
-			"index": 62,
-			"content": "Car",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		},
 		{
 			"index": 122,
 			"content": "+",
@@ -807,22 +735,10 @@
 			"newColor": "#99FFFF"
 		},
 		{
-			"index": 62,
-			"content": "Car",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
-		},
-		{
 			"index": 80,
 			"content": "new",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 82,
-			"content": "Car",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		},
 		{
 			"index": 125,

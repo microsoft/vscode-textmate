@@ -5,6 +5,12 @@
 	"hc_black": [],
 	"dark_plus": [
 		{
+			"index": 25,
+			"content": "java.util.Date",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
 			"index": 60,
 			"content": "[",
 			"color": "#9CDCFE",
@@ -15,6 +21,24 @@
 			"content": "]",
 			"color": "#9CDCFE",
 			"newColor": "#D4D4D4"
+		},
+		{
+			"index": 198,
+			"content": "Collections",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
+			"index": 216,
+			"content": "Collections",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
+			"index": 225,
+			"content": "Random",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
 		},
 		{
 			"index": 243,
@@ -47,6 +71,12 @@
 			"newColor": "#569CD6"
 		},
 		{
+			"index": 356,
+			"content": "String",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
 			"index": 362,
 			"content": "\"",
 			"color": "#9CDCFE",
@@ -65,20 +95,14 @@
 			"newColor": "#CE9178"
 		},
 		{
+			"index": 369,
+			"content": "String",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
 			"index": 373,
 			"content": "protected",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 375,
-			"content": "void",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 379,
-			"content": "String",
 			"color": "#4EC9B0",
 			"newColor": "#569CD6"
 		},
@@ -365,6 +389,12 @@
 			"newColor": "#D4D4D4"
 		},
 		{
+			"index": 674,
+			"content": "User",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
+		},
+		{
 			"index": 676,
 			"content": "get",
 			"color": "#9CDCFE",
@@ -587,52 +617,16 @@
 			"newColor": "#569CD6"
 		},
 		{
-			"index": 813,
-			"content": "System",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
+			"index": 856,
+			"content": "@TypeChecked",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
 		},
 		{
-			"index": 857,
-			"content": "Integer",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 864,
-			"content": "Integer",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 872,
-			"content": "Integer",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 888,
-			"content": "Date",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 912,
-			"content": "int",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 916,
-			"content": "int",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
-		},
-		{
-			"index": 921,
-			"content": "int",
-			"color": "#4EC9B0",
-			"newColor": "#569CD6"
+			"index": 911,
+			"content": "@CompileStatic",
+			"color": "#569CD6",
+			"newColor": "#4EC9B0"
 		}
 	],
 	"light_plus": [
@@ -641,6 +635,12 @@
 			"content": "x",
 			"color": "#001080",
 			"newColor": "#000000"
+		},
+		{
+			"index": 25,
+			"content": "java.util.Date",
+			"color": "#0000FF",
+			"newColor": "#267F99"
 		},
 		{
 			"index": 56,
@@ -659,6 +659,24 @@
 			"content": "]",
 			"color": "#001080",
 			"newColor": "#000000"
+		},
+		{
+			"index": 198,
+			"content": "Collections",
+			"color": "#0000FF",
+			"newColor": "#267F99"
+		},
+		{
+			"index": 216,
+			"content": "Collections",
+			"color": "#0000FF",
+			"newColor": "#267F99"
+		},
+		{
+			"index": 225,
+			"content": "Random",
+			"color": "#0000FF",
+			"newColor": "#267F99"
 		},
 		{
 			"index": 239,
@@ -697,6 +715,12 @@
 			"newColor": "#0000FF"
 		},
 		{
+			"index": 356,
+			"content": "String",
+			"color": "#0000FF",
+			"newColor": "#267F99"
+		},
+		{
 			"index": 358,
 			"content": "name",
 			"color": "#001080",
@@ -721,6 +745,12 @@
 			"newColor": "#A31515"
 		},
 		{
+			"index": 369,
+			"content": "String",
+			"color": "#0000FF",
+			"newColor": "#267F99"
+		},
+		{
 			"index": 371,
 			"content": "language",
 			"color": "#001080",
@@ -729,18 +759,6 @@
 		{
 			"index": 373,
 			"content": "protected",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 375,
-			"content": "void",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 379,
-			"content": "String",
 			"color": "#267F99",
 			"newColor": "#0000FF"
 		},
@@ -1075,6 +1093,12 @@
 			"newColor": "#000000"
 		},
 		{
+			"index": 674,
+			"content": "User",
+			"color": "#0000FF",
+			"newColor": "#267F99"
+		},
+		{
 			"index": 676,
 			"content": "get",
 			"color": "#001080",
@@ -1339,52 +1363,16 @@
 			"newColor": "#0000FF"
 		},
 		{
-			"index": 813,
-			"content": "System",
-			"color": "#267F99",
-			"newColor": "#0000FF"
+			"index": 856,
+			"content": "@TypeChecked",
+			"color": "#0000FF",
+			"newColor": "#267F99"
 		},
 		{
-			"index": 857,
-			"content": "Integer",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 864,
-			"content": "Integer",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 872,
-			"content": "Integer",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 888,
-			"content": "Date",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 912,
-			"content": "int",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 916,
-			"content": "int",
-			"color": "#267F99",
-			"newColor": "#0000FF"
-		},
-		{
-			"index": 921,
-			"content": "int",
-			"color": "#267F99",
-			"newColor": "#0000FF"
+			"index": 911,
+			"content": "@CompileStatic",
+			"color": "#0000FF",
+			"newColor": "#267F99"
 		}
 	],
 	"kimbie_dark": [

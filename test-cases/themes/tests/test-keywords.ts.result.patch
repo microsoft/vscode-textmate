@@ -12,7 +12,14 @@
 	"hc_black": [],
 	"dark_plus": [],
 	"light_plus": [],
-	"kimbie_dark": [],
+	"kimbie_dark": [
+		{
+			"index": 15,
+			"content": "RegExp",
+			"color": "#D3AF86",
+			"newColor": "#F06431"
+		}
+	],
 	"monokai": [
 		{
 			"index": 15,
@@ -31,7 +38,28 @@
 	],
 	"quietlight": [],
 	"red": [],
-	"solarized_dark": [],
-	"solarized_light": [],
-	"tomorrow_night_blue": []
+	"solarized_dark": [
+		{
+			"index": 15,
+			"content": "RegExp",
+			"color": "#93A1A1",
+			"newColor": "#CB4B16"
+		}
+	],
+	"solarized_light": [
+		{
+			"index": 15,
+			"content": "RegExp",
+			"color": "#586E75",
+			"newColor": "#268BD2"
+		}
+	],
+	"tomorrow_night_blue": [
+		{
+			"index": 15,
+			"content": "RegExp",
+			"color": "#FFFFFF",
+			"newColor": "#FFEEAD"
+		}
+	]
 }

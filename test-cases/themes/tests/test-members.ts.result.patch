@@ -17,34 +17,14 @@
 			"content": "resolveNextGeneration",
 			"color": "#F06431",
 			"newColor": "#8AB1B0"
-		},
-		{
-			"index": 26,
-			"content": "A2",
-			"color": "#F06431",
-			"newColor": "#D3AF86"
 		}
 	],
 	"monokai": [],
 	"monokai_dimmed": [],
 	"quietlight": [],
 	"red": [],
-	"solarized_dark": [
-		{
-			"index": 26,
-			"content": "A2",
-			"color": "#CB4B16",
-			"newColor": "#93A1A1"
-		}
-	],
-	"solarized_light": [
-		{
-			"index": 26,
-			"content": "A2",
-			"color": "#268BD2",
-			"newColor": "#586E75"
-		}
-	],
+	"solarized_dark": [],
+	"solarized_light": [],
 	"tomorrow_night_blue": [
 		{
 			"index": 9,
@@ -63,12 +43,6 @@
 			"content": ":",
 			"color": "#FFFFFF",
 			"newColor": "#99FFFF"
-		},
-		{
-			"index": 26,
-			"content": "A2",
-			"color": "#FFEEAD",
-			"newColor": "#FFFFFF"
 		}
 	]
 }
