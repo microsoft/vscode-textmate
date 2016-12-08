@@ -1600,7 +1600,10 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
             continue;
         }
         var matchRating = matchResult.captureIndices[0].start;
-        if (matchRating >= bestMatchRating) {
+        if (matchRating > bestMatchRating) {
+            continue;
+        }
+        else if (matchRating === bestMatchRating && (!injection.priorityMatch || bestMatchResultPriority)) {
             continue;
         }
         bestMatchRating = matchRating;
