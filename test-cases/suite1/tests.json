@@ -79,16 +79,16 @@
 		"lines": [
 			{
 				"line": "This is a paragraph",
-                "tokens": [
-                    {
-                        "value": "This is a paragraph",
-                        "scopes": [
-                            "text.html.markdown",
-                            "meta.paragraph.markdown"
-                        ]
-                    }
-                ]
-            },
+				"tokens": [
+					{
+						"value": "This is a paragraph",
+						"scopes": [
+							"text.html.markdown",
+							"meta.paragraph.markdown"
+						]
+					}
+				]
+			},
 			{
 				"line": "## This is *great* stuff",
 				"tokens": [
@@ -286,7 +286,9 @@
 	},
 	{
 		"grammars": [
-			"fixtures/php.plist"
+			"fixtures/php.plist",
+			"fixtures/javascript.json",
+			"fixtures/html.json"
 		],
 		"grammarPath": "fixtures/php.plist",
 		"desc": "Injections in PHP",
@@ -420,6 +422,155 @@
 							"text.html.php",
 							"meta.embedded.line.php",
 							"punctuation.section.embedded.end.php"
+						]
+					}
+				]
+			},
+			{
+				"line": "<script><?php echo $test; ?></script>",
+				"tokens": [
+					{
+						"value": "<",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "script",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"entity.name.tag.script.html"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "<?php",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.begin.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "echo",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"support.function.construct.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "$",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php",
+							"punctuation.definition.variable.php"
+						]
+					},
+					{
+						"value": "test",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"variable.other.php"
+						]
+					},
+					{
+						"value": ";",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php",
+							"punctuation.terminator.expression.php"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"source.php"
+						]
+					},
+					{
+						"value": "?",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php",
+							"source.php"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"meta.embedded.line.php",
+							"punctuation.section.embedded.end.php"
+						]
+					},
+					{
+						"value": "</",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
+						]
+					},
+					{
+						"value": "script",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"entity.name.tag.script.html"
+						]
+					},
+					{
+						"value": ">",
+						"scopes": [
+							"text.html.php",
+							"source.js.embedded.html",
+							"punctuation.definition.tag.html"
 						]
 					}
 				]
@@ -735,7 +886,7 @@
 			{
 				"line": "  $(eval $(SET_VERSION):,@:)",
 				"tokens": [
-						{
+					{
 						"value": "  ",
 						"scopes": [
 							"source.makefile",
@@ -860,61 +1011,73 @@
 		"lines": [
 			{
 				"line": "[test]|",
-				"tokens": [{
-					"value": "[test]|",
-					"scopes": [
-						"text.testlang",
-						"string.unquoted.verbatim.youki"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "[test]|",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
 			},
 			{
 				"line": "\tverb",
-				"tokens": [{
-					"value": "\tverb",
-					"scopes": [
-						"text.testlang",
-						"string.unquoted.verbatim.youki"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "\tverb",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
 			},
 			{
 				"line": "asd",
-				"tokens": [{
-					"value": "asd",
-					"scopes": [
-						"text.testlang"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "asd",
+						"scopes": [
+							"text.testlang"
+						]
+					}
+				]
 			},
 			{
 				"line": "asd",
-				"tokens": [{
-					"value": "asd",
-					"scopes": [
-						"text.testlang"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "asd",
+						"scopes": [
+							"text.testlang"
+						]
+					}
+				]
 			},
 			{
 				"line": "[test]|",
-				"tokens": [{
-					"value": "[test]|",
-					"scopes": [
-						"text.testlang",
-						"string.unquoted.verbatim.youki"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "[test]|",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
 			},
 			{
 				"line": "\tverbatim",
-				"tokens": [{
-					"value": "\tverbatim",
-					"scopes": [
-						"text.testlang",
-						"string.unquoted.verbatim.youki"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "\tverbatim",
+						"scopes": [
+							"text.testlang",
+							"string.unquoted.verbatim.youki"
+						]
+					}
+				]
 			}
 		]
 	},
@@ -927,37 +1090,44 @@
 		"lines": [
 			{
 				"line": ".ssdsd",
-				"tokens": [{
-					"value": ".ssdsd",
-					"scopes": [
-						"text.jade"
-					]
-				}]
+				"tokens": [
+					{
+						"value": ".ssdsd",
+						"scopes": [
+							"text.jade"
+						]
+					}
+				]
 			},
 			{
 				"line": "",
-				"tokens": [{
-					"value": "",
-					"scopes": [
-						"text.jade"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "",
+						"scopes": [
+							"text.jade"
+						]
+					}
+				]
 			},
 			{
 				"line": "    // asdsdas",
-				"tokens": [{
-					"value": "    //",
-					"scopes": [
-						"text.jade",
-						"string.comment.buffered.block.jade"
-					]
-				}, {
-					"value": " asdsdas",
-					"scopes": [
-						"text.jade",
-						"string.comment.buffered.block.jade"
-					]
-				}]
+				"tokens": [
+					{
+						"value": "    //",
+						"scopes": [
+							"text.jade",
+							"string.comment.buffered.block.jade"
+						]
+					},
+					{
+						"value": " asdsdas",
+						"scopes": [
+							"text.jade",
+							"string.comment.buffered.block.jade"
+						]
+					}
+				]
 			}
 		]
 	},
