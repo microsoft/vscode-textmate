@@ -203,11 +203,9 @@ function parse(source, filename, withMetadata) {
     var cur = null;
     var stateStack = [];
     var objStack = [];
-    function pushState(newState, newCur) {
+    function pushState() {
         stateStack.push(state);
         objStack.push(cur);
-        state = newState;
-        cur = newCur;
     }
     function popState() {
         state = stateStack.pop();
@@ -226,12 +224,14 @@ function parse(source, filename, withMetadata) {
                 if (withMetadata) {
                     cur.$vscodeTextmateLocation = token.toLocation(filename);
                 }
-                pushState(1 /* DICT_STATE */, cur);
+                pushState();
+                state = 1 /* DICT_STATE */;
                 continue;
             }
             if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
                 cur = [];
-                pushState(4 /* ARR_STATE */, cur);
+                pushState();
+                state = 4 /* ARR_STATE */;
                 continue;
             }
             fail('unexpected token in root');
@@ -284,7 +284,9 @@ function parse(source, filename, withMetadata) {
                 if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
                     var newArr = [];
                     cur[keyValue] = newArr;
-                    pushState(4 /* ARR_STATE */, newArr);
+                    pushState();
+                    state = 4 /* ARR_STATE */;
+                    cur = newArr;
                     continue;
                 }
                 if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
@@ -293,7 +295,9 @@ function parse(source, filename, withMetadata) {
                         newDict.$vscodeTextmateLocation = token.toLocation(filename);
                     }
                     cur[keyValue] = newDict;
-                    pushState(1 /* DICT_STATE */, newDict);
+                    pushState();
+                    state = 1 /* DICT_STATE */;
+                    cur = newDict;
                     continue;
                 }
             }
@@ -339,7 +343,9 @@ function parse(source, filename, withMetadata) {
             if (token.type === 2 /* LEFT_SQUARE_BRACKET */) {
                 var newArr = [];
                 cur.push(newArr);
-                pushState(4 /* ARR_STATE */, newArr);
+                pushState();
+                state = 4 /* ARR_STATE */;
+                cur = newArr;
                 continue;
             }
             if (token.type === 3 /* LEFT_CURLY_BRACKET */) {
@@ -348,7 +354,9 @@ function parse(source, filename, withMetadata) {
                     newDict.$vscodeTextmateLocation = token.toLocation(filename);
                 }
                 cur.push(newDict);
-                pushState(1 /* DICT_STATE */, newDict);
+                pushState();
+                state = 1 /* DICT_STATE */;
+                cur = newDict;
                 continue;
             }
             fail('unexpected token in array');
@@ -603,10 +611,10 @@ $load('./grammarReader', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var fs = require('fs');
-var plist = require('fast-plist');
-var debug_1 = require('./debug');
-var json_1 = require('./json');
+var fs = require("fs");
+var plist = require("fast-plist");
+var debug_1 = require("./debug");
+var json_1 = require("./json");
 function readGrammar(filePath, callback) {
     var reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
     reader.load(callback);
@@ -688,8 +696,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-var path = require('path');
-var utils_1 = require('./utils');
+var path = require("path");
+var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
 var Rule = (function () {
@@ -732,8 +740,9 @@ exports.Rule = Rule;
 var CaptureRule = (function (_super) {
     __extends(CaptureRule, _super);
     function CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId) {
-        _super.call(this, $location, id, name, contentName);
-        this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
+        var _this = _super.call(this, $location, id, name, contentName) || this;
+        _this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
+        return _this;
     }
     return CaptureRule;
 }(Rule));
@@ -990,10 +999,11 @@ exports.RegExpSourceList = RegExpSourceList;
 var MatchRule = (function (_super) {
     __extends(MatchRule, _super);
     function MatchRule($location, id, name, match, captures) {
-        _super.call(this, $location, id, name, null);
-        this._match = new RegExpSource(match, this.id);
-        this.captures = captures;
-        this._cachedCompiledPatterns = null;
+        var _this = _super.call(this, $location, id, name, null) || this;
+        _this._match = new RegExpSource(match, _this.id);
+        _this.captures = captures;
+        _this._cachedCompiledPatterns = null;
+        return _this;
     }
     Object.defineProperty(MatchRule.prototype, "debugMatchRegExp", {
         get: function () {
@@ -1018,10 +1028,11 @@ exports.MatchRule = MatchRule;
 var IncludeOnlyRule = (function (_super) {
     __extends(IncludeOnlyRule, _super);
     function IncludeOnlyRule($location, id, name, contentName, patterns) {
-        _super.call(this, $location, id, name, contentName);
-        this.patterns = patterns.patterns;
-        this.hasMissingPatterns = patterns.hasMissingPatterns;
-        this._cachedCompiledPatterns = null;
+        var _this = _super.call(this, $location, id, name, contentName) || this;
+        _this.patterns = patterns.patterns;
+        _this.hasMissingPatterns = patterns.hasMissingPatterns;
+        _this._cachedCompiledPatterns = null;
+        return _this;
     }
     IncludeOnlyRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         var i, len, rule;
@@ -1046,16 +1057,17 @@ function escapeRegExpCharacters(value) {
 var BeginEndRule = (function (_super) {
     __extends(BeginEndRule, _super);
     function BeginEndRule($location, id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
-        _super.call(this, $location, id, name, contentName);
-        this._begin = new RegExpSource(begin, this.id);
-        this.beginCaptures = beginCaptures;
-        this._end = new RegExpSource(end, -1);
-        this.endHasBackReferences = this._end.hasBackReferences;
-        this.endCaptures = endCaptures;
-        this.applyEndPatternLast = applyEndPatternLast || false;
-        this.patterns = patterns.patterns;
-        this.hasMissingPatterns = patterns.hasMissingPatterns;
-        this._cachedCompiledPatterns = null;
+        var _this = _super.call(this, $location, id, name, contentName) || this;
+        _this._begin = new RegExpSource(begin, _this.id);
+        _this.beginCaptures = beginCaptures;
+        _this._end = new RegExpSource(end, -1);
+        _this.endHasBackReferences = _this._end.hasBackReferences;
+        _this.endCaptures = endCaptures;
+        _this.applyEndPatternLast = applyEndPatternLast || false;
+        _this.patterns = patterns.patterns;
+        _this.hasMissingPatterns = patterns.hasMissingPatterns;
+        _this._cachedCompiledPatterns = null;
+        return _this;
     }
     Object.defineProperty(BeginEndRule.prototype, "debugBeginRegExp", {
         get: function () {
@@ -1117,16 +1129,17 @@ exports.BeginEndRule = BeginEndRule;
 var BeginWhileRule = (function (_super) {
     __extends(BeginWhileRule, _super);
     function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, whileCaptures, patterns) {
-        _super.call(this, $location, id, name, contentName);
-        this._begin = new RegExpSource(begin, this.id);
-        this.beginCaptures = beginCaptures;
-        this.whileCaptures = whileCaptures;
-        this._while = new RegExpSource(_while, -2);
-        this.whileHasBackReferences = this._while.hasBackReferences;
-        this.patterns = patterns.patterns;
-        this.hasMissingPatterns = patterns.hasMissingPatterns;
-        this._cachedCompiledPatterns = null;
-        this._cachedCompiledWhilePatterns = null;
+        var _this = _super.call(this, $location, id, name, contentName) || this;
+        _this._begin = new RegExpSource(begin, _this.id);
+        _this.beginCaptures = beginCaptures;
+        _this.whileCaptures = whileCaptures;
+        _this._while = new RegExpSource(_while, -2);
+        _this.whileHasBackReferences = _this._while.hasBackReferences;
+        _this.patterns = patterns.patterns;
+        _this.hasMissingPatterns = patterns.hasMissingPatterns;
+        _this._cachedCompiledPatterns = null;
+        _this._cachedCompiledWhilePatterns = null;
+        return _this;
     }
     BeginWhileRule.prototype.getWhileWithResolvedBackReferences = function (lineText, captureIndices) {
         return this._while.resolveBackReferences(lineText, captureIndices);
@@ -1313,10 +1326,10 @@ $load('./grammar', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var utils_1 = require('./utils');
-var rule_1 = require('./rule');
-var matcher_1 = require('./matcher');
-var debug_1 = require('./debug');
+var utils_1 = require("./utils");
+var rule_1 = require("./rule");
+var matcher_1 = require("./matcher");
+var debug_1 = require("./debug");
 function createGrammar(grammar, grammarRepository) {
     return new Grammar(grammar, grammarRepository);
 }
@@ -2004,7 +2017,7 @@ $load('./registry', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var grammar_1 = require('./grammar');
+var grammar_1 = require("./grammar");
 var SyncRegistry = (function () {
     function SyncRegistry() {
         this._grammars = {};
@@ -2061,8 +2074,8 @@ $load('./main', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var registry_1 = require('./registry');
-var grammarReader_1 = require('./grammarReader');
+var registry_1 = require("./registry");
+var grammarReader_1 = require("./grammarReader");
 var DEFAULT_LOCATOR = {
     getFilePath: function (scopeName) { return null; },
     getInjections: function (scopeName) { return null; }
