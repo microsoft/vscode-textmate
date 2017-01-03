@@ -212,18 +212,18 @@ export interface ITokenizeLineResult {
  *  - unique color count < 512 => needs 9 bits
  *
  * The binary format is:
- * --------------------------------------------
- *   3322 2222 2222 1111 1111 1100 0000 0000
- *   1098 7654 3210 9876 5432 1098 7654 3210
- * --------------------------------------------
- *   xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *   bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
- * --------------------------------------------
- *   L = LanguageId (8 bits)
- *   T = StandardTokenType (3 bits)
- *   F = FontStyle (3 bits)
- *   f = foreground color (9 bits)
- *   b = background color (9 bits)
+ * - -------------------------------------------
+ *     3322 2222 2222 1111 1111 1100 0000 0000
+ *     1098 7654 3210 9876 5432 1098 7654 3210
+ * - -------------------------------------------
+ *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
+ *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ * - -------------------------------------------
+ *  - L = LanguageId (8 bits)
+ *  - T = StandardTokenType (3 bits)
+ *  - F = FontStyle (3 bits)
+ *  - f = foreground color (9 bits)
+ *  - b = background color (9 bits)
  */
 export const enum MetadataConsts {
 	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
