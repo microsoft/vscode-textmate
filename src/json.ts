@@ -22,11 +22,9 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 	let stateStack: JSONState[] = [];
 	let objStack: any[] = [];
 
-	function pushState(newState: JSONState, newCur: any): void {
+	function pushState(): void {
 		stateStack.push(state);
 		objStack.push(cur);
-		state = newState;
-		cur = newCur;
 	}
 
 	function popState(): void {
@@ -50,13 +48,15 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 				if (withMetadata) {
 					cur.$vscodeTextmateLocation = token.toLocation(filename);
 				}
-				pushState(JSONState.DICT_STATE, cur);
+				pushState();
+				state = JSONState.DICT_STATE;
 				continue;
 			}
 
 			if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
 				cur = [];
-				pushState(JSONState.ARR_STATE, cur);
+				pushState();
+				state = JSONState.ARR_STATE;
 				continue;
 			}
 
@@ -122,7 +122,9 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 				if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
 					let newArr: any[] = [];
 					cur[keyValue] = newArr;
-					pushState(JSONState.ARR_STATE, newArr);
+					pushState();
+					state = JSONState.ARR_STATE;
+					cur = newArr;
 					continue;
 				}
 				if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
@@ -131,7 +133,9 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 						newDict.$vscodeTextmateLocation = token.toLocation(filename);
 					}
 					cur[keyValue] = newDict;
-					pushState(JSONState.DICT_STATE, newDict);
+					pushState();
+					state = JSONState.DICT_STATE;
+					cur = newDict;
 					continue;
 				}
 			}
@@ -187,7 +191,9 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 			if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
 				let newArr: any[] = [];
 				cur.push(newArr);
-				pushState(JSONState.ARR_STATE, newArr);
+				pushState();
+				state = JSONState.ARR_STATE;
+				cur = newArr;
 				continue;
 			}
 			if (token.type === JSONTokenType.LEFT_CURLY_BRACKET) {
@@ -196,7 +202,9 @@ export function parse(source: string, filename: string, withMetadata: boolean): 
 					newDict.$vscodeTextmateLocation = token.toLocation(filename);
 				}
 				cur.push(newDict);
-				pushState(JSONState.DICT_STATE, newDict);
+				pushState();
+				state = JSONState.DICT_STATE;
+				cur = newDict;
 				continue;
 			}
 

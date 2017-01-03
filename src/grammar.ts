@@ -543,7 +543,9 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 
 		let matchRating = matchResult.captureIndices[0].start;
 
-		if (matchRating >= bestMatchRating) {
+		if (matchRating > bestMatchRating) {
+			continue;
+		} else if (matchRating === bestMatchRating && (!injection.priorityMatch || bestMatchResultPriority)) {
 			continue;
 		}
 
