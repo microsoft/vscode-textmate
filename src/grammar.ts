@@ -1328,7 +1328,7 @@ class LineTokens {
 		return this._tokens;
 	}
 
-	public getBinaryResult(stack: StackElement, lineLength: number): number[] {
+	public getBinaryResult(stack: StackElement, lineLength: number): Uint32Array {
 		if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === lineLength - 1) {
 			// pop produced token for newline
 			this._binaryTokens.pop();
@@ -1341,6 +1341,11 @@ class LineTokens {
 			this._binaryTokens[this._binaryTokens.length - 2] = 0;
 		}
 
-		return this._binaryTokens;
+		let result = new Uint32Array(this._binaryTokens.length);
+		for (let i = 0, len = this._binaryTokens.length; i < len; i++) {
+			result[i] = this._binaryTokens[i];
+		}
+
+		return result;
 	}
 }

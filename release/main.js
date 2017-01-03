@@ -199,38 +199,76 @@ function resolveParsedThemeRules(parsedThemeRules) {
         }
         return a.index - b.index;
     });
-    var defaults;
-    if (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
+    // Determine defaults
+    var defaultFontStyle = 0 /* None */;
+    var defaultForeground = '#000000';
+    var defaultBackground = '#ffffff';
+    while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
         var incomingDefaults = parsedThemeRules.shift();
-        var fontStyle = incomingDefaults.fontStyle;
-        var foreground = incomingDefaults.foreground;
-        var background = incomingDefaults.background;
-        if (fontStyle === -1 /* NotSet */) {
-            fontStyle = 0 /* None */;
+        if (incomingDefaults.fontStyle !== -1 /* NotSet */) {
+            defaultFontStyle = incomingDefaults.fontStyle;
         }
-        if (foreground === null) {
-            foreground = '#000000';
+        if (incomingDefaults.foreground !== null) {
+            defaultForeground = incomingDefaults.foreground;
         }
-        if (background === null) {
-            background = '#ffffff';
+        if (incomingDefaults.background !== null) {
+            defaultBackground = incomingDefaults.background;
         }
-        defaults = new ParsedThemeRule('', null, incomingDefaults.index, fontStyle, foreground, background);
     }
-    else {
-        defaults = new ParsedThemeRule('', null, -1, 0 /* None */, '#000000', '#ffffff');
-    }
-    var root = new ThemeTrieElement(new ThemeTrieElementRule(null, defaults.fontStyle, defaults.foreground, defaults.background), []);
+    var colorMap = new ColorMap();
+    var defaults = new ThemeTrieElementRule(0, null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
+    var root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1 /* NotSet */, 0, 0), []);
     for (var i = 0, len = parsedThemeRules.length; i < len; i++) {
-        root.insert(parsedThemeRules[i]);
+        var rule = parsedThemeRules[i];
+        root.insert(0, rule.scope, rule.parentScopes, rule.fontStyle, colorMap.getId(rule.foreground), colorMap.getId(rule.background));
     }
-    return root;
+    return new Theme(colorMap, defaults, root);
 }
-exports.resolveParsedThemeRules = resolveParsedThemeRules;
+var ColorMap = (function () {
+    function ColorMap() {
+        this._lastColorId = 0;
+        this._id2color = [];
+        this._color2id = Object.create(null);
+    }
+    ColorMap.prototype.getId = function (color) {
+        if (color === null) {
+            return 0;
+        }
+        color = color.toUpperCase();
+        var value = this._color2id[color];
+        if (value) {
+            return value;
+        }
+        value = ++this._lastColorId;
+        this._color2id[color] = value;
+        this._id2color[value] = color;
+        return value;
+    };
+    ColorMap.prototype.getColorMap = function () {
+        return this._id2color.slice(0);
+    };
+    return ColorMap;
+}());
+exports.ColorMap = ColorMap;
 var Theme = (function () {
-    function Theme(source) {
-        this._root = resolveParsedThemeRules(parseTheme(source));
+    function Theme(colorMap, defaults, root) {
+        this._colorMap = colorMap;
+        this._root = root;
+        this._defaults = defaults;
         this._cache = {};
     }
+    Theme.createFromRawTheme = function (source) {
+        return this.createFromParsedTheme(parseTheme(source));
+    };
+    Theme.createFromParsedTheme = function (source) {
+        return resolveParsedThemeRules(source);
+    };
+    Theme.prototype.getColorMap = function () {
+        return this._colorMap.getColorMap();
+    };
+    Theme.prototype.getDefaults = function () {
+        return this._defaults;
+    };
     Theme.prototype.match = function (scopeName) {
         if (!this._cache.hasOwnProperty(scopeName)) {
             this._cache[scopeName] = this._root.match(scopeName);
@@ -275,23 +313,38 @@ function strArrCmp(a, b) {
 }
 exports.strArrCmp = strArrCmp;
 var ThemeTrieElementRule = (function () {
-    function ThemeTrieElementRule(parentScopes, fontStyle, foreground, background) {
+    function ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background) {
+        this.scopeDepth = scopeDepth;
         this.parentScopes = parentScopes;
         this.fontStyle = fontStyle;
         this.foreground = foreground;
         this.background = background;
     }
     ThemeTrieElementRule.prototype.clone = function () {
-        return new ThemeTrieElementRule(this.parentScopes, this.fontStyle, this.foreground, this.background);
+        return new ThemeTrieElementRule(this.scopeDepth, this.parentScopes, this.fontStyle, this.foreground, this.background);
     };
-    ThemeTrieElementRule.prototype.acceptOverwrite = function (fontStyle, foreground, background) {
+    ThemeTrieElementRule.cloneArr = function (arr) {
+        var r = [];
+        for (var i = 0, len = arr.length; i < len; i++) {
+            r[i] = arr[i].clone();
+        }
+        return r;
+    };
+    ThemeTrieElementRule.prototype.acceptOverwrite = function (scopeDepth, fontStyle, foreground, background) {
+        if (this.scopeDepth > scopeDepth) {
+            console.log('how did this happen?');
+        }
+        else {
+            this.scopeDepth = scopeDepth;
+        }
+        // console.log('TODO -> my depth: ' + this.scopeDepth + ', overwriting depth: ' + scopeDepth);
         if (fontStyle !== -1 /* NotSet */) {
             this.fontStyle = fontStyle;
         }
-        if (foreground !== null) {
+        if (foreground !== 0) {
             this.foreground = foreground;
         }
-        if (background !== null) {
+        if (background !== 0) {
             this.background = background;
         }
     };
@@ -306,9 +359,24 @@ var ThemeTrieElement = (function () {
         this._rulesWithParentScopes = rulesWithParentScopes;
         this._children = children;
     }
+    ThemeTrieElement._sortBySpecificity = function (arr) {
+        if (arr.length === 1) {
+            return arr;
+        }
+        arr.sort(this._cmpBySpecificity);
+        return arr;
+    };
+    ThemeTrieElement._cmpBySpecificity = function (a, b) {
+        if (a.scopeDepth === b.scopeDepth) {
+            var aValue = a.parentScopes === null ? 0 : a.parentScopes.length;
+            var bValue = b.parentScopes === null ? 0 : b.parentScopes.length;
+            return bValue - aValue;
+        }
+        return b.scopeDepth - a.scopeDepth;
+    };
     ThemeTrieElement.prototype.match = function (scope) {
         if (scope === '') {
-            return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+            return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
         }
         var dotIndex = scope.indexOf('.');
         var head;
@@ -324,14 +392,11 @@ var ThemeTrieElement = (function () {
         if (this._children.hasOwnProperty(head)) {
             return this._children[head].match(tail);
         }
-        return [].concat(this._mainRule).concat(this._rulesWithParentScopes);
+        return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
     };
-    ThemeTrieElement.prototype.insert = function (rule) {
-        this._doInsert(rule.scope, rule.parentScopes, rule.fontStyle, rule.foreground, rule.background);
-    };
-    ThemeTrieElement.prototype._doInsert = function (scope, parentScopes, fontStyle, foreground, background) {
+    ThemeTrieElement.prototype.insert = function (scopeDepth, scope, parentScopes, fontStyle, foreground, background) {
         if (scope === '') {
-            this._doInsertHere(parentScopes, fontStyle, foreground, background);
+            this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
             return;
         }
         var dotIndex = scope.indexOf('.');
@@ -346,20 +411,19 @@ var ThemeTrieElement = (function () {
             tail = scope.substring(dotIndex + 1);
         }
         var child;
-        if (this._children[head]) {
+        if (this._children.hasOwnProperty(head)) {
             child = this._children[head];
         }
         else {
-            child = new ThemeTrieElement(this._mainRule.clone());
+            child = new ThemeTrieElement(this._mainRule.clone(), ThemeTrieElementRule.cloneArr(this._rulesWithParentScopes));
             this._children[head] = child;
         }
-        // TODO: In the case that this element has `parentScopes`, should we generate one insert for each parentScope ?
-        child._doInsert(tail, parentScopes, fontStyle, foreground, background);
+        child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background);
     };
-    ThemeTrieElement.prototype._doInsertHere = function (parentScopes, fontStyle, foreground, background) {
+    ThemeTrieElement.prototype._doInsertHere = function (scopeDepth, parentScopes, fontStyle, foreground, background) {
         if (parentScopes === null) {
             // Merge into the main rule
-            this._mainRule.acceptOverwrite(fontStyle, foreground, background);
+            this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background);
             return;
         }
         // Try to merge into existing rule
@@ -367,7 +431,7 @@ var ThemeTrieElement = (function () {
             var rule = this._rulesWithParentScopes[i];
             if (strArrCmp(rule.parentScopes, parentScopes) === 0) {
                 // bingo! => we get to merge this into an existing one
-                rule.acceptOverwrite(fontStyle, foreground, background);
+                rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background);
                 return;
             }
         }
@@ -376,13 +440,13 @@ var ThemeTrieElement = (function () {
         if (fontStyle === -1 /* NotSet */) {
             fontStyle = this._mainRule.fontStyle;
         }
-        if (foreground === null) {
+        if (foreground === 0) {
             foreground = this._mainRule.foreground;
         }
-        if (background === null) {
+        if (background === 0) {
             background = this._mainRule.background;
         }
-        this._rulesWithParentScopes.push(new ThemeTrieElementRule(parentScopes, fontStyle, foreground, background));
+        this._rulesWithParentScopes.push(new ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background));
     };
     return ThemeTrieElement;
 }());
@@ -406,7 +470,7 @@ function createMatcher(expression, matchesName) {
         if (token === '(') {
             token = tokenizer.next();
             var expressionInParents = parseExpression('|');
-            if (token == ')') {
+            if (token === ')') {
                 token = tokenizer.next();
             }
             return expressionInParents;
@@ -804,18 +868,21 @@ function nextJSONToken(_state, _out) {
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 117 /* u */)
+        if (chCode !== 117 /* u */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 108 /* l */)
+        if (chCode !== 108 /* l */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 108 /* l */)
+        if (chCode !== 108 /* l */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
     }
@@ -825,18 +892,21 @@ function nextJSONToken(_state, _out) {
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 114 /* r */)
+        if (chCode !== 114 /* r */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 117 /* u */)
+        if (chCode !== 117 /* u */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 101 /* e */)
+        if (chCode !== 101 /* e */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
     }
@@ -846,23 +916,27 @@ function nextJSONToken(_state, _out) {
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 97 /* a */)
+        if (chCode !== 97 /* a */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 108 /* l */)
+        if (chCode !== 108 /* l */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 115 /* s */)
+        if (chCode !== 115 /* s */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
         chCode = source.charCodeAt(pos);
-        if (chCode !== 101 /* e */)
+        if (chCode !== 101 /* e */) {
             return false; /* INVALID */
+        }
         pos++;
         char++;
     }
@@ -870,8 +944,9 @@ function nextJSONToken(_state, _out) {
         //------------------------ numbers
         _out.type = 11 /* NUMBER */;
         do {
-            if (pos >= len)
+            if (pos >= len) {
                 return false; /*EOS*/
+            }
             chCode = source.charCodeAt(pos);
             if (chCode === 46 /* DOT */
                 || (chCode >= 48 /* D0 */ && chCode <= 57 /* D9 */)
@@ -1622,8 +1697,8 @@ var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
-function createGrammar(grammar, grammarRepository) {
-    return new Grammar(grammar, grammarRepository);
+function createGrammar(grammar, initialLanguage, embeddedLanguages, grammarRepository) {
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
 }
 exports.createGrammar = createGrammar;
 /**
@@ -1695,7 +1770,7 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
     }
     function nameMatcher(identifers, stackElements) {
-        var scopes = stackElements.generateScopes();
+        var scopes = stackElements.contentNameScopesList.generateScopes();
         var lastIndex = 0;
         return identifers.every(function (identifier) {
             for (var i = lastIndex; i < scopes.length; i++) {
@@ -1719,8 +1794,121 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         });
     });
 }
+var ScopeMetadata = (function () {
+    function ScopeMetadata(scopeName, languageId, tokenType, themeData) {
+        this.scopeName = scopeName;
+        this.languageId = languageId;
+        this.tokenType = tokenType;
+        this.themeData = themeData;
+    }
+    return ScopeMetadata;
+}());
+exports.ScopeMetadata = ScopeMetadata;
+var ScopeMetadataProvider = (function () {
+    function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
+        this._themeProvider = themeProvider;
+        this._cache = Object.create(null);
+        this._defaultMetaData = new ScopeMetadata('', initialLanguage, 0 /* Other */, [this._themeProvider.getDefaults()]);
+        // embeddedLanguages handling
+        this._embeddedLanguages = Object.create(null);
+        if (embeddedLanguages) {
+            // If embeddedLanguages are configured, fill in `this._embeddedLanguages`
+            var scopes = Object.keys(embeddedLanguages);
+            for (var i = 0, len = scopes.length; i < len; i++) {
+                var scope = scopes[i];
+                var language = embeddedLanguages[scope];
+                if (typeof language !== 'number' || language === 0) {
+                    console.warn('Invalid embedded language found at scope ' + scope + ': <<' + language + '>>');
+                    // never hurts to be too careful
+                    continue;
+                }
+                this._embeddedLanguages[scope] = language;
+            }
+        }
+        // create the regex
+        var escapedScopes = Object.keys(this._embeddedLanguages).map(function (scopeName) { return ScopeMetadataProvider._escapeRegExpCharacters(scopeName); });
+        if (escapedScopes.length === 0) {
+            // no scopes registered
+            this._embeddedLanguagesRegex = null;
+        }
+        else {
+            escapedScopes.sort();
+            escapedScopes.reverse();
+            this._embeddedLanguagesRegex = new RegExp("^((" + escapedScopes.join(')|(') + "))($|\\.)", '');
+        }
+    }
+    ScopeMetadataProvider.prototype.getDefaultMetadata = function () {
+        return this._defaultMetaData;
+    };
+    /**
+     * Escapes regular expression characters in a given string
+     */
+    ScopeMetadataProvider._escapeRegExpCharacters = function (value) {
+        return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+    };
+    ScopeMetadataProvider.prototype.getMetadataForScope = function (scopeName) {
+        if (scopeName === null) {
+            return ScopeMetadataProvider._NULL_SCOPE_METADATA;
+        }
+        var value = this._cache[scopeName];
+        if (value) {
+            return value;
+        }
+        value = this._doGetMetadataForScope(scopeName);
+        this._cache[scopeName] = value;
+        return value;
+    };
+    ScopeMetadataProvider.prototype._doGetMetadataForScope = function (scopeName) {
+        var languageId = this._scopeToLanguage(scopeName);
+        var standardTokenType = ScopeMetadataProvider._toStandardTokenType(scopeName);
+        var themeData = this._themeProvider.themeMatch(scopeName);
+        return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
+    };
+    /**
+     * Given a produced TM scope, return the language that token describes or null if unknown.
+     * e.g. source.html => html, source.css.embedded.html => css, punctuation.definition.tag.html => null
+     */
+    ScopeMetadataProvider.prototype._scopeToLanguage = function (scope) {
+        if (!scope) {
+            return 0;
+        }
+        if (!this._embeddedLanguagesRegex) {
+            // no scopes registered
+            return 0;
+        }
+        var m = scope.match(this._embeddedLanguagesRegex);
+        if (!m) {
+            // no scopes matched
+            return 0;
+        }
+        var language = this._embeddedLanguages[m[1]] || 0;
+        if (!language) {
+            return 0;
+        }
+        return language;
+    };
+    ScopeMetadataProvider._toStandardTokenType = function (tokenType) {
+        var m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
+        if (!m) {
+            return 0 /* Other */;
+        }
+        switch (m[1]) {
+            case 'comment':
+                return 1 /* Comment */;
+            case 'string':
+                return 2 /* String */;
+            case 'regex':
+                return 4 /* RegEx */;
+        }
+        throw new Error('Unexpected match for standard token type!');
+    };
+    return ScopeMetadataProvider;
+}());
+ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
+ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
 var Grammar = (function () {
-    function Grammar(grammar, grammarRepository) {
+    function Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository) {
+        this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
         this._rootId = -1;
         this._lastRuleId = 0;
         this._ruleId2desc = [];
@@ -1728,6 +1916,9 @@ var Grammar = (function () {
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
     }
+    Grammar.prototype.getMetadataForScope = function (scope) {
+        return this._scopeMetadataProvider.getMetadataForScope(scope);
+    };
     Grammar.prototype.getInjections = function (states) {
         var _this = this;
         if (!this._injections) {
@@ -1770,7 +1961,6 @@ var Grammar = (function () {
         return this._ruleId2desc[patternId];
     };
     Grammar.prototype.getExternalGrammar = function (scopeName, repository) {
-        var actualGrammar = null;
         if (this._includedGrammars[scopeName]) {
             return this._includedGrammars[scopeName];
         }
@@ -1784,13 +1974,34 @@ var Grammar = (function () {
         }
     };
     Grammar.prototype.tokenizeLine = function (lineText, prevState) {
+        var r = this._tokenize(lineText, prevState, false);
+        return {
+            tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
+            ruleStack: r.ruleStack
+        };
+    };
+    Grammar.prototype.tokenizeLine2 = function (lineText, prevState) {
+        var r = this._tokenize(lineText, prevState, true);
+        return {
+            tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
+            ruleStack: r.ruleStack
+        };
+    };
+    Grammar.prototype._tokenize = function (lineText, prevState, emitBinaryTokens) {
         if (this._rootId === -1) {
             this._rootId = rule_1.RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
         }
         var isFirstLine;
         if (!prevState) {
             isFirstLine = true;
-            prevState = new StackElement(null, this._rootId, -1, null, this.getRule(this._rootId).getName(null, null), null);
+            var rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
+            var defaultTheme = rawDefaultMetadata.themeData[0];
+            var defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
+            var rootScopeName = this.getRule(this._rootId).getName(null, null);
+            var rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
+            var rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
+            var scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
+            prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
         }
         else {
             isFirstLine = false;
@@ -1799,16 +2010,17 @@ var Grammar = (function () {
         lineText = lineText + '\n';
         var onigLineText = rule_1.createOnigString(lineText);
         var lineLength = rule_1.getString(onigLineText).length;
-        var lineTokens = new LineTokens(lineText);
+        var lineTokens = new LineTokens(emitBinaryTokens, lineText);
         var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
-        var _produced = lineTokens.getResult(nextState, lineLength);
         return {
-            tokens: _produced,
+            lineLength: lineLength,
+            lineTokens: lineTokens,
             ruleStack: nextState
         };
     };
     return Grammar;
 }());
+exports.Grammar = Grammar;
 function initGrammar(grammar, base) {
     grammar = utils_1.clone(grammar);
     grammar.repository = grammar.repository || {};
@@ -1845,25 +2057,36 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         // pop captures while needed
         while (localStack.length > 0 && localStack[localStack.length - 1].endPos <= captureIndex.start) {
             // pop!
-            lineTokens.produce(stack, localStack[localStack.length - 1].endPos, localStack);
+            lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
             localStack.pop();
         }
-        lineTokens.produce(stack, captureIndex.start, localStack);
+        if (localStack.length > 0) {
+            lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, captureIndex.start);
+        }
+        else {
+            lineTokens.produce(stack, captureIndex.start);
+        }
         if (captureRule.retokenizeCapturedWithRuleId) {
             // the capture requires additional matching
-            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, captureRule.getName(rule_1.getString(lineText), captureIndices), captureRule.getContentName(rule_1.getString(lineText), captureIndices));
+            var scopeName = captureRule.getName(rule_1.getString(lineText), captureIndices);
+            var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+            var contentName = captureRule.getContentName(rule_1.getString(lineText), captureIndices);
+            var contentNameScopesList = nameScopesList.push(grammar, contentName);
+            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
             _tokenizeString(grammar, rule_1.createOnigString(rule_1.getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             continue;
         }
         var captureRuleScopeName = captureRule.getName(rule_1.getString(lineText), captureIndices);
         if (captureRuleScopeName !== null) {
             // push
-            localStack.push(new LocalStackElement(captureRuleScopeName, captureIndex.end));
+            var base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
+            var captureRuleScopesList = base.push(grammar, captureRuleScopeName);
+            localStack.push(new LocalStackElement(captureRuleScopesList, captureIndex.end));
         }
     }
     while (localStack.length > 0) {
         // pop!
-        lineTokens.produce(stack, localStack[localStack.length - 1].endPos, localStack);
+        lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
         localStack.pop();
     }
 }
@@ -1918,7 +2141,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 }
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var rule = stack.getRule(grammar);
-    var ruleScanner = rule.compile(grammar, stack.getEndRule(), isFirstLine, linePos === anchorPosition);
+    var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
     if (debug_1.IN_DEBUG_MODE) {
         console.log('  scanning for');
@@ -1977,7 +2200,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
         }
     }
     for (var whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
-        var ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.getEndRule(), isFirstLine, anchorPosition === linePos);
+        var ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
         var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
         if (debug_1.IN_DEBUG_MODE) {
             console.log('  scanning for while rule');
@@ -1985,7 +2208,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
         }
         if (r) {
             var matchedRuleId = ruleScanner.rules[r.index];
-            if (matchedRuleId != -2) {
+            if (matchedRuleId !== -2) {
                 // we shouldn't end up here
                 stack = whileRule.stack.pop();
                 break;
@@ -2044,7 +2267,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
             }
             lineTokens.produce(stack, captureIndices[0].start);
-            stack = stack.withContentName(null);
+            stack = stack.setContentNameScopesList(stack.nameScopesList);
             handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, poppedRule.endCaptures, captureIndices);
             lineTokens.produce(stack, captureIndices[0].end);
             // pop
@@ -2055,7 +2278,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
                 // See https://github.com/Microsoft/vscode-textmate/issues/12
                 // Let's assume this was a mistake by the grammar author and the intent was to continue in this state
-                stack = stack.pushElement(popped);
+                stack = popped;
                 lineTokens.produce(stack, lineLength);
                 STOP = true;
                 return;
@@ -2067,7 +2290,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             lineTokens.produce(stack, captureIndices[0].start);
             var beforePush = stack;
             // push it on the stack rule
-            stack = stack.push(matchedRuleId, linePos, null, _rule.getName(rule_1.getString(lineText), captureIndices), null);
+            var scopeName = _rule.getName(rule_1.getString(lineText), captureIndices);
+            var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+            stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 if (debug_1.IN_DEBUG_MODE) {
@@ -2076,9 +2301,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                stack = stack.withContentName(pushedRule.getContentName(rule_1.getString(lineText), captureIndices));
+                var contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
+                var contentNameScopesList = nameScopesList.push(grammar, contentName);
+                stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.endHasBackReferences) {
-                    stack = stack.withEndRule(pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2097,9 +2324,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                stack = stack.withContentName(pushedRule.getContentName(rule_1.getString(lineText), captureIndices));
+                var contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
+                var contentNameScopesList = nameScopesList.push(grammar, contentName);
+                stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.whileHasBackReferences) {
-                    stack = stack.withEndRule(pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2137,71 +2366,263 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
     return stack;
 }
-/**
- * **IMPORTANT** - Immutable!
- */
-var StackElement = (function () {
-    function StackElement(parent, ruleId, enterPos, endRule, scopeName, contentName) {
-        this._parent = parent;
-        this._ruleId = ruleId;
-        this._enterPos = enterPos;
-        this._endRule = endRule;
-        this._scopeName = scopeName;
-        this._contentName = contentName;
+var StackElementMetadata = (function () {
+    function StackElementMetadata() {
     }
-    StackElement.prototype.equals = function (other) {
-        if (!this._shallowEquals(other)) {
-            return false;
+    StackElementMetadata.toBinaryStr = function (metadata) {
+        var r = metadata.toString(2);
+        while (r.length < 32) {
+            r = '0' + r;
         }
-        if (!this._parent && !other._parent) {
+        return r;
+    };
+    StackElementMetadata.printMetadata = function (metadata) {
+        var languageId = StackElementMetadata.getLanguageId(metadata);
+        var tokenType = StackElementMetadata.getTokenType(metadata);
+        var fontStyle = StackElementMetadata.getFontStyle(metadata);
+        var foreground = StackElementMetadata.getForeground(metadata);
+        var background = StackElementMetadata.getBackground(metadata);
+        console.log({
+            languageId: languageId,
+            tokenType: tokenType,
+            fontStyle: fontStyle,
+            foreground: foreground,
+            background: background,
+        });
+    };
+    StackElementMetadata.getLanguageId = function (metadata) {
+        return (metadata & 255 /* LANGUAGEID_MASK */) >>> 0 /* LANGUAGEID_OFFSET */;
+    };
+    StackElementMetadata.getTokenType = function (metadata) {
+        return (metadata & 1792 /* TOKEN_TYPE_MASK */) >>> 8 /* TOKEN_TYPE_OFFSET */;
+    };
+    StackElementMetadata.getFontStyle = function (metadata) {
+        return (metadata & 14336 /* FONT_STYLE_MASK */) >>> 11 /* FONT_STYLE_OFFSET */;
+    };
+    StackElementMetadata.getForeground = function (metadata) {
+        return (metadata & 8372224 /* FOREGROUND_MASK */) >>> 14 /* FOREGROUND_OFFSET */;
+    };
+    StackElementMetadata.getBackground = function (metadata) {
+        return (metadata & 4286578688 /* BACKGROUND_MASK */) >>> 23 /* BACKGROUND_OFFSET */;
+    };
+    StackElementMetadata.set = function (metadata, languageId, tokenType, fontStyle, foreground, background) {
+        var _languageId = StackElementMetadata.getLanguageId(metadata);
+        var _tokenType = StackElementMetadata.getTokenType(metadata);
+        var _fontStyle = StackElementMetadata.getFontStyle(metadata);
+        var _foreground = StackElementMetadata.getForeground(metadata);
+        var _background = StackElementMetadata.getBackground(metadata);
+        if (languageId !== 0) {
+            _languageId = languageId;
+        }
+        if (tokenType !== 0 /* Other */) {
+            _tokenType = tokenType;
+        }
+        if (fontStyle !== -1 /* NotSet */) {
+            _fontStyle = fontStyle;
+        }
+        if (foreground !== 0) {
+            _foreground = foreground;
+        }
+        if (background !== 0) {
+            _background = background;
+        }
+        return ((_languageId << 0 /* LANGUAGEID_OFFSET */)
+            | (_tokenType << 8 /* TOKEN_TYPE_OFFSET */)
+            | (_fontStyle << 11 /* FONT_STYLE_OFFSET */)
+            | (_foreground << 14 /* FOREGROUND_OFFSET */)
+            | (_background << 23 /* BACKGROUND_OFFSET */)) >>> 0;
+    };
+    return StackElementMetadata;
+}());
+exports.StackElementMetadata = StackElementMetadata;
+var ScopeListElement = (function () {
+    function ScopeListElement(parent, scope, metadata) {
+        this.parent = parent;
+        this.scope = scope;
+        this.metadata = metadata;
+    }
+    ScopeListElement._equals = function (a, b) {
+        do {
+            if (a === b) {
+                return true;
+            }
+            if (a.scope !== b.scope || a.metadata !== b.metadata) {
+                return false;
+            }
+            // Go to previous pair
+            a = a.parent;
+            b = b.parent;
+            if (!a && !b) {
+                // End of list reached for both
+                return true;
+            }
+            if (!a || !b) {
+                // End of list reached only for one
+                return false;
+            }
+        } while (true);
+    };
+    ScopeListElement.prototype.equals = function (other) {
+        return ScopeListElement._equals(this, other);
+    };
+    ScopeListElement._matchesScope = function (scope, selector, selectorWithDot) {
+        return (selector === scope || scope.substring(0, selectorWithDot.length) === selectorWithDot);
+    };
+    ScopeListElement._matches = function (target, parentScopes) {
+        if (parentScopes === null) {
             return true;
         }
-        if (!this._parent || !other._parent) {
+        var len = parentScopes.length;
+        var index = 0;
+        var selector = parentScopes[index];
+        var selectorWithDot = selector + '.';
+        while (target) {
+            if (this._matchesScope(target.scope, selector, selectorWithDot)) {
+                index++;
+                if (index === len) {
+                    return true;
+                }
+                selector = parentScopes[index];
+                selectorWithDot = selector + '.';
+            }
+            target = target.parent;
+        }
+        return false;
+    };
+    ScopeListElement.mergeMetadata = function (metadata, scopesList, source) {
+        if (source === null) {
+            return metadata;
+        }
+        var fontStyle = -1 /* NotSet */;
+        var foreground = 0;
+        var background = 0;
+        if (source.themeData !== null) {
+            // Find the first themeData that matches
+            for (var i = 0, len = source.themeData.length; i < len; i++) {
+                var themeData = source.themeData[i];
+                if (this._matches(scopesList, themeData.parentScopes)) {
+                    fontStyle = themeData.fontStyle;
+                    foreground = themeData.foreground;
+                    background = themeData.background;
+                    break;
+                }
+            }
+        }
+        return StackElementMetadata.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background);
+    };
+    ScopeListElement._push = function (target, grammar, scopes) {
+        for (var i = 0, len = scopes.length; i < len; i++) {
+            var scope = scopes[i];
+            var rawMetadata = grammar.getMetadataForScope(scope);
+            var metadata = ScopeListElement.mergeMetadata(target.metadata, target, rawMetadata);
+            target = new ScopeListElement(target, scope, metadata);
+        }
+        return target;
+    };
+    ScopeListElement.prototype.push = function (grammar, scope) {
+        if (scope === null) {
+            return this;
+        }
+        if (scope.indexOf(' ') >= 0) {
+            // there are multiple scopes to push
+            return ScopeListElement._push(this, grammar, scope.split(/ /g));
+        }
+        // there is a single scope to push
+        return ScopeListElement._push(this, grammar, [scope]);
+    };
+    ScopeListElement._generateScopes = function (scopesList) {
+        var result = [], resultLen = 0;
+        while (scopesList) {
+            result[resultLen++] = scopesList.scope;
+            scopesList = scopesList.parent;
+        }
+        result.reverse();
+        return result;
+    };
+    ScopeListElement.prototype.generateScopes = function () {
+        return ScopeListElement._generateScopes(this);
+    };
+    return ScopeListElement;
+}());
+exports.ScopeListElement = ScopeListElement;
+/**
+ * Represents a "pushed" state on the stack (as a linked list element).
+ */
+var StackElement = (function () {
+    function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
+        this.parent = parent;
+        this.depth = (this.parent ? this.parent.depth + 1 : 1);
+        this.ruleId = ruleId;
+        this._enterPos = enterPos;
+        this.endRule = endRule;
+        this.nameScopesList = nameScopesList;
+        this.contentNameScopesList = contentNameScopesList;
+    }
+    /**
+     * A structural equals check. Does not take into account `scopes`.
+     */
+    StackElement._structuralEquals = function (a, b) {
+        do {
+            if (a === b) {
+                return true;
+            }
+            if (a.depth !== b.depth || a.ruleId !== b.ruleId || a.endRule !== b.endRule) {
+                return false;
+            }
+            // Go to previous pair
+            a = a.parent;
+            b = b.parent;
+            if (!a && !b) {
+                // End of list reached for both
+                return true;
+            }
+            if (!a || !b) {
+                // End of list reached only for one
+                return false;
+            }
+        } while (true);
+    };
+    StackElement._equals = function (a, b) {
+        if (!this._structuralEquals(a, b)) {
             return false;
         }
-        return this._parent.equals(other._parent);
+        return a.contentNameScopesList.equals(b.contentNameScopesList);
     };
-    StackElement.prototype._shallowEquals = function (other) {
-        return (this._ruleId === other._ruleId
-            && this._endRule === other._endRule
-            && this._scopeName === other._scopeName
-            && this._contentName === other._contentName);
+    StackElement.prototype.equals = function (other) {
+        return StackElement._equals(this, other);
     };
-    StackElement.prototype.reset = function () {
-        this._enterPos = -1;
-        if (this._parent) {
-            this._parent.reset();
+    StackElement._reset = function (el) {
+        while (el) {
+            el._enterPos = -1;
+            el = el.parent;
         }
     };
+    StackElement.prototype.reset = function () {
+        StackElement._reset(this);
+    };
     StackElement.prototype.pop = function () {
-        return this._parent;
+        return this.parent;
     };
     StackElement.prototype.safePop = function () {
-        if (this._parent) {
-            return this._parent;
+        if (this.parent) {
+            return this.parent;
         }
         return this;
     };
-    StackElement.prototype.pushElement = function (what) {
-        return this.push(what._ruleId, what._enterPos, what._endRule, what._scopeName, what._contentName);
-    };
-    StackElement.prototype.push = function (ruleId, enterPos, endRule, scopeName, contentName) {
-        return new StackElement(this, ruleId, enterPos, endRule, scopeName, contentName);
+    StackElement.prototype.push = function (ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
+        return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.getEnterPos = function () {
         return this._enterPos;
     };
     StackElement.prototype.getRule = function (grammar) {
-        return grammar.getRule(this._ruleId);
-    };
-    StackElement.prototype.getEndRule = function () {
-        return this._endRule;
+        return grammar.getRule(this.ruleId);
     };
     StackElement.prototype._writeString = function (res, outIndex) {
-        if (this._parent) {
-            outIndex = this._parent._writeString(res, outIndex);
+        if (this.parent) {
+            outIndex = this.parent._writeString(res, outIndex);
         }
-        res[outIndex++] = "(" + this._ruleId + ", " + this._scopeName + ", " + this._contentName + ")";
+        res[outIndex++] = "(" + this.ruleId + ", TODO-" + this.nameScopesList + ", TODO-" + this.contentNameScopesList + ")";
         return outIndex;
     };
     StackElement.prototype.toString = function () {
@@ -2209,74 +2630,66 @@ var StackElement = (function () {
         this._writeString(r, 0);
         return '[' + r.join(',') + ']';
     };
-    StackElement.prototype.withContentName = function (contentName) {
-        if (this._contentName === contentName) {
+    StackElement.prototype.setContentNameScopesList = function (contentNameScopesList) {
+        if (this.contentNameScopesList === contentNameScopesList) {
             return this;
         }
-        return new StackElement(this._parent, this._ruleId, this._enterPos, this._endRule, this._scopeName, contentName);
+        return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
     };
-    StackElement.prototype.withEndRule = function (endRule) {
-        if (this._endRule === endRule) {
+    StackElement.prototype.setEndRule = function (endRule) {
+        if (this.endRule === endRule) {
             return this;
         }
-        return new StackElement(this._parent, this._ruleId, this._enterPos, endRule, this._scopeName, this._contentName);
-    };
-    StackElement.prototype._writeScopes = function (scopes, outIndex) {
-        if (this._parent) {
-            outIndex = this._parent._writeScopes(scopes, outIndex);
-        }
-        if (this._scopeName) {
-            scopes[outIndex++] = this._scopeName;
-        }
-        if (this._contentName) {
-            scopes[outIndex++] = this._contentName;
-        }
-        return outIndex;
-    };
-    /**
-     * Token scopes
-     */
-    StackElement.prototype.generateScopes = function () {
-        var result = [];
-        this._writeScopes(result, 0);
-        return result;
+        return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
     };
     StackElement.prototype.hasSameRuleAs = function (other) {
-        return this._ruleId === other._ruleId;
+        return this.ruleId === other.ruleId;
     };
     return StackElement;
 }());
 exports.StackElement = StackElement;
 var LocalStackElement = (function () {
-    function LocalStackElement(scopeName, endPos) {
-        if (typeof scopeName !== 'string') {
-            throw new Error('bubu');
-        }
-        this.scopeName = scopeName;
+    function LocalStackElement(scopes, endPos) {
+        this.scopes = scopes;
         this.endPos = endPos;
     }
     return LocalStackElement;
 }());
+exports.LocalStackElement = LocalStackElement;
 var LineTokens = (function () {
-    function LineTokens(lineText) {
+    function LineTokens(emitBinaryTokens, lineText) {
+        this._emitBinaryTokens = emitBinaryTokens;
         if (debug_1.IN_DEBUG_MODE) {
             this._lineText = lineText;
         }
-        this._tokens = [];
+        if (this._emitBinaryTokens) {
+            this._binaryTokens = [];
+        }
+        else {
+            this._tokens = [];
+        }
         this._lastTokenEndIndex = 0;
     }
-    LineTokens.prototype.produce = function (stack, endIndex, extraScopes) {
-        // console.log('PRODUCE TOKEN: lastTokenEndIndex: ' + lastTokenEndIndex + ', endIndex: ' + endIndex);
+    LineTokens.prototype.produce = function (stack, endIndex) {
+        this.produceFromScopes(stack.contentNameScopesList, endIndex);
+    };
+    LineTokens.prototype.produceFromScopes = function (scopesList, endIndex) {
         if (this._lastTokenEndIndex >= endIndex) {
             return;
         }
-        var scopes = stack.generateScopes();
-        var outIndex = scopes.length;
-        if (extraScopes) {
-            for (var i = 0; i < extraScopes.length; i++) {
-                scopes[outIndex++] = extraScopes[i].scopeName;
+        if (this._emitBinaryTokens) {
+            var metadata = scopesList.metadata;
+            if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
+                // no need to push a token with the same metadata
+                this._lastTokenEndIndex = endIndex;
+                return;
             }
+            this._binaryTokens.push(this._lastTokenEndIndex);
+            this._binaryTokens.push(metadata);
+            this._lastTokenEndIndex = endIndex;
+            return;
         }
+        var scopes = scopesList.generateScopes();
         if (debug_1.IN_DEBUG_MODE) {
             console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
             for (var k = 0; k < scopes.length; k++) {
@@ -2298,10 +2711,27 @@ var LineTokens = (function () {
         }
         if (this._tokens.length === 0) {
             this._lastTokenEndIndex = -1;
-            this.produce(stack, lineLength, null);
+            this.produce(stack, lineLength);
             this._tokens[this._tokens.length - 1].startIndex = 0;
         }
         return this._tokens;
+    };
+    LineTokens.prototype.getBinaryResult = function (stack, lineLength) {
+        if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === lineLength - 1) {
+            // pop produced token for newline
+            this._binaryTokens.pop();
+            this._binaryTokens.pop();
+        }
+        if (this._binaryTokens.length === 0) {
+            this._lastTokenEndIndex = -1;
+            this.produce(stack, lineLength);
+            this._binaryTokens[this._binaryTokens.length - 2] = 0;
+        }
+        var result = new Uint32Array(this._binaryTokens.length);
+        for (var i = 0, len = this._binaryTokens.length; i < len; i++) {
+            result[i] = this._binaryTokens[i];
+        }
+        return result;
     };
     return LineTokens;
 }());
@@ -2314,11 +2744,18 @@ $load('./registry', function(require, module, exports) {
 'use strict';
 var grammar_1 = require("./grammar");
 var SyncRegistry = (function () {
-    function SyncRegistry() {
+    function SyncRegistry(theme) {
+        this._theme = theme;
         this._grammars = {};
         this._rawGrammars = {};
         this._injectionGrammars = {};
     }
+    SyncRegistry.prototype.setTheme = function (theme) {
+        this._theme = theme;
+    };
+    SyncRegistry.prototype.getColorMap = function () {
+        return this._theme.getColorMap();
+    };
     /**
      * Add `grammar` to registry and return a list of referenced scope names
      */
@@ -2347,15 +2784,27 @@ var SyncRegistry = (function () {
         return this._injectionGrammars[targetScope];
     };
     /**
+     * Get the default theme settings
+     */
+    SyncRegistry.prototype.getDefaults = function () {
+        return this._theme.getDefaults();
+    };
+    /**
+     * Match a scope in the theme.
+     */
+    SyncRegistry.prototype.themeMatch = function (scopeName) {
+        return this._theme.match(scopeName);
+    };
+    /**
      * Lookup a grammar.
      */
-    SyncRegistry.prototype.grammarForScopeName = function (scopeName) {
+    SyncRegistry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages) {
         if (!this._grammars[scopeName]) {
             var rawGrammar = this._rawGrammars[scopeName];
             if (!rawGrammar) {
                 return null;
             }
-            this._grammars[scopeName] = grammar_1.createGrammar(rawGrammar, this);
+            this._grammars[scopeName] = grammar_1.createGrammar(rawGrammar, initialLanguage, embeddedLanguages, this);
         }
         return this._grammars[scopeName];
     };
@@ -2371,7 +2820,8 @@ $load('./main', function(require, module, exports) {
 'use strict';
 var registry_1 = require("./registry");
 var grammarReader_1 = require("./grammarReader");
-var DEFAULT_LOCATOR = {
+var theme_1 = require("./theme");
+var DEFAULT_OPTIONS = {
     getFilePath: function (scopeName) { return null; },
     getInjections: function (scopeName) { return null; }
 };
@@ -2380,14 +2830,50 @@ var DEFAULT_LOCATOR = {
  */
 var Registry = (function () {
     function Registry(locator) {
-        if (locator === void 0) { locator = DEFAULT_LOCATOR; }
+        if (locator === void 0) { locator = DEFAULT_OPTIONS; }
         this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry();
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme));
     }
+    /**
+     * Change the theme. Once called, no previous `ruleStack` should be used anymore.
+     */
+    Registry.prototype.setTheme = function (theme) {
+        this._syncRegistry.setTheme(theme_1.Theme.createFromRawTheme(theme));
+    };
+    /**
+     * Returns a lookup array for color ids.
+     */
+    Registry.prototype.getColorMap = function () {
+        return this._syncRegistry.getColorMap();
+    };
+    /**
+     * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+     * Please do not use language id 0.
+     */
+    Registry.prototype.loadGrammarWithEmbeddedLanguages = function (initialScopeName, initialLanguage, embeddedLanguages, callback) {
+        var _this = this;
+        this._loadGrammar(initialScopeName, function (err) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            callback(null, _this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages));
+        });
+    };
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
     Registry.prototype.loadGrammar = function (initialScopeName, callback) {
+        var _this = this;
+        this._loadGrammar(initialScopeName, function (err) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            callback(null, _this.grammarForScopeName(initialScopeName));
+        });
+    };
+    Registry.prototype._loadGrammar = function (initialScopeName, callback) {
         var remainingScopeNames = [initialScopeName];
         var seenScopeNames = {};
         seenScopeNames[initialScopeName] = true;
@@ -2399,7 +2885,7 @@ var Registry = (function () {
             var filePath = this._locator.getFilePath(scopeName);
             if (!filePath) {
                 if (scopeName === initialScopeName) {
-                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
                     return;
                 }
                 continue;
@@ -2417,27 +2903,31 @@ var Registry = (function () {
             }
             catch (err) {
                 if (scopeName === initialScopeName) {
-                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'), null);
+                    callback(new Error('Unknown injections for grammar <' + initialScopeName + '>'));
                     return;
                 }
             }
         }
-        callback(null, this.grammarForScopeName(initialScopeName));
+        callback(null);
     };
     /**
      * Load the grammar at `path` synchronously.
      */
-    Registry.prototype.loadGrammarFromPathSync = function (path) {
+    Registry.prototype.loadGrammarFromPathSync = function (path, initialLanguage, embeddedLanguages) {
+        if (initialLanguage === void 0) { initialLanguage = 0; }
+        if (embeddedLanguages === void 0) { embeddedLanguages = null; }
         var rawGrammar = grammarReader_1.readGrammarSync(path);
         var injections = this._locator.getInjections(rawGrammar.scopeName);
         this._syncRegistry.addGrammar(rawGrammar, injections);
-        return this.grammarForScopeName(rawGrammar.scopeName);
+        return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
     };
     /**
      * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
      */
-    Registry.prototype.grammarForScopeName = function (scopeName) {
-        return this._syncRegistry.grammarForScopeName(scopeName);
+    Registry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages) {
+        if (initialLanguage === void 0) { initialLanguage = 0; }
+        if (embeddedLanguages === void 0) { embeddedLanguages = null; }
+        return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages);
     };
     return Registry;
 }());

@@ -246,7 +246,7 @@ export interface ITokenizeLineResult2 {
 	 *  - at offset 2*i + 1 => metadata
 	 *
 	 */
-	readonly tokens: number[];
+	readonly tokens: Uint32Array;
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
