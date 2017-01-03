@@ -164,13 +164,13 @@ class ThemeInfo {
 }
 
 function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
-	it(test.testName, (done) => {
+	(<any>it(test.testName, (done:(error?:any)=>void) => {
 		test.evaluate(themeDatas, (err) => {
 			test.writeDiffPage();
 			assert.ok(!test.hasDiff(), 'no more unpatched differences');
 			done();
 		});
-	}).timeout(20000);
+	})).timeout(20000);
 }
 
 (function () {
