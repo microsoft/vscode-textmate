@@ -12,7 +12,7 @@ import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IT
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
-export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider): IGrammar {
+export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider): Grammar {
 	return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
 }
 
@@ -160,21 +160,17 @@ export class ScopeMetadata {
 
 class ScopeMetadataProvider {
 
+	private readonly _initialLanguage: number;
 	private readonly _themeProvider: IThemeProvider;
-	private readonly _cache: { [scopeName: string]: ScopeMetadata; };
-	private readonly _defaultMetaData: ScopeMetadata;
+	private _cache: { [scopeName: string]: ScopeMetadata; };
+	private _defaultMetaData: ScopeMetadata;
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp;
 
 	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
+		this._initialLanguage = initialLanguage;
 		this._themeProvider = themeProvider;
-		this._cache = Object.create(null);
-		this._defaultMetaData = new ScopeMetadata(
-			'',
-			initialLanguage,
-			StandardTokenType.Other,
-			[this._themeProvider.getDefaults()]
-		);
+		this.onDidChangeTheme();
 
 		// embeddedLanguages handling
 		this._embeddedLanguages = Object.create(null);
@@ -204,6 +200,16 @@ class ScopeMetadataProvider {
 			escapedScopes.reverse();
 			this._embeddedLanguagesRegex = new RegExp(`^((${escapedScopes.join(')|(')}))($|\\.)`, '');
 		}
+	}
+
+	public onDidChangeTheme(): void {
+		this._cache = Object.create(null);
+		this._defaultMetaData = new ScopeMetadata(
+			'',
+			this._initialLanguage,
+			StandardTokenType.Other,
+			[this._themeProvider.getDefaults()]
+		);
 	}
 
 	public getDefaultMetadata(): ScopeMetadata {
@@ -303,6 +309,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
+	}
+
+	public onDidChangeTheme(): void {
+		this._scopeMetadataProvider.onDidChangeTheme();
 	}
 
 	public getMetadataForScope(scope: string): ScopeMetadata {

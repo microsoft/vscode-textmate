@@ -1806,9 +1806,9 @@ var ScopeMetadata = (function () {
 exports.ScopeMetadata = ScopeMetadata;
 var ScopeMetadataProvider = (function () {
     function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
+        this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
-        this._cache = Object.create(null);
-        this._defaultMetaData = new ScopeMetadata('', initialLanguage, 0 /* Other */, [this._themeProvider.getDefaults()]);
+        this.onDidChangeTheme();
         // embeddedLanguages handling
         this._embeddedLanguages = Object.create(null);
         if (embeddedLanguages) {
@@ -1837,6 +1837,10 @@ var ScopeMetadataProvider = (function () {
             this._embeddedLanguagesRegex = new RegExp("^((" + escapedScopes.join(')|(') + "))($|\\.)", '');
         }
     }
+    ScopeMetadataProvider.prototype.onDidChangeTheme = function () {
+        this._cache = Object.create(null);
+        this._defaultMetaData = new ScopeMetadata('', this._initialLanguage, 0 /* Other */, [this._themeProvider.getDefaults()]);
+    };
     ScopeMetadataProvider.prototype.getDefaultMetadata = function () {
         return this._defaultMetaData;
     };
@@ -1916,6 +1920,9 @@ var Grammar = (function () {
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
     }
+    Grammar.prototype.onDidChangeTheme = function () {
+        this._scopeMetadataProvider.onDidChangeTheme();
+    };
     Grammar.prototype.getMetadataForScope = function (scope) {
         return this._scopeMetadataProvider.getMetadataForScope(scope);
     };
@@ -2751,7 +2758,12 @@ var SyncRegistry = (function () {
         this._injectionGrammars = {};
     }
     SyncRegistry.prototype.setTheme = function (theme) {
+        var _this = this;
         this._theme = theme;
+        Object.keys(this._grammars).forEach(function (scopeName) {
+            var grammar = _this._grammars[scopeName];
+            grammar.onDidChangeTheme();
+        });
     };
     SyncRegistry.prototype.getColorMap = function () {
         return this._theme.getColorMap();

@@ -3,14 +3,14 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { createGrammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet } from './grammar';
+import { createGrammar, Grammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet } from './grammar';
 import { IRawGrammar } from './types';
 import { IGrammar, IEmbeddedLanguagesMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 
 export class SyncRegistry implements IGrammarRepository {
 
-	private readonly _grammars: { [scopeName: string]: IGrammar; };
+	private readonly _grammars: { [scopeName: string]: Grammar; };
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
@@ -24,6 +24,10 @@ export class SyncRegistry implements IGrammarRepository {
 
 	public setTheme(theme: Theme): void {
 		this._theme = theme;
+		Object.keys(this._grammars).forEach((scopeName) => {
+			let grammar = this._grammars[scopeName];
+			grammar.onDidChangeTheme();
+		});
 	}
 
 	public getColorMap(): string[] {
