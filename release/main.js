@@ -1999,7 +1999,7 @@ var Grammar = (function () {
             this._rootId = rule_1.RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
         }
         var isFirstLine;
-        if (!prevState) {
+        if (!prevState || prevState === StackElement.NULL) {
             isFirstLine = true;
             var rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
             var defaultTheme = rawDefaultMetadata.themeData[0];
@@ -2590,12 +2590,21 @@ var StackElement = (function () {
         } while (true);
     };
     StackElement._equals = function (a, b) {
+        if (a === b) {
+            return true;
+        }
         if (!this._structuralEquals(a, b)) {
             return false;
         }
         return a.contentNameScopesList.equals(b.contentNameScopesList);
     };
+    StackElement.prototype.clone = function () {
+        return this;
+    };
     StackElement.prototype.equals = function (other) {
+        if (other === null) {
+            return false;
+        }
         return StackElement._equals(this, other);
     };
     StackElement._reset = function (el) {
@@ -2654,6 +2663,7 @@ var StackElement = (function () {
     };
     return StackElement;
 }());
+StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
 exports.StackElement = StackElement;
 var LocalStackElement = (function () {
     function LocalStackElement(scopes, endPos) {
@@ -2833,6 +2843,7 @@ $load('./main', function(require, module, exports) {
 var registry_1 = require("./registry");
 var grammarReader_1 = require("./grammarReader");
 var theme_1 = require("./theme");
+var grammar_1 = require("./grammar");
 var DEFAULT_OPTIONS = {
     getFilePath: function (scopeName) { return null; },
     getInjections: function (scopeName) { return null; }
@@ -2944,6 +2955,7 @@ var Registry = (function () {
     return Registry;
 }());
 exports.Registry = Registry;
+exports.INITIAL = grammar_1.StackElement.NULL;
 //# sourceMappingURL=main.js.map
 });
 module.exports = $map['./main'].exports;

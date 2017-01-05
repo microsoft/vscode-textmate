@@ -398,7 +398,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		}
 
 		let isFirstLine: boolean;
-		if (!prevState) {
+		if (!prevState || prevState === StackElement.NULL) {
 			isFirstLine = true;
 			let rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
 			let defaultTheme = rawDefaultMetadata.themeData[0];
@@ -1085,6 +1085,8 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
+	public static NULL = new StackElement(null, 0, 0, null, null, null);
+
 	/**
 	 * The position on the current line where this state was pushed.
 	 * This is relevant only while tokenizing a line, to detect endless loops.
@@ -1160,13 +1162,23 @@ export class StackElement implements StackElementDef {
 	}
 
 	private static _equals(a: StackElement, b: StackElement): boolean {
+		if (a === b) {
+			return true;
+		}
 		if (!this._structuralEquals(a, b)) {
 			return false;
 		}
 		return a.contentNameScopesList.equals(b.contentNameScopesList);
 	}
 
+	public clone(): StackElement {
+		return this;
+	}
+
 	public equals(other: StackElement): boolean {
+		if (other === null) {
+			return false;
+		}
 		return StackElement._equals(this, other);
 	}
 

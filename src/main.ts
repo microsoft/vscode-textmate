@@ -6,6 +6,7 @@
 import { SyncRegistry } from './registry';
 import { readGrammarSync } from './grammarReader';
 import { Theme } from './theme';
+import { StackElement as StackElementImpl } from './grammar';
 
 let DEFAULT_OPTIONS: RegistryOptions = {
 	getFilePath: (scopeName: string) => null,
@@ -266,5 +267,8 @@ export interface StackElement {
 	_stackElementBrand: void;
 	readonly depth: number;
 
+	clone(): StackElement;
 	equals(other: StackElement): boolean;
 }
+
+export const INITIAL: StackElement = StackElementImpl.NULL;
