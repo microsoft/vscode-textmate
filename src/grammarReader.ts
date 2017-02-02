@@ -15,12 +15,8 @@ export function readGrammar(filePath: string, callback: (error: any, grammar: IR
 }
 
 export function readGrammarSync(filePath: string): IRawGrammar {
-	try {
-		let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
-		return reader.load();
-	} catch (err) {
-		throw new Error('Error parsing ' + filePath + ': ' + err.message);
-	}
+	let reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
+	return reader.load();
 }
 
 interface IGrammarParser {
@@ -64,8 +60,17 @@ class SyncGrammarReader {
 	}
 
 	public load(): IRawGrammar {
-		let contents = fs.readFileSync(this._filePath);
-		return this._parser(contents.toString(), this._filePath);
+		try {
+			let contents = fs.readFileSync(this._filePath);
+			try {
+				return this._parser(contents.toString(), this._filePath);
+			} catch (e) {
+				throw new Error(`Error parsing ${this._filePath}: ${e.message}.`);
+			}
+		} catch (e) {
+			throw new Error(`Error reading ${this._filePath}: ${e.message}.`);
+		}
+
 	}
 }
 

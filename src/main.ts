@@ -149,7 +149,7 @@ export class Registry {
 				});
 			} catch (err) {
 				if (scopeName === initialScopeName) {
-					callback(new Error('Unknown injections for grammar <' + initialScopeName + '>'));
+					callback(err);
 					return;
 				}
 			}
