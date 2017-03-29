@@ -136,7 +136,12 @@ function parseTheme(source) {
         }
         var scopes = void 0;
         if (typeof entry.scope === 'string') {
-            scopes = entry.scope.split(',');
+            var _scope = entry.scope;
+            // remove leading commas
+            _scope = _scope.replace(/^[,]+/, '');
+            // remove trailing commans
+            _scope = _scope.replace(/[,]+$/, '');
+            scopes = _scope.split(',');
         }
         else if (Array.isArray(entry.scope)) {
             scopes = entry.scope;
@@ -168,7 +173,7 @@ function parseTheme(source) {
             foreground = entry.settings.foreground;
         }
         var background = null;
-        if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.foreground)) {
+        if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.background)) {
             background = entry.settings.background;
         }
         for (var j = 0, lenJ = scopes.length; j < lenJ; j++) {
