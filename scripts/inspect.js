@@ -49,7 +49,11 @@ for (var i = 0; i < lines.length; i++) {
 			stackElement._instanceId = (++lastElementId);
 		}
 		var ruleDesc = grammar._ruleId2desc[stackElement._ruleId]
-		list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement._scopeName + '"');
+		if (!ruleDesc) {
+			list.push('  * no rule description?');
+		} else {
+			list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement._scopeName + '"');
+		}
 		stackElement = stackElement._parent;
 	}
 	list.reverse();

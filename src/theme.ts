@@ -69,7 +69,15 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 
 		let scopes: string[];
 		if (typeof entry.scope === 'string') {
-			scopes = entry.scope.split(',');
+			let _scope = entry.scope;
+
+			// remove leading commas
+			_scope = _scope.replace(/^[,]+/, '');
+
+			// remove trailing commans
+			_scope = _scope.replace(/[,]+$/, '');
+
+			scopes = _scope.split(',');
 		} else if (Array.isArray(entry.scope)) {
 			scopes = entry.scope;
 		} else {

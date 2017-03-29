@@ -758,4 +758,40 @@ describe('Theme resolving', () => {
 		assert.deepEqual(actual, expected);
 	});
 
+	it('issue #35: Trailing comma in a tmTheme scope selector', () => {
+		let actual = parseTheme({
+			settings: [{
+				settings: {
+					background: '#25292C',
+					foreground: '#EFEFEF'
+				}
+			}, {
+				name: 'CSS at-rule keyword control',
+				scope: [
+					'meta.at-rule.return.scss,',
+					'meta.at-rule.return.scss punctuation.definition,',
+					'meta.at-rule.else.scss,',
+					'meta.at-rule.else.scss punctuation.definition,',
+					'meta.at-rule.if.scss,',
+					'meta.at-rule.if.scss punctuation.definition,'
+				].join('\n'),
+				settings: {
+					foreground: '#CC7832'
+				}
+			}]
+		});
+
+		let expected = [
+			new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#EFEFEF', '#25292C'),
+			new ParsedThemeRule('meta.at-rule.return.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
+			new ParsedThemeRule('punctuation.definition', ['meta.at-rule.return.scss'], 1, FontStyle.NotSet, '#CC7832', null),
+			new ParsedThemeRule('meta.at-rule.else.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
+			new ParsedThemeRule('punctuation.definition', ['meta.at-rule.else.scss'], 1, FontStyle.NotSet, '#CC7832', null),
+			new ParsedThemeRule('meta.at-rule.if.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
+			new ParsedThemeRule('punctuation.definition', ['meta.at-rule.if.scss'], 1, FontStyle.NotSet, '#CC7832', null),
+		];
+
+		assert.deepEqual(actual, expected);
+	});
+
 });
