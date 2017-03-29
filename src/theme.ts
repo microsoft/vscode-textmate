@@ -111,7 +111,7 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 		}
 
 		let background: string = null;
-		if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.foreground)) {
+		if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.background)) {
 			background = entry.settings.background;
 		}
 
