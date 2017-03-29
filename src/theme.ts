@@ -373,9 +373,20 @@ export class ThemeTrieElement {
 
 	private static _cmpBySpecificity(a: ThemeTrieElementRule, b: ThemeTrieElementRule): number {
 		if (a.scopeDepth === b.scopeDepth) {
-			let aValue = a.parentScopes === null ? 0 : a.parentScopes.length;
-			let bValue = b.parentScopes === null ? 0 : b.parentScopes.length;
-			return bValue - aValue;
+			const aParentScopes = a.parentScopes;
+			const bParentScopes = b.parentScopes;
+			let aParentScopesLen = aParentScopes === null ? 0 : aParentScopes.length;
+			let bParentScopesLen = bParentScopes === null ? 0 : bParentScopes.length;
+			if (aParentScopesLen === bParentScopesLen) {
+				for (let i = 0; i < aParentScopesLen; i++) {
+					const aLen = aParentScopes[i].length;
+					const bLen = bParentScopes[i].length;
+					if (aLen !== bLen) {
+						return bLen - aLen;
+					}
+				}
+			}
+			return bParentScopesLen - aParentScopesLen;
 		}
 		return b.scopeDepth - a.scopeDepth;
 	}

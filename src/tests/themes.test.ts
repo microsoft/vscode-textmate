@@ -385,6 +385,70 @@ describe('Theme matching', () => {
 			new ThemeTrieElementRule(1, null, FontStyle.NotSet, _NOT_SET, _C),
 		]);
 	});
+
+	it('Microsoft/vscode#23460', () => {
+		let theme = Theme.createFromRawTheme({
+			settings: [
+				{
+					settings: {
+						foreground: '#aec2e0',
+						background: '#14191f'
+					}
+				}, {
+					name: 'JSON String',
+					scope: 'meta.structure.dictionary.json string.quoted.double.json',
+					settings: {
+						foreground: '#FF410D'
+					}
+				}, {
+					scope: 'meta.structure.dictionary.json string.quoted.double.json',
+					settings: {
+						foreground: '#ffffff'
+					}
+				},
+				{
+					scope: 'meta.structure.dictionary.value.json string.quoted.double.json',
+					settings: {
+						foreground: '#FF410D'
+					}
+				}
+			]
+		});
+
+		let colorMap = new ColorMap();
+		const _NOT_SET = 0;
+		const _A = colorMap.getId('#aec2e0');
+		const _B = colorMap.getId('#14191f');
+		const _C = colorMap.getId('#FF410D');
+		const _D = colorMap.getId('#ffffff');
+
+		function assertMatch(scopeName: string, expected: ThemeTrieElementRule[]): void {
+			let actual = theme.match(scopeName);
+			assert.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
+		}
+
+		// string.quoted.double.json
+		// meta.structure.dictionary.value.json
+		// meta.structure.dictionary.json
+		// source.json
+		assertMatch('string.quoted.double.json', [
+			new ThemeTrieElementRule(4, ['meta.structure.dictionary.value.json'], FontStyle.NotSet, _C, _NOT_SET),
+			new ThemeTrieElementRule(4, ['meta.structure.dictionary.json'], FontStyle.NotSet, _D, _NOT_SET),
+			new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET),
+		]);
+
+		let parent3 = new ScopeListElement(null, 'source.json', 0);
+		let parent2 = new ScopeListElement(parent3, 'meta.structure.dictionary.json', 0);
+		let parent1 = new ScopeListElement(parent2, 'meta.structure.dictionary.value.json', 0);
+
+		let r = ScopeListElement.mergeMetadata(
+			0,
+			parent1,
+			new ScopeMetadata('string.quoted.double.json', 0, 0, theme.match('string.quoted.double.json'))
+		);
+		let colorMap2 = theme.getColorMap();
+		assert.equal(colorMap2[StackElementMetadata.getForeground(r)], '#FF410D');
+	});
 });
 
 describe('Theme parsing', () => {

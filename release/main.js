@@ -376,9 +376,20 @@ var ThemeTrieElement = (function () {
     };
     ThemeTrieElement._cmpBySpecificity = function (a, b) {
         if (a.scopeDepth === b.scopeDepth) {
-            var aValue = a.parentScopes === null ? 0 : a.parentScopes.length;
-            var bValue = b.parentScopes === null ? 0 : b.parentScopes.length;
-            return bValue - aValue;
+            var aParentScopes = a.parentScopes;
+            var bParentScopes = b.parentScopes;
+            var aParentScopesLen = aParentScopes === null ? 0 : aParentScopes.length;
+            var bParentScopesLen = bParentScopes === null ? 0 : bParentScopes.length;
+            if (aParentScopesLen === bParentScopesLen) {
+                for (var i = 0; i < aParentScopesLen; i++) {
+                    var aLen = aParentScopes[i].length;
+                    var bLen = bParentScopes[i].length;
+                    if (aLen !== bLen) {
+                        return bLen - aLen;
+                    }
+                }
+            }
+            return bParentScopesLen - aParentScopesLen;
         }
         return b.scopeDepth - a.scopeDepth;
     };
