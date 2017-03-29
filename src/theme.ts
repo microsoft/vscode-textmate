@@ -44,6 +44,10 @@ export class ParsedThemeRule {
 	}
 }
 
+function isValidHexColor(hex: string): boolean {
+	return /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(hex);
+}
+
 /**
  * Parse a raw theme into rules.
  */
@@ -94,12 +98,12 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 		}
 
 		let foreground: string = null;
-		if (typeof entry.settings.foreground === 'string') {
+		if (typeof entry.settings.foreground === 'string' && isValidHexColor(entry.settings.foreground)) {
 			foreground = entry.settings.foreground;
 		}
 
 		let background: string = null;
-		if (typeof entry.settings.background === 'string') {
+		if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.foreground)) {
 			background = entry.settings.background;
 		}
 

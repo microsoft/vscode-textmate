@@ -164,7 +164,7 @@ class ThemeInfo {
 }
 
 function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
-	(<any>it(test.testName, (done:(error?:any)=>void) => {
+	(<any>it(test.testName, (done: (error?: any) => void) => {
 		test.evaluate(themeDatas, (err) => {
 			test.writeDiffPage();
 			assert.ok(!test.hasDiff(), 'no more unpatched differences');
@@ -700,6 +700,61 @@ describe('Theme resolving', () => {
 				)
 			})
 		);
+		assert.deepEqual(actual, expected);
+	});
+
+	it('issue #38: ignores rules with invalid colors', () => {
+		let actual = parseTheme({
+			settings: [{
+				settings: {
+					background: '#222222',
+					foreground: '#cccccc'
+				}
+			}, {
+				name: 'Variable',
+				scope: 'variable',
+				settings: {
+					fontStyle: ''
+				}
+			}, {
+				name: 'Function argument',
+				scope: 'variable.parameter',
+				settings: {
+					fontStyle: 'italic',
+					foreground: ''
+				}
+			}, {
+				name: 'Library variable',
+				scope: 'support.other.variable',
+				settings: {
+					fontStyle: ''
+				}
+			}, {
+				name: 'Function argument',
+				scope: 'variable.other',
+				settings: {
+					foreground: '',
+					fontStyle: 'normal'
+				}
+			}, {
+				name: 'Coffeescript Function argument',
+				scope: 'variable.parameter.function.coffee',
+				settings: {
+					foreground: '#F9D423',
+					fontStyle: 'italic'
+				}
+			}]
+		});
+
+		let expected = [
+			new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#cccccc', '#222222'),
+			new ParsedThemeRule('variable', null, 1, FontStyle.None, null, null),
+			new ParsedThemeRule('variable.parameter', null, 2, FontStyle.Italic, null, null),
+			new ParsedThemeRule('support.other.variable', null, 3, FontStyle.None, null, null),
+			new ParsedThemeRule('variable.other', null, 4, FontStyle.None, null, null),
+			new ParsedThemeRule('variable.parameter.function.coffee', null, 5, FontStyle.Italic, '#F9D423', null),
+		];
+
 		assert.deepEqual(actual, expected);
 	});
 

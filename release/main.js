@@ -114,6 +114,9 @@ var ParsedThemeRule = (function () {
     return ParsedThemeRule;
 }());
 exports.ParsedThemeRule = ParsedThemeRule;
+function isValidHexColor(hex) {
+    return /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(hex);
+}
 /**
  * Parse a raw theme into rules.
  */
@@ -161,11 +164,11 @@ function parseTheme(source) {
             }
         }
         var foreground = null;
-        if (typeof entry.settings.foreground === 'string') {
+        if (typeof entry.settings.foreground === 'string' && isValidHexColor(entry.settings.foreground)) {
             foreground = entry.settings.foreground;
         }
         var background = null;
-        if (typeof entry.settings.background === 'string') {
+        if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.foreground)) {
             background = entry.settings.background;
         }
         for (var j = 0, lenJ = scopes.length; j < lenJ; j++) {
@@ -988,13 +991,8 @@ function readGrammar(filePath, callback) {
 }
 exports.readGrammar = readGrammar;
 function readGrammarSync(filePath) {
-    try {
-        var reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
-        return reader.load();
-    }
-    catch (err) {
-        throw new Error('Error parsing ' + filePath + ': ' + err.message);
-    }
+    var reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
+    return reader.load();
 }
 exports.readGrammarSync = readGrammarSync;
 var AsyncGrammarReader = (function () {
@@ -1028,8 +1026,18 @@ var SyncGrammarReader = (function () {
         this._parser = parser;
     }
     SyncGrammarReader.prototype.load = function () {
-        var contents = fs.readFileSync(this._filePath);
-        return this._parser(contents.toString(), this._filePath);
+        try {
+            var contents = fs.readFileSync(this._filePath);
+            try {
+                return this._parser(contents.toString(), this._filePath);
+            }
+            catch (e) {
+                throw new Error("Error parsing " + this._filePath + ": " + e.message + ".");
+            }
+        }
+        catch (e) {
+            throw new Error("Error reading " + this._filePath + ": " + e.message + ".");
+        }
     };
     return SyncGrammarReader;
 }());
@@ -2926,7 +2934,7 @@ var Registry = (function () {
             }
             catch (err) {
                 if (scopeName === initialScopeName) {
-                    callback(new Error('Unknown injections for grammar <' + initialScopeName + '>'));
+                    callback(err);
                     return;
                 }
             }
