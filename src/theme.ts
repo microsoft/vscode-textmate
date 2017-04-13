@@ -45,7 +45,27 @@ export class ParsedThemeRule {
 }
 
 function isValidHexColor(hex: string): boolean {
-	return /^#[0-9a-f]{6}([0-9a-f]{2})?$/i.test(hex);
+	if (/^#[0-9a-f]{6}$/i.test(hex)) {
+		// #rrggbb
+		return true;
+	}
+
+	if (/^#[0-9a-f]{8}$/i.test(hex)) {
+		// #rrggbbaa
+		return true;
+	}
+
+	if (/^#[0-9a-f]{3}$/i.test(hex)) {
+		// #rgb
+		return true;
+	}
+
+	if (/^#[0-9a-f]{4}$/i.test(hex)) {
+		// #rgba
+		return true;
+	}
+
+	return false;
 }
 
 /**

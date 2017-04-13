@@ -466,6 +466,7 @@ describe('Theme parsing', () => {
 				{ scope: 'constant.numeric.hex', settings: { fontStyle: 'bold' } },
 				{ scope: 'constant.numeric.oct', settings: { fontStyle: 'bold italic underline' } },
 				{ scope: 'constant.numeric.dec', settings: { fontStyle: '', foreground: '#0000ff' } },
+				{ scope: 'foo', settings: { fontStyle: '', foreground: '#CFA' } },
 			]
 		});
 
@@ -481,6 +482,7 @@ describe('Theme parsing', () => {
 			new ParsedThemeRule('constant.numeric.hex', null, 6, FontStyle.Bold, null, null),
 			new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null),
 			new ParsedThemeRule('constant.numeric.dec', null, 8, FontStyle.None, '#0000ff', null),
+			new ParsedThemeRule('foo', null, 9, FontStyle.None, '#CFA', null),
 		];
 
 		assert.deepEqual(actual, expected);
