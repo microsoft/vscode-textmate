@@ -49,6 +49,8 @@ export abstract class Rule {
 		this._contentNameIsCapturing = RegexSource.hasCaptures(this._contentName);
 	}
 
+	public abstract dispose(): void;
+
 	public get debugName(): string {
 		return `${(<any>this.constructor).name}#${this.id} @ ${path.basename(this.$location.filename)}:${this.$location.line}`;
 	}
@@ -89,6 +91,8 @@ export class CaptureRule extends Rule {
 		super($location, id, name, contentName);
 		this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
 	}
+
+	public dispose(): void { }
 }
 
 interface IRegExpSourceAnchorCache {
@@ -316,6 +320,10 @@ export class RegExpSourceList {
 		};
 	}
 
+	public dispose(): void {
+		this.clearCache(); // disposes objects in cache
+	}
+
 	public push(item: RegExpSource): void {
 		this._items.push(item);
 		this._hasAnchors = this._hasAnchors || item.hasAnchor;
@@ -330,14 +338,30 @@ export class RegExpSourceList {
 		return this._items.length;
 	}
 
-	public setSource(index: number, newSource: string): void {
-		if (this._items[index].source !== newSource) {
-			// bust the cache
+	private clearCache(): void {
+		const disposeScanner = (scanner: OnigScanner): void => {
+			if (scanner.dispose) { scanner.dispose(); }
+		};
+		if (this._cached) {
+			disposeScanner(this._cached.scanner);
 			this._cached = null;
+		}
+		if (this._anchorCache) {
+			if (this._anchorCache.A0_G0) { disposeScanner(this._anchorCache.A0_G0.scanner); }
+			if (this._anchorCache.A0_G1) { disposeScanner(this._anchorCache.A0_G1.scanner); }
+			if (this._anchorCache.A1_G0) { disposeScanner(this._anchorCache.A1_G0.scanner); }
+			if (this._anchorCache.A1_G1) { disposeScanner(this._anchorCache.A1_G1.scanner); }
 			this._anchorCache.A0_G0 = null;
 			this._anchorCache.A0_G1 = null;
 			this._anchorCache.A1_G0 = null;
 			this._anchorCache.A1_G1 = null;
+		}
+	}
+
+	public setSource(index: number, newSource: string): void {
+		if (this._items[index].source !== newSource) {
+			// bust the cache
+			this.clearCache();
 			this._items[index].setSource(newSource);
 		}
 	}
@@ -399,6 +423,10 @@ export class MatchRule extends Rule {
 		this._cachedCompiledPatterns = null;
 	}
 
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) { this._cachedCompiledPatterns.dispose(); }
+	}
+
 	public get debugMatchRegExp(): string {
 		return `${this._match.source}`;
 	}
@@ -426,6 +454,10 @@ export class IncludeOnlyRule extends Rule {
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
+	}
+
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) { this._cachedCompiledPatterns.dispose(); }
 	}
 
 	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
@@ -474,6 +506,10 @@ export class BeginEndRule extends Rule {
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
+	}
+
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) { this._cachedCompiledPatterns.dispose(); }
 	}
 
 	public get debugBeginRegExp(): string {
@@ -554,6 +590,11 @@ export class BeginWhileRule extends Rule {
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
 		this._cachedCompiledWhilePatterns = null;
+	}
+
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) { this._cachedCompiledPatterns.dispose(); }
+		if (this._cachedCompiledWhilePatterns) { this._cachedCompiledWhilePatterns.dispose(); }
 	}
 
 	public getWhileWithResolvedBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string {

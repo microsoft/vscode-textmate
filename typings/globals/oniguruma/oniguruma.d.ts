@@ -16,10 +16,12 @@ declare module "oniguruma" {
 		constructor(regexps:string[]);
 		_findNextMatchSync(lin:string, pos:number): IOnigNextMatchResult;
 		_findNextMatchSync(lin:OnigString, pos:number): IOnigNextMatchResult;
+		dispose?(): void;
 	}
 
 	export class OnigString {
 		constructor(str:string);
+		dispose?(): void;
 	}
 
 }

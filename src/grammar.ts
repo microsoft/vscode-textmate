@@ -421,6 +421,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		let lineLength = getString(onigLineText).length;
 		let lineTokens = new LineTokens(emitBinaryTokens, lineText);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
+		if (onigLineText.dispose) { onigLineText.dispose(); }
 
 		return {
 			lineLength: lineLength,
@@ -492,12 +493,12 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			let contentNameScopesList = nameScopesList.push(grammar, contentName);
 
 			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+			const str = createOnigString(getString(lineText).substring(0, captureIndex.end));
 			_tokenizeString(grammar,
-				createOnigString(
-					getString(lineText).substring(0, captureIndex.end)
-				),
+				str,
 				(isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens
 			);
+			if (str.dispose) { str.dispose(); }
 			continue;
 		}
 
