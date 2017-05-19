@@ -1187,5 +1187,71 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/html2.json",
+			"fixtures/javascript.json"
+		],
+		"grammarPath": "fixtures/html2.json",
+		"desc": "Issue #46",
+		"lines": [
+			{
+				"line": "<script>",
+				"tokens": [
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"punctuation.definition.tag.begin.html"
+						],
+						"value": "<"
+					},
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"entity.name.tag.html"
+						],
+						"value": "script"
+					},
+					{
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"meta.tag.metadata.script.html",
+							"punctuation.definition.tag.end.html"
+						],
+						"value": ">"
+					}
+				]
+			},
+			{
+				"line": "//dd<dd<dd",
+				"tokens": [
+					{
+						"value": "//",
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"source.js",
+							"comment.line.double-slash.js",
+							"punctuation.definition.comment.js"
+						]
+					},
+					{
+						"value": "dd<dd<dd",
+						"scopes": [
+							"text.html.basic",
+							"meta.embedded.block.html",
+							"source.js",
+							"comment.line.double-slash.js"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
