@@ -7,7 +7,7 @@ import { clone } from './utils';
 import { IRawGrammar, IRawRepository, IRawRule } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString } from './rule';
 import { IOnigCaptureIndex, OnigString } from 'oniguruma';
-import { createMatcher, Matcher } from './matcher';
+import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef } from './main';
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
@@ -99,8 +99,8 @@ export function collectIncludedScopes(result: IScopeNameSet, grammar: IRawGramma
 }
 
 export interface Injection {
-	readonly matcher: Matcher<StackElement>;
-	readonly priorityMatch: boolean;
+	readonly matcher: Matcher<string[]>;
+	readonly priority: -1 | 0 | 1; // 0 is the default. -1 for 'L' and 1 for 'R'
 	readonly ruleId: number;
 	readonly grammar: IRawGrammar;
 }
@@ -117,13 +117,15 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 		return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
 	}
 
-	function nameMatcher(identifers: string[], stackElements: StackElement) {
-		let scopes = stackElements.contentNameScopesList.generateScopes();
+	function nameMatcher(identifers: string[], scopes: string[]) {
+		if (scopes.length < identifers.length) {
+			return false;
+		}
 		var lastIndex = 0;
 		return identifers.every(identifier => {
 			for (var i = lastIndex; i < scopes.length; i++) {
 				if (scopesAreMatching(scopes[i], identifier)) {
-					lastIndex = i;
+					lastIndex = i + 1;
 					return true;
 				}
 			}
@@ -131,17 +133,16 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 		});
 	};
 
-	var subExpressions = selector.split(',');
-	subExpressions.forEach(subExpression => {
-		var expressionString = subExpression.replace(/L:/g, '');
-
+	let matchers = createMatchers(selector, nameMatcher);
+	let ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
+	for (let matcher of matchers) {
 		result.push({
-			matcher: createMatcher(expressionString, nameMatcher),
-			ruleId: RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository),
+			matcher: matcher.matcher,
+			ruleId: ruleId,
 			grammar: grammar,
-			priorityMatch: expressionString.length < subExpression.length
+			priority: matcher.priority
 		});
-	});
+	}
 }
 
 export class ScopeMetadata {
@@ -319,7 +320,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		return this._scopeMetadataProvider.getMetadataForScope(scope);
 	}
 
-	public getInjections(states: StackElement): Injection[] {
+	public getInjections(): Injection[] {
 		if (!this._injections) {
 			this._injections = [];
 			// add injections from the current grammar
@@ -345,11 +346,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 					});
 				}
 			}
+			this._injections.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
 		}
 		if (this._injections.length === 0) {
 			return this._injections;
 		}
-		return this._injections.filter(injection => injection.matcher(states));
+		return this._injections;
 	}
 
 	public registerRule<T extends Rule>(factory: (id: number) => T): T {
@@ -536,10 +538,16 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 	let bestMatchRating = Number.MAX_VALUE;
 	let bestMatchCaptureIndices: IOnigCaptureIndex[] = null;
 	let bestMatchRuleId: number;
-	let bestMatchResultPriority: boolean = false;
+	let bestMatchResultPriority: number = 0;
+
+	let scopes = stack.contentNameScopesList.generateScopes();
 
 	for (let i = 0, len = injections.length; i < len; i++) {
 		let injection = injections[i];
+		if (!injection.matcher(scopes)) {
+			// injection selector doesn't match stack
+			continue;
+		}
 		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
 		let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
 		if (IN_DEBUG_MODE) {
@@ -552,27 +560,25 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		}
 
 		let matchRating = matchResult.captureIndices[0].start;
-
-		if (matchRating > bestMatchRating) {
-			continue;
-		} else if (matchRating === bestMatchRating && (!injection.priorityMatch || bestMatchResultPriority)) {
+		if (matchRating >= bestMatchRating) {
+			// Injections are sorted by priority, so the previous injection had a better or equal priority
 			continue;
 		}
 
 		bestMatchRating = matchRating;
 		bestMatchCaptureIndices = matchResult.captureIndices;
 		bestMatchRuleId = ruleScanner.rules[matchResult.index];
-		bestMatchResultPriority = injection.priorityMatch;
+		bestMatchResultPriority = injection.priority;
 
-		if (bestMatchRating === linePos && bestMatchResultPriority) {
-			// No more need to look at the rest of the injections
+		if (bestMatchRating === linePos) {
+			// No more need to look at the rest of the injections.
 			break;
 		}
 	}
 
 	if (bestMatchCaptureIndices) {
 		return {
-			priorityMatch: bestMatchResultPriority,
+			priorityMatch: bestMatchResultPriority === -1,
 			captureIndices: bestMatchCaptureIndices,
 			matchedRuleId: bestMatchRuleId
 		};
@@ -609,7 +615,7 @@ function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLi
 	let matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 	// Look for injected rules
-	let injections = grammar.getInjections(stack);
+	let injections = grammar.getInjections();
 	if (injections.length === 0) {
 		// No injections whatsoever => early return
 		return matchResult;

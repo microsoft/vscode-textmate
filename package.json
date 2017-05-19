@@ -18,7 +18,7 @@
   "scripts": {
     "watch": "tsc -watch",
     "compile": "tsc",
-    "test": "mocha out/tests/tests",
+    "test": "npm run compile && mocha out/tests/tests",
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/tests",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node scripts/inspect.js",

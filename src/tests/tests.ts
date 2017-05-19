@@ -6,8 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IToken, IGrammar, RegistryOptions, StackElement } from '../main';
-import { createMatcher } from '../matcher';
+import { Registry, IGrammar, RegistryOptions, StackElement } from '../main';
+import { createMatchers } from '../matcher';
 import { parse as JSONparse } from '../json';
 import './themes.test';
 import './grammar.test';
@@ -89,7 +89,7 @@ function assertTokenizationSuite(testLocation: string): void {
 				return (token.value.length > 0);
 			});
 		}
-
+		
 		assert.deepEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
 
 		return actual.ruleStack;
@@ -131,7 +131,9 @@ describe('Matcher', () => {
 		{ "expression": "foo bar - (yo man)", "input": ["foo", "bar", "yo"], "result": true },
 		{ "expression": "foo bar - (yo man)", "input": ["foo", "bar", "yo", "man"], "result": false },
 		{ "expression": "foo bar - (yo | man)", "input": ["foo", "bar", "yo", "man"], "result": false },
-		{ "expression": "foo bar - (yo | man)", "input": ["foo", "bar", "yo"], "result": false }
+		{ "expression": "foo bar - (yo | man)", "input": ["foo", "bar", "yo"], "result": false },
+		{ "expression": "R:text.html - (comment.block, text.html source)", "input": ["text.html", "bar", "source"], "result": false },
+		{ "expression": "text.html.php - (meta.embedded | meta.tag), L:text.html.php meta.tag, L:source.js.embedded.html", "input": ["text.html.php", "bar", "source.js"], "result": true }
 	];
 
 	let nameMatcher = (identifers: string[], stackElements: string[]) => {
@@ -149,8 +151,8 @@ describe('Matcher', () => {
 
 	tests.forEach((test, index) => {
 		it('Test #' + index, () => {
-			let matcher = createMatcher(test.expression, nameMatcher);
-			let result = matcher(test.input);
+			let matchers = createMatchers(test.expression, nameMatcher);
+			let result = matchers.some(m => m.matcher(test.input));
 			assert.equal(result, test.result);
 		});
 	});

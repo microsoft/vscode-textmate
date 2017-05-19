@@ -3,13 +3,40 @@
  *--------------------------------------------------------*/
 'use strict';
 
+export interface MatcherWithPriority<T> {
+	matcher: Matcher<T>;
+	priority: -1 | 0 | 1;
+}
+
 export interface Matcher<T> {
 	(matcherInput: T): boolean;
 }
 
-export function createMatcher<T>(expression: string, matchesName: (names: string[], matcherInput: T) => boolean): Matcher<T> {
-	var tokenizer = newTokenizer(expression);
+export function createMatchers<T>(selector: string, matchesName: (names: string[], matcherInput: T) => boolean): MatcherWithPriority<T>[] {
+	var results = <MatcherWithPriority<T>[]> [];
+	var tokenizer = newTokenizer(selector);
 	var token = tokenizer.next();
+	while (token !== null) {
+		let priority : -1 | 0 | 1 = 0;
+		if (token.length === 2 && token.charAt(1) === ':') {
+			switch (token.charAt(0)) {
+				case 'R': priority = 1; break;
+				case 'L': priority = -1; break;
+				default:
+					console.log(`Unknown priority ${token} in scope selector`);
+			}
+			token = tokenizer.next();
+		}
+		let matcher = parseConjunction();
+		if (matcher) {
+			results.push({ matcher, priority });
+		}
+		if (token !== ',') {
+			break;
+		}
+		token = tokenizer.next();
+	}
+	return results;
 
 	function parseOperand(): Matcher<T> {
 		if (token === '-') {
@@ -19,7 +46,7 @@ export function createMatcher<T>(expression: string, matchesName: (names: string
 		}
 		if (token === '(') {
 			token = tokenizer.next();
-			var expressionInParents = parseExpression('|');
+			var expressionInParents = parseInnerExpression();
 			if (token === ')') {
 				token = tokenizer.next();
 			}
@@ -44,15 +71,15 @@ export function createMatcher<T>(expression: string, matchesName: (names: string
 		}
 		return matcherInput => matchers.every(matcher => matcher(matcherInput)); // and
 	}
-	function parseExpression(orOperatorToken: string = ','): Matcher<T> {
+	function parseInnerExpression(): Matcher<T> {
 		var matchers: Matcher<T>[] = [];
 		var matcher = parseConjunction();
 		while (matcher) {
 			matchers.push(matcher);
-			if (token === orOperatorToken) {
+			if (token === '|' || token === ',') {
 				do {
 					token = tokenizer.next();
-				} while (token === orOperatorToken); // ignore subsequent commas
+				} while (token === '|' || token === ','); // ignore subsequent commas
 			} else {
 				break;
 			}
@@ -60,8 +87,6 @@ export function createMatcher<T>(expression: string, matchesName: (names: string
 		}
 		return matcherInput => matchers.some(matcher => matcher(matcherInput)); // or
 	}
-
-	return parseExpression() || (matcherInput => false);
 }
 
 function isIdentifier(token: string) {
@@ -69,7 +94,7 @@ function isIdentifier(token: string) {
 }
 
 function newTokenizer(input: string): { next: () => string } {
-	let regex = /([\w\.:]+|[\,\|\-\(\)])/g;
+	let regex = /([LR]:|[\w\.:]+|[\,\|\-\(\)])/g;
 	var match = regex.exec(input);
 	return {
 		next: () => {
