@@ -272,7 +272,7 @@ class ScopeMetadataProvider {
 		return language;
 	}
 
-	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
+	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
 	private static _toStandardTokenType(tokenType: string): StandardTokenType {
 		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
@@ -285,6 +285,8 @@ class ScopeMetadataProvider {
 				return StandardTokenType.String;
 			case 'regex':
 				return StandardTokenType.RegEx;
+			case 'meta.embedded':
+				return StandardTokenType.MetaEmbedded;
 		}
 		throw new Error('Unexpected match for standard token type!');
 	}
@@ -927,7 +929,7 @@ export class StackElementMetadata {
 			_languageId = languageId;
 		}
 		if (tokenType !== StandardTokenType.Other) {
-			_tokenType = tokenType;
+			_tokenType = tokenType === StandardTokenType.MetaEmbedded ? StandardTokenType.Other : tokenType;
 		}
 		if (fontStyle !== FontStyle.NotSet) {
 			_fontStyle = fontStyle;
