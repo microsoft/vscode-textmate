@@ -12,6 +12,14 @@ import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IT
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
+export const enum TemporaryStandardTokenType {
+	Other = 0,
+	Comment = 1,
+	String = 2,
+	RegEx = 4,
+	MetaEmbedded = 8
+}
+
 export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider): Grammar {
 	return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
 }
@@ -148,10 +156,10 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 export class ScopeMetadata {
 	public readonly scopeName: string;
 	public readonly languageId: number;
-	public readonly tokenType: number;
+	public readonly tokenType: TemporaryStandardTokenType;
 	public readonly themeData: ThemeTrieElementRule[];
 
-	constructor(scopeName: string, languageId: number, tokenType: number, themeData: ThemeTrieElementRule[]) {
+	constructor(scopeName: string, languageId: number, tokenType: TemporaryStandardTokenType, themeData: ThemeTrieElementRule[]) {
 		this.scopeName = scopeName;
 		this.languageId = languageId;
 		this.tokenType = tokenType;
@@ -208,7 +216,7 @@ class ScopeMetadataProvider {
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
-			StandardTokenType.Other,
+			TemporaryStandardTokenType.Other,
 			[this._themeProvider.getDefaults()]
 		);
 	}
@@ -272,19 +280,21 @@ class ScopeMetadataProvider {
 		return language;
 	}
 
-	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
-	private static _toStandardTokenType(tokenType: string): StandardTokenType {
+	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
+	private static _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
 		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
-			return StandardTokenType.Other;
+			return TemporaryStandardTokenType.Other;
 		}
 		switch (m[1]) {
 			case 'comment':
-				return StandardTokenType.Comment;
+				return TemporaryStandardTokenType.Comment;
 			case 'string':
-				return StandardTokenType.String;
+				return TemporaryStandardTokenType.String;
 			case 'regex':
-				return StandardTokenType.RegEx;
+				return TemporaryStandardTokenType.RegEx;
+			case 'meta.embedded':
+				return TemporaryStandardTokenType.MetaEmbedded;
 		}
 		throw new Error('Unexpected match for standard token type!');
 	}
@@ -916,7 +926,7 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
 	}
 
-	public static set(metadata: number, languageId: number, tokenType: StandardTokenType, fontStyle: FontStyle, foreground: number, background: number): number {
+	public static set(metadata: number, languageId: number, tokenType: TemporaryStandardTokenType, fontStyle: FontStyle, foreground: number, background: number): number {
 		let _languageId = StackElementMetadata.getLanguageId(metadata);
 		let _tokenType = StackElementMetadata.getTokenType(metadata);
 		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
@@ -926,8 +936,8 @@ export class StackElementMetadata {
 		if (languageId !== 0) {
 			_languageId = languageId;
 		}
-		if (tokenType !== StandardTokenType.Other) {
-			_tokenType = tokenType;
+		if (tokenType !== TemporaryStandardTokenType.Other) {
+			_tokenType = tokenType === TemporaryStandardTokenType.MetaEmbedded ? StandardTokenType.Other : tokenType;
 		}
 		if (fontStyle !== FontStyle.NotSet) {
 			_fontStyle = fontStyle;
