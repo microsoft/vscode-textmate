@@ -22,6 +22,7 @@ $load('./utils', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function clone(something) {
     return doClone(something);
 }
@@ -63,7 +64,7 @@ function mergeObjects(target) {
 }
 exports.mergeObjects = mergeObjects;
 var CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
-var RegexSource = (function () {
+var RegexSource = /** @class */ (function () {
     function RegexSource() {
     }
     RegexSource.hasCaptures = function (regexSource) {
@@ -102,7 +103,8 @@ $load('./theme', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var ParsedThemeRule = (function () {
+Object.defineProperty(exports, "__esModule", { value: true });
+var ParsedThemeRule = /** @class */ (function () {
     function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
         this.scope = scope;
         this.parentScopes = parentScopes;
@@ -248,7 +250,7 @@ function resolveParsedThemeRules(parsedThemeRules) {
     }
     return new Theme(colorMap, defaults, root);
 }
-var ColorMap = (function () {
+var ColorMap = /** @class */ (function () {
     function ColorMap() {
         this._lastColorId = 0;
         this._id2color = [];
@@ -274,7 +276,7 @@ var ColorMap = (function () {
     return ColorMap;
 }());
 exports.ColorMap = ColorMap;
-var Theme = (function () {
+var Theme = /** @class */ (function () {
     function Theme(colorMap, defaults, root) {
         this._colorMap = colorMap;
         this._root = root;
@@ -336,7 +338,7 @@ function strArrCmp(a, b) {
     return len1 - len2;
 }
 exports.strArrCmp = strArrCmp;
-var ThemeTrieElementRule = (function () {
+var ThemeTrieElementRule = /** @class */ (function () {
     function ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background) {
         this.scopeDepth = scopeDepth;
         this.parentScopes = parentScopes;
@@ -375,7 +377,7 @@ var ThemeTrieElementRule = (function () {
     return ThemeTrieElementRule;
 }());
 exports.ThemeTrieElementRule = ThemeTrieElementRule;
-var ThemeTrieElement = (function () {
+var ThemeTrieElement = /** @class */ (function () {
     function ThemeTrieElement(mainRule, rulesWithParentScopes, children) {
         if (rulesWithParentScopes === void 0) { rulesWithParentScopes = []; }
         if (children === void 0) { children = {}; }
@@ -493,9 +495,36 @@ $load('./matcher', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-function createMatcher(expression, matchesName) {
-    var tokenizer = newTokenizer(expression);
+Object.defineProperty(exports, "__esModule", { value: true });
+function createMatchers(selector, matchesName) {
+    var results = [];
+    var tokenizer = newTokenizer(selector);
     var token = tokenizer.next();
+    while (token !== null) {
+        var priority = 0;
+        if (token.length === 2 && token.charAt(1) === ':') {
+            switch (token.charAt(0)) {
+                case 'R':
+                    priority = 1;
+                    break;
+                case 'L':
+                    priority = -1;
+                    break;
+                default:
+                    console.log("Unknown priority " + token + " in scope selector");
+            }
+            token = tokenizer.next();
+        }
+        var matcher = parseConjunction();
+        if (matcher) {
+            results.push({ matcher: matcher, priority: priority });
+        }
+        if (token !== ',') {
+            break;
+        }
+        token = tokenizer.next();
+    }
+    return results;
     function parseOperand() {
         if (token === '-') {
             token = tokenizer.next();
@@ -504,7 +533,7 @@ function createMatcher(expression, matchesName) {
         }
         if (token === '(') {
             token = tokenizer.next();
-            var expressionInParents = parseExpression('|');
+            var expressionInParents = parseInnerExpression();
             if (token === ')') {
                 token = tokenizer.next();
             }
@@ -529,16 +558,15 @@ function createMatcher(expression, matchesName) {
         }
         return function (matcherInput) { return matchers.every(function (matcher) { return matcher(matcherInput); }); }; // and
     }
-    function parseExpression(orOperatorToken) {
-        if (orOperatorToken === void 0) { orOperatorToken = ','; }
+    function parseInnerExpression() {
         var matchers = [];
         var matcher = parseConjunction();
         while (matcher) {
             matchers.push(matcher);
-            if (token === orOperatorToken) {
+            if (token === '|' || token === ',') {
                 do {
                     token = tokenizer.next();
-                } while (token === orOperatorToken); // ignore subsequent commas
+                } while (token === '|' || token === ','); // ignore subsequent commas
             }
             else {
                 break;
@@ -547,14 +575,13 @@ function createMatcher(expression, matchesName) {
         }
         return function (matcherInput) { return matchers.some(function (matcher) { return matcher(matcherInput); }); }; // or
     }
-    return parseExpression() || (function (matcherInput) { return false; });
 }
-exports.createMatcher = createMatcher;
+exports.createMatchers = createMatchers;
 function isIdentifier(token) {
     return token && token.match(/[\w\.:]+/);
 }
 function newTokenizer(input) {
-    var regex = /([\w\.:]+|[\,\|\-\(\)])/g;
+    var regex = /([LR]:|[\w\.:]+|[\,\|\-\(\)])/g;
     var match = regex.exec(input);
     return {
         next: function () {
@@ -574,6 +601,7 @@ $load('./debug', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.CAPTURE_METADATA = !!process.env['VSCODE_TEXTMATE_DEBUG'];
 exports.IN_DEBUG_MODE = !!process.env['VSCODE_TEXTMATE_DEBUG'];
 //# sourceMappingURL=debug.js.map
@@ -583,6 +611,7 @@ $load('./json', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 function doFail(streamState, msg) {
     // console.log('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
     throw new Error('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
@@ -760,7 +789,7 @@ function parse(source, filename, withMetadata) {
     return cur;
 }
 exports.parse = parse;
-var JSONStreamState = (function () {
+var JSONStreamState = /** @class */ (function () {
     function JSONStreamState(source) {
         this.source = source;
         this.pos = 0;
@@ -770,7 +799,7 @@ var JSONStreamState = (function () {
     }
     return JSONStreamState;
 }());
-var JSONToken = (function () {
+var JSONToken = /** @class */ (function () {
     function JSONToken() {
         this.value = null;
         this.offset = -1;
@@ -1013,6 +1042,7 @@ $load('./grammarReader', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var fs = require("fs");
 var plist = require("fast-plist");
 var debug_1 = require("./debug");
@@ -1027,7 +1057,7 @@ function readGrammarSync(filePath) {
     return reader.load();
 }
 exports.readGrammarSync = readGrammarSync;
-var AsyncGrammarReader = (function () {
+var AsyncGrammarReader = /** @class */ (function () {
     function AsyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
         this._parser = parser;
@@ -1052,7 +1082,7 @@ var AsyncGrammarReader = (function () {
     };
     return AsyncGrammarReader;
 }());
-var SyncGrammarReader = (function () {
+var SyncGrammarReader = /** @class */ (function () {
     function SyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
         this._parser = parser;
@@ -1098,16 +1128,22 @@ $load('./rule', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
 var path = require("path");
 var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
-var Rule = (function () {
+var Rule = /** @class */ (function () {
     function Rule($location, id, name, contentName) {
         this.$location = $location;
         this.id = id;
@@ -1144,7 +1180,7 @@ var Rule = (function () {
     return Rule;
 }());
 exports.Rule = Rule;
-var CaptureRule = (function (_super) {
+var CaptureRule = /** @class */ (function (_super) {
     __extends(CaptureRule, _super);
     function CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1154,7 +1190,7 @@ var CaptureRule = (function (_super) {
     return CaptureRule;
 }(Rule));
 exports.CaptureRule = CaptureRule;
-var RegExpSource = (function () {
+var RegExpSource = /** @class */ (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
         if (handleAnchors === void 0) { handleAnchors = true; }
         if (handleAnchors) {
@@ -1320,7 +1356,7 @@ function getString(str) {
     return str.$str;
 }
 exports.getString = getString;
-var RegExpSourceList = (function () {
+var RegExpSourceList = /** @class */ (function () {
     function RegExpSourceList() {
         this._items = [];
         this._hasAnchors = false;
@@ -1403,7 +1439,7 @@ var RegExpSourceList = (function () {
     return RegExpSourceList;
 }());
 exports.RegExpSourceList = RegExpSourceList;
-var MatchRule = (function (_super) {
+var MatchRule = /** @class */ (function (_super) {
     __extends(MatchRule, _super);
     function MatchRule($location, id, name, match, captures) {
         var _this = _super.call(this, $location, id, name, null) || this;
@@ -1432,7 +1468,7 @@ var MatchRule = (function (_super) {
     return MatchRule;
 }(Rule));
 exports.MatchRule = MatchRule;
-var IncludeOnlyRule = (function (_super) {
+var IncludeOnlyRule = /** @class */ (function (_super) {
     __extends(IncludeOnlyRule, _super);
     function IncludeOnlyRule($location, id, name, contentName, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1461,7 +1497,7 @@ exports.IncludeOnlyRule = IncludeOnlyRule;
 function escapeRegExpCharacters(value) {
     return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 }
-var BeginEndRule = (function (_super) {
+var BeginEndRule = /** @class */ (function (_super) {
     __extends(BeginEndRule, _super);
     function BeginEndRule($location, id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1533,7 +1569,7 @@ var BeginEndRule = (function (_super) {
     return BeginEndRule;
 }(Rule));
 exports.BeginEndRule = BeginEndRule;
-var BeginWhileRule = (function (_super) {
+var BeginWhileRule = /** @class */ (function (_super) {
     __extends(BeginWhileRule, _super);
     function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, whileCaptures, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1589,7 +1625,7 @@ var BeginWhileRule = (function (_super) {
     return BeginWhileRule;
 }(Rule));
 exports.BeginWhileRule = BeginWhileRule;
-var RuleFactory = (function () {
+var RuleFactory = /** @class */ (function () {
     function RuleFactory() {
     }
     RuleFactory.createCaptureRule = function (helper, $location, name, contentName, retokenizeCapturedWithRuleId) {
@@ -1665,6 +1701,7 @@ var RuleFactory = (function () {
                             patternId = RuleFactory.getCompiledRuleId(localIncludedRule, helper, repository);
                         }
                         else {
+                            // console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
                         }
                     }
                     else if (pattern.include === '$base' || pattern.include === '$self') {
@@ -1689,6 +1726,7 @@ var RuleFactory = (function () {
                                     patternId = RuleFactory.getCompiledRuleId(externalIncludedRule, helper, externalGrammar.repository);
                                 }
                                 else {
+                                    // console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
                                 }
                             }
                             else {
@@ -1696,6 +1734,7 @@ var RuleFactory = (function () {
                             }
                         }
                         else {
+                            // console.warn('CANNOT find grammar for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
                         }
                     }
                 }
@@ -1733,6 +1772,7 @@ $load('./grammar', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
@@ -1809,13 +1849,15 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         var len = scopeName.length;
         return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
     }
-    function nameMatcher(identifers, stackElements) {
-        var scopes = stackElements.contentNameScopesList.generateScopes();
+    function nameMatcher(identifers, scopes) {
+        if (scopes.length < identifers.length) {
+            return false;
+        }
         var lastIndex = 0;
         return identifers.every(function (identifier) {
             for (var i = lastIndex; i < scopes.length; i++) {
                 if (scopesAreMatching(scopes[i], identifier)) {
-                    lastIndex = i;
+                    lastIndex = i + 1;
                     return true;
                 }
             }
@@ -1823,18 +1865,19 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         });
     }
     ;
-    var subExpressions = selector.split(',');
-    subExpressions.forEach(function (subExpression) {
-        var expressionString = subExpression.replace(/L:/g, '');
+    var matchers = matcher_1.createMatchers(selector, nameMatcher);
+    var ruleId = rule_1.RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
+    for (var _i = 0, matchers_1 = matchers; _i < matchers_1.length; _i++) {
+        var matcher = matchers_1[_i];
         result.push({
-            matcher: matcher_1.createMatcher(expressionString, nameMatcher),
-            ruleId: rule_1.RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository),
+            matcher: matcher.matcher,
+            ruleId: ruleId,
             grammar: grammar,
-            priorityMatch: expressionString.length < subExpression.length
+            priority: matcher.priority
         });
-    });
+    }
 }
-var ScopeMetadata = (function () {
+var ScopeMetadata = /** @class */ (function () {
     function ScopeMetadata(scopeName, languageId, tokenType, themeData) {
         this.scopeName = scopeName;
         this.languageId = languageId;
@@ -1844,7 +1887,7 @@ var ScopeMetadata = (function () {
     return ScopeMetadata;
 }());
 exports.ScopeMetadata = ScopeMetadata;
-var ScopeMetadataProvider = (function () {
+var ScopeMetadataProvider = /** @class */ (function () {
     function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
@@ -1946,11 +1989,11 @@ var ScopeMetadataProvider = (function () {
         }
         throw new Error('Unexpected match for standard token type!');
     };
+    ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
+    ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
     return ScopeMetadataProvider;
 }());
-ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
-ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
-var Grammar = (function () {
+var Grammar = /** @class */ (function () {
     function Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository) {
         this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
         this._rootId = -1;
@@ -1966,7 +2009,7 @@ var Grammar = (function () {
     Grammar.prototype.getMetadataForScope = function (scope) {
         return this._scopeMetadataProvider.getMetadataForScope(scope);
     };
-    Grammar.prototype.getInjections = function (states) {
+    Grammar.prototype.getInjections = function () {
         var _this = this;
         if (!this._injections) {
             this._injections = [];
@@ -1992,11 +2035,12 @@ var Grammar = (function () {
                     });
                 }
             }
+            this._injections.sort(function (i1, i2) { return i1.priority - i2.priority; }); // sort by priority
         }
         if (this._injections.length === 0) {
             return this._injections;
         }
-        return this._injections.filter(function (injection) { return injection.matcher(states); });
+        return this._injections;
     };
     Grammar.prototype.registerRule = function (factory) {
         var id = (++this._lastRuleId);
@@ -2149,9 +2193,14 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
     var bestMatchRating = Number.MAX_VALUE;
     var bestMatchCaptureIndices = null;
     var bestMatchRuleId;
-    var bestMatchResultPriority = false;
+    var bestMatchResultPriority = 0;
+    var scopes = stack.contentNameScopesList.generateScopes();
     for (var i = 0, len = injections.length; i < len; i++) {
         var injection = injections[i];
+        if (!injection.matcher(scopes)) {
+            // injection selector doesn't match stack
+            continue;
+        }
         var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
         var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
         if (debug_1.IN_DEBUG_MODE) {
@@ -2162,24 +2211,22 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
             continue;
         }
         var matchRating = matchResult.captureIndices[0].start;
-        if (matchRating > bestMatchRating) {
-            continue;
-        }
-        else if (matchRating === bestMatchRating && (!injection.priorityMatch || bestMatchResultPriority)) {
+        if (matchRating >= bestMatchRating) {
+            // Injections are sorted by priority, so the previous injection had a better or equal priority
             continue;
         }
         bestMatchRating = matchRating;
         bestMatchCaptureIndices = matchResult.captureIndices;
         bestMatchRuleId = ruleScanner.rules[matchResult.index];
-        bestMatchResultPriority = injection.priorityMatch;
-        if (bestMatchRating === linePos && bestMatchResultPriority) {
-            // No more need to look at the rest of the injections
+        bestMatchResultPriority = injection.priority;
+        if (bestMatchRating === linePos) {
+            // No more need to look at the rest of the injections.
             break;
         }
     }
     if (bestMatchCaptureIndices) {
         return {
-            priorityMatch: bestMatchResultPriority,
+            priorityMatch: bestMatchResultPriority === -1,
             captureIndices: bestMatchCaptureIndices,
             matchedRuleId: bestMatchRuleId
         };
@@ -2206,7 +2253,7 @@ function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, a
     // Look for normal grammar rule
     var matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
     // Look for injected rules
-    var injections = grammar.getInjections(stack);
+    var injections = grammar.getInjections();
     if (injections.length === 0) {
         // No injections whatsoever => early return
         return matchResult;
@@ -2413,7 +2460,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
     return stack;
 }
-var StackElementMetadata = (function () {
+var StackElementMetadata = /** @class */ (function () {
     function StackElementMetadata() {
     }
     StackElementMetadata.toBinaryStr = function (metadata) {
@@ -2482,7 +2529,7 @@ var StackElementMetadata = (function () {
     return StackElementMetadata;
 }());
 exports.StackElementMetadata = StackElementMetadata;
-var ScopeListElement = (function () {
+var ScopeListElement = /** @class */ (function () {
     function ScopeListElement(parent, scope, metadata) {
         this.parent = parent;
         this.scope = scope;
@@ -2595,7 +2642,7 @@ exports.ScopeListElement = ScopeListElement;
 /**
  * Represents a "pushed" state on the stack (as a linked list element).
  */
-var StackElement = (function () {
+var StackElement = /** @class */ (function () {
     function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
@@ -2701,11 +2748,11 @@ var StackElement = (function () {
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
+    StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
     return StackElement;
 }());
-StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
 exports.StackElement = StackElement;
-var LocalStackElement = (function () {
+var LocalStackElement = /** @class */ (function () {
     function LocalStackElement(scopes, endPos) {
         this.scopes = scopes;
         this.endPos = endPos;
@@ -2713,7 +2760,7 @@ var LocalStackElement = (function () {
     return LocalStackElement;
 }());
 exports.LocalStackElement = LocalStackElement;
-var LineTokens = (function () {
+var LineTokens = /** @class */ (function () {
     function LineTokens(emitBinaryTokens, lineText) {
         this._emitBinaryTokens = emitBinaryTokens;
         if (debug_1.IN_DEBUG_MODE) {
@@ -2799,8 +2846,9 @@ $load('./registry', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
-var SyncRegistry = (function () {
+var SyncRegistry = /** @class */ (function () {
     function SyncRegistry(theme) {
         this._theme = theme;
         this._grammars = {};
@@ -2880,6 +2928,7 @@ $load('./main', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
 var registry_1 = require("./registry");
 var grammarReader_1 = require("./grammarReader");
 var theme_1 = require("./theme");
@@ -2891,7 +2940,7 @@ var DEFAULT_OPTIONS = {
 /**
  * The registry that will hold all grammars.
  */
-var Registry = (function () {
+var Registry = /** @class */ (function () {
     function Registry(locator) {
         if (locator === void 0) { locator = DEFAULT_OPTIONS; }
         this._locator = locator;
