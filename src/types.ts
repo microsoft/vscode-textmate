@@ -27,11 +27,13 @@ export interface IRawGrammar extends ILocatable {
 	readonly firstLineMatch?: string;
 }
 
-export interface IRawRepository extends ILocatable {
+export interface IRawRepositoryMap {
 	[name: string]: IRawRule;
 	$self: IRawRule;
 	$base: IRawRule;
 }
+
+export type IRawRepository = IRawRepositoryMap & ILocatable;
 
 export interface IRawRule extends ILocatable {
 	id?: number;
@@ -56,6 +58,8 @@ export interface IRawRule extends ILocatable {
 	readonly applyEndPatternLast?: boolean;
 }
 
-export interface IRawCaptures extends ILocatable {
+export interface IRawCapturesMap {
 	[captureId: string]: IRawRule;
 }
+
+export type IRawCaptures = IRawCapturesMap & ILocatable;

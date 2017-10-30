@@ -11,10 +11,10 @@ process.env['VSCODE_TEXTMATE_DEBUG'] = true;
 var Registry = require('../out/main').Registry;
 var registry = new Registry();
 
-console.log('LOADING GRAMMAR' + GRAMMAR_PATHS[0]);
+console.log('LOADING GRAMMAR: ' + GRAMMAR_PATHS[0]);
 var grammar = registry.loadGrammarFromPathSync(GRAMMAR_PATHS[0]);
 for (var i = 1; i < GRAMMAR_PATHS.length; i++) {
-	console.log('LOADING GRAMMAR' + GRAMMAR_PATHS[i]);
+	console.log('LOADING GRAMMAR: ' + GRAMMAR_PATHS[i]);
 	registry.loadGrammarFromPathSync(GRAMMAR_PATHS[i]);
 }
 
@@ -50,7 +50,7 @@ for (var i = 0; i < lines.length; i++) {
 		}
 		var ruleDesc = grammar._ruleId2desc[stackElement._ruleId]
 		if (!ruleDesc) {
-			list.push('  * no rule description?');
+			list.push('  * no rule description found for rule id: ' + stackElement._ruleId);
 		} else {
 			list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement._scopeName + '"');
 		}
