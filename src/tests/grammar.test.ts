@@ -5,7 +5,7 @@
 
 import * as assert from 'assert';
 import { StandardTokenType } from '../main';
-import { StackElementMetadata } from '../grammar';
+import { StackElementMetadata, TemporaryStandardTokenType } from '../grammar';
 import { FontStyle } from '../theme';
 
 describe('StackElementMetadata', () => {
@@ -31,47 +31,47 @@ describe('StackElementMetadata', () => {
 	}
 
 	it('works', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	});
 
 	it('can overwrite languageId', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-		value = StackElementMetadata.set(value, 2, StandardTokenType.Other, FontStyle.NotSet, 0, 0);
+		value = StackElementMetadata.set(value, 2, TemporaryStandardTokenType.Other, FontStyle.NotSet, 0, 0);
 		assertEquals(value, 2, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	});
 
 	it('can overwrite tokenType', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-		value = StackElementMetadata.set(value, 0, StandardTokenType.Comment, FontStyle.NotSet, 0, 0);
+		value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Comment, FontStyle.NotSet, 0, 0);
 		assertEquals(value, 1, StandardTokenType.Comment, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	});
 
 	it('can overwrite font style', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-		value = StackElementMetadata.set(value, 0, StandardTokenType.Other, FontStyle.None, 0, 0);
+		value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.None, 0, 0);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.None, 101, 102);
 	});
 
 	it('can overwrite foreground', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-		value = StackElementMetadata.set(value, 0, StandardTokenType.Other, FontStyle.NotSet, 5, 0);
+		value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.NotSet, 5, 0);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 5, 102);
 	});
 
 	it('can overwrite background', () => {
-		let value = StackElementMetadata.set(0, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+		let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-		value = StackElementMetadata.set(value, 0, StandardTokenType.Other, FontStyle.NotSet, 0, 7);
+		value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.NotSet, 0, 7);
 		assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 7);
 	});
 

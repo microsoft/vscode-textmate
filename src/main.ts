@@ -54,8 +54,7 @@ export const enum StandardTokenType {
 	Other = 0,
 	Comment = 1,
 	String = 2,
-	RegEx = 4,
-	MetaEmbedded = 8
+	RegEx = 4
 }
 
 /**

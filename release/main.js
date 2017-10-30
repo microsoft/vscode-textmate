@@ -1986,11 +1986,13 @@ var ScopeMetadataProvider = /** @class */ (function () {
                 return 2 /* String */;
             case 'regex':
                 return 4 /* RegEx */;
+            case 'meta.embedded':
+                return 8 /* MetaEmbedded */;
         }
         throw new Error('Unexpected match for standard token type!');
     };
     ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
-    ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex)\b/;
+    ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
     return ScopeMetadataProvider;
 }());
 var Grammar = /** @class */ (function () {
@@ -2509,7 +2511,7 @@ var StackElementMetadata = /** @class */ (function () {
             _languageId = languageId;
         }
         if (tokenType !== 0 /* Other */) {
-            _tokenType = tokenType;
+            _tokenType = tokenType === 8 /* MetaEmbedded */ ? 0 /* Other */ : tokenType;
         }
         if (fontStyle !== -1 /* NotSet */) {
             _fontStyle = fontStyle;
