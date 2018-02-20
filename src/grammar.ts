@@ -8,7 +8,7 @@ import { IRawGrammar, IRawRepository, IRawRule } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString } from './rule';
 import { IOnigCaptureIndex, OnigString } from 'oniguruma';
 import { createMatchers, Matcher } from './matcher';
-import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef } from './main';
+import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
@@ -20,8 +20,8 @@ export const enum TemporaryStandardTokenType {
 	MetaEmbedded = 8
 }
 
-export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider): Grammar {
-	return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
+export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider): Grammar {
+	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository);
 }
 
 export interface IThemeProvider {
@@ -176,10 +176,14 @@ class ScopeMetadataProvider {
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp;
 
-	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
+	private readonly _tokenTypes: ITokenTypeMap;
+
+	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap) {
 		this._initialLanguage = initialLanguage;
 		this._themeProvider = themeProvider;
 		this.onDidChangeTheme();
+
+		this._tokenTypes = tokenTypes || Object.create(null);
 
 		// embeddedLanguages handling
 		this._embeddedLanguages = Object.create(null);
@@ -248,7 +252,7 @@ class ScopeMetadataProvider {
 
 	private _doGetMetadataForScope(scopeName: string): ScopeMetadata {
 		let languageId = this._scopeToLanguage(scopeName);
-		let standardTokenType = ScopeMetadataProvider._toStandardTokenType(scopeName);
+		let standardTokenType = this._toStandardTokenType(scopeName);
 		let themeData = this._themeProvider.themeMatch(scopeName);
 
 		return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
@@ -281,7 +285,21 @@ class ScopeMetadataProvider {
 	}
 
 	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
-	private static _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
+	private _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
+		const entry = this._tokenTypes[tokenType];
+		if (typeof entry !== undefined) {
+			switch (entry) {
+				case StandardTokenType.Comment:
+					return TemporaryStandardTokenType.Comment;
+				case StandardTokenType.String:
+					return TemporaryStandardTokenType.String;
+				case StandardTokenType.RegEx:
+					return TemporaryStandardTokenType.RegEx;
+				default:
+					return TemporaryStandardTokenType.Other;
+			}
+		}
+
 		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
 			return TemporaryStandardTokenType.Other;
@@ -311,8 +329,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 	private _injections: Injection[];
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 
-	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, grammarRepository: IGrammarRepository & IThemeProvider) {
-		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
+	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider) {
+		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages, tokenTypes);
 
 		this._rootId = -1;
 		this._lastRuleId = 0;
