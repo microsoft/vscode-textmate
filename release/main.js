@@ -1777,8 +1777,8 @@ var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
-function createGrammar(grammar, initialLanguage, embeddedLanguages, grammarRepository) {
-    return new Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository);
+function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository);
 }
 exports.createGrammar = createGrammar;
 /**
@@ -1888,10 +1888,11 @@ var ScopeMetadata = /** @class */ (function () {
 }());
 exports.ScopeMetadata = ScopeMetadata;
 var ScopeMetadataProvider = /** @class */ (function () {
-    function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
+    function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages, tokenTypes) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
         this.onDidChangeTheme();
+        this._tokenTypes = tokenTypes || Object.create(null);
         // embeddedLanguages handling
         this._embeddedLanguages = Object.create(null);
         if (embeddedLanguages) {
@@ -1947,7 +1948,7 @@ var ScopeMetadataProvider = /** @class */ (function () {
     };
     ScopeMetadataProvider.prototype._doGetMetadataForScope = function (scopeName) {
         var languageId = this._scopeToLanguage(scopeName);
-        var standardTokenType = ScopeMetadataProvider._toStandardTokenType(scopeName);
+        var standardTokenType = this._toStandardTokenType(scopeName);
         var themeData = this._themeProvider.themeMatch(scopeName);
         return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
     };
@@ -1974,7 +1975,20 @@ var ScopeMetadataProvider = /** @class */ (function () {
         }
         return language;
     };
-    ScopeMetadataProvider._toStandardTokenType = function (tokenType) {
+    ScopeMetadataProvider.prototype._toStandardTokenType = function (tokenType) {
+        var entry = this._tokenTypes[tokenType];
+        if (typeof entry !== undefined) {
+            switch (entry) {
+                case 1 /* Comment */:
+                    return 1 /* Comment */;
+                case 2 /* String */:
+                    return 2 /* String */;
+                case 4 /* RegEx */:
+                    return 4 /* RegEx */;
+                default:
+                    return 0 /* Other */;
+            }
+        }
         var m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
         if (!m) {
             return 0 /* Other */;
@@ -1996,8 +2010,8 @@ var ScopeMetadataProvider = /** @class */ (function () {
     return ScopeMetadataProvider;
 }());
 var Grammar = /** @class */ (function () {
-    function Grammar(grammar, initialLanguage, embeddedLanguages, grammarRepository) {
-        this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
+    function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
+        this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages, tokenTypes);
         this._rootId = -1;
         this._lastRuleId = 0;
         this._ruleId2desc = [];
@@ -2910,13 +2924,13 @@ var SyncRegistry = /** @class */ (function () {
     /**
      * Lookup a grammar.
      */
-    SyncRegistry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages) {
+    SyncRegistry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages, tokenTypes) {
         if (!this._grammars[scopeName]) {
             var rawGrammar = this._rawGrammars[scopeName];
             if (!rawGrammar) {
                 return null;
             }
-            this._grammars[scopeName] = grammar_1.createGrammar(rawGrammar, initialLanguage, embeddedLanguages, this);
+            this._grammars[scopeName] = grammar_1.createGrammar(rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this);
         }
         return this._grammars[scopeName];
     };
@@ -2965,13 +2979,20 @@ var Registry = /** @class */ (function () {
      * Please do not use language id 0.
      */
     Registry.prototype.loadGrammarWithEmbeddedLanguages = function (initialScopeName, initialLanguage, embeddedLanguages, callback) {
+        return this.loadGrammarWithConfiguration(initialScopeName, initialLanguage, { embeddedLanguages: embeddedLanguages }, callback);
+    };
+    /**
+     * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+     * Please do not use language id 0.
+     */
+    Registry.prototype.loadGrammarWithConfiguration = function (initialScopeName, initialLanguage, configuration, callback) {
         var _this = this;
         this._loadGrammar(initialScopeName, function (err) {
             if (err) {
                 callback(err, null);
                 return;
             }
-            callback(null, _this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages));
+            callback(null, _this.grammarForScopeName(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes));
         });
     };
     /**
@@ -3038,10 +3059,11 @@ var Registry = /** @class */ (function () {
     /**
      * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
      */
-    Registry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages) {
+    Registry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages, tokenTypes) {
         if (initialLanguage === void 0) { initialLanguage = 0; }
         if (embeddedLanguages === void 0) { embeddedLanguages = null; }
-        return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages);
+        if (tokenTypes === void 0) { tokenTypes = null; }
+        return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes);
     };
     return Registry;
 }());

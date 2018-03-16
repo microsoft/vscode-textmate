@@ -50,11 +50,23 @@ export interface IEmbeddedLanguagesMap {
 	[scopeName: string]: number;
 }
 
+/**
+ * A map from scope name to a token type.
+ */
+export interface ITokenTypeMap {
+	[scopeName: string]: StandardTokenType;
+}
+
 export const enum StandardTokenType {
 	Other = 0,
 	Comment = 1,
 	String = 2,
 	RegEx = 4
+}
+
+export interface IGrammarConfiguration {
+	embeddedLanguages?: IEmbeddedLanguagesMap;
+	tokenTypes?: ITokenTypeMap;
 }
 
 /**
@@ -89,13 +101,21 @@ export class Registry {
 	 * Please do not use language id 0.
 	 */
 	public loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, callback: (err: any, grammar: IGrammar) => void): void {
+		return this.loadGrammarWithConfiguration(initialScopeName, initialLanguage, { embeddedLanguages }, callback)
+	}
+
+	/**
+	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
+	 * Please do not use language id 0.
+	 */
+	public loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration, callback: (err: any, grammar: IGrammar) => void): void {
 		this._loadGrammar(initialScopeName, (err) => {
 			if (err) {
 				callback(err, null);
 				return;
 			}
 
-			callback(null, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages));
+			callback(null, this.grammarForScopeName(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes));
 		});
 	}
 
@@ -171,8 +191,8 @@ export class Registry {
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
 	 */
-	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): IGrammar {
-		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages);
+	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null, tokenTypes: ITokenTypeMap = null): IGrammar {
+		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes);
 	}
 }
 
