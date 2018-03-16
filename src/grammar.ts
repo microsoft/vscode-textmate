@@ -296,7 +296,9 @@ class ScopeMetadataProvider {
 				case StandardTokenType.RegEx:
 					return TemporaryStandardTokenType.RegEx;
 				default:
-					return TemporaryStandardTokenType.Other;
+					// `MetaEmbedded` is the same scope as `Other`
+					// but it overwrites existing token types in the stack.
+					return TemporaryStandardTokenType.MetaEmbedded;
 			}
 		}
 
