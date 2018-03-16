@@ -287,7 +287,7 @@ class ScopeMetadataProvider {
 	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
 	private _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
 		const entry = this._tokenTypes[tokenType];
-		if (typeof entry !== undefined) {
+		if (typeof entry !== 'undefined') {
 			switch (entry) {
 				case StandardTokenType.Comment:
 					return TemporaryStandardTokenType.Comment;
