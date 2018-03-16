@@ -1977,7 +1977,7 @@ var ScopeMetadataProvider = /** @class */ (function () {
     };
     ScopeMetadataProvider.prototype._toStandardTokenType = function (tokenType) {
         var entry = this._tokenTypes[tokenType];
-        if (typeof entry !== undefined) {
+        if (typeof entry !== 'undefined') {
             switch (entry) {
                 case 1 /* Comment */:
                     return 1 /* Comment */;
@@ -1986,7 +1986,9 @@ var ScopeMetadataProvider = /** @class */ (function () {
                 case 4 /* RegEx */:
                     return 4 /* RegEx */;
                 default:
-                    return 0 /* Other */;
+                    // `MetaEmbedded` is the same scope as `Other`
+                    // but it overwrites existing token types in the stack.
+                    return 8 /* MetaEmbedded */;
             }
         }
         var m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
