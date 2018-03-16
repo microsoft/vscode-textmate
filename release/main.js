@@ -64,7 +64,7 @@ function mergeObjects(target) {
 }
 exports.mergeObjects = mergeObjects;
 var CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
-var RegexSource = /** @class */ (function () {
+var RegexSource = (function () {
     function RegexSource() {
     }
     RegexSource.hasCaptures = function (regexSource) {
@@ -104,7 +104,7 @@ $load('./theme', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var ParsedThemeRule = /** @class */ (function () {
+var ParsedThemeRule = (function () {
     function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
         this.scope = scope;
         this.parentScopes = parentScopes;
@@ -250,7 +250,7 @@ function resolveParsedThemeRules(parsedThemeRules) {
     }
     return new Theme(colorMap, defaults, root);
 }
-var ColorMap = /** @class */ (function () {
+var ColorMap = (function () {
     function ColorMap() {
         this._lastColorId = 0;
         this._id2color = [];
@@ -276,7 +276,7 @@ var ColorMap = /** @class */ (function () {
     return ColorMap;
 }());
 exports.ColorMap = ColorMap;
-var Theme = /** @class */ (function () {
+var Theme = (function () {
     function Theme(colorMap, defaults, root) {
         this._colorMap = colorMap;
         this._root = root;
@@ -338,7 +338,7 @@ function strArrCmp(a, b) {
     return len1 - len2;
 }
 exports.strArrCmp = strArrCmp;
-var ThemeTrieElementRule = /** @class */ (function () {
+var ThemeTrieElementRule = (function () {
     function ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background) {
         this.scopeDepth = scopeDepth;
         this.parentScopes = parentScopes;
@@ -377,7 +377,7 @@ var ThemeTrieElementRule = /** @class */ (function () {
     return ThemeTrieElementRule;
 }());
 exports.ThemeTrieElementRule = ThemeTrieElementRule;
-var ThemeTrieElement = /** @class */ (function () {
+var ThemeTrieElement = (function () {
     function ThemeTrieElement(mainRule, rulesWithParentScopes, children) {
         if (rulesWithParentScopes === void 0) { rulesWithParentScopes = []; }
         if (children === void 0) { children = {}; }
@@ -789,7 +789,7 @@ function parse(source, filename, withMetadata) {
     return cur;
 }
 exports.parse = parse;
-var JSONStreamState = /** @class */ (function () {
+var JSONStreamState = (function () {
     function JSONStreamState(source) {
         this.source = source;
         this.pos = 0;
@@ -799,7 +799,7 @@ var JSONStreamState = /** @class */ (function () {
     }
     return JSONStreamState;
 }());
-var JSONToken = /** @class */ (function () {
+var JSONToken = (function () {
     function JSONToken() {
         this.value = null;
         this.offset = -1;
@@ -1057,7 +1057,7 @@ function readGrammarSync(filePath) {
     return reader.load();
 }
 exports.readGrammarSync = readGrammarSync;
-var AsyncGrammarReader = /** @class */ (function () {
+var AsyncGrammarReader = (function () {
     function AsyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
         this._parser = parser;
@@ -1082,7 +1082,7 @@ var AsyncGrammarReader = /** @class */ (function () {
     };
     return AsyncGrammarReader;
 }());
-var SyncGrammarReader = /** @class */ (function () {
+var SyncGrammarReader = (function () {
     function SyncGrammarReader(filePath, parser) {
         this._filePath = filePath;
         this._parser = parser;
@@ -1143,7 +1143,7 @@ var path = require("path");
 var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
-var Rule = /** @class */ (function () {
+var Rule = (function () {
     function Rule($location, id, name, contentName) {
         this.$location = $location;
         this.id = id;
@@ -1180,7 +1180,7 @@ var Rule = /** @class */ (function () {
     return Rule;
 }());
 exports.Rule = Rule;
-var CaptureRule = /** @class */ (function (_super) {
+var CaptureRule = (function (_super) {
     __extends(CaptureRule, _super);
     function CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1190,7 +1190,7 @@ var CaptureRule = /** @class */ (function (_super) {
     return CaptureRule;
 }(Rule));
 exports.CaptureRule = CaptureRule;
-var RegExpSource = /** @class */ (function () {
+var RegExpSource = (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
         if (handleAnchors === void 0) { handleAnchors = true; }
         if (handleAnchors) {
@@ -1356,7 +1356,7 @@ function getString(str) {
     return str.$str;
 }
 exports.getString = getString;
-var RegExpSourceList = /** @class */ (function () {
+var RegExpSourceList = (function () {
     function RegExpSourceList() {
         this._items = [];
         this._hasAnchors = false;
@@ -1439,7 +1439,7 @@ var RegExpSourceList = /** @class */ (function () {
     return RegExpSourceList;
 }());
 exports.RegExpSourceList = RegExpSourceList;
-var MatchRule = /** @class */ (function (_super) {
+var MatchRule = (function (_super) {
     __extends(MatchRule, _super);
     function MatchRule($location, id, name, match, captures) {
         var _this = _super.call(this, $location, id, name, null) || this;
@@ -1468,7 +1468,7 @@ var MatchRule = /** @class */ (function (_super) {
     return MatchRule;
 }(Rule));
 exports.MatchRule = MatchRule;
-var IncludeOnlyRule = /** @class */ (function (_super) {
+var IncludeOnlyRule = (function (_super) {
     __extends(IncludeOnlyRule, _super);
     function IncludeOnlyRule($location, id, name, contentName, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1497,7 +1497,7 @@ exports.IncludeOnlyRule = IncludeOnlyRule;
 function escapeRegExpCharacters(value) {
     return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 }
-var BeginEndRule = /** @class */ (function (_super) {
+var BeginEndRule = (function (_super) {
     __extends(BeginEndRule, _super);
     function BeginEndRule($location, id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1569,7 +1569,7 @@ var BeginEndRule = /** @class */ (function (_super) {
     return BeginEndRule;
 }(Rule));
 exports.BeginEndRule = BeginEndRule;
-var BeginWhileRule = /** @class */ (function (_super) {
+var BeginWhileRule = (function (_super) {
     __extends(BeginWhileRule, _super);
     function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, whileCaptures, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1625,7 +1625,7 @@ var BeginWhileRule = /** @class */ (function (_super) {
     return BeginWhileRule;
 }(Rule));
 exports.BeginWhileRule = BeginWhileRule;
-var RuleFactory = /** @class */ (function () {
+var RuleFactory = (function () {
     function RuleFactory() {
     }
     RuleFactory.createCaptureRule = function (helper, $location, name, contentName, retokenizeCapturedWithRuleId) {
@@ -1877,7 +1877,7 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         });
     }
 }
-var ScopeMetadata = /** @class */ (function () {
+var ScopeMetadata = (function () {
     function ScopeMetadata(scopeName, languageId, tokenType, themeData) {
         this.scopeName = scopeName;
         this.languageId = languageId;
@@ -1887,7 +1887,7 @@ var ScopeMetadata = /** @class */ (function () {
     return ScopeMetadata;
 }());
 exports.ScopeMetadata = ScopeMetadata;
-var ScopeMetadataProvider = /** @class */ (function () {
+var ScopeMetadataProvider = (function () {
     function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages, tokenTypes) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
@@ -2007,11 +2007,11 @@ var ScopeMetadataProvider = /** @class */ (function () {
         }
         throw new Error('Unexpected match for standard token type!');
     };
-    ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
-    ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
     return ScopeMetadataProvider;
 }());
-var Grammar = /** @class */ (function () {
+ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
+ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
+var Grammar = (function () {
     function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
         this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages, tokenTypes);
         this._rootId = -1;
@@ -2478,7 +2478,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
     return stack;
 }
-var StackElementMetadata = /** @class */ (function () {
+var StackElementMetadata = (function () {
     function StackElementMetadata() {
     }
     StackElementMetadata.toBinaryStr = function (metadata) {
@@ -2547,7 +2547,7 @@ var StackElementMetadata = /** @class */ (function () {
     return StackElementMetadata;
 }());
 exports.StackElementMetadata = StackElementMetadata;
-var ScopeListElement = /** @class */ (function () {
+var ScopeListElement = (function () {
     function ScopeListElement(parent, scope, metadata) {
         this.parent = parent;
         this.scope = scope;
@@ -2660,7 +2660,7 @@ exports.ScopeListElement = ScopeListElement;
 /**
  * Represents a "pushed" state on the stack (as a linked list element).
  */
-var StackElement = /** @class */ (function () {
+var StackElement = (function () {
     function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
@@ -2766,11 +2766,11 @@ var StackElement = /** @class */ (function () {
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
-    StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
     return StackElement;
 }());
+StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
 exports.StackElement = StackElement;
-var LocalStackElement = /** @class */ (function () {
+var LocalStackElement = (function () {
     function LocalStackElement(scopes, endPos) {
         this.scopes = scopes;
         this.endPos = endPos;
@@ -2778,7 +2778,7 @@ var LocalStackElement = /** @class */ (function () {
     return LocalStackElement;
 }());
 exports.LocalStackElement = LocalStackElement;
-var LineTokens = /** @class */ (function () {
+var LineTokens = (function () {
     function LineTokens(emitBinaryTokens, lineText) {
         this._emitBinaryTokens = emitBinaryTokens;
         if (debug_1.IN_DEBUG_MODE) {
@@ -2866,7 +2866,7 @@ $load('./registry', function(require, module, exports) {
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
-var SyncRegistry = /** @class */ (function () {
+var SyncRegistry = (function () {
     function SyncRegistry(theme) {
         this._theme = theme;
         this._grammars = {};
@@ -2958,7 +2958,7 @@ var DEFAULT_OPTIONS = {
 /**
  * The registry that will hold all grammars.
  */
-var Registry = /** @class */ (function () {
+var Registry = (function () {
     function Registry(locator) {
         if (locator === void 0) { locator = DEFAULT_OPTIONS; }
         this._locator = locator;
