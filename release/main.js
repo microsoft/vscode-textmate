@@ -1838,33 +1838,33 @@ function collectIncludedScopes(result, grammar) {
     delete result[grammar.scopeName];
 }
 exports.collectIncludedScopes = collectIncludedScopes;
-function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
-    function scopesAreMatching(thisScopeName, scopeName) {
-        if (!thisScopeName) {
-            return false;
-        }
-        if (thisScopeName === scopeName) {
-            return true;
-        }
-        var len = scopeName.length;
-        return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
+function scopesAreMatching(thisScopeName, scopeName) {
+    if (!thisScopeName) {
+        return false;
     }
-    function nameMatcher(identifers, scopes) {
-        if (scopes.length < identifers.length) {
-            return false;
-        }
-        var lastIndex = 0;
-        return identifers.every(function (identifier) {
-            for (var i = lastIndex; i < scopes.length; i++) {
-                if (scopesAreMatching(scopes[i], identifier)) {
-                    lastIndex = i + 1;
-                    return true;
-                }
+    if (thisScopeName === scopeName) {
+        return true;
+    }
+    var len = scopeName.length;
+    return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
+}
+function nameMatcher(identifers, scopes) {
+    if (scopes.length < identifers.length) {
+        return false;
+    }
+    var lastIndex = 0;
+    return identifers.every(function (identifier) {
+        for (var i = lastIndex; i < scopes.length; i++) {
+            if (scopesAreMatching(scopes[i], identifier)) {
+                lastIndex = i + 1;
+                return true;
             }
-            return false;
-        });
-    }
-    ;
+        }
+        return false;
+    });
+}
+;
+function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
     var matchers = matcher_1.createMatchers(selector, nameMatcher);
     var ruleId = rule_1.RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
     for (var _i = 0, matchers_1 = matchers; _i < matchers_1.length; _i++) {
@@ -1888,11 +1888,10 @@ var ScopeMetadata = (function () {
 }());
 exports.ScopeMetadata = ScopeMetadata;
 var ScopeMetadataProvider = (function () {
-    function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages, tokenTypes) {
+    function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
         this.onDidChangeTheme();
-        this._tokenTypes = tokenTypes || Object.create(null);
         // embeddedLanguages handling
         this._embeddedLanguages = Object.create(null);
         if (embeddedLanguages) {
@@ -1976,21 +1975,6 @@ var ScopeMetadataProvider = (function () {
         return language;
     };
     ScopeMetadataProvider.prototype._toStandardTokenType = function (tokenType) {
-        var entry = this._tokenTypes[tokenType];
-        if (typeof entry !== 'undefined') {
-            switch (entry) {
-                case 1 /* Comment */:
-                    return 1 /* Comment */;
-                case 2 /* String */:
-                    return 2 /* String */;
-                case 4 /* RegEx */:
-                    return 4 /* RegEx */;
-                default:
-                    // `MetaEmbedded` is the same scope as `Other`
-                    // but it overwrites existing token types in the stack.
-                    return 8 /* MetaEmbedded */;
-            }
-        }
         var m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
         if (!m) {
             return 0 /* Other */;
@@ -2013,13 +1997,27 @@ ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
 ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
 var Grammar = (function () {
     function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
-        this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages, tokenTypes);
+        this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
         this._rootId = -1;
         this._lastRuleId = 0;
         this._ruleId2desc = [];
         this._includedGrammars = {};
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
+        this._tokenTypeMatchers = [];
+        if (tokenTypes) {
+            for (var _i = 0, _a = Object.keys(tokenTypes); _i < _a.length; _i++) {
+                var selector = _a[_i];
+                var matchers = matcher_1.createMatchers(selector, nameMatcher);
+                for (var _b = 0, matchers_2 = matchers; _b < matchers_2.length; _b++) {
+                    var matcher = matchers_2[_b];
+                    this._tokenTypeMatchers.push({
+                        matcher: matcher.matcher,
+                        type: tokenTypes[selector]
+                    });
+                }
+            }
+        }
     }
     Grammar.prototype.onDidChangeTheme = function () {
         this._scopeMetadataProvider.onDidChangeTheme();
@@ -2119,7 +2117,7 @@ var Grammar = (function () {
         lineText = lineText + '\n';
         var onigLineText = rule_1.createOnigString(lineText);
         var lineLength = rule_1.getString(onigLineText).length;
-        var lineTokens = new LineTokens(emitBinaryTokens, lineText);
+        var lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
         var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
         return {
             lineLength: lineLength,
@@ -2779,8 +2777,9 @@ var LocalStackElement = (function () {
 }());
 exports.LocalStackElement = LocalStackElement;
 var LineTokens = (function () {
-    function LineTokens(emitBinaryTokens, lineText) {
+    function LineTokens(emitBinaryTokens, lineText, tokenTypeOverrides) {
         this._emitBinaryTokens = emitBinaryTokens;
+        this._tokenTypeOverrides = tokenTypeOverrides;
         if (debug_1.IN_DEBUG_MODE) {
             this._lineText = lineText;
         }
@@ -2801,6 +2800,12 @@ var LineTokens = (function () {
         }
         if (this._emitBinaryTokens) {
             var metadata = scopesList.metadata;
+            for (var _i = 0, _a = this._tokenTypeOverrides; _i < _a.length; _i++) {
+                var tokenType = _a[_i];
+                if (tokenType.matcher(scopesList.generateScopes())) {
+                    metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), -1 /* NotSet */, 0, 0);
+                }
+            }
             if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
                 // no need to push a token with the same metadata
                 this._lastTokenEndIndex = endIndex;
@@ -2857,6 +2862,21 @@ var LineTokens = (function () {
     };
     return LineTokens;
 }());
+function toTemporaryType(standardType) {
+    switch (standardType) {
+        case 4 /* RegEx */:
+            return 4 /* RegEx */;
+        case 2 /* String */:
+            return 2 /* String */;
+        case 1 /* Comment */:
+            return 1 /* Comment */;
+        case 0 /* Other */:
+        default:
+            // `MetaEmbedded` is the same scope as `Other`
+            // but it overwrites existing token types in the stack.
+            return 8 /* MetaEmbedded */;
+    }
+}
 //# sourceMappingURL=grammar.js.map
 });
 $load('./registry', function(require, module, exports) {

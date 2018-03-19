@@ -113,34 +113,34 @@ export interface Injection {
 	readonly grammar: IRawGrammar;
 }
 
-function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
-	function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
-		if (!thisScopeName) {
-			return false;
-		}
-		if (thisScopeName === scopeName) {
-			return true;
-		}
-		var len = scopeName.length;
-		return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
+function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
+	if (!thisScopeName) {
+		return false;
 	}
+	if (thisScopeName === scopeName) {
+		return true;
+	}
+	var len = scopeName.length;
+	return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
+}
 
-	function nameMatcher(identifers: string[], scopes: string[]) {
-		if (scopes.length < identifers.length) {
-			return false;
-		}
-		var lastIndex = 0;
-		return identifers.every(identifier => {
-			for (var i = lastIndex; i < scopes.length; i++) {
-				if (scopesAreMatching(scopes[i], identifier)) {
-					lastIndex = i + 1;
-					return true;
-				}
+function nameMatcher(identifers: string[], scopes: string[]) {
+	if (scopes.length < identifers.length) {
+		return false;
+	}
+	var lastIndex = 0;
+	return identifers.every(identifier => {
+		for (var i = lastIndex; i < scopes.length; i++) {
+			if (scopesAreMatching(scopes[i], identifier)) {
+				lastIndex = i + 1;
+				return true;
 			}
-			return false;
-		});
-	};
+		}
+		return false;
+	});
+};
 
+function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
 	let matchers = createMatchers(selector, nameMatcher);
 	let ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
 	for (let matcher of matchers) {
@@ -176,14 +176,10 @@ class ScopeMetadataProvider {
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp;
 
-	private readonly _tokenTypes: ITokenTypeMap;
-
-	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap) {
+	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
 		this._initialLanguage = initialLanguage;
 		this._themeProvider = themeProvider;
 		this.onDidChangeTheme();
-
-		this._tokenTypes = tokenTypes || Object.create(null);
 
 		// embeddedLanguages handling
 		this._embeddedLanguages = Object.create(null);
@@ -286,22 +282,6 @@ class ScopeMetadataProvider {
 
 	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
 	private _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
-		const entry = this._tokenTypes[tokenType];
-		if (typeof entry !== 'undefined') {
-			switch (entry) {
-				case StandardTokenType.Comment:
-					return TemporaryStandardTokenType.Comment;
-				case StandardTokenType.String:
-					return TemporaryStandardTokenType.String;
-				case StandardTokenType.RegEx:
-					return TemporaryStandardTokenType.RegEx;
-				default:
-					// `MetaEmbedded` is the same scope as `Other`
-					// but it overwrites existing token types in the stack.
-					return TemporaryStandardTokenType.MetaEmbedded;
-			}
-		}
-
 		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
 			return TemporaryStandardTokenType.Other;
@@ -330,9 +310,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 	private readonly _grammar: IRawGrammar;
 	private _injections: Injection[];
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
+	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
 
 	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider) {
-		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages, tokenTypes);
+		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
 		this._rootId = -1;
 		this._lastRuleId = 0;
@@ -340,6 +321,19 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
+
+		this._tokenTypeMatchers = [];
+		if (tokenTypes) {
+			for (const selector of Object.keys(tokenTypes)) {
+				const matchers = createMatchers(selector, nameMatcher);
+				for (const matcher of matchers) {
+					this._tokenTypeMatchers.push({
+						matcher: matcher.matcher,
+						type: tokenTypes[selector]
+					});
+				}
+			}
+		}
 	}
 
 	public onDidChangeTheme(): void {
@@ -451,7 +445,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		lineText = lineText + '\n';
 		let onigLineText = createOnigString(lineText);
 		let lineLength = getString(onigLineText).length;
-		let lineTokens = new LineTokens(emitBinaryTokens, lineText);
+		let lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
 
 		return {
@@ -1297,6 +1291,11 @@ export class LocalStackElement {
 	}
 }
 
+interface TokenTypeMatcher {
+	readonly matcher: Matcher<string[]>;
+	readonly type: StandardTokenType;
+}
+
 class LineTokens {
 
 	private readonly _emitBinaryTokens: boolean;
@@ -1315,8 +1314,11 @@ class LineTokens {
 
 	private _lastTokenEndIndex: number;
 
-	constructor(emitBinaryTokens: boolean, lineText: string) {
+	private readonly _tokenTypeOverrides: TokenTypeMatcher[];
+
+	constructor(emitBinaryTokens: boolean, lineText: string, tokenTypeOverrides: TokenTypeMatcher[]) {
 		this._emitBinaryTokens = emitBinaryTokens;
+		this._tokenTypeOverrides = tokenTypeOverrides;
 		if (IN_DEBUG_MODE) {
 			this._lineText = lineText;
 		}
@@ -1339,6 +1341,13 @@ class LineTokens {
 
 		if (this._emitBinaryTokens) {
 			let metadata = scopesList.metadata;
+
+			for (const tokenType of this._tokenTypeOverrides) {
+				if (tokenType.matcher(scopesList.generateScopes())) {
+					metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), FontStyle.NotSet, 0, 0);
+				}
+			}
+
 			if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
 				// no need to push a token with the same metadata
 				this._lastTokenEndIndex = endIndex;
@@ -1405,5 +1414,21 @@ class LineTokens {
 		}
 
 		return result;
+	}
+}
+
+function toTemporaryType(standardType: StandardTokenType): TemporaryStandardTokenType {
+	switch (standardType) {
+		case StandardTokenType.RegEx:
+			return TemporaryStandardTokenType.RegEx;
+		case StandardTokenType.String:
+			return TemporaryStandardTokenType.String;
+		case StandardTokenType.Comment:
+			return TemporaryStandardTokenType.Comment;
+		case StandardTokenType.Other:
+		default:
+			// `MetaEmbedded` is the same scope as `Other`
+			// but it overwrites existing token types in the stack.
+			return TemporaryStandardTokenType.MetaEmbedded;
 	}
 }

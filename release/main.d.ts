@@ -32,10 +32,10 @@ export interface IEmbeddedLanguagesMap {
     [scopeName: string]: number;
 }
 /**
- * A map from scope name to a token type.
+ * A map from selectors to token types.
  */
 export interface ITokenTypeMap {
-    [scopeName: string]: StandardTokenType;
+    [selector: string]: StandardTokenType;
 }
 export declare const enum StandardTokenType {
     Other = 0,
