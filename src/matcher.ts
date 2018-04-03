@@ -94,7 +94,7 @@ function isIdentifier(token: string) {
 }
 
 function newTokenizer(input: string): { next: () => string } {
-	let regex = /([LR]:|[\w\.:]+|[\,\|\-\(\)])/g;
+	let regex = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g;
 	var match = regex.exec(input);
 	return {
 		next: () => {
