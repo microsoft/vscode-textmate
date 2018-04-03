@@ -581,7 +581,7 @@ function isIdentifier(token) {
     return token && token.match(/[\w\.:]+/);
 }
 function newTokenizer(input) {
-    var regex = /([LR]:|[\w\.:]+|[\,\|\-\(\)])/g;
+    var regex = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g;
     var match = regex.exec(input);
     return {
         next: function () {
