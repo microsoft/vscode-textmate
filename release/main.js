@@ -63,8 +63,21 @@ function mergeObjects(target) {
     return target;
 }
 exports.mergeObjects = mergeObjects;
+function basename(path) {
+    var idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+    if (idx === 0) {
+        return path;
+    }
+    else if (~idx === path.length - 1) {
+        return basename(path.substring(0, path.length - 1));
+    }
+    else {
+        return path.substr(~idx + 1);
+    }
+}
+exports.basename = basename;
 var CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
-var RegexSource = (function () {
+var RegexSource = /** @class */ (function () {
     function RegexSource() {
     }
     RegexSource.hasCaptures = function (regexSource) {
@@ -104,7 +117,7 @@ $load('./theme', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var ParsedThemeRule = (function () {
+var ParsedThemeRule = /** @class */ (function () {
     function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
         this.scope = scope;
         this.parentScopes = parentScopes;
@@ -250,7 +263,7 @@ function resolveParsedThemeRules(parsedThemeRules) {
     }
     return new Theme(colorMap, defaults, root);
 }
-var ColorMap = (function () {
+var ColorMap = /** @class */ (function () {
     function ColorMap() {
         this._lastColorId = 0;
         this._id2color = [];
@@ -276,7 +289,7 @@ var ColorMap = (function () {
     return ColorMap;
 }());
 exports.ColorMap = ColorMap;
-var Theme = (function () {
+var Theme = /** @class */ (function () {
     function Theme(colorMap, defaults, root) {
         this._colorMap = colorMap;
         this._root = root;
@@ -338,7 +351,7 @@ function strArrCmp(a, b) {
     return len1 - len2;
 }
 exports.strArrCmp = strArrCmp;
-var ThemeTrieElementRule = (function () {
+var ThemeTrieElementRule = /** @class */ (function () {
     function ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background) {
         this.scopeDepth = scopeDepth;
         this.parentScopes = parentScopes;
@@ -377,7 +390,7 @@ var ThemeTrieElementRule = (function () {
     return ThemeTrieElementRule;
 }());
 exports.ThemeTrieElementRule = ThemeTrieElementRule;
-var ThemeTrieElement = (function () {
+var ThemeTrieElement = /** @class */ (function () {
     function ThemeTrieElement(mainRule, rulesWithParentScopes, children) {
         if (rulesWithParentScopes === void 0) { rulesWithParentScopes = []; }
         if (children === void 0) { children = {}; }
@@ -789,7 +802,7 @@ function parse(source, filename, withMetadata) {
     return cur;
 }
 exports.parse = parse;
-var JSONStreamState = (function () {
+var JSONStreamState = /** @class */ (function () {
     function JSONStreamState(source) {
         this.source = source;
         this.pos = 0;
@@ -799,7 +812,7 @@ var JSONStreamState = (function () {
     }
     return JSONStreamState;
 }());
-var JSONToken = (function () {
+var JSONToken = /** @class */ (function () {
     function JSONToken() {
         this.value = null;
         this.offset = -1;
@@ -1043,72 +1056,16 @@ $load('./grammarReader', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-var fs = require("fs");
 var plist = require("fast-plist");
 var debug_1 = require("./debug");
 var json_1 = require("./json");
-function readGrammar(filePath, callback) {
-    var reader = new AsyncGrammarReader(filePath, getGrammarParser(filePath));
-    reader.load(callback);
-}
-exports.readGrammar = readGrammar;
-function readGrammarSync(filePath) {
-    var reader = new SyncGrammarReader(filePath, getGrammarParser(filePath));
-    return reader.load();
-}
-exports.readGrammarSync = readGrammarSync;
-var AsyncGrammarReader = (function () {
-    function AsyncGrammarReader(filePath, parser) {
-        this._filePath = filePath;
-        this._parser = parser;
-    }
-    AsyncGrammarReader.prototype.load = function (callback) {
-        var _this = this;
-        fs.readFile(this._filePath, function (err, contents) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-            var r;
-            try {
-                r = _this._parser(contents.toString(), _this._filePath);
-            }
-            catch (err) {
-                callback(err, null);
-                return;
-            }
-            callback(null, r);
-        });
-    };
-    return AsyncGrammarReader;
-}());
-var SyncGrammarReader = (function () {
-    function SyncGrammarReader(filePath, parser) {
-        this._filePath = filePath;
-        this._parser = parser;
-    }
-    SyncGrammarReader.prototype.load = function () {
-        try {
-            var contents = fs.readFileSync(this._filePath);
-            try {
-                return this._parser(contents.toString(), this._filePath);
-            }
-            catch (e) {
-                throw new Error("Error parsing " + this._filePath + ": " + e.message + ".");
-            }
-        }
-        catch (e) {
-            throw new Error("Error reading " + this._filePath + ": " + e.message + ".");
-        }
-    };
-    return SyncGrammarReader;
-}());
-function getGrammarParser(filePath) {
+function parseRawGrammar(content, filePath) {
     if (/\.json$/.test(filePath)) {
-        return parseJSONGrammar;
+        return parseJSONGrammar(content, filePath);
     }
-    return parsePLISTGrammar;
+    return parsePLISTGrammar(content, filePath);
 }
+exports.parseRawGrammar = parseRawGrammar;
 function parseJSONGrammar(contents, filename) {
     if (debug_1.CAPTURE_METADATA) {
         return json_1.parse(contents, filename, true);
@@ -1139,11 +1096,10 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var path = require("path");
 var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
-var Rule = (function () {
+var Rule = /** @class */ (function () {
     function Rule($location, id, name, contentName) {
         this.$location = $location;
         this.id = id;
@@ -1154,7 +1110,7 @@ var Rule = (function () {
     }
     Object.defineProperty(Rule.prototype, "debugName", {
         get: function () {
-            return this.constructor.name + "#" + this.id + " @ " + path.basename(this.$location.filename) + ":" + this.$location.line;
+            return this.constructor.name + "#" + this.id + " @ " + utils_1.basename(this.$location.filename) + ":" + this.$location.line;
         },
         enumerable: true,
         configurable: true
@@ -1180,7 +1136,7 @@ var Rule = (function () {
     return Rule;
 }());
 exports.Rule = Rule;
-var CaptureRule = (function (_super) {
+var CaptureRule = /** @class */ (function (_super) {
     __extends(CaptureRule, _super);
     function CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1190,7 +1146,7 @@ var CaptureRule = (function (_super) {
     return CaptureRule;
 }(Rule));
 exports.CaptureRule = CaptureRule;
-var RegExpSource = (function () {
+var RegExpSource = /** @class */ (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
         if (handleAnchors === void 0) { handleAnchors = true; }
         if (handleAnchors) {
@@ -1332,31 +1288,7 @@ var RegExpSource = (function () {
     return RegExpSource;
 }());
 exports.RegExpSource = RegExpSource;
-var getOnigModule = (function () {
-    var onigurumaModule = null;
-    return function () {
-        if (!onigurumaModule) {
-            onigurumaModule = require('oniguruma');
-        }
-        return onigurumaModule;
-    };
-})();
-function createOnigScanner(sources) {
-    var onigurumaModule = getOnigModule();
-    return new onigurumaModule.OnigScanner(sources);
-}
-function createOnigString(sources) {
-    var onigurumaModule = getOnigModule();
-    var r = new onigurumaModule.OnigString(sources);
-    r.$str = sources;
-    return r;
-}
-exports.createOnigString = createOnigString;
-function getString(str) {
-    return str.$str;
-}
-exports.getString = getString;
-var RegExpSourceList = (function () {
+var RegExpSourceList = /** @class */ (function () {
     function RegExpSourceList() {
         this._items = [];
         this._hasAnchors = false;
@@ -1391,12 +1323,12 @@ var RegExpSourceList = (function () {
             this._items[index].setSource(newSource);
         }
     };
-    RegExpSourceList.prototype.compile = function (grammar, allowA, allowG) {
+    RegExpSourceList.prototype.compile = function (onigEngine, allowA, allowG) {
         if (!this._hasAnchors) {
             if (!this._cached) {
                 var regExps = this._items.map(function (e) { return e.source; });
                 this._cached = {
-                    scanner: createOnigScanner(regExps),
+                    scanner: onigEngine.createOnigScanner(regExps),
                     rules: this._items.map(function (e) { return e.ruleId; }),
                     debugRegExps: regExps
                 };
@@ -1405,10 +1337,10 @@ var RegExpSourceList = (function () {
         }
         else {
             this._anchorCache = {
-                A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(allowA, allowG) : null),
-                A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(allowA, allowG) : null),
-                A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(allowA, allowG) : null),
-                A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(allowA, allowG) : null),
+                A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+                A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+                A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+                A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
             };
             if (allowA) {
                 if (allowG) {
@@ -1428,10 +1360,10 @@ var RegExpSourceList = (function () {
             }
         }
     };
-    RegExpSourceList.prototype._resolveAnchors = function (allowA, allowG) {
+    RegExpSourceList.prototype._resolveAnchors = function (onigEngine, allowA, allowG) {
         var regExps = this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); });
         return {
-            scanner: createOnigScanner(regExps),
+            scanner: onigEngine.createOnigScanner(regExps),
             rules: this._items.map(function (e) { return e.ruleId; }),
             debugRegExps: regExps
         };
@@ -1439,7 +1371,7 @@ var RegExpSourceList = (function () {
     return RegExpSourceList;
 }());
 exports.RegExpSourceList = RegExpSourceList;
-var MatchRule = (function (_super) {
+var MatchRule = /** @class */ (function (_super) {
     __extends(MatchRule, _super);
     function MatchRule($location, id, name, match, captures) {
         var _this = _super.call(this, $location, id, name, null) || this;
@@ -1468,7 +1400,7 @@ var MatchRule = (function (_super) {
     return MatchRule;
 }(Rule));
 exports.MatchRule = MatchRule;
-var IncludeOnlyRule = (function (_super) {
+var IncludeOnlyRule = /** @class */ (function (_super) {
     __extends(IncludeOnlyRule, _super);
     function IncludeOnlyRule($location, id, name, contentName, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1497,7 +1429,7 @@ exports.IncludeOnlyRule = IncludeOnlyRule;
 function escapeRegExpCharacters(value) {
     return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 }
-var BeginEndRule = (function (_super) {
+var BeginEndRule = /** @class */ (function (_super) {
     __extends(BeginEndRule, _super);
     function BeginEndRule($location, id, name, contentName, begin, beginCaptures, end, endCaptures, applyEndPatternLast, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1569,7 +1501,7 @@ var BeginEndRule = (function (_super) {
     return BeginEndRule;
 }(Rule));
 exports.BeginEndRule = BeginEndRule;
-var BeginWhileRule = (function (_super) {
+var BeginWhileRule = /** @class */ (function (_super) {
     __extends(BeginWhileRule, _super);
     function BeginWhileRule($location, id, name, contentName, begin, beginCaptures, _while, whileCaptures, patterns) {
         var _this = _super.call(this, $location, id, name, contentName) || this;
@@ -1625,7 +1557,7 @@ var BeginWhileRule = (function (_super) {
     return BeginWhileRule;
 }(Rule));
 exports.BeginWhileRule = BeginWhileRule;
-var RuleFactory = (function () {
+var RuleFactory = /** @class */ (function () {
     function RuleFactory() {
     }
     RuleFactory.createCaptureRule = function (helper, $location, name, contentName, retokenizeCapturedWithRuleId) {
@@ -1777,8 +1709,8 @@ var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
-function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
-    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository);
+function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine) {
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine);
 }
 exports.createGrammar = createGrammar;
 /**
@@ -1814,8 +1746,8 @@ function _extractIncludedScopesInPatterns(result, patterns) {
  * Fill in `result` all external included scopes in `repository`
  */
 function _extractIncludedScopesInRepository(result, repository) {
-    for (var name_1 in repository) {
-        var rule = repository[name_1];
+    for (var name in repository) {
+        var rule = repository[name];
         if (rule.patterns && Array.isArray(rule.patterns)) {
             _extractIncludedScopesInPatterns(result, rule.patterns);
         }
@@ -1877,7 +1809,7 @@ function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
         });
     }
 }
-var ScopeMetadata = (function () {
+var ScopeMetadata = /** @class */ (function () {
     function ScopeMetadata(scopeName, languageId, tokenType, themeData) {
         this.scopeName = scopeName;
         this.languageId = languageId;
@@ -1887,7 +1819,7 @@ var ScopeMetadata = (function () {
     return ScopeMetadata;
 }());
 exports.ScopeMetadata = ScopeMetadata;
-var ScopeMetadataProvider = (function () {
+var ScopeMetadataProvider = /** @class */ (function () {
     function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
@@ -1991,13 +1923,14 @@ var ScopeMetadataProvider = (function () {
         }
         throw new Error('Unexpected match for standard token type!');
     };
+    ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
+    ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
     return ScopeMetadataProvider;
 }());
-ScopeMetadataProvider._NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
-ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
-var Grammar = (function () {
-    function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository) {
+var Grammar = /** @class */ (function () {
+    function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine) {
         this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
+        this._onigEngine = onigEngine;
         this._rootId = -1;
         this._lastRuleId = 0;
         this._ruleId2desc = [];
@@ -2019,6 +1952,14 @@ var Grammar = (function () {
             }
         }
     }
+    Grammar.prototype.createOnigScanner = function (sources) {
+        return this._onigEngine.createOnigScanner(sources);
+    };
+    Grammar.prototype.createOnigString = function (sources) {
+        var s = this._onigEngine.createOnigString(sources);
+        s.$str = sources;
+        return s;
+    };
     Grammar.prototype.onDidChangeTheme = function () {
         this._scopeMetadataProvider.onDidChangeTheme();
     };
@@ -2115,8 +2056,8 @@ var Grammar = (function () {
             prevState.reset();
         }
         lineText = lineText + '\n';
-        var onigLineText = rule_1.createOnigString(lineText);
-        var lineLength = rule_1.getString(onigLineText).length;
+        var onigLineText = this.createOnigString(lineText);
+        var lineLength = getString(onigLineText).length;
         var lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
         var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
         return {
@@ -2175,15 +2116,15 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         }
         if (captureRule.retokenizeCapturedWithRuleId) {
             // the capture requires additional matching
-            var scopeName = captureRule.getName(rule_1.getString(lineText), captureIndices);
+            var scopeName = captureRule.getName(getString(lineText), captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-            var contentName = captureRule.getContentName(rule_1.getString(lineText), captureIndices);
+            var contentName = captureRule.getContentName(getString(lineText), captureIndices);
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
             var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
-            _tokenizeString(grammar, rule_1.createOnigString(rule_1.getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+            _tokenizeString(grammar, grammar.createOnigString(getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             continue;
         }
-        var captureRuleScopeName = captureRule.getName(rule_1.getString(lineText), captureIndices);
+        var captureRuleScopeName = captureRule.getName(getString(lineText), captureIndices);
         if (captureRuleScopeName !== null) {
             // push
             var base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
@@ -2218,7 +2159,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
             continue;
         }
         var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
-        var matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        var matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
         if (debug_1.IN_DEBUG_MODE) {
             console.log('  scanning for injections');
             console.log(debugCompiledRuleToString(ruleScanner));
@@ -2252,7 +2193,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var rule = stack.getRule(grammar);
     var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
-    var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+    var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
     if (debug_1.IN_DEBUG_MODE) {
         console.log('  scanning for');
         console.log(debugCompiledRuleToString(ruleScanner));
@@ -2311,7 +2252,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
     }
     for (var whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
         var ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
-        var r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+        var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
         if (debug_1.IN_DEBUG_MODE) {
             console.log('  scanning for while rule');
             console.log(debugCompiledRuleToString(ruleScanner));
@@ -2342,7 +2283,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
     return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
-    var lineLength = rule_1.getString(lineText).length;
+    var lineLength = getString(lineText).length;
     var STOP = false;
     var whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
     stack = whileCheckResult.stack;
@@ -2355,7 +2296,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     function scanNext() {
         if (debug_1.IN_DEBUG_MODE) {
             console.log('');
-            console.log('@@scanNext: |' + rule_1.getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|');
+            console.log('@@scanNext: |' + getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|');
         }
         var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
         if (!r) {
@@ -2400,7 +2341,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             lineTokens.produce(stack, captureIndices[0].start);
             var beforePush = stack;
             // push it on the stack rule
-            var scopeName = _rule.getName(rule_1.getString(lineText), captureIndices);
+            var scopeName = _rule.getName(getString(lineText), captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
             stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
@@ -2411,11 +2352,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                var contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
+                var contentName = pushedRule.getContentName(getString(lineText), captureIndices);
                 var contentNameScopesList = nameScopesList.push(grammar, contentName);
                 stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.endHasBackReferences) {
-                    stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2434,11 +2375,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                var contentName = pushedRule.getContentName(rule_1.getString(lineText), captureIndices);
+                var contentName = pushedRule.getContentName(getString(lineText), captureIndices);
                 var contentNameScopesList = nameScopesList.push(grammar, contentName);
                 stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.whileHasBackReferences) {
-                    stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(rule_1.getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2476,7 +2417,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     }
     return stack;
 }
-var StackElementMetadata = (function () {
+var StackElementMetadata = /** @class */ (function () {
     function StackElementMetadata() {
     }
     StackElementMetadata.toBinaryStr = function (metadata) {
@@ -2545,7 +2486,7 @@ var StackElementMetadata = (function () {
     return StackElementMetadata;
 }());
 exports.StackElementMetadata = StackElementMetadata;
-var ScopeListElement = (function () {
+var ScopeListElement = /** @class */ (function () {
     function ScopeListElement(parent, scope, metadata) {
         this.parent = parent;
         this.scope = scope;
@@ -2658,7 +2599,7 @@ exports.ScopeListElement = ScopeListElement;
 /**
  * Represents a "pushed" state on the stack (as a linked list element).
  */
-var StackElement = (function () {
+var StackElement = /** @class */ (function () {
     function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
@@ -2764,11 +2705,11 @@ var StackElement = (function () {
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
+    StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
     return StackElement;
 }());
-StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
 exports.StackElement = StackElement;
-var LocalStackElement = (function () {
+var LocalStackElement = /** @class */ (function () {
     function LocalStackElement(scopes, endPos) {
         this.scopes = scopes;
         this.endPos = endPos;
@@ -2776,7 +2717,7 @@ var LocalStackElement = (function () {
     return LocalStackElement;
 }());
 exports.LocalStackElement = LocalStackElement;
-var LineTokens = (function () {
+var LineTokens = /** @class */ (function () {
     function LineTokens(emitBinaryTokens, lineText, tokenTypeOverrides) {
         this._emitBinaryTokens = emitBinaryTokens;
         this._tokenTypeOverrides = tokenTypeOverrides;
@@ -2877,6 +2818,9 @@ function toTemporaryType(standardType) {
             return 8 /* MetaEmbedded */;
     }
 }
+function getString(str) {
+    return str.$str;
+}
 //# sourceMappingURL=grammar.js.map
 });
 $load('./registry', function(require, module, exports) {
@@ -2884,14 +2828,50 @@ $load('./registry', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
-var SyncRegistry = (function () {
-    function SyncRegistry(theme) {
+var SyncRegistry = /** @class */ (function () {
+    function SyncRegistry(theme, onigEnginePromise) {
         this._theme = theme;
         this._grammars = {};
         this._rawGrammars = {};
         this._injectionGrammars = {};
+        this._onigEnginePromise = onigEnginePromise;
     }
     SyncRegistry.prototype.setTheme = function (theme) {
         var _this = this;
@@ -2947,14 +2927,28 @@ var SyncRegistry = (function () {
      * Lookup a grammar.
      */
     SyncRegistry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages, tokenTypes) {
-        if (!this._grammars[scopeName]) {
-            var rawGrammar = this._rawGrammars[scopeName];
-            if (!rawGrammar) {
-                return null;
-            }
-            this._grammars[scopeName] = grammar_1.createGrammar(rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this);
-        }
-        return this._grammars[scopeName];
+        return __awaiter(this, void 0, void 0, function () {
+            var rawGrammar, _a, _b, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        if (!!this._grammars[scopeName]) return [3 /*break*/, 2];
+                        rawGrammar = this._rawGrammars[scopeName];
+                        if (!rawGrammar) {
+                            return [2 /*return*/, null];
+                        }
+                        _a = this._grammars;
+                        _b = scopeName;
+                        _c = grammar_1.createGrammar;
+                        _d = [rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this];
+                        return [4 /*yield*/, this._onigEnginePromise];
+                    case 1:
+                        _a[_b] = _c.apply(void 0, _d.concat([_e.sent()]));
+                        _e.label = 2;
+                    case 2: return [2 /*return*/, this._grammars[scopeName]];
+                }
+            });
+        });
     };
     return SyncRegistry;
 }());
@@ -2966,23 +2960,54 @@ $load('./main', function(require, module, exports) {
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 'use strict';
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __generator = (this && this.__generator) || function (thisArg, body) {
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+    function verb(n) { return function (v) { return step([n, v]); }; }
+    function step(op) {
+        if (f) throw new TypeError("Generator is already executing.");
+        while (_) try {
+            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [0, t.value];
+            switch (op[0]) {
+                case 0: case 1: t = op; break;
+                case 4: _.label++; return { value: op[1], done: false };
+                case 5: _.label++; y = op[1]; op = [0]; continue;
+                case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                default:
+                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                    if (t[2]) _.ops.pop();
+                    _.trys.pop(); continue;
+            }
+            op = body.call(thisArg, _);
+        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+    }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var registry_1 = require("./registry");
 var grammarReader_1 = require("./grammarReader");
+exports.parseRawGrammar = grammarReader_1.parseRawGrammar;
 var theme_1 = require("./theme");
 var grammar_1 = require("./grammar");
-var DEFAULT_OPTIONS = {
-    getFilePath: function (scopeName) { return null; },
-    getInjections: function (scopeName) { return null; }
-};
 /**
  * The registry that will hold all grammars.
  */
-var Registry = (function () {
+var Registry = /** @class */ (function () {
     function Registry(locator) {
-        if (locator === void 0) { locator = DEFAULT_OPTIONS; }
         this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme));
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigEngine());
     }
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
@@ -3000,86 +3025,77 @@ var Registry = (function () {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    Registry.prototype.loadGrammarWithEmbeddedLanguages = function (initialScopeName, initialLanguage, embeddedLanguages, callback) {
-        return this.loadGrammarWithConfiguration(initialScopeName, initialLanguage, { embeddedLanguages: embeddedLanguages }, callback);
+    Registry.prototype.loadGrammarWithEmbeddedLanguages = function (initialScopeName, initialLanguage, embeddedLanguages) {
+        return this.loadGrammarWithConfiguration(initialScopeName, initialLanguage, { embeddedLanguages: embeddedLanguages });
     };
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    Registry.prototype.loadGrammarWithConfiguration = function (initialScopeName, initialLanguage, configuration, callback) {
-        var _this = this;
-        this._loadGrammar(initialScopeName, function (err) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-            callback(null, _this.grammarForScopeName(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes));
-        });
+    Registry.prototype.loadGrammarWithConfiguration = function (initialScopeName, initialLanguage, configuration) {
+        return this._loadGrammar(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes);
     };
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
-    Registry.prototype.loadGrammar = function (initialScopeName, callback) {
-        var _this = this;
-        this._loadGrammar(initialScopeName, function (err) {
-            if (err) {
-                callback(err, null);
-                return;
-            }
-            callback(null, _this.grammarForScopeName(initialScopeName));
+    Registry.prototype.loadGrammar = function (initialScopeName) {
+        return this._loadGrammar(initialScopeName, 0, null, null);
+    };
+    Registry.prototype._loadGrammar = function (initialScopeName, initialLanguage, embeddedLanguages, tokenTypes) {
+        return __awaiter(this, void 0, void 0, function () {
+            var remainingScopeNames, seenScopeNames, scopeName, grammar, injections, deps, e_1;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        remainingScopeNames = [initialScopeName];
+                        seenScopeNames = {};
+                        seenScopeNames[initialScopeName] = true;
+                        _a.label = 1;
+                    case 1:
+                        if (!(remainingScopeNames.length > 0)) return [3 /*break*/, 6];
+                        scopeName = remainingScopeNames.shift();
+                        if (this._syncRegistry.lookup(scopeName)) {
+                            return [3 /*break*/, 1];
+                        }
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
+                    case 3:
+                        grammar = _a.sent();
+                        injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
+                        deps = this._syncRegistry.addGrammar(grammar, injections);
+                        deps.forEach(function (dep) {
+                            if (!seenScopeNames[dep]) {
+                                seenScopeNames[dep] = true;
+                                remainingScopeNames.push(dep);
+                            }
+                        });
+                        return [3 /*break*/, 5];
+                    case 4:
+                        e_1 = _a.sent();
+                        if (scopeName === initialScopeName) {
+                            throw new Error('Unable to load grammar <' + initialScopeName + '>' + e_1);
+                        }
+                        return [3 /*break*/, 5];
+                    case 5: return [3 /*break*/, 1];
+                    case 6: return [2 /*return*/, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes)];
+                }
+            });
         });
     };
-    Registry.prototype._loadGrammar = function (initialScopeName, callback) {
-        var remainingScopeNames = [initialScopeName];
-        var seenScopeNames = {};
-        seenScopeNames[initialScopeName] = true;
-        while (remainingScopeNames.length > 0) {
-            var scopeName = remainingScopeNames.shift();
-            if (this._syncRegistry.lookup(scopeName)) {
-                continue;
-            }
-            var filePath = this._locator.getFilePath(scopeName);
-            if (!filePath) {
-                if (scopeName === initialScopeName) {
-                    callback(new Error('Unknown location for grammar <' + initialScopeName + '>'));
-                    return;
-                }
-                continue;
-            }
-            try {
-                var grammar = grammarReader_1.readGrammarSync(filePath);
-                var injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
-                var deps = this._syncRegistry.addGrammar(grammar, injections);
-                deps.forEach(function (dep) {
-                    if (!seenScopeNames[dep]) {
-                        seenScopeNames[dep] = true;
-                        remainingScopeNames.push(dep);
-                    }
-                });
-            }
-            catch (err) {
-                if (scopeName === initialScopeName) {
-                    callback(err);
-                    return;
-                }
-            }
-        }
-        callback(null);
-    };
     /**
-     * Load the grammar at `path` synchronously.
+     * Adds a rawGrammar.
      */
-    Registry.prototype.loadGrammarFromPathSync = function (path, initialLanguage, embeddedLanguages) {
+    Registry.prototype.addGrammar = function (rawGrammar, initialLanguage, embeddedLanguages) {
         if (initialLanguage === void 0) { initialLanguage = 0; }
         if (embeddedLanguages === void 0) { embeddedLanguages = null; }
-        var rawGrammar = grammarReader_1.readGrammarSync(path);
         var injections = this._locator.getInjections(rawGrammar.scopeName);
         this._syncRegistry.addGrammar(rawGrammar, injections);
         return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
     };
     /**
-     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
+     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
      */
     Registry.prototype.grammarForScopeName = function (scopeName, initialLanguage, embeddedLanguages, tokenTypes) {
         if (initialLanguage === void 0) { initialLanguage = 0; }

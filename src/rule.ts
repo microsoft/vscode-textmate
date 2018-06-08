@@ -3,10 +3,9 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import * as path from 'path';
-import { RegexSource, mergeObjects } from './utils';
+import { RegexSource, mergeObjects, basename } from './utils';
 import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './types';
-import { OnigString, OnigScanner, IOnigCaptureIndex } from 'oniguruma';
+import { IOnigEngine, OnigScanner, IOnigCaptureIndex } from './onig';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
 const BACK_REFERENCING_END = /\\(\d+)/g;
@@ -50,7 +49,7 @@ export abstract class Rule {
 	}
 
 	public get debugName(): string {
-		return `${(<any>this.constructor).name}#${this.id} @ ${path.basename(this.$location.filename)}:${this.$location.line}`;
+		return `${(<any>this.constructor).name}#${this.id} @ ${basename(this.$location.filename)}:${this.$location.line}`;
 	}
 
 	public getName(lineText: string, captureIndices: IOnigCaptureIndex[]): string {
@@ -71,7 +70,7 @@ export abstract class Rule {
 		throw new Error('Implement me!');
 	}
 
-	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		throw new Error('Implement me!');
 	}
 }
@@ -269,32 +268,6 @@ interface IRegExpSourceListAnchorCache {
 	A1_G1: ICompiledRule;
 }
 
-let getOnigModule = (function () {
-	var onigurumaModule: any = null;
-	return function () {
-		if (!onigurumaModule) {
-			onigurumaModule = require('oniguruma');
-		}
-		return onigurumaModule;
-	};
-})();
-
-function createOnigScanner(sources: string[]): OnigScanner {
-	let onigurumaModule = getOnigModule();
-	return new onigurumaModule.OnigScanner(sources);
-}
-
-export function createOnigString(sources: string): OnigString {
-	let onigurumaModule = getOnigModule();
-	var r = new onigurumaModule.OnigString(sources);
-	(<any>r).$str = sources;
-	return r;
-}
-
-export function getString(str: OnigString): string {
-	return (<any>str).$str;
-}
-
 export class RegExpSourceList {
 
 	private readonly _items: RegExpSource[];
@@ -342,12 +315,12 @@ export class RegExpSourceList {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(onigEngine: IOnigEngine, allowA: boolean, allowG: boolean): ICompiledRule {
 		if (!this._hasAnchors) {
 			if (!this._cached) {
 				let regExps = this._items.map(e => e.source);
 				this._cached = {
-					scanner: createOnigScanner(regExps),
+					scanner: onigEngine.createOnigScanner(regExps),
 					rules: this._items.map(e => e.ruleId),
 					debugRegExps: regExps
 				};
@@ -355,10 +328,10 @@ export class RegExpSourceList {
 			return this._cached;
 		} else {
 			this._anchorCache = {
-				A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(allowA, allowG) : null),
-				A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(allowA, allowG) : null),
-				A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(allowA, allowG) : null),
-				A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(allowA, allowG) : null),
+				A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+				A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+				A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+				A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
 			};
 			if (allowA) {
 				if (allowG) {
@@ -377,10 +350,10 @@ export class RegExpSourceList {
 
 	}
 
-	private _resolveAnchors(allowA: boolean, allowG: boolean): ICompiledRule {
+	private _resolveAnchors(onigEngine: IOnigEngine, allowA: boolean, allowG: boolean): ICompiledRule {
 		let regExps = this._items.map(e => e.resolveAnchors(allowA, allowG));
 		return {
-			scanner: createOnigScanner(regExps),
+			scanner: onigEngine.createOnigScanner(regExps),
 			rules: this._items.map(e => e.ruleId),
 			debugRegExps: regExps
 		};
@@ -407,7 +380,7 @@ export class MatchRule extends Rule {
 		out.push(this._match);
 	}
 
-	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -439,7 +412,7 @@ export class IncludeOnlyRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -503,7 +476,7 @@ export class BeginEndRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		let precompiled = this._precompile(grammar);
 
 		if (this._end.hasBackReferences) {
@@ -575,7 +548,7 @@ export class BeginWhileRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		this._precompile(grammar);
 		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
 	}
@@ -588,7 +561,7 @@ export class BeginWhileRule extends Rule {
 	}
 
 
-	public compileWhile(grammar: IRuleRegistry, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compileWhile(grammar: IRuleRegistry & IOnigEngine, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
 		this._precompileWhile(grammar);
 		if (this._while.hasBackReferences) {
 			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource);

@@ -25,10 +25,11 @@
     "prepublish": "node scripts/release.js"
   },
   "dependencies": {
-    "fast-plist": "^0.1.2",
-    "oniguruma": "^6.0.1"
+    "fast-plist": "^0.1.2"
   },
   "devDependencies": {
+    "onigasm": "2.0.0",
+    "oniguruma": "^6.0.1",
     "coveralls": "^2.11.12",
     "istanbul": "^0.4.4",
     "mocha": "^3.0.2",

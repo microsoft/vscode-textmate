@@ -113,26 +113,12 @@ export class ThemeTest {
 		// assertTokenizationForThemes(test, themeDatas);
 	}
 
-	public evaluate(themeDatas: ThemeData[], callback: (err: any) => void): void {
+	public evaluate(themeDatas: ThemeData[]): Promise<any> {
 		let testsMap: { [themeName: string]: SingleThemeTest; } = {};
 		for (let i = 0; i < this.tests.length; i++) {
 			testsMap[this.tests[i].themeName] = this.tests[i];
 		}
-
-		let remaining = themeDatas.length;
-		let receiveResult = (err: any) => {
-			if (err) {
-				return callback(err);
-			}
-			remaining--;
-			if (remaining === 0) {
-				callback(null);
-			}
-		};
-
-		for (let i = 0; i < themeDatas.length; i++) {
-			testsMap[themeDatas[i].themeName].evaluate(themeDatas[i], receiveResult);
-		}
+		return Promise.all(themeDatas.map(data => testsMap[data.themeName].evaluate(data)));
 	}
 
 	private _getDiffPageData(): IDiffPageData[] {
@@ -275,19 +261,12 @@ class SingleThemeTest {
 		this.patchedDiff = null;
 	}
 
-	public evaluate(themeData: ThemeData, callback: (err: any) => void): void {
+	public evaluate(themeData: ThemeData): Promise<void> {
 		this.backgroundColor = themeData.theme.settings[0].settings.background;
-
-		this._tokenizeWithThemeAsync(themeData, (err, res) => {
-			if (err) {
-				return callback(err);
-			}
-
+		return this._tokenizeWithThemeAsync(themeData).then(res => {
 			this.actual = res;
 			this.diff = SingleThemeTest.computeThemeTokenizationDiff(this.actual, this.expected);
 			this.patchedDiff = SingleThemeTest.computeThemeTokenizationDiff(this.actual, this.patchedExpected);
-
-			return callback(null);
 		});
 	}
 
@@ -304,13 +283,9 @@ class SingleThemeTest {
 		};
 	}
 
-	private _tokenizeWithThemeAsync(themeData: ThemeData, callback: (err: any, res: IThemedToken[]) => void): void {
-		themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages, (err, grammar) => {
-			if (err) {
-				return callback(err, null);
-			}
-			let actual = tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), this.contents, grammar);
-			return callback(null, actual);
+	private _tokenizeWithThemeAsync(themeData: ThemeData): Promise<IThemedToken[]> {
+		return themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages).then(grammar => {
+			return tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), this.contents, grammar);
 		});
 	}
 

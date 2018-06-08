@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { IOnigCaptureIndex } from 'oniguruma';
+import { IOnigCaptureIndex } from './onig';
 
 export function clone<T>(something: T): T {
 	return doClone(something);
@@ -42,6 +42,17 @@ export function mergeObjects(target: any, ...sources: any[]): any {
 		}
 	});
 	return target;
+}
+
+export function basename(path: string): string {
+	const idx = ~path.lastIndexOf('/') || ~path.lastIndexOf('\\');
+	if (idx === 0) {
+		return path;
+	} else if (~idx === path.length - 1) {
+		return basename(path.substring(0, path.length - 1));
+	} else {
+		return path.substr(~idx + 1);
+	}
 }
 
 let CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;

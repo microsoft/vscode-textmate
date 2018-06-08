@@ -5,7 +5,11 @@
 		"outDir": "out",
 		"noImplicitAny": true,
 		"sourceMap": true,
-		"declaration": true
+		"declaration": true,
+		"lib": [
+			"es5",
+			"es2015.promise"
+		]
 	},
 	"exclude": [
 		"node_modules",

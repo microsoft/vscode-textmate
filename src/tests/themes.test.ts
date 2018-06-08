@@ -14,6 +14,9 @@ import {
 } from '../theme';
 import * as plist from 'fast-plist';
 import { ThemeTest } from './themeTest';
+import { IRawGrammar } from '../types';
+import { parseRawGrammar } from '../grammarReader';
+import { getOnigasmEngine, getOnigurumaEngine, IOnigEngine } from '../onig';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
@@ -36,10 +39,12 @@ export class Resolver implements RegistryOptions {
 	private _id2language: string[];
 	private readonly _grammars: IGrammarRegistration[];
 	private readonly _languages: ILanguageRegistration[];
+	private readonly _onigEngine: Promise<IOnigEngine>;
 
-	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[]) {
+	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigEngine: Promise<IOnigEngine>) {
 		this._grammars = grammars;
 		this._languages = languages;
+		this._onigEngine = onigEngine;
 
 		this.language2id = Object.create(null);
 		this._lastLanguageId = 0;
@@ -50,6 +55,10 @@ export class Resolver implements RegistryOptions {
 			this.language2id[this._languages[i].id] = languageId;
 			this._id2language[languageId] = this._languages[i].id;
 		}
+	}
+
+	public getOnigEngine(): Promise<IOnigEngine> {
+		return this._onigEngine;
 	}
 
 	public findLanguageByExtension(fileExtension: string): string {
@@ -104,7 +113,14 @@ export class Resolver implements RegistryOptions {
 		throw new Error('Could not findGrammarByLanguage for ' + language);
 	}
 
-	public getFilePath(scopeName: string): string {
+	public loadGrammar(scopeName: string): Promise<IRawGrammar> {
+		let path = this.getFilePath(scopeName);
+		let content = fs.readFileSync(path).toString();
+		return Promise.resolve(parseRawGrammar(content, path));
+	}
+
+
+	private getFilePath(scopeName: string): string {
 		for (let i = 0; i < this._grammars.length; i++) {
 			let grammar = this._grammars[i];
 
@@ -163,12 +179,11 @@ class ThemeInfo {
 	}
 }
 
-function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
-	(<any>it(test.testName, (done: (error?: any) => void) => {
-		test.evaluate(themeDatas, (err) => {
+function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[], engineName: string): void {
+	(<any>it(test.testName + '-' + engineName, () => {
+		return test.evaluate(themeDatas).then(_ => {
 			test.writeDiffPage();
 			assert.ok(!test.hasDiff(), 'no more unpatched differences');
-			done();
 		});
 	})).timeout(20000);
 }
@@ -194,11 +209,12 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 	// Load all language/grammar metadata
 	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
-	let resolver = new Resolver(_grammars, _languages);
 
-	let themeDatas: ThemeData[] = THEMES.map(theme => theme.create(resolver));
+	let onigurumaEngine = getOnigurumaEngine();
+	let onigasmEngine = getOnigasmEngine();
 
-	describe('Theme suite', () => {
+	describe('Theme suite - oniguruma', async () => {
+
 		// Discover all tests
 		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
 		testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
@@ -206,8 +222,18 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[]): void {
 		testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
 		testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
 		testFiles.forEach((testFile) => {
+
+			let resolver = new Resolver(_grammars, _languages, onigurumaEngine);
+			let themeDatas: ThemeData[] = THEMES.map(theme => theme.create(resolver));
+
 			let themesTest = new ThemeTest(THEMES_TEST_PATH, testFile, resolver);
-			assertThemeTest(themesTest, themeDatas);
+			assertThemeTest(themesTest, themeDatas, 'oniguruma');
+
+			resolver = new Resolver(_grammars, _languages, onigasmEngine);
+			themeDatas = THEMES.map(theme => theme.create(resolver));
+
+			themesTest = new ThemeTest(THEMES_TEST_PATH, testFile, resolver);
+			assertThemeTest(themesTest, themeDatas, 'onigasm');
 		});
 
 	});

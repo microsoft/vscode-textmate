@@ -1,3 +1,7 @@
+import { parseRawGrammar } from './grammarReader';
+import { IRawGrammar } from './types';
+import { IOnigEngine } from './onig';
+export { parseRawGrammar };
 /**
  * A single theme setting.
  */
@@ -22,8 +26,9 @@ export interface IRawTheme {
  */
 export interface RegistryOptions {
     theme?: IRawTheme;
-    getFilePath(scopeName: string): string;
+    loadGrammar(scopeName: string): Promise<IRawGrammar>;
     getInjections?(scopeName: string): string[];
+    getOnigEngine(): Promise<IOnigEngine>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -53,7 +58,7 @@ export interface IGrammarConfiguration {
 export declare class Registry {
     private readonly _locator;
     private readonly _syncRegistry;
-    constructor(locator?: RegistryOptions);
+    constructor(locator: RegistryOptions);
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */
@@ -66,25 +71,25 @@ export declare class Registry {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, callback: (err: any, grammar: IGrammar) => void): void;
+    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Promise<IGrammar>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration, callback: (err: any, grammar: IGrammar) => void): void;
+    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Promise<IGrammar>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
-    loadGrammar(initialScopeName: string, callback: (err: any, grammar: IGrammar) => void): void;
-    private _loadGrammar(initialScopeName, callback);
+    loadGrammar(initialScopeName: string): Promise<IGrammar>;
+    private _loadGrammar(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes);
     /**
-     * Load the grammar at `path` synchronously.
+     * Adds a rawGrammar.
      */
-    loadGrammarFromPathSync(path: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap): IGrammar;
+    addGrammar(rawGrammar: IRawGrammar, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap): Promise<IGrammar>;
     /**
-     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `loadGrammarFromPathSync`.
+     * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
      */
-    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap, tokenTypes?: ITokenTypeMap): IGrammar;
+    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap, tokenTypes?: ITokenTypeMap): Promise<IGrammar>;
 }
 /**
  * A grammar

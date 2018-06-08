@@ -5,12 +5,12 @@
 
 import { clone } from './utils';
 import { IRawGrammar, IRawRepository, IRawRule } from './types';
-import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule, createOnigString, getString } from './rule';
-import { IOnigCaptureIndex, OnigString } from 'oniguruma';
+import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { IN_DEBUG_MODE } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
+import { IOnigEngine, IOnigCaptureIndex, OnigString, OnigScanner } from './onig';
 
 export const enum TemporaryStandardTokenType {
 	Other = 0,
@@ -20,8 +20,8 @@ export const enum TemporaryStandardTokenType {
 	MetaEmbedded = 8
 }
 
-export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider): Grammar {
-	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository);
+export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider, onigEngine: IOnigEngine): Grammar {
+	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine);
 }
 
 export interface IThemeProvider {
@@ -300,7 +300,7 @@ class ScopeMetadataProvider {
 	}
 }
 
-export class Grammar implements IGrammar, IRuleFactoryHelper {
+export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigEngine {
 
 	private _rootId: number;
 	private _lastRuleId: number;
@@ -311,10 +311,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 	private _injections: Injection[];
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
+	private readonly _onigEngine: IOnigEngine;
 
-	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider) {
+	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider, onigEngine: IOnigEngine) {
 		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
+		this._onigEngine = onigEngine;
 		this._rootId = -1;
 		this._lastRuleId = 0;
 		this._ruleId2desc = [];
@@ -334,6 +336,16 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 				}
 			}
 		}
+	}
+
+	public createOnigScanner(sources: string[]): OnigScanner {
+		return this._onigEngine.createOnigScanner(sources);
+	}
+
+	public createOnigString(sources: string): OnigString {
+		let s = this._onigEngine.createOnigString(sources);
+		(<any>s).$str = sources;
+		return s;
 	}
 
 	public onDidChangeTheme(): void {
@@ -443,7 +455,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper {
 		}
 
 		lineText = lineText + '\n';
-		let onigLineText = createOnigString(lineText);
+		let onigLineText = this.createOnigString(lineText);
 		let lineLength = getString(onigLineText).length;
 		let lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
 		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
@@ -519,9 +531,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
 			_tokenizeString(grammar,
-				createOnigString(
-					getString(lineText).substring(0, captureIndex.end)
-				),
+				grammar.createOnigString(getString(lineText).substring(0, captureIndex.end)),
 				(isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens
 			);
 			continue;
@@ -573,7 +583,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 			continue;
 		}
 		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
-		let matchResult = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+		let matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 		if (IN_DEBUG_MODE) {
 			console.log('  scanning for injections');
 			console.log(debugCompiledRuleToString(ruleScanner));
@@ -619,7 +629,7 @@ interface IMatchResult {
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult {
 	let rule = stack.getRule(grammar);
 	let ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
-	let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+	let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 	if (IN_DEBUG_MODE) {
 		console.log('  scanning for');
 		console.log(debugCompiledRuleToString(ruleScanner));
@@ -699,7 +709,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
 		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
-		let r = ruleScanner.scanner._findNextMatchSync(lineText, linePos);
+		let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 		if (IN_DEBUG_MODE) {
 			console.log('  scanning for while rule');
 			console.log(debugCompiledRuleToString(ruleScanner));
@@ -1431,4 +1441,8 @@ function toTemporaryType(standardType: StandardTokenType): TemporaryStandardToke
 			// but it overwrites existing token types in the stack.
 			return TemporaryStandardTokenType.MetaEmbedded;
 	}
+}
+
+function getString(str: OnigString): string {
+	return (<any>str).$str;
 }

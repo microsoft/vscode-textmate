@@ -6,11 +6,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IGrammar, RegistryOptions, StackElement } from '../main';
+import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
 import { createMatchers } from '../matcher';
 import { parse as JSONparse } from '../json';
 import './themes.test';
 import './grammar.test';
+import { getOnigasmEngine, getOnigurumaEngine, IOnigEngine } from '../onig';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 
@@ -35,42 +36,52 @@ function assertTokenizationSuite(testLocation: string): void {
 
 	let tests: IRawTest[] = JSON.parse(fs.readFileSync(testLocation).toString());
 
+
 	tests.forEach((test) => {
-		it(test.desc, () => {
-			let locator: RegistryOptions = {
-				getFilePath: (scopeName: string) => null,
-				getInjections: (scopeName: string) => {
-					if (scopeName === test.grammarScopeName) {
-						return test.grammarInjections;
-					}
-					return void 0;
-				}
-			}
-
-			let registry = new Registry(locator);
-
-			let grammar: IGrammar = null;
-			test.grammars.forEach((grammarPath) => {
-				let tmpGrammar = registry.loadGrammarFromPathSync(path.join(path.dirname(testLocation), grammarPath));
-				if (test.grammarPath === grammarPath) {
-					grammar = tmpGrammar;
-				}
-			});
-
-			if (test.grammarScopeName) {
-				grammar = registry.grammarForScopeName(test.grammarScopeName);
-			}
-
-			if (!grammar) {
-				throw new Error('I HAVE NO GRAMMAR FOR TEST');
-			}
-
-			let prevState: StackElement = null;
-			for (let i = 0; i < test.lines.length; i++) {
-				prevState = assertLineTokenization(grammar, test.lines[i], prevState);
-			}
+		it(test.desc + '-onigasm', () => {
+			return performTest(test, getOnigasmEngine());
+		});
+		it(test.desc + '-oniguruma', () => {
+			return performTest(test, getOnigurumaEngine());
 		});
 	});
+
+	async function performTest(test: IRawTest, onigEngine: Promise<IOnigEngine>): Promise<void> {
+		let locator: RegistryOptions = {
+			loadGrammar: (scopeName: string) => null,
+			getInjections: (scopeName: string) => {
+				if (scopeName === test.grammarScopeName) {
+					return test.grammarInjections;
+				}
+				return void 0;
+			},
+			getOnigEngine: () => onigEngine
+		};
+		let registry = new Registry(locator);
+		let grammar: IGrammar = null;
+		for (let grammarPath of test.grammars) {
+			let content = fs.readFileSync(path.join(path.dirname(testLocation), grammarPath)).toString();
+			let rawGrammar = parseRawGrammar(content, grammarPath);
+			let tmpGrammar = await registry.addGrammar(rawGrammar);
+			if (test.grammarPath === grammarPath) {
+				grammar = tmpGrammar;
+			}
+		};
+
+		if (test.grammarScopeName) {
+			grammar = await registry.grammarForScopeName(test.grammarScopeName);
+		}
+
+		if (!grammar) {
+			throw new Error('I HAVE NO GRAMMAR FOR TEST');
+		}
+		let start = Date.now();
+		let prevState: StackElement = null;
+		for (let i = 0; i < test.lines.length; i++) {
+			prevState = assertLineTokenization(grammar, test.lines[i], prevState);
+		}
+		console.log(Date.now() - start);
+	}
 
 	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement): StackElement {
 		let actual = grammar.tokenizeLine(testCase.line, prevState);
@@ -89,7 +100,7 @@ function assertTokenizationSuite(testLocation: string): void {
 				return (token.value.length > 0);
 			});
 		}
-		
+
 		assert.deepEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
 
 		return actual.ruleStack;
@@ -171,7 +182,7 @@ describe('JSON', () => {
 	function isInvalid(json: string): void {
 		let hadErr = false;
 		try {
-			var actual = JSONparse(json, null, false);
+			JSONparse(json, null, false);
 		} catch (err) {
 			hadErr = true;
 		}
