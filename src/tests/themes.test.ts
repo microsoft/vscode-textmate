@@ -40,11 +40,13 @@ export class Resolver implements RegistryOptions {
 	private readonly _grammars: IGrammarRegistration[];
 	private readonly _languages: ILanguageRegistration[];
 	private readonly _onigEngine: Promise<IOnigEngine>;
+	private readonly _onigEngineName: string;
 
-	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigEngine: Promise<IOnigEngine>) {
+	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigEngine: Promise<IOnigEngine>, onigEngineName: string) {
 		this._grammars = grammars;
 		this._languages = languages;
 		this._onigEngine = onigEngine;
+		this._onigEngineName = onigEngineName;
 
 		this.language2id = Object.create(null);
 		this._lastLanguageId = 0;
@@ -59,6 +61,10 @@ export class Resolver implements RegistryOptions {
 
 	public getOnigEngine(): Promise<IOnigEngine> {
 		return this._onigEngine;
+	}
+
+	public getOnigEngineName(): string {
+		return this._onigEngineName;
 	}
 
 	public findLanguageByExtension(fileExtension: string): string {
@@ -179,15 +185,6 @@ class ThemeInfo {
 	}
 }
 
-function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[], engineName: string): void {
-	(<any>it(test.testName + '-' + engineName, () => {
-		return test.evaluate(themeDatas).then(_ => {
-			test.writeDiffPage();
-			assert.ok(!test.hasDiff(), 'no more unpatched differences');
-		});
-	})).timeout(20000);
-}
-
 (function () {
 	let THEMES = [
 		new ThemeInfo('abyss', 'Abyss.tmTheme'),
@@ -210,10 +207,13 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[], engineName: s
 	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 
-	let onigurumaEngine = getOnigurumaEngine();
-	let onigasmEngine = getOnigasmEngine();
+	let _resolvers = [
+		new Resolver(_grammars, _languages, getOnigasmEngine(), 'onigasm'),
+		new Resolver(_grammars, _languages, getOnigurumaEngine(), 'oniguruma')
+	];
+	let _themeDatas = _resolvers.map(resolver => THEMES.map(theme => theme.create(resolver)));
 
-	describe('Theme suite - oniguruma', async () => {
+	describe('Theme suite', async () => {
 
 		// Discover all tests
 		let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
@@ -221,20 +221,18 @@ function assertThemeTest(test: ThemeTest, themeDatas: ThemeData[], engineName: s
 		testFiles = testFiles.filter(testFile => !/\.result.patch$/.test(testFile));
 		testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
 		testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
-		testFiles.forEach((testFile) => {
 
-			let resolver = new Resolver(_grammars, _languages, onigurumaEngine);
-			let themeDatas: ThemeData[] = THEMES.map(theme => theme.create(resolver));
-
-			let themesTest = new ThemeTest(THEMES_TEST_PATH, testFile, resolver);
-			assertThemeTest(themesTest, themeDatas, 'oniguruma');
-
-			resolver = new Resolver(_grammars, _languages, onigasmEngine);
-			themeDatas = THEMES.map(theme => theme.create(resolver));
-
-			themesTest = new ThemeTest(THEMES_TEST_PATH, testFile, resolver);
-			assertThemeTest(themesTest, themeDatas, 'onigasm');
-		});
+		for (let testFile of testFiles) {
+			for (let i = 0; i < _resolvers.length; i++) {
+				let test = new ThemeTest(THEMES_TEST_PATH, testFile, _resolvers[i]);
+				(<any>it(test.testName, () => {
+					return test.evaluate(_themeDatas[i]).then(_ => {
+						//test.writeDiffPage();
+						assert.ok(!test.hasDiff(), 'no more unpatched differences');
+					});
+				})).timeout(20000);
+			}
+		}
 
 	});
 })();

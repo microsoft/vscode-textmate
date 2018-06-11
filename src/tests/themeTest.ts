@@ -102,7 +102,7 @@ export class ThemeTest {
 			));
 		}
 
-		this.testName = testFile;
+		this.testName = testFile + '-' + resolver.getOnigEngineName();
 		// this.contents = testFileContents;
 		// this.initialScopeName = grammar.scopeName;
 		// this.initialLanguage = resolver.language2id[language];
