@@ -7,7 +7,7 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
 			"stopOnEntry": false,
-			"args": [ "out/tests/tests", "-g" , "Issue #46"],
+			"args": [ "out/tests/*.test.js", "-g" , "OnigLib"],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,
 			"runtimeArgs": ["--nolazy"],

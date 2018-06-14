@@ -7,7 +7,7 @@ import { createGrammar, Grammar, collectIncludedScopes, IGrammarRepository, ISco
 import { IRawGrammar } from './types';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
-import { IOnigEngine } from './onig';
+import { IOnigLib } from './types';
 
 export class SyncRegistry implements IGrammarRepository {
 
@@ -15,14 +15,14 @@ export class SyncRegistry implements IGrammarRepository {
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
-	private _onigEnginePromise: Promise<IOnigEngine>;
+	private _onigLibPromise: Promise<IOnigLib>;
 
-	constructor(theme: Theme, onigEnginePromise: Promise<IOnigEngine>) {
+	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib>) {
 		this._theme = theme;
 		this._grammars = {};
 		this._rawGrammars = {};
 		this._injectionGrammars = {};
-		this._onigEnginePromise = onigEnginePromise;
+		this._onigLibPromise = onigLibPromise;
 	}
 
 	public setTheme(theme: Theme): void {
@@ -93,7 +93,7 @@ export class SyncRegistry implements IGrammarRepository {
 			if (!rawGrammar) {
 				return null;
 			}
-			this._grammars[scopeName] = createGrammar(rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this, await this._onigEnginePromise);
+			this._grammars[scopeName] = createGrammar(rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this, await this._onigLibPromise);
 		}
 		return this._grammars[scopeName];
 	}

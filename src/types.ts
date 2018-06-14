@@ -63,3 +63,30 @@ export interface IRawCapturesMap {
 }
 
 export type IRawCaptures = IRawCapturesMap & ILocatable;
+
+
+export interface IOnigLib {
+	createOnigScanner(sources: string[]): OnigScanner;
+	createOnigString(sources: string): OnigString;
+}
+
+export interface IOnigCaptureIndex {
+	start: number;
+	end: number;
+	length: number;
+}
+
+export interface IOnigMatch {
+    index: number;
+    captureIndices: IOnigCaptureIndex[];
+    scanner: OnigScanner;
+}
+
+export interface OnigScanner {
+	findNextMatchSync(string: string | OnigString, startPosition: number): IOnigMatch;
+}
+
+export interface OnigString {
+	readonly content: string;
+	readonly dispose?: () => void;
+}

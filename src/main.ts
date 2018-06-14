@@ -4,13 +4,11 @@
 'use strict';
 
 import { SyncRegistry } from './registry';
-import { parseRawGrammar } from './grammarReader';
+import * as grammarReader from './grammarReader';
 import { Theme } from './theme';
 import { StackElement as StackElementImpl } from './grammar';
-import { IRawGrammar } from './types';
-import { IOnigEngine } from './onig';
+import { IRawGrammar, IOnigLib } from './types';
 
-export { parseRawGrammar };
 
 /**
  * A single theme setting.
@@ -40,7 +38,7 @@ export interface RegistryOptions {
 	theme?: IRawTheme;
 	loadGrammar(scopeName: string): Promise<IRawGrammar>;
 	getInjections?(scopeName: string): string[];
-	getOnigEngine(): Promise<IOnigEngine>;
+	getOnigLib(): Promise<IOnigLib>;
 }
 
 /**
@@ -79,7 +77,7 @@ export class Registry {
 
 	constructor(locator: RegistryOptions) {
 		this._locator = locator;
-		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigEngine());
+		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigLib());
 	}
 
 	/**
@@ -267,3 +265,5 @@ export interface StackElement {
 }
 
 export const INITIAL: StackElement = StackElementImpl.NULL;
+
+export const parseRawGrammar: (content: string, filePath: string) => IRawGrammar = grammarReader.parseRawGrammar;

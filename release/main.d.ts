@@ -1,7 +1,4 @@
-import { parseRawGrammar } from './grammarReader';
-import { IRawGrammar } from './types';
-import { IOnigEngine } from './onig';
-export { parseRawGrammar };
+import { IRawGrammar, IOnigLib } from './types';
 /**
  * A single theme setting.
  */
@@ -28,7 +25,7 @@ export interface RegistryOptions {
     theme?: IRawTheme;
     loadGrammar(scopeName: string): Promise<IRawGrammar>;
     getInjections?(scopeName: string): string[];
-    getOnigEngine(): Promise<IOnigEngine>;
+    getOnigLib(): Promise<IOnigLib>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -178,3 +175,4 @@ export interface StackElement {
     equals(other: StackElement): boolean;
 }
 export declare const INITIAL: StackElement;
+export declare const parseRawGrammar: (content: string, filePath: string) => IRawGrammar;

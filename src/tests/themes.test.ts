@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, RegistryOptions, IRawTheme } from '../main';
+import { Registry, IRawTheme } from '../main';
 import { ScopeListElement, ScopeMetadata, StackElementMetadata } from '../grammar';
 import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
@@ -14,129 +14,11 @@ import {
 } from '../theme';
 import * as plist from 'fast-plist';
 import { ThemeTest } from './themeTest';
-import { IRawGrammar } from '../types';
-import { parseRawGrammar } from '../grammarReader';
-import { getOnigasmEngine, getOnigurumaEngine, IOnigEngine } from '../onig';
+import { getOnigasm, getOniguruma } from '../onigLibs';
+import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
-export interface ILanguageRegistration {
-	id: string;
-	extensions: string[];
-	filenames: string[];
-}
-
-export interface IGrammarRegistration {
-	language: string;
-	scopeName: string;
-	path: string;
-	embeddedLanguages: { [scopeName: string]: string; };
-}
-
-export class Resolver implements RegistryOptions {
-	public readonly language2id: { [languages: string]: number; };
-	private _lastLanguageId: number;
-	private _id2language: string[];
-	private readonly _grammars: IGrammarRegistration[];
-	private readonly _languages: ILanguageRegistration[];
-	private readonly _onigEngine: Promise<IOnigEngine>;
-	private readonly _onigEngineName: string;
-
-	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigEngine: Promise<IOnigEngine>, onigEngineName: string) {
-		this._grammars = grammars;
-		this._languages = languages;
-		this._onigEngine = onigEngine;
-		this._onigEngineName = onigEngineName;
-
-		this.language2id = Object.create(null);
-		this._lastLanguageId = 0;
-		this._id2language = [];
-
-		for (let i = 0; i < this._languages.length; i++) {
-			let languageId = ++this._lastLanguageId;
-			this.language2id[this._languages[i].id] = languageId;
-			this._id2language[languageId] = this._languages[i].id;
-		}
-	}
-
-	public getOnigEngine(): Promise<IOnigEngine> {
-		return this._onigEngine;
-	}
-
-	public getOnigEngineName(): string {
-		return this._onigEngineName;
-	}
-
-	public findLanguageByExtension(fileExtension: string): string {
-		for (let i = 0; i < this._languages.length; i++) {
-			let language = this._languages[i];
-
-			if (!language.extensions) {
-				continue;
-			}
-
-			for (let j = 0; j < language.extensions.length; j++) {
-				let extension = language.extensions[j];
-
-				if (extension === fileExtension) {
-					return language.id;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public findLanguageByFilename(filename: string): string {
-		for (let i = 0; i < this._languages.length; i++) {
-			let language = this._languages[i];
-
-			if (!language.filenames) {
-				continue;
-			}
-
-			for (let j = 0; j < language.filenames.length; j++) {
-				let lFilename = language.filenames[j];
-
-				if (filename === lFilename) {
-					return language.id;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public findGrammarByLanguage(language: string): IGrammarRegistration {
-		for (let i = 0; i < this._grammars.length; i++) {
-			let grammar = this._grammars[i];
-
-			if (grammar.language === language) {
-				return grammar;
-			}
-		}
-
-		throw new Error('Could not findGrammarByLanguage for ' + language);
-	}
-
-	public loadGrammar(scopeName: string): Promise<IRawGrammar> {
-		let path = this.getFilePath(scopeName);
-		let content = fs.readFileSync(path).toString();
-		return Promise.resolve(parseRawGrammar(content, path));
-	}
-
-
-	private getFilePath(scopeName: string): string {
-		for (let i = 0; i < this._grammars.length; i++) {
-			let grammar = this._grammars[i];
-
-			if (grammar.scopeName === scopeName) {
-				return path.join(THEMES_TEST_PATH, grammar.path);
-			}
-		}
-		// console.warn('missing grammar for ' + scopeName);
-	}
-}
 
 export interface ThemeData {
 	themeName: string;
@@ -205,11 +87,15 @@ class ThemeInfo {
 
 	// Load all language/grammar metadata
 	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
+	for (let grammar of _grammars) {
+		grammar.path = path.join(THEMES_TEST_PATH, grammar.path);
+	}
+
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 
 	let _resolvers = [
-		new Resolver(_grammars, _languages, getOnigasmEngine(), 'onigasm'),
-		new Resolver(_grammars, _languages, getOnigurumaEngine(), 'oniguruma')
+		new Resolver(_grammars, _languages, getOnigasm(), 'onigasm'),
+		new Resolver(_grammars, _languages, getOniguruma(), 'oniguruma')
 	];
 	let _themeDatas = _resolvers.map(resolver => THEMES.map(theme => theme.create(resolver)));
 

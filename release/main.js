@@ -1323,12 +1323,12 @@ var RegExpSourceList = /** @class */ (function () {
             this._items[index].setSource(newSource);
         }
     };
-    RegExpSourceList.prototype.compile = function (onigEngine, allowA, allowG) {
+    RegExpSourceList.prototype.compile = function (onigLib, allowA, allowG) {
         if (!this._hasAnchors) {
             if (!this._cached) {
                 var regExps = this._items.map(function (e) { return e.source; });
                 this._cached = {
-                    scanner: onigEngine.createOnigScanner(regExps),
+                    scanner: onigLib.createOnigScanner(regExps),
                     rules: this._items.map(function (e) { return e.ruleId; }),
                     debugRegExps: regExps
                 };
@@ -1337,10 +1337,10 @@ var RegExpSourceList = /** @class */ (function () {
         }
         else {
             this._anchorCache = {
-                A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
-                A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
-                A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
-                A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigEngine, allowA, allowG) : null),
+                A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
+                A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
+                A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
+                A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
             };
             if (allowA) {
                 if (allowG) {
@@ -1360,10 +1360,10 @@ var RegExpSourceList = /** @class */ (function () {
             }
         }
     };
-    RegExpSourceList.prototype._resolveAnchors = function (onigEngine, allowA, allowG) {
+    RegExpSourceList.prototype._resolveAnchors = function (onigLib, allowA, allowG) {
         var regExps = this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); });
         return {
-            scanner: onigEngine.createOnigScanner(regExps),
+            scanner: onigLib.createOnigScanner(regExps),
             rules: this._items.map(function (e) { return e.ruleId; }),
             debugRegExps: regExps
         };
@@ -1709,8 +1709,8 @@ var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
-function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine) {
-    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine);
+function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib) {
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
 }
 exports.createGrammar = createGrammar;
 /**
@@ -1928,9 +1928,9 @@ var ScopeMetadataProvider = /** @class */ (function () {
     return ScopeMetadataProvider;
 }());
 var Grammar = /** @class */ (function () {
-    function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigEngine) {
+    function Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib) {
         this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
-        this._onigEngine = onigEngine;
+        this._onigLib = onigLib;
         this._rootId = -1;
         this._lastRuleId = 0;
         this._ruleId2desc = [];
@@ -1953,12 +1953,10 @@ var Grammar = /** @class */ (function () {
         }
     }
     Grammar.prototype.createOnigScanner = function (sources) {
-        return this._onigEngine.createOnigScanner(sources);
+        return this._onigLib.createOnigScanner(sources);
     };
     Grammar.prototype.createOnigString = function (sources) {
-        var s = this._onigEngine.createOnigString(sources);
-        s.$str = sources;
-        return s;
+        return this._onigLib.createOnigString(sources);
     };
     Grammar.prototype.onDidChangeTheme = function () {
         this._scopeMetadataProvider.onDidChangeTheme();
@@ -2057,9 +2055,10 @@ var Grammar = /** @class */ (function () {
         }
         lineText = lineText + '\n';
         var onigLineText = this.createOnigString(lineText);
-        var lineLength = getString(onigLineText).length;
+        var lineLength = onigLineText.content.length;
         var lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
         var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
+        disposeOnigString(onigLineText);
         return {
             lineLength: lineLength,
             lineTokens: lineTokens,
@@ -2069,6 +2068,11 @@ var Grammar = /** @class */ (function () {
     return Grammar;
 }());
 exports.Grammar = Grammar;
+function disposeOnigString(str) {
+    if (typeof str.dispose === 'function') {
+        str.dispose();
+    }
+}
 function initGrammar(grammar, base) {
     grammar = utils_1.clone(grammar);
     grammar.repository = grammar.repository || {};
@@ -2084,6 +2088,7 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
     if (captures.length === 0) {
         return;
     }
+    var lineTextContent = lineText.content;
     var len = Math.min(captures.length, captureIndices.length);
     var localStack = [];
     var maxEnd = captureIndices[0].end;
@@ -2116,15 +2121,17 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
         }
         if (captureRule.retokenizeCapturedWithRuleId) {
             // the capture requires additional matching
-            var scopeName = captureRule.getName(getString(lineText), captureIndices);
+            var scopeName = captureRule.getName(lineTextContent, captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-            var contentName = captureRule.getContentName(getString(lineText), captureIndices);
+            var contentName = captureRule.getContentName(lineTextContent, captureIndices);
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
             var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
-            _tokenizeString(grammar, grammar.createOnigString(getString(lineText).substring(0, captureIndex.end)), (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+            var onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
+            _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+            disposeOnigString(onigSubStr);
             continue;
         }
-        var captureRuleScopeName = captureRule.getName(getString(lineText), captureIndices);
+        var captureRuleScopeName = captureRule.getName(lineTextContent, captureIndices);
         if (captureRuleScopeName !== null) {
             // push
             var base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
@@ -2195,8 +2202,11 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
     if (debug_1.IN_DEBUG_MODE) {
-        console.log('  scanning for');
-        console.log(debugCompiledRuleToString(ruleScanner));
+        //console.log('  scanning for');
+        //console.log(debugCompiledRuleToString(ruleScanner));
+        if (r) {
+            console.log("matched: " + r.captureIndices[0].start + " / " + r.captureIndices[0].end);
+        }
     }
     if (r) {
         return {
@@ -2283,7 +2293,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
     return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
-    var lineLength = getString(lineText).length;
+    var lineLength = lineText.content.length;
     var STOP = false;
     var whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
     stack = whileCheckResult.stack;
@@ -2296,7 +2306,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     function scanNext() {
         if (debug_1.IN_DEBUG_MODE) {
             console.log('');
-            console.log('@@scanNext: |' + getString(lineText).replace(/\n$/, '\\n').substr(linePos) + '|');
+            console.log("@@scanNext " + linePos + ": |" + lineText.content.replace(/\n$/, '\\n').substr(linePos) + "|");
         }
         var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
         if (!r) {
@@ -2341,7 +2351,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             lineTokens.produce(stack, captureIndices[0].start);
             var beforePush = stack;
             // push it on the stack rule
-            var scopeName = _rule.getName(getString(lineText), captureIndices);
+            var scopeName = _rule.getName(lineText.content, captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
             stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
@@ -2352,11 +2362,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                var contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+                var contentName = pushedRule.getContentName(lineText.content, captureIndices);
                 var contentNameScopesList = nameScopesList.push(grammar, contentName);
                 stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.endHasBackReferences) {
-                    stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(lineText.content, captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2375,11 +2385,11 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
                 lineTokens.produce(stack, captureIndices[0].end);
                 anchorPosition = captureIndices[0].end;
-                var contentName = pushedRule.getContentName(getString(lineText), captureIndices);
+                var contentName = pushedRule.getContentName(lineText.content, captureIndices);
                 var contentNameScopesList = nameScopesList.push(grammar, contentName);
                 stack = stack.setContentNameScopesList(contentNameScopesList);
                 if (pushedRule.whileHasBackReferences) {
-                    stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(getString(lineText), captureIndices));
+                    stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(lineText.content, captureIndices));
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
@@ -2818,9 +2828,6 @@ function toTemporaryType(standardType) {
             return 8 /* MetaEmbedded */;
     }
 }
-function getString(str) {
-    return str.$str;
-}
 //# sourceMappingURL=grammar.js.map
 });
 $load('./registry', function(require, module, exports) {
@@ -2866,12 +2873,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
 var SyncRegistry = /** @class */ (function () {
-    function SyncRegistry(theme, onigEnginePromise) {
+    function SyncRegistry(theme, onigLibPromise) {
         this._theme = theme;
         this._grammars = {};
         this._rawGrammars = {};
         this._injectionGrammars = {};
-        this._onigEnginePromise = onigEnginePromise;
+        this._onigLibPromise = onigLibPromise;
     }
     SyncRegistry.prototype.setTheme = function (theme) {
         var _this = this;
@@ -2941,7 +2948,7 @@ var SyncRegistry = /** @class */ (function () {
                         _b = scopeName;
                         _c = grammar_1.createGrammar;
                         _d = [rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this];
-                        return [4 /*yield*/, this._onigEnginePromise];
+                        return [4 /*yield*/, this._onigLibPromise];
                     case 1:
                         _a[_b] = _c.apply(void 0, _d.concat([_e.sent()]));
                         _e.label = 2;
@@ -2997,8 +3004,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var registry_1 = require("./registry");
-var grammarReader_1 = require("./grammarReader");
-exports.parseRawGrammar = grammarReader_1.parseRawGrammar;
+var grammarReader = require("./grammarReader");
 var theme_1 = require("./theme");
 var grammar_1 = require("./grammar");
 /**
@@ -3007,7 +3013,7 @@ var grammar_1 = require("./grammar");
 var Registry = /** @class */ (function () {
     function Registry(locator) {
         this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigEngine());
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigLib());
     }
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
@@ -3107,6 +3113,7 @@ var Registry = /** @class */ (function () {
 }());
 exports.Registry = Registry;
 exports.INITIAL = grammar_1.StackElement.NULL;
+exports.parseRawGrammar = grammarReader.parseRawGrammar;
 //# sourceMappingURL=main.js.map
 });
 module.exports = $map['./main'].exports;

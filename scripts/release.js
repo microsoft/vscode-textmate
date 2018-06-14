@@ -43,3 +43,4 @@ all.push(fs.readFileSync(path.join(OUT_FOLDER, '_suffix.js')).toString());
 
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.js'), all.join('\n'));
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'main.d.ts')));
+fs.writeFileSync(path.join(RELEASE_FOLDER, 'types.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'types.d.ts')));

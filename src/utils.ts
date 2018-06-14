@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { IOnigCaptureIndex } from './onig';
+import { IOnigCaptureIndex } from './types';
 
 export function clone<T>(something: T): T {
 	return doClone(something);

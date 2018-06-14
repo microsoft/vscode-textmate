@@ -7,7 +7,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { IEmbeddedLanguagesMap } from '../main';
 import { tokenizeWithTheme, IThemedToken, IThemedTokenScopeExplanation } from './themedTokenizer';
-import { Resolver, ThemeData } from './themes.test';
+import { ThemeData } from './themes.test';
+import { Resolver } from './resolver';
 
 interface IExpected {
 	[theme: string]: IExpectedTokenization[];
@@ -102,7 +103,7 @@ export class ThemeTest {
 			));
 		}
 
-		this.testName = testFile + '-' + resolver.getOnigEngineName();
+		this.testName = testFile + '-' + resolver.getOnigLibName();
 		// this.contents = testFileContents;
 		// this.initialScopeName = grammar.scopeName;
 		// this.initialLanguage = resolver.language2id[language];
