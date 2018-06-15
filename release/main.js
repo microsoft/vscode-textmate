@@ -17,6 +17,59 @@ function $load(name, factory) {
     $map[name] = mod;
 }
 //# sourceMappingURL=_prefix.js.map
+$load('./onigLibs', function(require, module, exports) {
+/*---------------------------------------------------------
+ * Copyright (C) Microsoft Corporation. All rights reserved.
+ *--------------------------------------------------------*/
+'use strict';
+Object.defineProperty(exports, "__esModule", { value: true });
+var onigasmLib = null;
+var onigurumaLib = null;
+function getOnigasm() {
+    if (!onigasmLib) {
+        var onigasmModule_1 = require('onigasm');
+        var fs = require('fs');
+        var path = require('path');
+        var wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
+        onigasmLib = onigasmModule_1.loadWASM(wasmBin).then(function (_) {
+            return {
+                createOnigScanner: function (patterns) { return new onigasmModule_1.OnigScanner(patterns); },
+                createOnigString: function (s) { return new onigasmModule_1.OnigString(s); }
+            };
+        });
+    }
+    return onigasmLib;
+}
+exports.getOnigasm = getOnigasm;
+function getOniguruma() {
+    if (!onigurumaLib) {
+        var getOnigModule_1 = (function () {
+            var onigurumaModule = null;
+            return function () {
+                if (!onigurumaModule) {
+                    onigurumaModule = require('oniguruma');
+                }
+                return onigurumaModule;
+            };
+        })();
+        onigurumaLib = Promise.resolve({
+            createOnigScanner: function (patterns) {
+                var onigurumaModule = getOnigModule_1();
+                return new onigurumaModule.OnigScanner(patterns);
+            },
+            createOnigString: function (s) {
+                var onigurumaModule = getOnigModule_1();
+                var string = new onigurumaModule.OnigString(s);
+                string.content = s;
+                return string;
+            }
+        });
+    }
+    return onigurumaLib;
+}
+exports.getOniguruma = getOniguruma;
+//# sourceMappingURL=onigLibs.js.map
+});
 $load('./utils', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -3098,10 +3151,10 @@ var Registry = /** @class */ (function () {
     /**
      * Adds a rawGrammar.
      */
-    Registry.prototype.addGrammar = function (rawGrammar, initialLanguage, embeddedLanguages) {
+    Registry.prototype.addGrammar = function (rawGrammar, injections, initialLanguage, embeddedLanguages) {
+        if (injections === void 0) { injections = []; }
         if (initialLanguage === void 0) { initialLanguage = 0; }
         if (embeddedLanguages === void 0) { embeddedLanguages = null; }
-        var injections = (typeof this._locator.getInjections === 'function') ? this._locator.getInjections(rawGrammar.scopeName) : [];
         this._syncRegistry.addGrammar(rawGrammar, injections);
         return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
     };
@@ -3120,59 +3173,6 @@ exports.Registry = Registry;
 exports.INITIAL = grammar_1.StackElement.NULL;
 exports.parseRawGrammar = grammarReader.parseRawGrammar;
 //# sourceMappingURL=main.js.map
-});
-$load('./onigLibs', function(require, module, exports) {
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var onigasmLib = null;
-var onigurumaLib = null;
-function getOnigasm() {
-    if (!onigasmLib) {
-        var onigasmModule_1 = require('onigasm');
-        var fs = require('fs');
-        var path = require('path');
-        var wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
-        onigasmLib = onigasmModule_1.loadWASM(wasmBin).then(function (_) {
-            return {
-                createOnigScanner: function (patterns) { return new onigasmModule_1.OnigScanner(patterns); },
-                createOnigString: function (s) { return new onigasmModule_1.OnigString(s); }
-            };
-        });
-    }
-    return onigasmLib;
-}
-exports.getOnigasm = getOnigasm;
-function getOniguruma() {
-    if (!onigurumaLib) {
-        var getOnigModule_1 = (function () {
-            var onigurumaModule = null;
-            return function () {
-                if (!onigurumaModule) {
-                    onigurumaModule = require('oniguruma');
-                }
-                return onigurumaModule;
-            };
-        })();
-        onigurumaLib = Promise.resolve({
-            createOnigScanner: function (patterns) {
-                var onigurumaModule = getOnigModule_1();
-                return new onigurumaModule.OnigScanner(patterns);
-            },
-            createOnigString: function (s) {
-                var onigurumaModule = getOnigModule_1();
-                var string = new onigurumaModule.OnigString(s);
-                string.content = s;
-                return string;
-            }
-        });
-    }
-    return onigurumaLib;
-}
-exports.getOniguruma = getOniguruma;
-//# sourceMappingURL=onigLibs.js.map
 });
 module.exports = $map['./main'].exports;
 //# sourceMappingURL=_suffix.js.map

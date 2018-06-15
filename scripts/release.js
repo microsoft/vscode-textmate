@@ -14,6 +14,7 @@ if (!fs.existsSync(RELEASE_FOLDER)) {
 }
 
 var sources = [
+	'onigLibs.js',
 	'utils.js',
 	'theme.js',
 	'matcher.js',
@@ -23,8 +24,7 @@ var sources = [
 	'rule.js',
 	'grammar.js',
 	'registry.js',
-	'main.js',
-	'onigLibs.js'
+	'main.js'
 ].map(function(sourceFile) {
 	var name = './' + sourceFile.replace(/\.js$/, '');
 	var sourcePath = path.join(OUT_FOLDER, sourceFile);
