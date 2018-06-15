@@ -23,7 +23,8 @@ var sources = [
 	'rule.js',
 	'grammar.js',
 	'registry.js',
-	'main.js'
+	'main.js',
+	'onigLibs.js'
 ].map(function(sourceFile) {
 	var name = './' + sourceFile.replace(/\.js$/, '');
 	var sourcePath = path.join(OUT_FOLDER, sourceFile);

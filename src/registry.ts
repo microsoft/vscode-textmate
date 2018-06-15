@@ -8,6 +8,7 @@ import { IRawGrammar } from './types';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './types';
+import { getOniguruma } from './onigLibs';
 
 export class SyncRegistry implements IGrammarRepository {
 
@@ -22,7 +23,7 @@ export class SyncRegistry implements IGrammarRepository {
 		this._grammars = {};
 		this._rawGrammars = {};
 		this._injectionGrammars = {};
-		this._onigLibPromise = onigLibPromise;
+		this._onigLibPromise = onigLibPromise || getOniguruma();
 	}
 
 	public setTheme(theme: Theme): void {

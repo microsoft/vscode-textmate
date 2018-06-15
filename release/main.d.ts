@@ -25,7 +25,7 @@ export interface RegistryOptions {
     theme?: IRawTheme;
     loadGrammar(scopeName: string): Promise<IRawGrammar>;
     getInjections?(scopeName: string): string[];
-    getOnigLib(): Promise<IOnigLib>;
+    getOnigLib?(): Promise<IOnigLib>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -55,7 +55,7 @@ export interface IGrammarConfiguration {
 export declare class Registry {
     private readonly _locator;
     private readonly _syncRegistry;
-    constructor(locator: RegistryOptions);
+    constructor(locator?: RegistryOptions);
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */

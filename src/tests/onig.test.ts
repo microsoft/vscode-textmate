@@ -64,7 +64,7 @@ function getVSCodeRegistrations(): { grammarRegistrations: IGrammarRegistration[
 	const grammarRegistrations: IGrammarRegistration[] = [];
 	const languageRegistrations: ILanguageRegistration[] = [];
 
-	const extensionsPath = path.join(__dirname, '../../../vscode/extensions1');
+	const extensionsPath = path.join(__dirname, '../../../vscode/extensions');
 	if (!fs.existsSync(extensionsPath)) {
 		return null;
 	}

@@ -38,7 +38,7 @@ export interface RegistryOptions {
 	theme?: IRawTheme;
 	loadGrammar(scopeName: string): Promise<IRawGrammar>;
 	getInjections?(scopeName: string): string[];
-	getOnigLib(): Promise<IOnigLib>;
+	getOnigLib?(): Promise<IOnigLib>;
 }
 
 /**
@@ -75,9 +75,9 @@ export class Registry {
 	private readonly _locator: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
 
-	constructor(locator: RegistryOptions) {
+	constructor(locator: RegistryOptions = { loadGrammar: () => null }) {
 		this._locator = locator;
-		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigLib());
+		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
 	}
 
 	/**
@@ -132,6 +132,9 @@ export class Registry {
 			}
 			try {
 				let grammar = await this._locator.loadGrammar(scopeName);
+				if (!grammar) {
+					throw new Error(`No grammar provided for <${initialScopeName}`);
+				}
 				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
 				let deps = this._syncRegistry.addGrammar(grammar, injections);
 				deps.forEach((dep) => {
@@ -153,8 +156,7 @@ export class Registry {
 	/**
 	 * Adds a rawGrammar.
 	 */
-	public addGrammar(rawGrammar: IRawGrammar, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): Promise<IGrammar> {
-		let injections = this._locator.getInjections(rawGrammar.scopeName);
+	public addGrammar(rawGrammar: IRawGrammar, injections: string[] = [], initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): Promise<IGrammar> {
 		this._syncRegistry.addGrammar(rawGrammar, injections);
 		return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
 	}

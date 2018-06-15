@@ -3,8 +3,6 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import * as fs from 'fs';
-import * as path from 'path';
 import { IOnigLib } from './types';
 
 let onigasmLib: Promise<IOnigLib> = null;
@@ -13,6 +11,8 @@ let onigurumaLib: Promise<IOnigLib> = null;
 export function getOnigasm(): Promise<IOnigLib> {
 	if (!onigasmLib) {
 		let onigasmModule = require('onigasm');
+		let fs = require('fs');
+		let path = require('path');
 		const wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
 		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
 			return {
