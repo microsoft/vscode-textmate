@@ -5,7 +5,7 @@
 
 import { IRawGrammar, IOnigLib } from '../types';
 import { parseRawGrammar } from '../grammarReader';
-import { RegistryOptions } from '../main';
+import { RegistryOptions, Thenable } from '../main';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -21,7 +21,7 @@ export interface IGrammarRegistration {
 	scopeName: string;
 	path: string;
 	embeddedLanguages: { [scopeName: string]: string; };
-	grammar?: Promise<IRawGrammar>;
+	grammar?: Thenable<IRawGrammar>;
 }
 
 export class Resolver implements RegistryOptions {
@@ -30,10 +30,10 @@ export class Resolver implements RegistryOptions {
 	private _id2language: string[];
 	private readonly _grammars: IGrammarRegistration[];
 	private readonly _languages: ILanguageRegistration[];
-	private readonly _onigLibPromise: Promise<IOnigLib>;
+	private readonly _onigLibPromise: Thenable<IOnigLib>;
 	private readonly _onigLibName: string;
 
-	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigLibPromise: Promise<IOnigLib>, onigLibName: string) {
+	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigLibPromise: Thenable<IOnigLib>, onigLibName: string) {
 		this._grammars = grammars;
 		this._languages = languages;
 		this._onigLibPromise = onigLibPromise;
@@ -50,7 +50,7 @@ export class Resolver implements RegistryOptions {
 		}
 	}
 
-	public getOnigLib(): Promise<IOnigLib> {
+	public getOnigLib(): Thenable<IOnigLib> {
 		return this._onigLibPromise;
 	}
 
@@ -121,7 +121,7 @@ export class Resolver implements RegistryOptions {
 		throw new Error('Could not findGrammarByLanguage for ' + language);
 	}
 
-	public loadGrammar(scopeName: string): Promise<IRawGrammar> {
+	public loadGrammar(scopeName: string): Thenable<IRawGrammar> {
 		for (let i = 0; i < this._grammars.length; i++) {
 			let grammar = this._grammars[i];
 			if (grammar.scopeName === scopeName) {

@@ -31,14 +31,17 @@ export interface IRawTheme {
 	readonly settings: IRawThemeSetting[];
 }
 
+export interface Thenable<T> extends PromiseLike<T> {
+}
+
 /**
  * A registry helper that can locate grammar file paths given scope names.
  */
 export interface RegistryOptions {
 	theme?: IRawTheme;
-	loadGrammar(scopeName: string): Promise<IRawGrammar>;
+	loadGrammar(scopeName: string): Thenable<IRawGrammar>;
 	getInjections?(scopeName: string): string[];
-	getOnigLib?(): Promise<IOnigLib>;
+	getOnigLib?(): Thenable<IOnigLib>;
 }
 
 /**
@@ -98,7 +101,7 @@ export class Registry {
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 * Please do not use language id 0.
 	 */
-	public loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Promise<IGrammar> {
+	public loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Thenable<IGrammar> {
 		return this.loadGrammarWithConfiguration(initialScopeName, initialLanguage, { embeddedLanguages });
 	}
 
@@ -106,14 +109,14 @@ export class Registry {
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 * Please do not use language id 0.
 	 */
-	public loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Promise<IGrammar> {
+	public loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Thenable<IGrammar> {
 		return this._loadGrammar(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes);
 	}
 
 	/**
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 */
-	public loadGrammar(initialScopeName: string): Promise<IGrammar> {
+	public loadGrammar(initialScopeName: string): Thenable<IGrammar> {
 		return this._loadGrammar(initialScopeName, 0, null, null);
 	}
 
@@ -156,7 +159,7 @@ export class Registry {
 	/**
 	 * Adds a rawGrammar.
 	 */
-	public addGrammar(rawGrammar: IRawGrammar, injections: string[] = [], initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): Promise<IGrammar> {
+	public addGrammar(rawGrammar: IRawGrammar, injections: string[] = [], initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null): Thenable<IGrammar> {
 		this._syncRegistry.addGrammar(rawGrammar, injections);
 		return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
 	}
@@ -164,7 +167,7 @@ export class Registry {
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
 	 */
-	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null, tokenTypes: ITokenTypeMap = null): Promise<IGrammar> {
+	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap = null, tokenTypes: ITokenTypeMap = null): Thenable<IGrammar> {
 		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes);
 	}
 }

@@ -18,14 +18,16 @@ export interface IRawTheme {
     readonly name?: string;
     readonly settings: IRawThemeSetting[];
 }
+export interface Thenable<T> extends PromiseLike<T> {
+}
 /**
  * A registry helper that can locate grammar file paths given scope names.
  */
 export interface RegistryOptions {
     theme?: IRawTheme;
-    loadGrammar(scopeName: string): Promise<IRawGrammar>;
+    loadGrammar(scopeName: string): Thenable<IRawGrammar>;
     getInjections?(scopeName: string): string[];
-    getOnigLib?(): Promise<IOnigLib>;
+    getOnigLib?(): Thenable<IOnigLib>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -68,25 +70,25 @@ export declare class Registry {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Promise<IGrammar>;
+    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Thenable<IGrammar>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Promise<IGrammar>;
+    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Thenable<IGrammar>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
-    loadGrammar(initialScopeName: string): Promise<IGrammar>;
+    loadGrammar(initialScopeName: string): Thenable<IGrammar>;
     private _loadGrammar(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes);
     /**
      * Adds a rawGrammar.
      */
-    addGrammar(rawGrammar: IRawGrammar, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap): Promise<IGrammar>;
+    addGrammar(rawGrammar: IRawGrammar, injections?: string[], initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap): Thenable<IGrammar>;
     /**
      * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
      */
-    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap, tokenTypes?: ITokenTypeMap): Promise<IGrammar>;
+    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap, tokenTypes?: ITokenTypeMap): Thenable<IGrammar>;
 }
 /**
  * A grammar

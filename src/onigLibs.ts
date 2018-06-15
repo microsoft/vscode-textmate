@@ -4,11 +4,12 @@
 'use strict';
 
 import { IOnigLib } from './types';
+import { Thenable } from './main';
 
-let onigasmLib: Promise<IOnigLib> = null;
-let onigurumaLib: Promise<IOnigLib> = null;
+let onigasmLib: Thenable<IOnigLib> = null;
+let onigurumaLib: Thenable<IOnigLib> = null;
 
-export function getOnigasm(): Promise<IOnigLib> {
+export function getOnigasm(): Thenable<IOnigLib> {
 	if (!onigasmLib) {
 		let onigasmModule = require('onigasm');
 		let fs = require('fs');
@@ -24,7 +25,7 @@ export function getOnigasm(): Promise<IOnigLib> {
 	return onigasmLib;
 }
 
-export function getOniguruma(): Promise<IOnigLib> {
+export function getOniguruma(): Thenable<IOnigLib> {
 	if (!onigurumaLib) {
 		let getOnigModule : any = (function () {
 			var onigurumaModule: any = null;

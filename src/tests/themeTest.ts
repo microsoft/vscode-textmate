@@ -5,7 +5,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { IEmbeddedLanguagesMap } from '../main';
+import { IEmbeddedLanguagesMap, Thenable } from '../main';
 import { tokenizeWithTheme, IThemedToken, IThemedTokenScopeExplanation } from './themedTokenizer';
 import { ThemeData } from './themes.test';
 import { Resolver } from './resolver';
@@ -262,7 +262,7 @@ class SingleThemeTest {
 		this.patchedDiff = null;
 	}
 
-	public evaluate(themeData: ThemeData): Promise<void> {
+	public evaluate(themeData: ThemeData): Thenable<void> {
 		this.backgroundColor = themeData.theme.settings[0].settings.background;
 		return this._tokenizeWithThemeAsync(themeData).then(res => {
 			this.actual = res;
@@ -284,7 +284,7 @@ class SingleThemeTest {
 		};
 	}
 
-	private _tokenizeWithThemeAsync(themeData: ThemeData): Promise<IThemedToken[]> {
+	private _tokenizeWithThemeAsync(themeData: ThemeData): Thenable<IThemedToken[]> {
 		return themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages).then(grammar => {
 			return tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), this.contents, grammar);
 		});

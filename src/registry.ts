@@ -5,6 +5,7 @@
 
 import { createGrammar, Grammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet } from './grammar';
 import { IRawGrammar } from './types';
+import { Thenable } from './main';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './types';
@@ -16,9 +17,9 @@ export class SyncRegistry implements IGrammarRepository {
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
-	private _onigLibPromise: Promise<IOnigLib>;
+	private _onigLibPromise: Thenable<IOnigLib>;
 
-	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib>) {
+	constructor(theme: Theme, onigLibPromise: Thenable<IOnigLib>) {
 		this._theme = theme;
 		this._grammars = {};
 		this._rawGrammars = {};
