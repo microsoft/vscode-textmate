@@ -126,14 +126,24 @@ export class Resolver implements RegistryOptions {
 			let grammar = this._grammars[i];
 			if (grammar.scopeName === scopeName) {
 				if (!grammar.grammar) {
-					let content = fs.readFileSync(grammar.path).toString();
-					grammar.grammar = Promise.resolve(parseRawGrammar(content, grammar.path));
+					grammar.grammar = readGrammarFromPath(grammar.path);
 				}
-
 				return grammar.grammar;
 			}
 		}
 		//console.warn('test resolver: missing grammar for ' + scopeName);
 		return null;
 	}
+}
+
+function readGrammarFromPath(path: string) : Thenable<IRawGrammar> {
+	return new Promise((c,e) => {
+		fs.readFile(path, (error, content) => {
+			if (error) {
+				e(error);
+			} else {
+				c(parseRawGrammar(content.toString(), path));
+			}
+		});
+	});
 }

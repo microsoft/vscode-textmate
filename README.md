@@ -11,42 +11,38 @@ npm install vscode-textmate
 ## Using
 
 ```javascript
-var Registry = require('vscode-textmate').Registry;
-var registry = new Registry();
-var grammar = registry.loadGrammarFromPathSync('./javascript.tmbundle/Syntaxes/JavaScript.plist');
+var vsctm = require('vscode-textmate');
+var grammarPaths = {
+	'source.js': './javascript.tmbundle/Syntaxes/JavaScript.plist'
+};
 
-var lineTokens = grammar.tokenizeLine('function add(a,b) { return a+b; }');
-for (var i = 0; i < lineTokens.tokens.length; i++) {
-	var token = lineTokens.tokens[i];
-	console.log('Token from ' + token.startIndex + ' to ' + token.endIndex + ' with scopes ' + token.scopes);
-}
-```
-
-## Using asynchronously
-
-Sometimes, it is necessary to manage the list of known grammars outside of `vscode-textmate`. The sample below shows how this works:
-
-```javascript
-var Registry = require('vscode-textmate').Registry;
-
-var registry = new Registry({
-	getFilePath: function (scopeName) {
-		// Return here the path to the grammar file for `scopeName`
-		if (scopeName === 'source.js') {
-			return './javascript.tmbundle/Syntaxes/JavaScript.plist';
+var registry = new vsctm.Registry({
+	loadGrammar: function (scopeName) {
+		var path = grammarPaths[scopeName];
+		if (path) {
+			return new Promise((c,e) => {
+				fs.readFile(path, (error, content) => {
+					if (error) {
+						e(error);
+					} else {
+						var rawGrammar = vsctm.parseRawGrammar(content.toString(), path);
+						c(rawGrammar);
+					}
+				});
+			});
 		}
 		return null;
 	}
 });
 
 // Load the JavaScript grammar and any other grammars included by it async.
-registry.loadGrammar('source.js', function(err, grammar) {
-	if (err) {
-		console.error(err);
-		return;
-	}
-
+registry.loadGrammar('source.js').then(grammar => {
 	// at this point `grammar` is available...
+	var lineTokens = grammar.tokenizeLine('function add(a,b) { return a+b; }');
+	for (var i = 0; i < lineTokens.tokens.length; i++) {
+		var token = lineTokens.tokens[i];
+		console.log('Token from ' + token.startIndex + ' to ' + token.endIndex + ' with scopes ' + token.scopes);
+	}
 });
 
 ```
