@@ -6,8 +6,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
-import { IOnigLib } from '../types';
+import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar, Thenable } from '../main';
+import { IOnigLib, IRawGrammar } from '../types';
 import { getOnigasm, getOniguruma } from '../onigLibs';
 
 const REPO_ROOT = path.join(__dirname, '../../');
@@ -21,6 +21,7 @@ function assertTokenizationSuite(testLocation: string): void {
 		grammarScopeName?: string;
 		grammarInjections?: string[];
 		lines: IRawTestLine[];
+		skipOnigasm: boolean;
 	}
 	interface IRawTestLine {
 		line: string;
@@ -35,40 +36,46 @@ function assertTokenizationSuite(testLocation: string): void {
 
 
 	tests.forEach((test) => {
-		it(test.desc + '-onigasm', () => {
-			return performTest(test, getOnigasm());
-		});
+
+		if (test.skipOnigasm) {
+			it.skip(test.desc + '-onigasm', () => {
+				return performTest(test, getOnigasm());
+			});
+		} else {
+			it(test.desc + '-onigasm', () => {
+				return performTest(test, getOnigasm());
+			});
+		}
+
 		it(test.desc + '-oniguruma', () => {
 			return performTest(test, getOniguruma());
 		});
 	});
 
-	async function performTest(test: IRawTest, onigLib: Promise<IOnigLib>): Promise<void> {
+	async function performTest(test: IRawTest, onigLib: Thenable<IOnigLib>): Promise<void> {
+
+		let grammarScopeName = test.grammarScopeName;
+		let grammarByScope : { [scope:string]:IRawGrammar } = {};
+		for (let grammarPath of test.grammars) {
+			let content = fs.readFileSync(path.join(path.dirname(testLocation), grammarPath)).toString();
+			let rawGrammar = parseRawGrammar(content, grammarPath);
+			grammarByScope[rawGrammar.scopeName] = rawGrammar;
+			if (!grammarScopeName && grammarPath === test.grammarPath) {
+				grammarScopeName = rawGrammar.scopeName;
+			}
+		};
+
 		let locator: RegistryOptions = {
-			loadGrammar: (scopeName: string) => null,
+			loadGrammar: (scopeName: string) => Promise.resolve(grammarByScope[scopeName]),
 			getInjections: (scopeName: string) => {
-				if (scopeName === test.grammarScopeName) {
+				if (scopeName === grammarScopeName) {
 					return test.grammarInjections;
 				}
-				return void 0;
 			},
 			getOnigLib: () => onigLib
 		};
 		let registry = new Registry(locator);
-		let grammar: IGrammar = null;
-		for (let grammarPath of test.grammars) {
-			let content = fs.readFileSync(path.join(path.dirname(testLocation), grammarPath)).toString();
-			let rawGrammar = parseRawGrammar(content, grammarPath);
-			let tmpGrammar = await registry.addGrammar(rawGrammar);
-			if (test.grammarPath === grammarPath) {
-				grammar = tmpGrammar;
-			}
-		};
-
-		if (test.grammarScopeName) {
-			grammar = await registry.grammarForScopeName(test.grammarScopeName);
-		}
-
+		let grammar: IGrammar = await registry.loadGrammar(grammarScopeName);
 		if (!grammar) {
 			throw new Error('I HAVE NO GRAMMAR FOR TEST');
 		}
