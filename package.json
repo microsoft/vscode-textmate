@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "fast-plist": "^0.1.2",
-    "oniguruma": "^6.0.1"
+    "oniguruma": "^7.0.0"
   },
   "devDependencies": {
     "@types/mocha": "2.2.39",
