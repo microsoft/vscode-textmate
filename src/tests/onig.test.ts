@@ -14,7 +14,7 @@ import { Registry, StackElement } from '../main';
 
 declare module 'durations';
 
-describe('Compare OnigLibs outputs', () => {
+describe.skip('Compare OnigLibs outputs', () => {
 	let registrations = getVSCodeRegistrations();;
 	if (!registrations) {
 		console.log('vscode repo ot found, skipping OnigLibs tests');
