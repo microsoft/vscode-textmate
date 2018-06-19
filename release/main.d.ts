@@ -26,7 +26,7 @@ export interface Thenable<T> extends PromiseLike<T> {
  */
 export interface RegistryOptions {
     theme?: IRawTheme;
-    loadGrammar(scopeName: string): Thenable<IRawGrammar>;
+    loadGrammar(scopeName: string): Thenable<IRawGrammar | undefined | null>;
     getInjections?(scopeName: string): string[];
     getOnigLib?(): Thenable<IOnigLib>;
 }

@@ -22,6 +22,8 @@
     "test-travis": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec out/tests/",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node scripts/inspect.js",
+    "version": "npm run test && node scripts/release.js",
+    "postversion": "git push && git push --tags",
     "prepublishOnly": "node scripts/release.js"
   },
   "dependencies": {
