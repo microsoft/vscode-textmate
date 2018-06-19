@@ -12,7 +12,7 @@ import {
 	Theme, strcmp, strArrCmp, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule, FontStyle, ColorMap
 } from '../theme';
-import * as plist from 'fast-plist';
+import * as plist from '../plist';
 import { ThemeTest } from './themeTest';
 import { getOnigasm, getOniguruma } from '../onigLibs';
 import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
