@@ -4,7 +4,7 @@
 'use strict';
 
 import { IRawGrammar } from './types';
-import * as plist from 'fast-plist';
+import * as plist from './plist';
 import { CAPTURE_METADATA } from './debug';
 import { parse as manualParseJSON } from './json';
 

@@ -1,4 +1,5 @@
 import { IRawGrammar, IOnigLib } from './types';
+export * from './types';
 /**
  * A single theme setting.
  */

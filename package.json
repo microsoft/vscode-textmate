@@ -25,7 +25,6 @@
     "prepublishOnly": "node scripts/release.js"
   },
   "dependencies": {
-    "fast-plist": "^0.1.2",
     "oniguruma": "^7.0.0"
   },
   "devDependencies": {

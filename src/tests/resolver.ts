@@ -121,7 +121,7 @@ export class Resolver implements RegistryOptions {
 		throw new Error('Could not findGrammarByLanguage for ' + language);
 	}
 
-	public loadGrammar(scopeName: string): Thenable<IRawGrammar> {
+	public loadGrammar(scopeName: string): Thenable<IRawGrammar | null> {
 		for (let i = 0; i < this._grammars.length; i++) {
 			let grammar = this._grammars[i];
 			if (grammar.scopeName === scopeName) {

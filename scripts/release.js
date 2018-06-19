@@ -20,6 +20,7 @@ var sources = [
 	'matcher.js',
 	'debug.js',
 	'json.js',
+	'plist.js',
 	'grammarReader.js',
 	'rule.js',
 	'grammar.js',
