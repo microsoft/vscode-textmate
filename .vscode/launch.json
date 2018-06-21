@@ -1,6 +1,7 @@
 {
 	"version": "0.1.0",
 	"configurations": [
+
 		{
 			"name": "Launch tests",
 			"type": "node",
@@ -18,6 +19,12 @@
 			"sourceMaps": true,
 			"outFiles": [ "out/**" ],
 			"preLaunchTask": "compile"
+		},
+		{
+			"type": "node",
+			"request": "launch",
+			"name": "Launch benchmark",
+			"program": "${workspaceFolder}/benchmark/benchmark.js"
 		}
 	]
 }
