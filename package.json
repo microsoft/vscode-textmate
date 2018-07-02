@@ -32,7 +32,7 @@
   "devDependencies": {
     "@types/mocha": "2.2.39",
     "@types/node": "^7.0.43",
-    "coveralls": "^2.11.12",
+    "coveralls": "^3.0.2",
     "durations": "^3.4.1",
     "istanbul": "^0.4.4",
     "mocha": "^3.0.2",
