@@ -15,9 +15,9 @@ var Registry = main.Registry;
 var registry = new Registry();
 var grammarPromise = null;
 for (let path of GRAMMAR_PATHS) {
-	console.log('LOADING GRAMMAR: ' + GRAMMAR_PATHS[0]);
-	var content = fs.readFileSync(GRAMMAR_PATHS[0]).toString();
-	var rawGrammar = main.parseRawGrammar(content, GRAMMAR_PATHS[0]);
+	console.log('LOADING GRAMMAR: ' + path);
+	var content = fs.readFileSync(path).toString();
+	var rawGrammar = main.parseRawGrammar(content, path);
 	var g = registry.addGrammar(rawGrammar);
 	grammarPromise = grammarPromise || g;
 }
