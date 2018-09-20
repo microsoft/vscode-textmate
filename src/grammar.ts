@@ -640,8 +640,8 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	let ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 	if (IN_DEBUG_MODE) {
-		//console.log('  scanning for');
-		//console.log(debugCompiledRuleToString(ruleScanner));
+		console.log('  scanning for');
+		console.log(debugCompiledRuleToString(ruleScanner));
 		if (r) {
 			console.log(`matched: ${r.captureIndices[0].start} / ${r.captureIndices[0].end}`);
 		}
@@ -771,7 +771,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	function scanNext(): void {
 		if (IN_DEBUG_MODE) {
 			console.log('');
-			console.log(`@@scanNext ${linePos}: |${lineText.content.replace(/\n$/, '\\n').substr(linePos)}|`);
+			console.log(`@@scanNext ${linePos},{${anchorPosition}}: |${lineText.content.substr(linePos).replace(/\n$/, '\\n')}|`);
 		}
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
