@@ -771,7 +771,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	function scanNext(): void {
 		if (IN_DEBUG_MODE) {
 			console.log('');
-			console.log(`@@scanNext ${linePos}: |${lineText.content.replace(/\n$/, '\\n').substr(linePos)}|`);
+			console.log(`@@scanNext ${linePos}: |${lineText.content.substr(linePos).replace(/\n$/, '\\n')}|`);
 		}
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
