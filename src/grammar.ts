@@ -445,7 +445,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 			let scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
 
-			prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
+			prevState = new StackElement(null, this._rootId, -1, true, null, scopeList, scopeList);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
@@ -536,7 +536,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			let contentName = captureRule.getContentName(lineTextContent, captureIndices);
 			let contentNameScopesList = nameScopesList.push(grammar, contentName);
 
-			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, true, null, nameScopesList, contentNameScopesList);
 			let onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
 			_tokenizeString(grammar,
 				onigSubStr,
@@ -806,6 +806,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// pop
 			let popped = stack;
 			stack = stack.pop();
+			if (popped.getHasAdvanced()) {
+				anchorPosition = -1;
+			}
 
 			if (!hasAdvanced && popped.getEnterPos() === linePos) {
 				// Grammar pushed & popped a rule without advancing
@@ -829,7 +832,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// push it on the stack rule
 			let scopeName = _rule.getName(lineText.content, captureIndices);
 			let nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-			stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
+			stack = stack.push(matchedRuleId, linePos, hasAdvanced || (anchorPosition < linePos), null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -1137,7 +1140,7 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
-	public static NULL = new StackElement(null, 0, 0, null, null, null);
+	public static NULL = new StackElement(null, 0, 0, true, null, null, null);
 
 	/**
 	 * The position on the current line where this state was pushed.
@@ -1145,6 +1148,12 @@ export class StackElement implements StackElementDef {
 	 * Its value is meaningless across lines.
 	 */
 	private _enterPos: number;
+
+	/**
+	 * If the position has advanced since a previous rule began, for
+	 * manipulating the anchorPos after a rule pop.
+	 */
+	private _beginRuleHasAdvanced: boolean;
 
 	/**
 	 * The previous state on the stack (or null for the root state).
@@ -1173,11 +1182,12 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly contentNameScopesList: ScopeListElement;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement, ruleId: number, enterPos: number, hasAdvanced: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
 		this._enterPos = enterPos;
+		this._beginRuleHasAdvanced = hasAdvanced;
 		this.endRule = endRule;
 		this.nameScopesList = nameScopesList;
 		this.contentNameScopesList = contentNameScopesList;
@@ -1256,12 +1266,16 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
-		return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
+	public push(ruleId: number, enterPos: number, hasAdvanced: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+		return new StackElement(this, ruleId, enterPos, hasAdvanced, endRule, nameScopesList, contentNameScopesList);
 	}
 
 	public getEnterPos(): number {
 		return this._enterPos;
+	}
+
+	public getHasAdvanced(): boolean {
+		return this._beginRuleHasAdvanced;
 	}
 
 	public getRule(grammar: IRuleRegistry): Rule {
@@ -1288,14 +1302,14 @@ export class StackElement implements StackElementDef {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
-		return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
+		return this.parent.push(this.ruleId, this._enterPos, this._beginRuleHasAdvanced, this.endRule, this.nameScopesList, contentNameScopesList);
 	}
 
 	public setEndRule(endRule: string): StackElement {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
+		return new StackElement(this.parent, this.ruleId, this._enterPos, this._beginRuleHasAdvanced, endRule, this.nameScopesList, this.contentNameScopesList);
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {
