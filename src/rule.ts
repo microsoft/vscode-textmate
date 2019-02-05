@@ -601,19 +601,6 @@ export class RuleFactory {
 					);
 				}
 
-				if (!desc.begin) {
-					if (desc.repository) {
-						repository = mergeObjects({}, repository, desc.repository);
-					}
-					return new IncludeOnlyRule(
-						desc.$vscodeTextmateLocation,
-						desc.id,
-						desc.name,
-						desc.contentName,
-						RuleFactory._compilePatterns(desc.patterns, helper, repository)
-					);
-				}
-
 				if (desc.while) {
 					return new BeginWhileRule(
 						desc.$vscodeTextmateLocation,
@@ -622,6 +609,19 @@ export class RuleFactory {
 						desc.contentName,
 						desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
 						desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository),
+						RuleFactory._compilePatterns(desc.patterns, helper, repository)
+					);
+				}
+
+				if (!desc.begin && !desc.end) {
+					if (desc.repository) {
+						repository = mergeObjects({}, repository, desc.repository);
+					}
+					return new IncludeOnlyRule(
+						desc.$vscodeTextmateLocation,
+						desc.id,
+						desc.name,
+						desc.contentName,
 						RuleFactory._compilePatterns(desc.patterns, helper, repository)
 					);
 				}
