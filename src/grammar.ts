@@ -757,12 +757,16 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	const lineLength = lineText.content.length;
 
 	let STOP = false;
+	let whileCheckResult: IWhileCheckResult
 
-	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
-	stack = whileCheckResult.stack;
-	linePos = whileCheckResult.linePos;
-	isFirstLine = whileCheckResult.isFirstLine;
-	let anchorPosition = whileCheckResult.anchorPosition;
+	// check while conditions only if input starting position is begining of the string
+	if (linePos == 0) {
+		whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+		stack = whileCheckResult.stack;
+		linePos = whileCheckResult.linePos;
+		isFirstLine = whileCheckResult.isFirstLine;
+	}
+	let anchorPosition = (linePos == 0) ? whileCheckResult.anchorPosition : -1;
 
 	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
