@@ -1,3 +1,12 @@
+
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    }
+})(function () {
+
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
@@ -3628,5 +3637,6 @@ exports.INITIAL = grammar_1.StackElement.NULL;
 exports.parseRawGrammar = grammarReader.parseRawGrammar;
 //# sourceMappingURL=main.js.map
 });
-module.exports = $map['./main'].exports;
-//# sourceMappingURL=_suffix.js.map
+
+return $map['./main'].exports;;
+});
