@@ -1,6 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
+///<amd-module name='grammarReader'/>
 'use strict';
 
 import { IRawGrammar } from './types';

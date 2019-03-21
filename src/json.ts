@@ -1,6 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
+///<amd-module name='json'/>
 'use strict';
 
 function doFail(streamState: JSONStreamState, msg: string): void {

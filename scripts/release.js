@@ -32,16 +32,16 @@ var sources = [
 	var sourceContents = fs.readFileSync(sourcePath).toString();
 
 	return [
-		"$load('" + name + "', function(require, module, exports) {",
-		sourceContents,
-		"});"
+		// "$load('" + name + "', function(require, exports, module) {",
+		sourceContents
+		// "});"
 	].join('\n');
 });
 
 var all = [];
-all.push(fs.readFileSync(path.join(OUT_FOLDER, '_prefix.js')).toString());
+// all.push(fs.readFileSync(path.join(OUT_FOLDER, '_prefix.js')).toString());
 all = all.concat(sources);
-all.push(fs.readFileSync(path.join(OUT_FOLDER, '_suffix.js')).toString());
+// all.push(fs.readFileSync(path.join(OUT_FOLDER, '_suffix.js')).toString());
 
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.js'), all.join('\n'));
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'main.d.ts')));

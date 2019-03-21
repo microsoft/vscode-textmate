@@ -1,6 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
+///<amd-module name='rule'/>
 'use strict';
 
 import { RegexSource, mergeObjects, basename } from './utils';

@@ -1,6 +1,7 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
+///<amd-module name='plist'/>
 'use strict';
 
 const enum ChCode {

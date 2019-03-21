@@ -12,7 +12,7 @@ interface IModuleMap {
 }
 
 interface IFactoryFunc {
-	(require: IFactoryRequireFunc, module: IModule, exports: any): void;
+	(require: IFactoryRequireFunc, exports: any, module: IModule): void;
 }
 
 interface IFactoryRequireFunc {
@@ -21,19 +21,29 @@ interface IFactoryRequireFunc {
 
 let $map: IModuleMap = {};
 
+declare var define: any;
+
 function $load(name: string, factory: IFactoryFunc) {
-	let mod: IModule = {
-		exports: {}
-	};
-
-	let requireFunc: IFactoryRequireFunc = (mod) => {
-		if ($map[mod]) {
-			return $map[mod].exports;
+	if (typeof define === 'function' && define.amd) {
+		if (name === './main') {
+			define(['require', 'exports'], factory);
+		} else {
+			define(name, ['require', 'exports'], factory);
 		}
-		return require(mod);
-	};
+	} else {
+		let mod: IModule = {
+			exports: {}
+		};
 
-	factory.call(this, requireFunc, mod, mod.exports);
+		let requireFunc: IFactoryRequireFunc = (mod) => {
+			if ($map[mod]) {
+				return $map[mod].exports;
+			}
+			return require(mod);
+		};
 
-	$map[name] = mod;
+		factory.call(this, requireFunc, mod, mod.exports);
+
+		$map[name] = mod;
+	}
 }
