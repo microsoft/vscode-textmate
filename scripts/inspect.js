@@ -42,7 +42,7 @@ grammarPromise.then(grammar => {
 		var cnt = 0;
 		while (stackElement) {
 			cnt++;
-			stackElement = stackElement._parent;
+			stackElement = stackElement.parent;
 		}
 
 		console.log('@@LINE END RULE STACK CONTAINS ' + cnt + ' RULES:');
@@ -52,13 +52,13 @@ grammarPromise.then(grammar => {
 			if (!stackElement._instanceId) {
 				stackElement._instanceId = (++lastElementId);
 			}
-			var ruleDesc = grammar._ruleId2desc[stackElement._ruleId]
+			var ruleDesc = grammar._ruleId2desc[stackElement.ruleId]
 			if (!ruleDesc) {
-				list.push('  * no rule description found for rule id: ' + stackElement._ruleId);
+				list.push('  * no rule description found for rule id: ' + stackElement.ruleId);
 			} else {
-				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement._scopeName + '"');
+				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.scope + ' ' + stackElement.contentNameScopesList.scope + '"');
 			}
-			stackElement = stackElement._parent;
+			stackElement = stackElement.parent;
 		}
 		list.reverse();
 		console.log(list.join('\n'));
