@@ -1,1 +1,0 @@
-module.exports = $map['./main'].exports;
