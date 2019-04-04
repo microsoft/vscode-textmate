@@ -10,8 +10,4 @@ addons:
     packages:
       - g++-4.8
 script:
-  - npm run compile
-  - npm run test-travis
-after_script:
- - remap-istanbul -i ./coverage/coverage.json -t lcovonly > ./coverage/lcov-remap.info
- - cat ./coverage/lcov-remap.info | ./node_modules/coveralls/bin/coveralls.js
+  - npm run test
