@@ -601,7 +601,7 @@ export class RuleFactory {
 					);
 				}
 
-				if (!desc.begin) {
+				if (typeof desc.begin === 'undefined') {
 					if (desc.repository) {
 						repository = mergeObjects({}, repository, desc.repository);
 					}
