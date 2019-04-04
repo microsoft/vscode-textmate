@@ -2569,7 +2569,7 @@ var Grammar = /** @class */ (function () {
             var rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
             var rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
             var scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
-            prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
+            prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
         }
         else {
             isFirstLine = false;
@@ -2647,7 +2647,7 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
             var contentName = captureRule.getContentName(lineTextContent, captureIndices);
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
-            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
             var onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
             _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             disposeOnigString(onigSubStr);
@@ -2856,6 +2856,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             // pop
             var popped = stack;
             stack = stack.pop();
+            anchorPosition = popped.getAnchorPos();
             if (!hasAdvanced && popped.getEnterPos() === linePos) {
                 // Grammar pushed & popped a rule without advancing
                 console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
@@ -2875,7 +2876,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             // push it on the stack rule
             var scopeName = _rule.getName(lineText.content, captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-            stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
+            stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 if (debug_1.IN_DEBUG_MODE) {
@@ -3132,11 +3133,12 @@ exports.ScopeListElement = ScopeListElement;
  * Represents a "pushed" state on the stack (as a linked list element).
  */
 var StackElement = /** @class */ (function () {
-    function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
+    function StackElement(parent, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
         this.ruleId = ruleId;
         this._enterPos = enterPos;
+        this._anchorPos = anchorPos;
         this.endRule = endRule;
         this.nameScopesList = nameScopesList;
         this.contentNameScopesList = contentNameScopesList;
@@ -3186,6 +3188,7 @@ var StackElement = /** @class */ (function () {
     StackElement._reset = function (el) {
         while (el) {
             el._enterPos = -1;
+            el._anchorPos = -1;
             el = el.parent;
         }
     };
@@ -3201,11 +3204,14 @@ var StackElement = /** @class */ (function () {
         }
         return this;
     };
-    StackElement.prototype.push = function (ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
-        return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
+    StackElement.prototype.push = function (ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
+        return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.getEnterPos = function () {
         return this._enterPos;
+    };
+    StackElement.prototype.getAnchorPos = function () {
+        return this._anchorPos;
     };
     StackElement.prototype.getRule = function (grammar) {
         return grammar.getRule(this.ruleId);
@@ -3226,18 +3232,18 @@ var StackElement = /** @class */ (function () {
         if (this.contentNameScopesList === contentNameScopesList) {
             return this;
         }
-        return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
+        return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.setEndRule = function (endRule) {
         if (this.endRule === endRule) {
             return this;
         }
-        return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
+        return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
     };
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
-    StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
+    StackElement.NULL = new StackElement(null, 0, 0, 0, null, null, null);
     return StackElement;
 }());
 exports.StackElement = StackElement;
