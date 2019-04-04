@@ -1254,5 +1254,71 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade22.json"
+		],
+		"grammarPath": "fixtures/Jade22.json",
+		"desc": "Issue #22",
+		"lines": [
+			{
+				"line": ".class One #[span text.] Two text.",
+				"tokens": [
+					{
+						"scopes": [
+							"text.jade",
+							"constant.language.js"
+						],
+						"value": ".class"
+					},
+					{
+						"scopes": [
+							"text.jade"
+						],
+						"value": " One "
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"entity.name.function.jade"
+						],
+						"value": "#["
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"tag.inline.jade",
+							"meta.tag.other",
+							"entity.name.tag.jade"
+						],
+						"value": "span"
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade"
+						],
+						"value": " text."
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"entity.name.function.jade"
+						],
+						"value": "]"
+					},
+					{
+						"scopes": [
+							"text.jade"
+						],
+						"value": " Two text."
+					}
+				]
+			}
+		]
 	}
 ]

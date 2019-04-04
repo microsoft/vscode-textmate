@@ -113,7 +113,7 @@ class ThemeInfo {
 				let test = new ThemeTest(THEMES_TEST_PATH, testFile, _resolvers[i]);
 				(<any>it(test.testName, () => {
 					return test.evaluate(_themeDatas[i]).then(_ => {
-						//test.writeDiffPage();
+						// test.writeDiffPage();
 						assert.ok(!test.hasDiff(), 'no more unpatched differences');
 					});
 				})).timeout(20000);
