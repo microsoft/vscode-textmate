@@ -56,7 +56,7 @@ grammarPromise.then(grammar => {
 			if (!ruleDesc) {
 				list.push('  * no rule description found for rule id: ' + stackElement.ruleId);
 			} else {
-				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.scope + ' ' + stackElement.contentNameScopesList.scope + '"');
+				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.generateScopes() + '", "' + stackElement.contentNameScopesList.generateScopes() + '"');
 			}
 			stackElement = stackElement.parent;
 		}
