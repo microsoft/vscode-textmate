@@ -677,8 +677,8 @@ $load('./debug', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CAPTURE_METADATA = !!process.env['VSCODE_TEXTMATE_DEBUG'];
-exports.IN_DEBUG_MODE = !!process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.CAPTURE_METADATA = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.IN_DEBUG_MODE = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
 //# sourceMappingURL=debug.js.map
 });
 $load('./json', function(require, module, exports) {
@@ -2094,7 +2094,7 @@ var RuleFactory = /** @class */ (function () {
                 if (desc.match) {
                     return new MatchRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.match, RuleFactory._compileCaptures(desc.captures, helper, repository));
                 }
-                if (!desc.begin) {
+                if (typeof desc.begin === 'undefined') {
                     if (desc.repository) {
                         repository = utils_1.mergeObjects({}, repository, desc.repository);
                     }
