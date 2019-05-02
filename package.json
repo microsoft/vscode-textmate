@@ -32,9 +32,9 @@
     "@types/mocha": "5.2.6",
     "@types/node": "^11.9.6",
     "durations": "^3.4.1",
-    "mocha": "^6.0.2",
+    "mocha": "^6.1.4",
     "onigasm": "^2.1.0",
-    "tslint": "^5.13.1",
+    "tslint": "^5.16.0",
     "typescript": "^3.3.3333"
   }
 }
