@@ -1,4 +1,4 @@
-# VSCode TextMate [![Build Status](https://travis-ci.org/Microsoft/vscode-textmate.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-textmate) 
+# VSCode TextMate [![Build Status](https://travis-ci.org/Microsoft/vscode-textmate.svg?branch=master)](https://travis-ci.org/Microsoft/vscode-textmate)
 
 An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Cross - grammar injections are currently not supported.
 
@@ -7,6 +7,11 @@ An interpreter for grammar files as defined by TextMate. Supports loading gramma
 ```sh
 npm install vscode-textmate
 ```
+
+## Requirements
+
+This module needs [oniguruma](https://github.com/atom/node-oniguruma) to be compiled for the target platform (x86/x64).
+If you have installed vscode you could copy the oniguruma version located on: `C:\Users\User\AppData\Local\Programs\Microsoft VS Code\resources\app\node_modules.asar.unpacked\oniguruma\build\Release`.
 
 ## Using
 
@@ -26,6 +31,7 @@ var registry = new vsctm.Registry({
 						e(error);
 					} else {
 						var rawGrammar = vsctm.parseRawGrammar(content.toString(), path);
+
 						c(rawGrammar);
 					}
 				});
@@ -45,6 +51,18 @@ registry.loadGrammar('source.js').then(grammar => {
 	}
 });
 
+```
+
+If you encounter issues (for example in `loadGrammar` you get a *grammar=null*) you could use the `Registry` to get the actual *grammar* object from the *rawGrammar*:
+
+``` javascript
+    var rawGrammar = vsctm.parseRawGrammar(content.toString(), path);
+    var reg = new vsctm.Registry();
+    var g = reg.addGrammar(rawGrammar);
+    g.then(grammar=>{
+        Globals.grammar = grammar;// here you could store your istance or tokenize lines.
+        c(rawGrammar);
+    });
 ```
 
 ## Tokenizing multiple lines
