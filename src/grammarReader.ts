@@ -5,7 +5,7 @@
 
 import { IRawGrammar } from './types';
 import * as plist from './plist';
-import { CAPTURE_METADATA } from './debug';
+import { DebugFlags } from './debug';
 import { parse as manualParseJSON } from './json';
 
 export function parseRawGrammar(content: string, filePath: string): IRawGrammar {
@@ -16,14 +16,14 @@ export function parseRawGrammar(content: string, filePath: string): IRawGrammar 
 }
 
 function parseJSONGrammar(contents: string, filename: string): IRawGrammar {
-	if (CAPTURE_METADATA) {
+	if (DebugFlags.InDebugMode) {
 		return <IRawGrammar>manualParseJSON(contents, filename, true);
 	}
 	return <IRawGrammar>JSON.parse(contents);
 }
 
 function parsePLISTGrammar(contents: string, filename: string): IRawGrammar {
-	if (CAPTURE_METADATA) {
+	if (DebugFlags.InDebugMode) {
 		return <IRawGrammar>plist.parseWithLocation(contents, filename, '$vscodeTextmateLocation');
 	}
 	return <IRawGrammar>plist.parse(contents);
