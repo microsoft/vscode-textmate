@@ -381,9 +381,6 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			}
 			this._injections.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
 		}
-		if (this._injections.length === 0) {
-			return this._injections;
-		}
 		return this._injections;
 	}
 
