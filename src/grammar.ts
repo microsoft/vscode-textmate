@@ -137,7 +137,7 @@ function nameMatcher(identifers: string[], scopes: string[]) {
 		}
 		return false;
 	});
-};
+}
 
 function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
 	let matchers = createMatchers(selector, nameMatcher);
@@ -455,7 +455,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		let onigLineText = this.createOnigString(lineText);
 		let lineLength = onigLineText.content.length;
 		let lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
-		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
+		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
 
 		disposeOnigString(onigLineText);
 
@@ -538,10 +538,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
 			let onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
-			_tokenizeString(grammar,
-				onigSubStr,
-				(isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens
-			);
+			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
 			disposeOnigString(onigSubStr);
 			continue;
 		}
@@ -753,16 +750,19 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 
-function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): StackElement {
+function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens, checkWhileConditions: boolean): StackElement {
 	const lineLength = lineText.content.length;
 
 	let STOP = false;
+	let anchorPosition = -1;
 
-	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
-	stack = whileCheckResult.stack;
-	linePos = whileCheckResult.linePos;
-	isFirstLine = whileCheckResult.isFirstLine;
-	let anchorPosition = whileCheckResult.anchorPosition;
+	if (checkWhileConditions) {
+		let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+		stack = whileCheckResult.stack;
+		linePos = whileCheckResult.linePos;
+		isFirstLine = whileCheckResult.isFirstLine;
+		anchorPosition = whileCheckResult.anchorPosition;
+	}
 
 	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
