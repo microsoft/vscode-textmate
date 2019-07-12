@@ -851,7 +851,7 @@
 							"string.interpolated.makefile",
 							"meta.scope.function-call.makefile",
 							"string.interpolated.makefile",
-							"variable.other.makefile"
+							"variable.language.makefile"
 						]
 					},
 					{
