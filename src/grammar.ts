@@ -8,7 +8,7 @@ import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, Oni
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
-import { IN_DEBUG_MODE } from './debug';
+import { DebugFlags } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
 export const enum TemporaryStandardTokenType {
@@ -590,7 +590,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		}
 		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
 		let matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-		if (IN_DEBUG_MODE) {
+		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for injections');
 			console.log(debugCompiledRuleToString(ruleScanner));
 		}
@@ -636,7 +636,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	let rule = stack.getRule(grammar);
 	let ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 	let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-	if (IN_DEBUG_MODE) {
+	if (DebugFlags.InDebugMode) {
 		//console.log('  scanning for');
 		//console.log(debugCompiledRuleToString(ruleScanner));
 		if (r) {
@@ -719,7 +719,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
 		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
 		let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-		if (IN_DEBUG_MODE) {
+		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for while rule');
 			console.log(debugCompiledRuleToString(ruleScanner));
 		}
@@ -769,14 +769,14 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	}
 
 	function scanNext(): void {
-		if (IN_DEBUG_MODE) {
+		if (DebugFlags.InDebugMode) {
 			console.log('');
 			console.log(`@@scanNext ${linePos}: |${lineText.content.substr(linePos).replace(/\n$/, '\\n')}|`);
 		}
 		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 		if (!r) {
-			if (IN_DEBUG_MODE) {
+			if (DebugFlags.InDebugMode) {
 				console.log('  no more matches.');
 			}
 			// No match
@@ -794,7 +794,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// We matched the `end` for this rule => pop it
 			let poppedRule = <BeginEndRule>stack.getRule(grammar);
 
-			if (IN_DEBUG_MODE) {
+			if (DebugFlags.InDebugMode) {
 				console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
 			}
 
@@ -834,7 +834,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
-				if (IN_DEBUG_MODE) {
+				if (DebugFlags.InDebugMode) {
 					console.log('  pushing ' + pushedRule.debugName + ' - ' + pushedRule.debugBeginRegExp);
 				}
 
@@ -860,7 +860,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				}
 			} else if (_rule instanceof BeginWhileRule) {
 				let pushedRule = <BeginWhileRule>_rule;
-				if (IN_DEBUG_MODE) {
+				if (DebugFlags.InDebugMode) {
 					console.log('  pushing ' + pushedRule.debugName);
 				}
 
@@ -885,7 +885,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				}
 			} else {
 				let matchingRule = <MatchRule>_rule;
-				if (IN_DEBUG_MODE) {
+				if (DebugFlags.InDebugMode) {
 					console.log('  matched ' + matchingRule.debugName + ' - ' + matchingRule.debugMatchRegExp);
 				}
 
@@ -1336,7 +1336,7 @@ class LineTokens {
 
 	private readonly _emitBinaryTokens: boolean;
 	/**
-	 * defined only if `IN_DEBUG_MODE`.
+	 * defined only if `DebugFlags.InDebugMode`.
 	 */
 	private readonly _lineText: string;
 	/**
@@ -1355,7 +1355,7 @@ class LineTokens {
 	constructor(emitBinaryTokens: boolean, lineText: string, tokenTypeOverrides: TokenTypeMatcher[]) {
 		this._emitBinaryTokens = emitBinaryTokens;
 		this._tokenTypeOverrides = tokenTypeOverrides;
-		if (IN_DEBUG_MODE) {
+		if (DebugFlags.InDebugMode) {
 			this._lineText = lineText;
 		}
 		if (this._emitBinaryTokens) {
@@ -1399,7 +1399,7 @@ class LineTokens {
 
 		let scopes = scopesList.generateScopes();
 
-		if (IN_DEBUG_MODE) {
+		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
 			for (var k = 0; k < scopes.length; k++) {
 				console.log('      * ' + scopes[k]);
