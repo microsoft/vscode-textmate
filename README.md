@@ -63,19 +63,6 @@ function readFile(path) {
 
 ```
 
-## Tokenizing multiple lines
-
-To tokenize multiple lines, you must pass in the previous returned `ruleStack`.
-
-```javascript
-var ruleStack = null;
-for (var i = 0; i < lines.length; i++) {
-	var r = grammar.tokenizeLine(lines[i], ruleStack);
-	console.log('Line: #' + i + ', tokens: ' + r.tokens);
-	ruleStack = r.ruleStack;
-}
-```
-
 ## API doc
 
 See [the main.ts file](./src/main.ts)
