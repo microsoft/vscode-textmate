@@ -90,8 +90,11 @@ Tokenizing line: }
 
 */
 
-
 ```
+
+## For grammar authors
+
+See [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test) that can help you write unit tests against your grammar. 
 
 ## API doc
 
