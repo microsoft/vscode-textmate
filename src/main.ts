@@ -138,7 +138,7 @@ export class Registry {
 			let grammar = await this._locator.loadGrammar(scopeName);
 			if (!grammar) {
 				if (scopeName === initialScopeName) {
-					throw new Error(`No grammar provided for <${initialScopeName}`);
+					throw new Error(`No grammar provided for <${initialScopeName}>`);
 				}
 			} else {
 				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);

@@ -3607,7 +3607,7 @@ var Registry = /** @class */ (function () {
                         grammar = _a.sent();
                         if (!grammar) {
                             if (scopeName === initialScopeName) {
-                                throw new Error("No grammar provided for <" + initialScopeName);
+                                throw new Error("No grammar provided for <" + initialScopeName + ">");
                             }
                         }
                         else {
