@@ -11,39 +11,55 @@ npm install vscode-textmate
 ## Using
 
 ```javascript
-var vsctm = require('vscode-textmate');
-var grammarPaths = {
-	'source.js': './javascript.tmbundle/Syntaxes/JavaScript.plist'
-};
+const fs = require('fs');
+const vsctm = require('./out/main');
 
-var registry = new vsctm.Registry({
-	loadGrammar: function (scopeName) {
-		var path = grammarPaths[scopeName];
-		if (path) {
-			return new Promise((c,e) => {
-				fs.readFile(path, (error, content) => {
-					if (error) {
-						e(error);
-					} else {
-						var rawGrammar = vsctm.parseRawGrammar(content.toString(), path);
-						c(rawGrammar);
-					}
-				});
-			});
+// Create a registry that can create a grammar from a scope name.
+const registry = new vsctm.Registry({
+	loadGrammar: (scopeName) => {
+		if (scopeName === 'source.js') {
+			// https://raw.githubusercontent.com/textmate/javascript.tmbundle/master/Syntaxes/JavaScript.plist
+			return readFile('./JavaScript.plist').then(data => vsctm.parseRawGrammar(data.toString()))
 		}
+		console.log(`Unknown scope name: ${scopeName}`);
 		return null;
 	}
 });
 
 // Load the JavaScript grammar and any other grammars included by it async.
 registry.loadGrammar('source.js').then(grammar => {
-	// at this point `grammar` is available...
-	var lineTokens = grammar.tokenizeLine('function add(a,b) { return a+b; }');
-	for (var i = 0; i < lineTokens.tokens.length; i++) {
-		var token = lineTokens.tokens[i];
-		console.log('Token from ' + token.startIndex + ' to ' + token.endIndex + ' with scopes ' + token.scopes);
+	const text = [
+		`function sayHello(name) {`,
+		`\treturn "Hello, " + name;`,
+		`}`
+	];
+	let ruleStack = vsctm.INITIAL;
+	for (let i = 0; i < text.length; i++) {
+		const line = text[i];
+		const lineTokens = grammar.tokenizeLine(line, ruleStack);
+		console.log(`\nTokenizing line: ${line}`);
+		for (let j = 0; j < lineTokens.tokens.length; j++) {
+			const token = lineTokens.tokens[j];
+			console.log(` - token from ${token.startIndex} to ${token.endIndex} (${line.substring(token.startIndex, token.endIndex)}) with scopes ${token.scopes.join(', ')}`);
+		}
+		ruleStack = lineTokens.ruleStack;
 	}
 });
+
+/**
+ * Utility to read a file as a promise
+ */
+function readFile(path) {
+	return new Promise((resolve, reject) => {
+		fs.readFile(path, (error, data) => {
+			if (error) {
+				reject(error);
+			} else {
+				resolve(data);
+			}
+		});
+	})
+}
 
 ```
 
