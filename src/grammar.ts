@@ -807,7 +807,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 			if (!hasAdvanced && popped.getEnterPos() === linePos) {
 				// Grammar pushed & popped a rule without advancing
-				console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
+				if (DebugFlags.InDebugMode) {
+					console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
+				}
 
 				// See https://github.com/Microsoft/vscode-textmate/issues/12
 				// Let's assume this was a mistake by the grammar author and the intent was to continue in this state
@@ -849,7 +851,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 				if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
 					// Grammar pushed the same rule without advancing
-					console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+					if (DebugFlags.InDebugMode) {
+						console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+					}
 					stack = stack.pop();
 					lineTokens.produce(stack, lineLength);
 					STOP = true;
@@ -874,7 +878,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 				if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
 					// Grammar pushed the same rule without advancing
-					console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+					if (DebugFlags.InDebugMode) {
+						console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+					}
 					stack = stack.pop();
 					lineTokens.produce(stack, lineLength);
 					STOP = true;
@@ -894,7 +900,9 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 				if (!hasAdvanced) {
 					// Grammar is not advancing, nor is it pushing/popping
-					console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
+					if (DebugFlags.InDebugMode) {
+						console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
+					}
 					stack = stack.safePop();
 					lineTokens.produce(stack, lineLength);
 					STOP = true;

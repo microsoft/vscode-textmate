@@ -2515,9 +2515,6 @@ var Grammar = /** @class */ (function () {
             }
             this._injections.sort(function (i1, i2) { return i1.priority - i2.priority; }); // sort by priority
         }
-        if (this._injections.length === 0) {
-            return this._injections;
-        }
         return this._injections;
     };
     Grammar.prototype.registerRule = function (factory) {
@@ -2863,7 +2860,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             anchorPosition = popped.getAnchorPos();
             if (!hasAdvanced && popped.getEnterPos() === linePos) {
                 // Grammar pushed & popped a rule without advancing
-                console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
+                if (debug_1.DebugFlags.InDebugMode) {
+                    console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
+                }
                 // See https://github.com/Microsoft/vscode-textmate/issues/12
                 // Let's assume this was a mistake by the grammar author and the intent was to continue in this state
                 stack = popped;
@@ -2897,7 +2896,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
-                    console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+                    if (debug_1.DebugFlags.InDebugMode) {
+                        console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+                    }
                     stack = stack.pop();
                     lineTokens.produce(stack, lineLength);
                     STOP = true;
@@ -2920,7 +2921,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 }
                 if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
                     // Grammar pushed the same rule without advancing
-                    console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+                    if (debug_1.DebugFlags.InDebugMode) {
+                        console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
+                    }
                     stack = stack.pop();
                     lineTokens.produce(stack, lineLength);
                     STOP = true;
@@ -2938,7 +2941,9 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
                 stack = stack.pop();
                 if (!hasAdvanced) {
                     // Grammar is not advancing, nor is it pushing/popping
-                    console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
+                    if (debug_1.DebugFlags.InDebugMode) {
+                        console.error('[4] - Grammar is in an endless loop - Grammar is not advancing, nor is it pushing/popping');
+                    }
                     stack = stack.safePop();
                     lineTokens.produce(stack, lineLength);
                     STOP = true;
