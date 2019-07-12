@@ -2317,7 +2317,6 @@ function nameMatcher(identifers, scopes) {
         return false;
     });
 }
-;
 function collectInjections(result, selector, rule, ruleFactoryHelper, grammar) {
     var matchers = matcher_1.createMatchers(selector, nameMatcher);
     var ruleId = rule_1.RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
@@ -2579,7 +2578,7 @@ var Grammar = /** @class */ (function () {
         var onigLineText = this.createOnigString(lineText);
         var lineLength = onigLineText.content.length;
         var lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
-        var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
+        var nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
         disposeOnigString(onigLineText);
         return {
             lineLength: lineLength,
@@ -2649,7 +2648,7 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
             var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
             var onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
-            _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
+            _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
             disposeOnigString(onigSubStr);
             continue;
         }
@@ -2814,14 +2813,17 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
     }
     return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
-function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
+function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTokens, checkWhileConditions) {
     var lineLength = lineText.content.length;
     var STOP = false;
-    var whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
-    stack = whileCheckResult.stack;
-    linePos = whileCheckResult.linePos;
-    isFirstLine = whileCheckResult.isFirstLine;
-    var anchorPosition = whileCheckResult.anchorPosition;
+    var anchorPosition = -1;
+    if (checkWhileConditions) {
+        var whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+        stack = whileCheckResult.stack;
+        linePos = whileCheckResult.linePos;
+        isFirstLine = whileCheckResult.isFirstLine;
+        anchorPosition = whileCheckResult.anchorPosition;
+    }
     while (!STOP) {
         scanNext(); // potentially modifies linePos && anchorPosition
     }
