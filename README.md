@@ -1,6 +1,6 @@
 # VSCode TextMate [![Build Status](https://dev.azure.com/ms/vscode-textmate/_apis/build/status/microsoft.vscode-textmate?branchName=master)](https://dev.azure.com/ms/vscode-textmate/_build/latest?definitionId=172&branchName=master)
 
-An interpreter for grammar files as defined by TextMate. Supports loading grammar files from JSON or PLIST format. Cross - grammar injections are currently not supported.
+An interpreter for grammar files as defined by TextMate. TextMate grammars use the oniguruma dialect (https://github.com/kkos/oniguruma). Supports loading grammar files from JSON or PLIST format. This library is used in VS Code. Cross - grammar injections are currently not supported. 
 
 ## Installing
 
