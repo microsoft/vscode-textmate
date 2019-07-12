@@ -24,6 +24,10 @@ export class ThemeTest {
 		}
 	}
 
+	private static _normalizeNewLines(str: string): string {
+		return str.split(/\r\n|\n/).join('\n');
+	}
+
 	private readonly EXPECTED_FILE_PATH: string;
 	private readonly tests: SingleThemeTest[];
 
@@ -36,7 +40,7 @@ export class ThemeTest {
 		const testFileContents = ThemeTest._readFile(TEST_FILE_PATH);
 
 		this.EXPECTED_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile + '.result');
-		this.expected = ThemeTest._readFile(this.EXPECTED_FILE_PATH);
+		this.expected = ThemeTest._normalizeNewLines(ThemeTest._readFile(this.EXPECTED_FILE_PATH));
 
 		// Determine the language
 		let language = resolver.findLanguageByExtension(path.extname(testFile)) || resolver.findLanguageByFilename(testFile);
@@ -74,7 +78,7 @@ export class ThemeTest {
 			actual[this.tests[i].themeData.themeName] = this.tests[i].actual;
 		}
 
-		this.actual = JSON.stringify(actual, null, '\t');
+		this.actual = ThemeTest._normalizeNewLines(JSON.stringify(actual, null, '\t'));
 	}
 
 	public writeExpected(): void {
