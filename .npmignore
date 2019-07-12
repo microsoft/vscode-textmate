@@ -6,8 +6,8 @@
 /src/
 /test-cases/
 /.npmignore
-/.travis.yml
-/gulpfile.js
+/azure-pipelines.yml
+/build-template.yml
 /npm-debug.log
 /ThirdPartyNotices.txt
 /tsconfig.json
