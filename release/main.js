@@ -677,8 +677,9 @@ $load('./debug', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CAPTURE_METADATA = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
-exports.IN_DEBUG_MODE = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.DebugFlags = {
+    InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
+};
 //# sourceMappingURL=debug.js.map
 });
 $load('./json', function(require, module, exports) {
@@ -1579,6 +1580,7 @@ var plist = require("./plist");
 var debug_1 = require("./debug");
 var json_1 = require("./json");
 function parseRawGrammar(content, filePath) {
+    if (filePath === void 0) { filePath = null; }
     if (/\.json$/.test(filePath)) {
         return parseJSONGrammar(content, filePath);
     }
@@ -1586,13 +1588,13 @@ function parseRawGrammar(content, filePath) {
 }
 exports.parseRawGrammar = parseRawGrammar;
 function parseJSONGrammar(contents, filename) {
-    if (debug_1.CAPTURE_METADATA) {
+    if (debug_1.DebugFlags.InDebugMode) {
         return json_1.parse(contents, filename, true);
     }
     return JSON.parse(contents);
 }
 function parsePLISTGrammar(contents, filename) {
-    if (debug_1.CAPTURE_METADATA) {
+    if (debug_1.DebugFlags.InDebugMode) {
         return plist.parseWithLocation(contents, filename, '$vscodeTextmateLocation');
     }
     return plist.parse(contents);
@@ -2688,7 +2690,7 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
         }
         var ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
         var matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-        if (debug_1.IN_DEBUG_MODE) {
+        if (debug_1.DebugFlags.InDebugMode) {
             console.log('  scanning for injections');
             console.log(debugCompiledRuleToString(ruleScanner));
         }
@@ -2722,7 +2724,7 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     var rule = stack.getRule(grammar);
     var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-    if (debug_1.IN_DEBUG_MODE) {
+    if (debug_1.DebugFlags.InDebugMode) {
         //console.log('  scanning for');
         //console.log(debugCompiledRuleToString(ruleScanner));
         if (r) {
@@ -2784,7 +2786,7 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
     for (var whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
         var ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
         var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-        if (debug_1.IN_DEBUG_MODE) {
+        if (debug_1.DebugFlags.InDebugMode) {
             console.log('  scanning for while rule');
             console.log(debugCompiledRuleToString(ruleScanner));
         }
@@ -2828,13 +2830,13 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         scanNext(); // potentially modifies linePos && anchorPosition
     }
     function scanNext() {
-        if (debug_1.IN_DEBUG_MODE) {
+        if (debug_1.DebugFlags.InDebugMode) {
             console.log('');
             console.log("@@scanNext " + linePos + ": |" + lineText.content.substr(linePos).replace(/\n$/, '\\n') + "|");
         }
         var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
         if (!r) {
-            if (debug_1.IN_DEBUG_MODE) {
+            if (debug_1.DebugFlags.InDebugMode) {
                 console.log('  no more matches.');
             }
             // No match
@@ -2848,7 +2850,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
         if (matchedRuleId === -1) {
             // We matched the `end` for this rule => pop it
             var poppedRule = stack.getRule(grammar);
-            if (debug_1.IN_DEBUG_MODE) {
+            if (debug_1.DebugFlags.InDebugMode) {
                 console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
             }
             lineTokens.produce(stack, captureIndices[0].start);
@@ -2881,7 +2883,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
-                if (debug_1.IN_DEBUG_MODE) {
+                if (debug_1.DebugFlags.InDebugMode) {
                     console.log('  pushing ' + pushedRule.debugName + ' - ' + pushedRule.debugBeginRegExp);
                 }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
@@ -2904,7 +2906,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             }
             else if (_rule instanceof rule_1.BeginWhileRule) {
                 var pushedRule = _rule;
-                if (debug_1.IN_DEBUG_MODE) {
+                if (debug_1.DebugFlags.InDebugMode) {
                     console.log('  pushing ' + pushedRule.debugName);
                 }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
@@ -2927,7 +2929,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             }
             else {
                 var matchingRule = _rule;
-                if (debug_1.IN_DEBUG_MODE) {
+                if (debug_1.DebugFlags.InDebugMode) {
                     console.log('  matched ' + matchingRule.debugName + ' - ' + matchingRule.debugMatchRegExp);
                 }
                 handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, matchingRule.captures, captureIndices);
@@ -3261,7 +3263,7 @@ var LineTokens = /** @class */ (function () {
     function LineTokens(emitBinaryTokens, lineText, tokenTypeOverrides) {
         this._emitBinaryTokens = emitBinaryTokens;
         this._tokenTypeOverrides = tokenTypeOverrides;
-        if (debug_1.IN_DEBUG_MODE) {
+        if (debug_1.DebugFlags.InDebugMode) {
             this._lineText = lineText;
         }
         if (this._emitBinaryTokens) {
@@ -3298,7 +3300,7 @@ var LineTokens = /** @class */ (function () {
             return;
         }
         var scopes = scopesList.generateScopes();
-        if (debug_1.IN_DEBUG_MODE) {
+        if (debug_1.DebugFlags.InDebugMode) {
             console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
             for (var k = 0; k < scopes.length; k++) {
                 console.log('      * ' + scopes[k]);

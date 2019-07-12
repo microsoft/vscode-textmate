@@ -8,21 +8,21 @@ import * as plist from './plist';
 import { DebugFlags } from './debug';
 import { parse as manualParseJSON } from './json';
 
-export function parseRawGrammar(content: string, filePath: string): IRawGrammar {
+export function parseRawGrammar(content: string, filePath: string = null): IRawGrammar {
 	if (/\.json$/.test(filePath)) {
 		return parseJSONGrammar(content, filePath);
 	}
 	return parsePLISTGrammar(content, filePath);
 }
 
-function parseJSONGrammar(contents: string, filename: string): IRawGrammar {
+function parseJSONGrammar(contents: string, filename: string | null): IRawGrammar {
 	if (DebugFlags.InDebugMode) {
 		return <IRawGrammar>manualParseJSON(contents, filename, true);
 	}
 	return <IRawGrammar>JSON.parse(contents);
 }
 
-function parsePLISTGrammar(contents: string, filename: string): IRawGrammar {
+function parsePLISTGrammar(contents: string, filename: string | null): IRawGrammar {
 	if (DebugFlags.InDebugMode) {
 		return <IRawGrammar>plist.parseWithLocation(contents, filename, '$vscodeTextmateLocation');
 	}

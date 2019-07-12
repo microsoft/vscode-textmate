@@ -270,4 +270,4 @@ export interface StackElement {
 
 export const INITIAL: StackElement = StackElementImpl.NULL;
 
-export const parseRawGrammar: (content: string, filePath: string) => IRawGrammar = grammarReader.parseRawGrammar;
+export const parseRawGrammar: (content: string, filePath?: string) => IRawGrammar = grammarReader.parseRawGrammar;

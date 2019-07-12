@@ -14,7 +14,7 @@ export interface ILocation {
 	readonly char: number;
 }
 
-export function parse(source: string, filename: string, withMetadata: boolean): any {
+export function parse(source: string, filename: string | null, withMetadata: boolean): any {
 	let streamState = new JSONStreamState(source);
 	let token = new JSONToken();
 	let state = JSONState.ROOT_STATE;

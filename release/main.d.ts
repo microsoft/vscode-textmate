@@ -178,4 +178,4 @@ export interface StackElement {
     equals(other: StackElement): boolean;
 }
 export declare const INITIAL: StackElement;
-export declare const parseRawGrammar: (content: string, filePath: string) => IRawGrammar;
+export declare const parseRawGrammar: (content: string, filePath?: string) => IRawGrammar;

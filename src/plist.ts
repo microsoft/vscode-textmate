@@ -24,7 +24,7 @@ const enum State {
 	ARR_STATE = 2
 }
 
-export function parseWithLocation(content: string, filename: string, locationKeyName: string): any {
+export function parseWithLocation(content: string, filename: string | null, locationKeyName: string | null): any {
 	return _parse(content, filename, locationKeyName);
 }
 
@@ -343,7 +343,7 @@ function _parse(content: string, filename: string | null, locationKeyName: strin
 				case '&apos;': return '\'';
 			}
 			return _;
-		})
+		});
 	}
 
 	interface IParsedTag {
