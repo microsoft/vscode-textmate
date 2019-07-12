@@ -12,7 +12,7 @@ npm install vscode-textmate
 
 ```javascript
 const fs = require('fs');
-const vsctm = require('./out/main');
+const vsctm = require('vscode-textmate');
 
 // Create a registry that can create a grammar from a scope name.
 const registry = new vsctm.Registry({
