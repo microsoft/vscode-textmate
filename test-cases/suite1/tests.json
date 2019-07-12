@@ -1422,5 +1422,57 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/66.plist"
+		],
+		"grammarPath": "fixtures/66.plist",
+		"desc": "Issue #66",
+		"lines": [
+			{
+				"line": "Just some text",
+				"tokens": [
+					{
+						"value": "J",
+						"scopes": [
+							"text.test",
+							"comment"
+						]
+					},
+					{
+						"value": "ust some text",
+						"scopes": [
+							"text.test",
+							"comment"
+						]
+					}
+				]
+			},
+			{
+				"line": "which contains undefined and then",
+				"tokens": [
+					{
+						"value": "which contains undefined and then",
+						"scopes": [
+							"text.test",
+							"comment"
+						]
+					}
+				]
+			},
+			{
+				"line": "more text",
+				"tokens": [
+					{
+						"value": "more text",
+						"scopes": [
+							"text.test",
+							"comment"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

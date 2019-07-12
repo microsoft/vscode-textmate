@@ -440,7 +440,7 @@ export class BeginEndRule extends Rule {
 		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
-		this._end = new RegExpSource(end, -1);
+		this._end = new RegExpSource(end ? end : '\uFFFF', -1);
 		this.endHasBackReferences = this._end.hasBackReferences;
 		this.endCaptures = endCaptures;
 		this.applyEndPatternLast = applyEndPatternLast || false;
