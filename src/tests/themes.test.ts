@@ -110,11 +110,15 @@ class ThemeInfo {
 
 		for (let testFile of testFiles) {
 			for (let i = 0; i < _resolvers.length; i++) {
-				let test = new ThemeTest(THEMES_TEST_PATH, testFile, _resolvers[i]);
+				let test = new ThemeTest(THEMES_TEST_PATH, testFile, _themeDatas[i], _resolvers[i]);
 				(<any>it(test.testName, () => {
-					return test.evaluate(_themeDatas[i]).then(_ => {
-						//test.writeDiffPage();
-						assert.ok(!test.hasDiff(), 'no more unpatched differences');
+					return test.evaluate().then(_ => {
+						try {
+							assert.deepEqual(test.actual, test.expected);
+						} catch(err) {
+							test.writeExpected();
+							throw err;
+						}
 					});
 				})).timeout(20000);
 			}

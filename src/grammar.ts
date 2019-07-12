@@ -137,7 +137,7 @@ function nameMatcher(identifers: string[], scopes: string[]) {
 		}
 		return false;
 	});
-};
+}
 
 function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
 	let matchers = createMatchers(selector, nameMatcher);
@@ -445,7 +445,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 			let scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
 
-			prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
+			prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
@@ -455,7 +455,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		let onigLineText = this.createOnigString(lineText);
 		let lineLength = onigLineText.content.length;
 		let lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
-		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens);
+		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
 
 		disposeOnigString(onigLineText);
 
@@ -536,12 +536,9 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			let contentName = captureRule.getContentName(lineTextContent, captureIndices);
 			let contentNameScopesList = nameScopesList.push(grammar, contentName);
 
-			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
 			let onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
-			_tokenizeString(grammar,
-				onigSubStr,
-				(isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens
-			);
+			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
 			disposeOnigString(onigSubStr);
 			continue;
 		}
@@ -753,16 +750,19 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 
-function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): StackElement {
+function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens, checkWhileConditions: boolean): StackElement {
 	const lineLength = lineText.content.length;
 
 	let STOP = false;
+	let anchorPosition = -1;
 
-	let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
-	stack = whileCheckResult.stack;
-	linePos = whileCheckResult.linePos;
-	isFirstLine = whileCheckResult.isFirstLine;
-	let anchorPosition = whileCheckResult.anchorPosition;
+	if (checkWhileConditions) {
+		let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+		stack = whileCheckResult.stack;
+		linePos = whileCheckResult.linePos;
+		isFirstLine = whileCheckResult.isFirstLine;
+		anchorPosition = whileCheckResult.anchorPosition;
+	}
 
 	while (!STOP) {
 		scanNext(); // potentially modifies linePos && anchorPosition
@@ -806,6 +806,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// pop
 			let popped = stack;
 			stack = stack.pop();
+			anchorPosition = popped.getAnchorPos();
 
 			if (!hasAdvanced && popped.getEnterPos() === linePos) {
 				// Grammar pushed & popped a rule without advancing
@@ -829,7 +830,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// push it on the stack rule
 			let scopeName = _rule.getName(lineText.content, captureIndices);
 			let nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-			stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
+			stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -1137,7 +1138,7 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
-	public static NULL = new StackElement(null, 0, 0, null, null, null);
+	public static NULL = new StackElement(null, 0, 0, 0, null, null, null);
 
 	/**
 	 * The position on the current line where this state was pushed.
@@ -1145,6 +1146,13 @@ export class StackElement implements StackElementDef {
 	 * Its value is meaningless across lines.
 	 */
 	private _enterPos: number;
+
+	/**
+	 * The captured anchor position when this stack element was pushed.
+	 * This is relevant only while tokenizing a line, to restore the anchor position when popping.
+	 * Its value is meaningless across lines.
+	 */
+	private _anchorPos: number;
 
 	/**
 	 * The previous state on the stack (or null for the root state).
@@ -1173,11 +1181,12 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly contentNameScopesList: ScopeListElement;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement, ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
 		this._enterPos = enterPos;
+		this._anchorPos = anchorPos;
 		this.endRule = endRule;
 		this.nameScopesList = nameScopesList;
 		this.contentNameScopesList = contentNameScopesList;
@@ -1237,6 +1246,7 @@ export class StackElement implements StackElementDef {
 	private static _reset(el: StackElement): void {
 		while (el) {
 			el._enterPos = -1;
+			el._anchorPos = -1;
 			el = el.parent;
 		}
 	}
@@ -1256,12 +1266,16 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
-		return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
+	public push(ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+		return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
 	}
 
 	public getEnterPos(): number {
 		return this._enterPos;
+	}
+
+	public getAnchorPos(): number {
+		return this._anchorPos;
 	}
 
 	public getRule(grammar: IRuleRegistry): Rule {
@@ -1288,14 +1302,14 @@ export class StackElement implements StackElementDef {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
-		return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
+		return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
 	}
 
 	public setEndRule(endRule: string): StackElement {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
+		return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {

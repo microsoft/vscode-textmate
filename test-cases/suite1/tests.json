@@ -851,7 +851,7 @@
 							"string.interpolated.makefile",
 							"meta.scope.function-call.makefile",
 							"string.interpolated.makefile",
-							"variable.other.makefile"
+							"variable.language.makefile"
 						]
 					},
 					{
@@ -1250,6 +1250,174 @@
 							"source.js",
 							"comment.line.double-slash.js"
 						]
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Jade22.json"
+		],
+		"grammarPath": "fixtures/Jade22.json",
+		"desc": "Issue #22",
+		"lines": [
+			{
+				"line": ".class One #[span text.] Two text.",
+				"tokens": [
+					{
+						"scopes": [
+							"text.jade",
+							"constant.language.js"
+						],
+						"value": ".class"
+					},
+					{
+						"scopes": [
+							"text.jade"
+						],
+						"value": " One "
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"entity.name.function.jade"
+						],
+						"value": "#["
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"tag.inline.jade",
+							"meta.tag.other",
+							"entity.name.tag.jade"
+						],
+						"value": "span"
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade"
+						],
+						"value": " text."
+					},
+					{
+						"scopes": [
+							"text.jade",
+							"inline.jade",
+							"entity.name.function.jade"
+						],
+						"value": "]"
+					},
+					{
+						"scopes": [
+							"text.jade"
+						],
+						"value": " Two text."
+					}
+				]
+			}
+		]
+	},
+	{
+		"grammars": [
+			"fixtures/Pug.tmLanguage"
+		],
+		"grammarPath": "fixtures/Pug.tmLanguage",
+		"desc": "Issue #82",
+		"lines": [
+			{
+				"line": "li: custom-link.has-text-primary(to=\"/\")",
+				"tokens": [
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"entity.name.tag.pug"
+						],
+						"value": "li"
+					},
+					{
+						"scopes": [
+							"text.pug"
+						],
+						"value": ": "
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"entity.name.tag.pug"
+						],
+						"value": "custom-link"
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"entity.other.attribute-name.class.pug"
+						],
+						"value": ".has-text-primary"
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"constant.name.attribute.tag.pug"
+						],
+						"value": "("
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"entity.other.attribute-name.tag.pug"
+						],
+						"value": "to"
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"attribute_value"
+						],
+						"value": "="
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"attribute_value",
+							"string.quoted.pug"
+						],
+						"value": "\""
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"attribute_value",
+							"string.quoted.pug"
+						],
+						"value": "/"
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"attribute_value",
+							"string.quoted.pug"
+						],
+						"value": "\""
+					},
+					{
+						"scopes": [
+							"text.pug",
+							"meta.tag.other",
+							"constant.name.attribute.tag.pug"
+						],
+						"value": ")"
 					}
 				]
 			}

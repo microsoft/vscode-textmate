@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "4.0.1",
+  "version": "4.2.0",
   "description": "VSCode TextMate grammar helpers",
   "author": {
     "name": "Microsoft Corporation"
@@ -26,15 +26,15 @@
     "prepublishOnly": "node scripts/release.js"
   },
   "dependencies": {
-    "oniguruma": "^7.0.0"
+    "oniguruma": "^7.2.0"
   },
   "devDependencies": {
-    "@types/mocha": "5.2.6",
-    "@types/node": "^11.9.6",
+    "@types/mocha": "5.2.7",
+    "@types/node": "^12.6.2",
     "durations": "^3.4.1",
-    "mocha": "^6.0.2",
-    "onigasm": "^2.1.0",
-    "tslint": "^5.13.1",
-    "typescript": "^3.3.3333"
+    "mocha": "^6.1.4",
+    "onigasm": "^2.2.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
   }
 }
