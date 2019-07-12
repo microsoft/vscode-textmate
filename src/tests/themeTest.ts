@@ -5,31 +5,13 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { IEmbeddedLanguagesMap, Thenable } from '../main';
-import { tokenizeWithTheme, IThemedToken, IThemedTokenScopeExplanation } from './themedTokenizer';
+import { IEmbeddedLanguagesMap } from '../main';
+import { tokenizeWithTheme, IThemedToken } from './themedTokenizer';
 import { ThemeData } from './themes.test';
 import { Resolver } from './resolver';
 
-interface IExpected {
-	[theme: string]: IExpectedTokenization[];
-}
-
-interface IExpectedPatch {
-	[theme: string]: IExpectedTokenizationPatch[];
-}
-
-export interface IExpectedTokenization {
-	content: string;
-	color: string;
-	_r: string;
-	_t: string;
-}
-
-interface IExpectedTokenizationPatch {
-	index: number;
-	content: string;
-	color: string;
-	newColor: string;
+interface IThemesTokens {
+	[theme: string]: IThemedToken[];
 }
 
 export class ThemeTest {
@@ -42,35 +24,19 @@ export class ThemeTest {
 		}
 	}
 
-	private static _readJSONFile<T>(filename: string): T {
-		try {
-			return JSON.parse(this._readFile(filename));
-		} catch (err) {
-			return null;
-		}
-	}
-
+	private readonly EXPECTED_FILE_PATH: string;
 	private readonly tests: SingleThemeTest[];
 
-	private readonly THEMES_TEST_PATH: string;
+	public readonly expected: string;
 	public readonly testName: string;
-	// private readonly contents: string;
-	// private readonly initialScopeName: string;
-	// private readonly initialLanguage: number;
-	// private readonly embeddedLanguages: IEmbeddedLanguagesMap;
-	// private readonly expected: IExpected;
-	// private readonly expectedPatch: IExpectedPatch;
+	public actual: string;
 
-	constructor(THEMES_TEST_PATH: string, testFile: string, resolver: Resolver) {
-		this.THEMES_TEST_PATH = THEMES_TEST_PATH;
+	constructor(THEMES_TEST_PATH: string, testFile: string, themeDatas: ThemeData[], resolver: Resolver) {
 		const TEST_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile);
 		const testFileContents = ThemeTest._readFile(TEST_FILE_PATH);
 
-		const EXPECTED_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile + '.result');
-		const testFileExpected = ThemeTest._readJSONFile<IExpected>(EXPECTED_FILE_PATH);
-
-		const EXPECTED_PATCH_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile + '.result.patch');
-		const testFileExpectedPatch = ThemeTest._readJSONFile<IExpectedPatch>(EXPECTED_PATCH_FILE_PATH);
+		this.EXPECTED_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile + '.result');
+		this.expected = ThemeTest._readFile(this.EXPECTED_FILE_PATH);
 
 		// Determine the language
 		let language = resolver.findLanguageByExtension(path.extname(testFile)) || resolver.findLanguageByFilename(testFile);
@@ -86,275 +52,68 @@ export class ThemeTest {
 			}
 		}
 
-		// console.log(testFileExpected);
-		// console.log(testFileExpectedPatch);
-
 		this.tests = [];
-		for (let themeName in testFileExpected) {
+		for (let themeData of themeDatas) {
 			this.tests.push(new SingleThemeTest(
-				themeName,
-				testFile,
+				themeData,
 				testFileContents,
 				grammar.scopeName,
 				resolver.language2id[language],
-				embeddedLanguages,
-				testFileExpected[themeName],
-				testFileExpectedPatch ? testFileExpectedPatch[themeName] : []
+				embeddedLanguages
 			));
 		}
 
 		this.testName = testFile + '-' + resolver.getOnigLibName();
-		// this.contents = testFileContents;
-		// this.initialScopeName = grammar.scopeName;
-		// this.initialLanguage = resolver.language2id[language];
-		// this.embeddedLanguages = embeddedLanguages;
-		// this.expected = testFileExpected;
-		// this.expectedPatch = testFileExpectedPatch;
-
-		// assertTokenizationForThemes(test, themeDatas);
 	}
 
-	public evaluate(themeDatas: ThemeData[]): Promise<any> {
-		let testsMap: { [themeName: string]: SingleThemeTest; } = {};
+	public async evaluate(): Promise<any> {
+		await Promise.all(this.tests.map(t => t.evaluate()));
+
+		let actual: IThemesTokens = {};
 		for (let i = 0; i < this.tests.length; i++) {
-			testsMap[this.tests[i].themeName] = this.tests[i];
+			actual[this.tests[i].themeData.themeName] = this.tests[i].actual;
 		}
-		return Promise.all(themeDatas.map(data => testsMap[data.themeName].evaluate(data)));
+
+		this.actual = JSON.stringify(actual, null, '\t');
 	}
 
-	private _getDiffPageData(): IDiffPageData[] {
-		return this.tests.map(t => t.getDiffPageData());
+	public writeExpected(): void {
+		fs.writeFileSync(this.EXPECTED_FILE_PATH, this.actual);
 	}
-
-	public hasDiff(): boolean {
-		for (let i = 0; i < this.tests.length; i++) {
-			let test = this.tests[i];
-			if (test.patchedDiff && test.patchedDiff.length > 0) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public writeDiffPage(): void {
-		let r = `<html><head>`;
-		r += `\n<link rel="stylesheet" type="text/css" href="../diff.css"/>`;
-		r += `\n<meta charset="utf-8">`;
-		r += `\n</head><body>`;
-		r += `\n<script>var allData = "${new Buffer(JSON.stringify(this._getDiffPageData())).toString('base64')}";</script>`;
-		r += `\n<script type="text/javascript" src="../diff.js"></script>`;
-		r += `\n</body></html>`;
-
-		fs.writeFileSync(path.join(this.THEMES_TEST_PATH, 'tests', this.testName + '.diff.html'), r);
-	}
-}
-
-interface IActualCanonicalToken {
-	content: string;
-	color: string;
-	scopes: IThemedTokenScopeExplanation[];
-}
-interface IExpectedCanonicalToken {
-	oldIndex: number;
-	content: string;
-	color: string;
-	_r: string;
-	_t: string;
-}
-interface ITokenizationDiff {
-	oldIndex: number;
-	oldToken: IExpectedTokenization;
-	newToken: IActualCanonicalToken;
-}
-
-interface IDiffPageData {
-	testContent: string;
-	themeName: string;
-	backgroundColor: string;
-	actual: IThemedToken[];
-	expected: IExpectedTokenization[];
-	diff: ITokenizationDiff[];
-	patchedExpected: IExpectedTokenization[];
-	patchedDiff: ITokenizationDiff[];
 }
 
 class SingleThemeTest {
 
-	public readonly themeName: string;
-	private readonly testName: string;
+	public readonly themeData: ThemeData;
 	private readonly contents: string;
 	private readonly initialScopeName: string;
 	private readonly initialLanguage: number;
 	private readonly embeddedLanguages: IEmbeddedLanguagesMap;
-	private readonly expected: IExpectedTokenization[];
-	private readonly patchedExpected: IExpectedTokenization[];
-	private readonly expectedPatch: IExpectedTokenizationPatch[];
 
-	private backgroundColor: string;
 	public actual: IThemedToken[];
-	public diff: ITokenizationDiff[];
-	public patchedDiff: ITokenizationDiff[];
 
 	constructor(
-		themeName: string,
-		testName: string,
+		themeData: ThemeData,
 		contents: string,
 		initialScopeName: string,
 		initialLanguage: number,
 		embeddedLanguages: IEmbeddedLanguagesMap,
-		expected: IExpectedTokenization[],
-		expectedPatch: IExpectedTokenizationPatch[],
 	) {
-		this.themeName = themeName;
-		this.testName = testName;
+		this.themeData = themeData;
 		this.contents = contents;
 		this.initialScopeName = initialScopeName;
 		this.initialLanguage = initialLanguage;
 		this.embeddedLanguages = embeddedLanguages;
-		this.expected = expected;
-		this.expectedPatch = expectedPatch;
 
-		this.patchedExpected = [];
-		let patchIndex = this.expectedPatch.length - 1;
-		for (let i = this.expected.length - 1; i >= 0; i--) {
-			let expectedElement = this.expected[i];
-			let content = expectedElement.content;
-			while (patchIndex >= 0 && i === this.expectedPatch[patchIndex].index) {
-				let patch = this.expectedPatch[patchIndex];
-
-				let patchContentIndex = content.lastIndexOf(patch.content);
-
-				let afterContent = content.substr(patchContentIndex + patch.content.length);
-				if (afterContent.length > 0) {
-					this.patchedExpected.unshift({
-						_r: expectedElement._r,
-						_t: expectedElement._t,
-						content: afterContent,
-						color: expectedElement.color
-					});
-				}
-
-				this.patchedExpected.unshift({
-					_r: expectedElement._r,
-					_t: expectedElement._t,
-					content: patch.content,
-					color: patch.newColor
-				});
-
-				content = content.substr(0, patchContentIndex);
-
-				patchIndex--;
-			}
-
-			if (content.length > 0) {
-				this.patchedExpected.unshift({
-					_r: expectedElement._r,
-					_t: expectedElement._t,
-					content: content,
-					color: expectedElement.color
-				});
-			}
-		}
-
-		this.backgroundColor = null;
 		this.actual = null;
-		this.diff = null;
-		this.patchedDiff = null;
 	}
 
-	public evaluate(themeData: ThemeData): Thenable<void> {
-		this.backgroundColor = themeData.theme.settings[0].settings.background;
-		return this._tokenizeWithThemeAsync(themeData).then(res => {
-			this.actual = res;
-			this.diff = SingleThemeTest.computeThemeTokenizationDiff(this.actual, this.expected);
-			this.patchedDiff = SingleThemeTest.computeThemeTokenizationDiff(this.actual, this.patchedExpected);
-		});
+	public async evaluate(): Promise<void> {
+		this.actual = await this._tokenizeWithThemeAsync();
 	}
 
-	public getDiffPageData(): IDiffPageData {
-		return {
-			testContent: this.contents,
-			themeName: this.themeName,
-			backgroundColor: this.backgroundColor,
-			actual: this.actual,
-			expected: this.expected,
-			diff: this.diff,
-			patchedExpected: this.patchedExpected,
-			patchedDiff: this.patchedDiff
-		};
+	private async _tokenizeWithThemeAsync(): Promise<IThemedToken[]> {
+		const grammar = await this.themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages);
+		return tokenizeWithTheme(this.themeData.registry.getColorMap(), this.contents, grammar);
 	}
-
-	private _tokenizeWithThemeAsync(themeData: ThemeData): Thenable<IThemedToken[]> {
-		return themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages).then(grammar => {
-			return tokenizeWithTheme(themeData.theme, themeData.registry.getColorMap(), this.contents, grammar);
-		});
-	}
-
-	private static computeThemeTokenizationDiff(_actual: IThemedToken[], _expected: IExpectedTokenization[]): ITokenizationDiff[] {
-		let canonicalTokens: string[] = [];
-		for (let i = 0, len = _actual.length; i < len; i++) {
-			let explanation = _actual[i].explanation;
-			for (let j = 0, lenJ = explanation.length; j < lenJ; j++) {
-				canonicalTokens.push(explanation[j].content);
-			}
-		}
-
-		let actual: IActualCanonicalToken[] = [];
-		for (let i = 0, len = _actual.length; i < len; i++) {
-			let item = _actual[i];
-
-			for (let j = 0, lenJ = item.explanation.length; j < lenJ; j++) {
-				actual.push({
-					content: item.explanation[j].content,
-					color: item.color,
-					scopes: item.explanation[j].scopes
-				});
-			}
-		}
-
-		let expected: IExpectedCanonicalToken[] = [];
-		for (let i = 0, len = _expected.length, canonicalIndex = 0; i < len; i++) {
-			let item = _expected[i];
-
-			let content = item.content;
-			while (content.length > 0) {
-				expected.push({
-					oldIndex: i,
-					content: canonicalTokens[canonicalIndex],
-					color: item.color,
-					_t: item._t,
-					_r: item._r
-				});
-				content = content.substr(canonicalTokens[canonicalIndex].length);
-				canonicalIndex++;
-			}
-		}
-
-		if (actual.length !== expected.length) {
-			throw new Error('Content mismatch');
-		}
-
-		let diffs: ITokenizationDiff[] = [];
-
-		for (let i = 0, len = actual.length; i < len; i++) {
-			let expectedItem = expected[i];
-			let actualItem = actual[i];
-
-			let contentIsInvisible = /^\s+$/.test(expectedItem.content);
-			if (contentIsInvisible) {
-				continue;
-			}
-
-			if (actualItem.color.substr(0, 7) !== expectedItem.color) {
-				diffs.push({
-					oldIndex: expectedItem.oldIndex,
-					oldToken: expectedItem,
-					newToken: actualItem
-				});
-			}
-		}
-
-		return diffs;
-	}
-
 }

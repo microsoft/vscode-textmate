@@ -2,2381 +2,1541 @@
 	"abyss": [
 		{
 			"content": "FROM",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " echo ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#22AA44",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
-			"content": "#",
-			"color": "#223355",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#223355",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#223355"
 		},
 		{
 			"content": "RUN",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "ADD",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "CMD",
-			"color": "#225588",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " [",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#22AA44",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": ", ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#22AA44",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": "] ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		}
 	],
 	"dark_vs": [
 		{
 			"content": "FROM",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " echo ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "#",
-			"color": "#608B4E",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#608B4E",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#608B4E"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "ADD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "CMD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " [",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": "] ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		}
 	],
 	"light_vs": [
 		{
 			"content": "FROM",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " echo ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "#",
-			"color": "#008000",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#008000",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#008000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "ADD",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "CMD",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " [",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ", ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": "] ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		}
 	],
 	"hc_black": [
 		{
 			"content": "FROM",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " echo ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "#",
-			"color": "#7CA668",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#7CA668",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#7CA668"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "ADD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "CMD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " [",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": "] ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		}
 	],
 	"dark_plus": [
 		{
 			"content": "FROM",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " echo ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "#",
-			"color": "#608B4E",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#608B4E",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#608B4E"
 		},
 		{
 			"content": "RUN",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "ADD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "CMD",
-			"color": "#569CD6",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " [",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#CE9178",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": "] ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		}
 	],
 	"light_plus": [
 		{
 			"content": "FROM",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " echo ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "#",
-			"color": "#008000",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#008000",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#008000"
 		},
 		{
 			"content": "RUN",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "ADD",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "CMD",
-			"color": "#0000FF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " [",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ", ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#A31515",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": "] ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		}
 	],
 	"kimbie_dark": [
 		{
 			"content": "FROM",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " echo ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#889B4A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
-			"content": "#",
-			"color": "#A57A4C",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.punctuation.definition.comment rgb(165, 122, 76)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#A57A4C",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#A57A4C"
 		},
 		{
 			"content": "RUN",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "ADD",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "CMD",
-			"color": "#8AB1B0",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.other.special-method rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": " [",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#889B4A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": ", ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#889B4A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": "] ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		}
 	],
 	"monokai": [
 		{
 			"content": "FROM",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " echo ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#E6DB74",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
-			"content": "#",
-			"color": "#75715E",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#75715E",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#75715E"
 		},
 		{
 			"content": "RUN",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "ADD",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "CMD",
-			"color": "#F92672",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " [",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#E6DB74",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": ", ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#E6DB74",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": "] ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		}
 	],
 	"monokai_dimmed": [
 		{
 			"content": "FROM",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " echo ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#9AA83A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
-			"content": "#",
-			"color": "#9A9B99",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#9A9B99",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#9A9B99"
 		},
 		{
 			"content": "RUN",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "ADD",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "CMD",
-			"color": "#676867",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " [",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#9AA83A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": ", ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#9AA83A",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": "] ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		}
 	],
 	"quietlight": [
 		{
 			"content": "FROM",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " echo ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#448C27",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
-			"content": "#",
-			"color": "#AAAAAA",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.punctuation.definition.comment rgb(170, 170, 170)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#AAAAAA",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#AAAAAA"
 		},
 		{
 			"content": "RUN",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "ADD",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "CMD",
-			"color": "#4B83CD",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " [",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#448C27",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": ", ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#448C27",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": "] ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		}
 	],
 	"red": [
 		{
 			"content": "FROM",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " echo ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#CD8D8D",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
-			"content": "#",
-			"color": "#E7C0C0",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#E7C0C0",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": "RUN",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "ADD",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "CMD",
-			"color": "#F12727",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " [",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#CD8D8D",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": ", ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#CD8D8D",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": "] ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		}
 	],
 	"solarized_dark": [
 		{
 			"content": "FROM",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " echo ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
-			"content": "#",
-			"color": "#657B83",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#657B83",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#657B83"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "ADD",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "CMD",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " [",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ", ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": "] ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		}
 	],
 	"solarized_light": [
 		{
 			"content": "FROM",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " echo ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
-			"content": "#",
-			"color": "#93A1A1",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#93A1A1",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#93A1A1"
 		},
 		{
 			"content": "RUN",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "ADD",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "CMD",
-			"color": "#859900",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " [",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ", ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#2AA198",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": "] ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		}
 	],
 	"tomorrow_night_blue": [
 		{
 			"content": "FROM",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " ubuntu",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "MAINTAINER",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " Kimbro Staken",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " apt-get install -y software-properties-common python",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " add-apt-repository ppa:chris-lea/node.js",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " echo ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
-			"color": "#D1F1A9",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": " >> /etc/apt/sources.list",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " apt-get update",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " apt-get install -y nodejs",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "#",
-			"color": "#7285B7",
-			"_t": "comment.definition.dockerfile.line.number-sign.punctuation",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
-		},
-		{
-			"content": "RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
-			"color": "#7285B7",
-			"_t": "comment.dockerfile.line.number-sign",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "#7285B7"
 		},
 		{
 			"content": "RUN",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " mkdir /var/www",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "ADD",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " app.js /var/www/app.js",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "CMD",
-			"color": "#BBDAFF",
-			"_t": "dockerfile.keyword.other.special-method",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.other.special-method rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": " [",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"/usr/bin/node\"",
-			"color": "#D1F1A9",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": ", ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"/var/www/app.js\"",
-			"color": "#D1F1A9",
-			"_t": "dockerfile.double.quoted.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": "] ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		}
 	]
 }
