@@ -1,3 +1,12 @@
+
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        define([], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        module.exports = factory();
+    }
+})(function () {
+
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
@@ -668,8 +677,8 @@ $load('./debug', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CAPTURE_METADATA = !!process.env['VSCODE_TEXTMATE_DEBUG'];
-exports.IN_DEBUG_MODE = !!process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.CAPTURE_METADATA = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
+exports.IN_DEBUG_MODE = (typeof process !== 'undefined') && process.env['VSCODE_TEXTMATE_DEBUG'];
 //# sourceMappingURL=debug.js.map
 });
 $load('./json', function(require, module, exports) {
@@ -1596,9 +1605,12 @@ $load('./rule', function(require, module, exports) {
  *--------------------------------------------------------*/
 'use strict';
 var __extends = (this && this.__extends) || (function () {
-    var extendStatics = Object.setPrototypeOf ||
-        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
     return function (d, b) {
         extendStatics(d, b);
         function __() { this.constructor = d; }
@@ -2082,7 +2094,7 @@ var RuleFactory = /** @class */ (function () {
                 if (desc.match) {
                     return new MatchRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.match, RuleFactory._compileCaptures(desc.captures, helper, repository));
                 }
-                if (!desc.begin) {
+                if (typeof desc.begin === 'undefined') {
                     if (desc.repository) {
                         repository = utils_1.mergeObjects({}, repository, desc.repository);
                     }
@@ -2557,7 +2569,7 @@ var Grammar = /** @class */ (function () {
             var rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
             var rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
             var scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
-            prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
+            prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
         }
         else {
             isFirstLine = false;
@@ -2635,7 +2647,7 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
             var contentName = captureRule.getContentName(lineTextContent, captureIndices);
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
-            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
             var onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
             _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens);
             disposeOnigString(onigSubStr);
@@ -2816,7 +2828,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
     function scanNext() {
         if (debug_1.IN_DEBUG_MODE) {
             console.log('');
-            console.log("@@scanNext " + linePos + ": |" + lineText.content.replace(/\n$/, '\\n').substr(linePos) + "|");
+            console.log("@@scanNext " + linePos + ": |" + lineText.content.substr(linePos).replace(/\n$/, '\\n') + "|");
         }
         var r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
         if (!r) {
@@ -2844,6 +2856,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             // pop
             var popped = stack;
             stack = stack.pop();
+            anchorPosition = popped.getAnchorPos();
             if (!hasAdvanced && popped.getEnterPos() === linePos) {
                 // Grammar pushed & popped a rule without advancing
                 console.error('[1] - Grammar is in an endless loop - Grammar pushed & popped a rule without advancing');
@@ -2863,7 +2876,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             // push it on the stack rule
             var scopeName = _rule.getName(lineText.content, captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-            stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
+            stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 if (debug_1.IN_DEBUG_MODE) {
@@ -3120,11 +3133,12 @@ exports.ScopeListElement = ScopeListElement;
  * Represents a "pushed" state on the stack (as a linked list element).
  */
 var StackElement = /** @class */ (function () {
-    function StackElement(parent, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
+    function StackElement(parent, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
         this.ruleId = ruleId;
         this._enterPos = enterPos;
+        this._anchorPos = anchorPos;
         this.endRule = endRule;
         this.nameScopesList = nameScopesList;
         this.contentNameScopesList = contentNameScopesList;
@@ -3174,6 +3188,7 @@ var StackElement = /** @class */ (function () {
     StackElement._reset = function (el) {
         while (el) {
             el._enterPos = -1;
+            el._anchorPos = -1;
             el = el.parent;
         }
     };
@@ -3189,11 +3204,14 @@ var StackElement = /** @class */ (function () {
         }
         return this;
     };
-    StackElement.prototype.push = function (ruleId, enterPos, endRule, nameScopesList, contentNameScopesList) {
-        return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
+    StackElement.prototype.push = function (ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
+        return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.getEnterPos = function () {
         return this._enterPos;
+    };
+    StackElement.prototype.getAnchorPos = function () {
+        return this._anchorPos;
     };
     StackElement.prototype.getRule = function (grammar) {
         return grammar.getRule(this.ruleId);
@@ -3214,18 +3232,18 @@ var StackElement = /** @class */ (function () {
         if (this.contentNameScopesList === contentNameScopesList) {
             return this;
         }
-        return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
+        return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.setEndRule = function (endRule) {
         if (this.endRule === endRule) {
             return this;
         }
-        return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
+        return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
     };
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
-    StackElement.NULL = new StackElement(null, 0, 0, null, null, null);
+    StackElement.NULL = new StackElement(null, 0, 0, 0, null, null, null);
     return StackElement;
 }());
 exports.StackElement = StackElement;
@@ -3360,8 +3378,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -3493,8 +3511,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
         while (_) try {
-            if (f = 1, y && (t = y[op[0] & 2 ? "return" : op[0] ? "throw" : "next"]) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [0, t.value];
+            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+            if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
                 case 0: case 1: t = op; break;
                 case 4: _.label++; return { value: op[1], done: false };
@@ -3561,7 +3579,7 @@ var Registry = /** @class */ (function () {
     };
     Registry.prototype._loadGrammar = function (initialScopeName, initialLanguage, embeddedLanguages, tokenTypes) {
         return __awaiter(this, void 0, void 0, function () {
-            var remainingScopeNames, seenScopeNames, scopeName, grammar, injections, deps, e_1;
+            var remainingScopeNames, seenScopeNames, scopeName, grammar, injections, deps;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -3570,37 +3588,31 @@ var Registry = /** @class */ (function () {
                         seenScopeNames[initialScopeName] = true;
                         _a.label = 1;
                     case 1:
-                        if (!(remainingScopeNames.length > 0)) return [3 /*break*/, 6];
+                        if (!(remainingScopeNames.length > 0)) return [3 /*break*/, 3];
                         scopeName = remainingScopeNames.shift();
                         if (this._syncRegistry.lookup(scopeName)) {
                             return [3 /*break*/, 1];
                         }
-                        _a.label = 2;
-                    case 2:
-                        _a.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
-                    case 3:
+                    case 2:
                         grammar = _a.sent();
                         if (!grammar) {
-                            throw new Error("No grammar provided for <" + initialScopeName);
-                        }
-                        injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
-                        deps = this._syncRegistry.addGrammar(grammar, injections);
-                        deps.forEach(function (dep) {
-                            if (!seenScopeNames[dep]) {
-                                seenScopeNames[dep] = true;
-                                remainingScopeNames.push(dep);
+                            if (scopeName === initialScopeName) {
+                                throw new Error("No grammar provided for <" + initialScopeName);
                             }
-                        });
-                        return [3 /*break*/, 5];
-                    case 4:
-                        e_1 = _a.sent();
-                        if (scopeName === initialScopeName) {
-                            throw new Error('Unable to load grammar <' + initialScopeName + '>' + e_1);
                         }
-                        return [3 /*break*/, 5];
-                    case 5: return [3 /*break*/, 1];
-                    case 6: return [2 /*return*/, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes)];
+                        else {
+                            injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
+                            deps = this._syncRegistry.addGrammar(grammar, injections);
+                            deps.forEach(function (dep) {
+                                if (!seenScopeNames[dep]) {
+                                    seenScopeNames[dep] = true;
+                                    remainingScopeNames.push(dep);
+                                }
+                            });
+                        }
+                        return [3 /*break*/, 1];
+                    case 3: return [2 /*return*/, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes)];
                 }
             });
         });
@@ -3631,5 +3643,6 @@ exports.INITIAL = grammar_1.StackElement.NULL;
 exports.parseRawGrammar = grammarReader.parseRawGrammar;
 //# sourceMappingURL=main.js.map
 });
-module.exports = $map['./main'].exports;
-//# sourceMappingURL=_suffix.js.map
+
+return $map['./main'].exports;;
+});

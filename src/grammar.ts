@@ -445,7 +445,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 			let scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
 
-			prevState = new StackElement(null, this._rootId, -1, null, scopeList, scopeList);
+			prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
@@ -536,7 +536,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			let contentName = captureRule.getContentName(lineTextContent, captureIndices);
 			let contentNameScopesList = nameScopesList.push(grammar, contentName);
 
-			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, null, nameScopesList, contentNameScopesList);
+			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
 			let onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
 			_tokenizeString(grammar,
 				onigSubStr,
@@ -810,6 +810,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// pop
 			let popped = stack;
 			stack = stack.pop();
+			anchorPosition = popped.getAnchorPos();
 
 			if (!hasAdvanced && popped.getEnterPos() === linePos) {
 				// Grammar pushed & popped a rule without advancing
@@ -833,7 +834,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// push it on the stack rule
 			let scopeName = _rule.getName(lineText.content, captureIndices);
 			let nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-			stack = stack.push(matchedRuleId, linePos, null, nameScopesList, nameScopesList);
+			stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
 				let pushedRule = <BeginEndRule>_rule;
@@ -1141,7 +1142,7 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
-	public static NULL = new StackElement(null, 0, 0, null, null, null);
+	public static NULL = new StackElement(null, 0, 0, 0, null, null, null);
 
 	/**
 	 * The position on the current line where this state was pushed.
@@ -1149,6 +1150,13 @@ export class StackElement implements StackElementDef {
 	 * Its value is meaningless across lines.
 	 */
 	private _enterPos: number;
+
+	/**
+	 * The captured anchor position when this stack element was pushed.
+	 * This is relevant only while tokenizing a line, to restore the anchor position when popping.
+	 * Its value is meaningless across lines.
+	 */
+	private _anchorPos: number;
 
 	/**
 	 * The previous state on the stack (or null for the root state).
@@ -1177,11 +1185,12 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly contentNameScopesList: ScopeListElement;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement, ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
 		this._enterPos = enterPos;
+		this._anchorPos = anchorPos;
 		this.endRule = endRule;
 		this.nameScopesList = nameScopesList;
 		this.contentNameScopesList = contentNameScopesList;
@@ -1241,6 +1250,7 @@ export class StackElement implements StackElementDef {
 	private static _reset(el: StackElement): void {
 		while (el) {
 			el._enterPos = -1;
+			el._anchorPos = -1;
 			el = el.parent;
 		}
 	}
@@ -1260,12 +1270,16 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
-		return new StackElement(this, ruleId, enterPos, endRule, nameScopesList, contentNameScopesList);
+	public push(ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+		return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
 	}
 
 	public getEnterPos(): number {
 		return this._enterPos;
+	}
+
+	public getAnchorPos(): number {
+		return this._anchorPos;
 	}
 
 	public getRule(grammar: IRuleRegistry): Rule {
@@ -1292,14 +1306,14 @@ export class StackElement implements StackElementDef {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
-		return this.parent.push(this.ruleId, this._enterPos, this.endRule, this.nameScopesList, contentNameScopesList);
+		return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
 	}
 
 	public setEndRule(endRule: string): StackElement {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this.parent, this.ruleId, this._enterPos, endRule, this.nameScopesList, this.contentNameScopesList);
+		return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {

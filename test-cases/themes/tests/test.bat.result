@@ -2,3053 +2,1941 @@
 	"abyss": [
 		{
 			"content": "@",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "echo",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " off",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "setlocal",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": "title",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "pushd",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
-			"content": "%",
-			"color": "#2277FF",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.variable.parameter rgb(34, 119, 255)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#2277FF",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.variable.parameter rgb(34, 119, 255)"
+			"content": "%~dp0",
+			"color": "#2277FF"
 		},
 		{
 			"content": "\\..",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#223355",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"color": "#223355"
 		},
 		{
 			"content": "if not exist",
-			"color": "#225588",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "call",
-			"color": "#225588",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#223355",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"color": "#223355"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": ":: Build",
-			"color": "#223355",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"color": "#223355"
 		},
 		{
 			"content": "if not exist",
-			"color": "#225588",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#223355",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"color": "#223355"
 		},
 		{
 			"content": "set",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "set",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "set",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "set",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "set",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#223355",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.comment rgb(34, 51, 85)"
+			"color": "#223355"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "popd",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": "endlocal",
-			"color": "#225588",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		}
 	],
 	"dark_vs": [
 		{
 			"content": "@",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "echo",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " off",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "setlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "title",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "pushd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "%",
-			"color": "#D4D4D4",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#D4D4D4",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "\\..",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " %~dp0\\..",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#569CD6",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "call",
-			"color": "#569CD6",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Build",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#569CD6",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "popd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "endlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		}
 	],
 	"light_vs": [
 		{
 			"content": "@",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "echo",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " off",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "setlocal",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": "title",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "pushd",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "%",
-			"color": "#000000",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#000000",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "\\..",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " %~dp0\\..",
+			"color": "#000000"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "if not exist",
-			"color": "#0000FF",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "call",
-			"color": "#0000FF",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Build",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "if not exist",
-			"color": "#0000FF",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.control rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "popd",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": "endlocal",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		}
 	],
 	"hc_black": [
 		{
 			"content": "@",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "echo",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " off",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "setlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "title",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "pushd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "%",
-			"color": "#FFFFFF",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#FFFFFF",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "\\..",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": " %~dp0\\..",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#7CA668",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"color": "#7CA668"
 		},
 		{
 			"content": "if not exist",
-			"color": "#569CD6",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "call",
-			"color": "#569CD6",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#7CA668",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"color": "#7CA668"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Build",
-			"color": "#7CA668",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"color": "#7CA668"
 		},
 		{
 			"content": "if not exist",
-			"color": "#569CD6",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.control rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#7CA668",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"color": "#7CA668"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#7CA668",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.comment rgb(124, 166, 104)"
+			"color": "#7CA668"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "popd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "endlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		}
 	],
 	"dark_plus": [
 		{
 			"content": "@",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "echo",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " off",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "setlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "title",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "pushd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "%",
-			"color": "#9CDCFE",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable.parameter rgb(156, 220, 254)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#9CDCFE",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.variable.parameter rgb(156, 220, 254)"
+			"content": "%~dp0",
+			"color": "#9CDCFE"
 		},
 		{
 			"content": "\\..",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#C586C0",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+			"color": "#C586C0"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "call",
-			"color": "#C586C0",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+			"color": "#C586C0"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Build",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#C586C0",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.control rgb(197, 134, 192)"
+			"color": "#C586C0"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "set",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#608B4E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.comment rgb(96, 139, 78)"
+			"color": "#608B4E"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "popd",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "endlocal",
-			"color": "#569CD6",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		}
 	],
 	"light_plus": [
 		{
 			"content": "@",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "echo",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " off",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "setlocal",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": "title",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "pushd",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "%",
-			"color": "#001080",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable.parameter rgb(0, 16, 128)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#001080",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.variable.parameter rgb(0, 16, 128)"
+			"content": "%~dp0",
+			"color": "#001080"
 		},
 		{
 			"content": "\\..",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "if not exist",
-			"color": "#AF00DB",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+			"color": "#AF00DB"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "call",
-			"color": "#AF00DB",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+			"color": "#AF00DB"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Build",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "if not exist",
-			"color": "#AF00DB",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.control rgb(175, 0, 219)"
+			"color": "#AF00DB"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "set",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#008000",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.comment rgb(0, 128, 0)"
+			"color": "#008000"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "popd",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": "endlocal",
-			"color": "#0000FF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		}
 	],
 	"kimbie_dark": [
 		{
 			"content": "@",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "echo",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " off",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "setlocal",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": "title",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "pushd",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
-			"content": " ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
-		},
-		{
-			"content": "%",
-			"color": "#D3AF86",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable.parameter.function rgb(211, 175, 134)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#D3AF86",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.variable.parameter.function rgb(211, 175, 134)"
-		},
-		{
-			"content": "\\..",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"content": " %~dp0\\..",
+			"color": "#D3AF86"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#A57A4C",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"color": "#A57A4C"
 		},
 		{
 			"content": "if not exist",
-			"color": "#98676A",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.control rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "call",
-			"color": "#98676A",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.control rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#A57A4C",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"color": "#A57A4C"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": ":: Build",
-			"color": "#A57A4C",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"color": "#A57A4C"
 		},
 		{
 			"content": "if not exist",
-			"color": "#98676A",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.control rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#A57A4C",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"color": "#A57A4C"
 		},
 		{
 			"content": "set",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "set",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "set",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "set",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "set",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#A57A4C",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.comment rgb(165, 122, 76)"
+			"color": "#A57A4C"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "popd",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": "endlocal",
-			"color": "#98676A",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		}
 	],
 	"monokai": [
 		{
 			"content": "@",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "echo",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " off",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "setlocal",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": "title",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "pushd",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
-			"content": "%",
-			"color": "#FD971F",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.variable.parameter rgb(253, 151, 31)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#FD971F",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.variable.parameter rgb(253, 151, 31)"
+			"content": "%~dp0",
+			"color": "#FD971F"
 		},
 		{
 			"content": "\\..",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#75715E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"color": "#75715E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#F92672",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "call",
-			"color": "#F92672",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#75715E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"color": "#75715E"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": ":: Build",
-			"color": "#75715E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"color": "#75715E"
 		},
 		{
 			"content": "if not exist",
-			"color": "#F92672",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#75715E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"color": "#75715E"
 		},
 		{
 			"content": "set",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "set",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "set",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "set",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "set",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#75715E",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.comment rgb(117, 113, 94)"
+			"color": "#75715E"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "popd",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": "endlocal",
-			"color": "#F92672",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		}
 	],
 	"monokai_dimmed": [
 		{
 			"content": "@",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "echo",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " off",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "setlocal",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "title",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "pushd",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
-			"content": "%",
-			"color": "#6089B4",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.variable.parameter rgb(96, 137, 180)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#6089B4",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.variable.parameter rgb(96, 137, 180)"
+			"content": "%~dp0",
+			"color": "#6089B4"
 		},
 		{
 			"content": "\\..",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#9A9B99",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"color": "#9A9B99"
 		},
 		{
 			"content": "if not exist",
-			"color": "#9872A2",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword.control rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "call",
-			"color": "#9872A2",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword.control rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#9A9B99",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"color": "#9A9B99"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": ":: Build",
-			"color": "#9A9B99",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"color": "#9A9B99"
 		},
 		{
 			"content": "if not exist",
-			"color": "#9872A2",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword.control rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#9A9B99",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"color": "#9A9B99"
 		},
 		{
 			"content": "set",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "set",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "set",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "set",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "set",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#9A9B99",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.comment rgb(154, 155, 153)"
+			"color": "#9A9B99"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "popd",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "endlocal",
-			"color": "#676867",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		}
 	],
 	"quietlight": [
 		{
 			"content": "@",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "echo",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " off",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "setlocal",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": "title",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "pushd",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
-			"content": "%",
-			"color": "#7A3E9D",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#7A3E9D",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.variable rgb(122, 62, 157)"
+			"content": "%~dp0",
+			"color": "#7A3E9D"
 		},
 		{
 			"content": "\\..",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#AAAAAA",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"color": "#AAAAAA"
 		},
 		{
 			"content": "if not exist",
-			"color": "#4B83CD",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "call",
-			"color": "#4B83CD",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#AAAAAA",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"color": "#AAAAAA"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": ":: Build",
-			"color": "#AAAAAA",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"color": "#AAAAAA"
 		},
 		{
 			"content": "if not exist",
-			"color": "#4B83CD",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#AAAAAA",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"color": "#AAAAAA"
 		},
 		{
 			"content": "set",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "set",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "set",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "set",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "set",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#AAAAAA",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.comment rgb(170, 170, 170)"
+			"color": "#AAAAAA"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "popd",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": "endlocal",
-			"color": "#4B83CD",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		}
 	],
 	"red": [
 		{
 			"content": "@",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "echo",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " off",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "setlocal",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "title",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "pushd",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
-			"content": "%",
-			"color": "#FB9A4B",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#FB9A4B",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.variable rgb(251, 154, 75)"
+			"content": "%~dp0",
+			"color": "#FB9A4BFF"
 		},
 		{
 			"content": "\\..",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#E7C0C0",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": "if not exist",
-			"color": "#F12727",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "call",
-			"color": "#F12727",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#E7C0C0",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": ":: Build",
-			"color": "#E7C0C0",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": "if not exist",
-			"color": "#F12727",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#E7C0C0",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": "set",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "set",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "set",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "set",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "set",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#E7C0C0",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.comment rgb(231, 192, 192)"
+			"color": "#E7C0C0FF"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "popd",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "endlocal",
-			"color": "#F12727",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		}
 	],
 	"solarized_dark": [
 		{
 			"content": "@",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "echo",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " off",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "setlocal",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "title",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "pushd",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
-			"content": " ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
-		},
-		{
-			"content": "%",
-			"color": "#93A1A1",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#93A1A1",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
-		},
-		{
-			"content": "\\..",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"content": " %~dp0\\..",
+			"color": "#93A1A1"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#657B83",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"color": "#657B83"
 		},
 		{
 			"content": "if not exist",
-			"color": "#859900",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "call",
-			"color": "#859900",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#657B83",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"color": "#657B83"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": ":: Build",
-			"color": "#657B83",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"color": "#657B83"
 		},
 		{
 			"content": "if not exist",
-			"color": "#859900",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#657B83",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"color": "#657B83"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#657B83",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.comment rgb(101, 123, 131)"
+			"color": "#657B83"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "popd",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "endlocal",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		}
 	],
 	"solarized_light": [
 		{
 			"content": "@",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "echo",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " off",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "setlocal",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "title",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "pushd",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
-			"content": " ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
-		},
-		{
-			"content": "%",
-			"color": "#586E75",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#586E75",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
-		},
-		{
-			"content": "\\..",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"content": " %~dp0\\..",
+			"color": "#586E75"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#93A1A1",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "if not exist",
-			"color": "#859900",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "call",
-			"color": "#859900",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#93A1A1",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": ":: Build",
-			"color": "#93A1A1",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "if not exist",
-			"color": "#859900",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#93A1A1",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "set",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#93A1A1",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.comment rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "popd",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "endlocal",
-			"color": "#859900",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		}
 	],
 	"tomorrow_night_blue": [
 		{
 			"content": "@",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "echo",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " off",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "setlocal",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": "title",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " VSCode Dev",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "pushd",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "%",
-			"color": "#FFC58F",
-			"_t": "begin.dosbatch.function.parameter.shell.variable",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable.parameter rgb(255, 197, 143)"
-		},
-		{
-			"content": "~dp0",
-			"color": "#FFC58F",
-			"_t": "dosbatch.function.parameter.variable",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.variable.parameter rgb(255, 197, 143)"
+			"content": "%~dp0",
+			"color": "#FFC58F"
 		},
 		{
 			"content": "\\..",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Node modules",
-			"color": "#7285B7",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"color": "#7285B7"
 		},
 		{
 			"content": "if not exist",
-			"color": "#EBBBFF",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " node_modules ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "call",
-			"color": "#EBBBFF",
-			"_t": "control.dosbatch.keyword.statement",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " .\\scripts\\npm.bat install",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Get electron",
-			"color": "#7285B7",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"color": "#7285B7"
 		},
 		{
 			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Build",
-			"color": "#7285B7",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"color": "#7285B7"
 		},
 		{
 			"content": "if not exist",
-			"color": "#EBBBFF",
-			"_t": "conditional.control.dosbatch.if.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Configuration",
-			"color": "#7285B7",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"color": "#7285B7"
 		},
 		{
 			"content": "set",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " NODE_ENV=development",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " VSCODE_DEV=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_LOGGING=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "set",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": ":: Launch Code",
-			"color": "#7285B7",
-			"_t": "colons.comment.dosbatch.line",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.comment rgb(114, 133, 183)"
+			"color": "#7285B7"
 		},
 		{
 			"content": ".\\.build\\electron\\electron.exe . %*",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "popd",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": "endlocal",
-			"color": "#EBBBFF",
-			"_t": "command.dosbatch.keyword",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		}
 	]
 }

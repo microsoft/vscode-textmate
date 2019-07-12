@@ -2,4397 +2,2597 @@
 	"abyss": [
 		{
 			"content": "use",
-			"color": "#225588",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " std",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "::",
-			"color": "#225588",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": "io;",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "fn",
-			"color": "#225588",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "main",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "() {",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "    ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "println!",
-			"color": "#9966B8",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+			"color": "#9966B8"
 		},
 		{
 			"content": "(",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#22AA44",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": ");",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "    ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "println!",
-			"color": "#9966B8",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+			"color": "#9966B8"
 		},
 		{
 			"content": "(",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#22AA44",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": ");",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "    ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "let",
-			"color": "#225588",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "mut",
-			"color": "#225588",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " guess ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "=",
-			"color": "#225588",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": " ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
-			"content": "String",
-			"color": "#225588",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage rgb(34, 85, 136)"
-		},
-		{
-			"content": "::",
-			"color": "#225588",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"content": "String::",
+			"color": "#225588"
 		},
 		{
 			"content": "new",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "();",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "    io",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "::",
-			"color": "#225588",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
+			"color": "#225588"
 		},
 		{
 			"content": "stdin",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "().",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "read_line",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "(",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
-			"content": "&",
-			"color": "#225588",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.keyword rgb(34, 85, 136)"
-		},
-		{
-			"content": "mut",
-			"color": "#225588",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.storage rgb(34, 85, 136)"
+			"content": "&mut",
+			"color": "#225588"
 		},
 		{
 			"content": " guess)",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "        .",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "ok",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "()",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "        .",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "expect",
-			"color": "#DDBB88",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.entity.name.function rgb(221, 187, 136)"
+			"color": "#DDBB88"
 		},
 		{
 			"content": "(",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#22AA44",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": ");",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "    ",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "println!",
-			"color": "#9966B8",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.support.function rgb(153, 102, 184)"
+			"color": "#9966B8"
 		},
 		{
 			"content": "(",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#22AA44",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token.string rgb(34, 170, 68)"
+			"color": "#22AA44"
 		},
 		{
 			"content": ", guess);",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		},
 		{
 			"content": "}",
-			"color": "#6688CC",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-abyss-themes-Abyss-tmTheme .token rgb(102, 136, 204)"
+			"color": "#6688CC"
 		}
 	],
 	"dark_vs": [
 		{
 			"content": "use",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " std",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
-		},
-		{
-			"content": "io;",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " std::io;",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "fn",
-			"color": "#569CD6",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " main() {",
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "main",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "() {",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "println!",
-			"color": "#D4D4D4",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": "    println!(",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "println!",
-			"color": "#D4D4D4",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": "    println!(",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "let",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " guess ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "=",
-			"color": "#D4D4D4",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
-		},
-		{
-			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " guess = ",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "String",
-			"color": "#569CD6",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+			"content": "::new();",
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "new",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "();",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "    io",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
-		},
-		{
-			"content": "stdin",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "().",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "read_line",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "&",
-			"color": "#D4D4D4",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.keyword.operator rgb(212, 212, 212)"
+			"content": "    io::stdin().read_line(&",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " guess)",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "        .",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": "        .ok()",
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "ok",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "()",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "        .",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "expect",
-			"color": "#D4D4D4",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": "        .expect(",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "println!",
-			"color": "#D4D4D4",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": "    println!(",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_vs-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", guess);",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "}",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		}
 	],
 	"light_vs": [
 		{
 			"content": "use",
-			"color": "#0000FF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " std",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
-		},
-		{
-			"content": "io;",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " std::io;",
+			"color": "#000000"
 		},
 		{
 			"content": "fn",
-			"color": "#0000FF",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " main() {",
+			"color": "#000000"
 		},
 		{
-			"content": "main",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "() {",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "println!",
-			"color": "#000000",
-			"_t": "function.rust.std.support",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": "    println!(",
+			"color": "#000000"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "println!",
-			"color": "#000000",
-			"_t": "function.rust.std.support",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": "    println!(",
+			"color": "#000000"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "let",
-			"color": "#0000FF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "mut",
-			"color": "#0000FF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage.modifier rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " guess ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "=",
-			"color": "#000000",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
-		},
-		{
-			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " guess = ",
+			"color": "#000000"
 		},
 		{
 			"content": "String",
-			"color": "#0000FF",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+			"content": "::new();",
+			"color": "#000000"
 		},
 		{
-			"content": "new",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "();",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "    io",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
-		},
-		{
-			"content": "stdin",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "().",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "read_line",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "&",
-			"color": "#000000",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.keyword.operator rgb(0, 0, 0)"
+			"content": "    io::stdin().read_line(&",
+			"color": "#000000"
 		},
 		{
 			"content": "mut",
-			"color": "#0000FF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.storage.modifier rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " guess)",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "        .",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": "        .ok()",
+			"color": "#000000"
 		},
 		{
-			"content": "ok",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "()",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "        .",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "expect",
-			"color": "#000000",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": "        .expect(",
+			"color": "#000000"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "println!",
-			"color": "#000000",
-			"_t": "function.rust.std.support",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": "    println!(",
+			"color": "#000000"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_vs-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ", guess);",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "}",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		}
 	],
 	"hc_black": [
 		{
 			"content": "use",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " std",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "io;",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "fn",
-			"color": "#569CD6",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": " main() {",
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "main",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "() {",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "println!",
-			"color": "#FFFFFF",
-			"_t": "function.rust.std.support",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "    println!(",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "println!",
-			"color": "#FFFFFF",
-			"_t": "function.rust.std.support",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "    println!(",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "let",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " guess ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "=",
-			"color": "#D4D4D4",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "String",
-			"color": "#569CD6",
-			"_t": "class.rust.std.storage",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "new",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "();",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "new();",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    io",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "stdin",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "().",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "read_line",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "stdin().read_line(",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "&",
-			"color": "#D4D4D4",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " guess)",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "        .",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "        .ok()",
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "ok",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "()",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "        .",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "expect",
-			"color": "#FFFFFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "        .expect(",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
-			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "println!",
-			"color": "#FFFFFF",
-			"_t": "function.rust.std.support",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
-		},
-		{
-			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"content": "    println!(",
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".hc-black.vscode-theme-defaults-themes-hc_black-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", guess);",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "}",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".hc-black .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		}
 	],
 	"dark_plus": [
 		{
 			"content": "use",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " std",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
-		},
-		{
-			"content": "io;",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " std::io;",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "fn",
-			"color": "#569CD6",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "main",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "() {",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "println!",
-			"color": "#DCDCAA",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "println!",
-			"color": "#DCDCAA",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "let",
-			"color": "#569CD6",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
-			"content": " guess ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "=",
-			"color": "#D4D4D4",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
-		},
-		{
-			"content": " ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"content": " guess = ",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "String",
-			"color": "#569CD6",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "new",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "();",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
-			"content": "    io",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "::",
-			"color": "#D4D4D4",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+			"content": "    io::",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "stdin",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "().",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "read_line",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
-			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
-		},
-		{
-			"content": "&",
-			"color": "#D4D4D4",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.keyword.operator rgb(212, 212, 212)"
+			"content": "(&",
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "mut",
-			"color": "#569CD6",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.storage.modifier rgb(86, 156, 214)"
+			"color": "#569CD6"
 		},
 		{
 			"content": " guess)",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "        .",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "ok",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "()",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "        .",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "expect",
-			"color": "#DCDCAA",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.entity.name.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ");",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "    ",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "println!",
-			"color": "#DCDCAA",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.support.function rgb(220, 220, 170)"
+			"color": "#DCDCAA"
 		},
 		{
 			"content": "(",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#CE9178",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-defaults-themes-dark_plus-json .token.string rgb(206, 145, 120)"
+			"color": "#CE9178"
 		},
 		{
 			"content": ", guess);",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		},
 		{
 			"content": "}",
-			"color": "#D4D4D4",
-			"_t": "",
-			"_r": ".vs-dark .token rgb(212, 212, 212)"
+			"color": "#D4D4D4"
 		}
 	],
 	"light_plus": [
 		{
 			"content": "use",
-			"color": "#0000FF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " std",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
-		},
-		{
-			"content": "io;",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " std::io;",
+			"color": "#000000"
 		},
 		{
 			"content": "fn",
-			"color": "#0000FF",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "main",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "() {",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "println!",
-			"color": "#795E26",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "println!",
-			"color": "#795E26",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "let",
-			"color": "#0000FF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "mut",
-			"color": "#0000FF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage.modifier rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
-			"content": " guess ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "=",
-			"color": "#000000",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
-		},
-		{
-			"content": " ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"content": " guess = ",
+			"color": "#000000"
 		},
 		{
 			"content": "String",
-			"color": "#0000FF",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "new",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "();",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
-			"content": "    io",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "::",
-			"color": "#000000",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+			"content": "    io::",
+			"color": "#000000"
 		},
 		{
 			"content": "stdin",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "().",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "read_line",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
-			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
-		},
-		{
-			"content": "&",
-			"color": "#000000",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.keyword.operator rgb(0, 0, 0)"
+			"content": "(&",
+			"color": "#000000"
 		},
 		{
 			"content": "mut",
-			"color": "#0000FF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.storage.modifier rgb(0, 0, 255)"
+			"color": "#0000FF"
 		},
 		{
 			"content": " guess)",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "        .",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "ok",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "()",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "        .",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "expect",
-			"color": "#795E26",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.entity.name.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ");",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "    ",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "println!",
-			"color": "#795E26",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.support.function rgb(121, 94, 38)"
+			"color": "#795E26"
 		},
 		{
 			"content": "(",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#A31515",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-defaults-themes-light_plus-json .token.string rgb(163, 21, 21)"
+			"color": "#A31515"
 		},
 		{
 			"content": ", guess);",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		},
 		{
 			"content": "}",
-			"color": "#000000",
-			"_t": "",
-			"_r": ".vs .token rgb(0, 0, 0)"
+			"color": "#000000"
 		}
 	],
 	"kimbie_dark": [
 		{
 			"content": "use",
-			"color": "#98676A",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
-			"content": " std",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
-		},
-		{
-			"content": "::",
-			"color": "#D3AF86",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
-		},
-		{
-			"content": "io;",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"content": " std::io;",
+			"color": "#D3AF86"
 		},
 		{
 			"content": "fn",
-			"color": "#98676A",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "main",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": "() {",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "    ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "println!",
-			"color": "#7E602C",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+			"color": "#7E602C"
 		},
 		{
 			"content": "(",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#889B4A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": ");",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "    ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "println!",
-			"color": "#7E602C",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+			"color": "#7E602C"
 		},
 		{
 			"content": "(",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#889B4A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": ");",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "    ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "let",
-			"color": "#98676A",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "mut",
-			"color": "#98676A",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
-			"content": " guess ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
-		},
-		{
-			"content": "=",
-			"color": "#D3AF86",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
-		},
-		{
-			"content": " ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"content": " guess = ",
+			"color": "#D3AF86"
 		},
 		{
 			"content": "String",
-			"color": "#98676A",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": "::",
-			"color": "#D3AF86",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "new",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": "();",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
-			"content": "    io",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
-		},
-		{
-			"content": "::",
-			"color": "#D3AF86",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+			"content": "    io::",
+			"color": "#D3AF86"
 		},
 		{
 			"content": "stdin",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": "().",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "read_line",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
-			"content": "(",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
-		},
-		{
-			"content": "&",
-			"color": "#D3AF86",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.keyword.operator rgb(211, 175, 134)"
+			"content": "(&",
+			"color": "#D3AF86"
 		},
 		{
 			"content": "mut",
-			"color": "#98676A",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.storage rgb(152, 103, 106)"
+			"color": "#98676A"
 		},
 		{
 			"content": " guess)",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "        .",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "ok",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": "()",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "        .",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "expect",
-			"color": "#8AB1B0",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.entity.name.function rgb(138, 177, 176)"
+			"color": "#8AB1B0"
 		},
 		{
 			"content": "(",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#889B4A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": ");",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "    ",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "println!",
-			"color": "#7E602C",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.support.function rgb(126, 96, 44)"
+			"color": "#7E602C"
 		},
 		{
 			"content": "(",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#889B4A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token.string rgb(136, 155, 74)"
+			"color": "#889B4A"
 		},
 		{
 			"content": ", guess);",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		},
 		{
 			"content": "}",
-			"color": "#D3AF86",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-kimbie-dark-themes-Kimbie_dark-tmTheme .token rgb(211, 175, 134)"
+			"color": "#D3AF86"
 		}
 	],
 	"monokai": [
 		{
 			"content": "use",
-			"color": "#F92672",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " std",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "::",
-			"color": "#F92672",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": "io;",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "fn",
-			"color": "#F92672",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "main",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "() {",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "println!",
-			"color": "#66D9EF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+			"color": "#66D9EF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#E6DB74",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "println!",
-			"color": "#66D9EF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+			"color": "#66D9EF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#E6DB74",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "let",
-			"color": "#F92672",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "mut",
-			"color": "#F92672",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " guess ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "=",
-			"color": "#F92672",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
-			"content": "String",
-			"color": "#F92672",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage rgb(249, 38, 114)"
-		},
-		{
-			"content": "::",
-			"color": "#F92672",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"content": "String::",
+			"color": "#F92672"
 		},
 		{
 			"content": "new",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "();",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "    io",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "::",
-			"color": "#F92672",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
+			"color": "#F92672"
 		},
 		{
 			"content": "stdin",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "().",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "read_line",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
-			"content": "&",
-			"color": "#F92672",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.keyword rgb(249, 38, 114)"
-		},
-		{
-			"content": "mut",
-			"color": "#F92672",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.storage rgb(249, 38, 114)"
+			"content": "&mut",
+			"color": "#F92672"
 		},
 		{
 			"content": " guess)",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "        .",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "ok",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "()",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "        .",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "expect",
-			"color": "#A6E22E",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.entity.name.function rgb(166, 226, 46)"
+			"color": "#A6E22E"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#E6DB74",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "println!",
-			"color": "#66D9EF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.support.function rgb(102, 217, 239)"
+			"color": "#66D9EF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#E6DB74",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token.string rgb(230, 219, 116)"
+			"color": "#E6DB74"
 		},
 		{
 			"content": ", guess);",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		},
 		{
 			"content": "}",
-			"color": "#F8F8F2",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-themes-Monokai-tmTheme .token rgb(248, 248, 242)"
+			"color": "#F8F8F2"
 		}
 	],
 	"monokai_dimmed": [
 		{
 			"content": "use",
-			"color": "#676867",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " std",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "::",
-			"color": "#676867",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "io;",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "fn",
-			"color": "#676867",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "main",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "() {",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "    ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "println!",
-			"color": "#9872A2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": "(",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#9AA83A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": ");",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "    ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "println!",
-			"color": "#9872A2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": "(",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#9AA83A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": ");",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "    ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "let",
-			"color": "#676867",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "mut",
-			"color": "#9872A2",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": " guess ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "=",
-			"color": "#676867",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": " ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "String",
-			"color": "#9872A2",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": "::",
-			"color": "#676867",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "new",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "();",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "    io",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "::",
-			"color": "#676867",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "stdin",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "().",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "read_line",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "(",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "&",
-			"color": "#676867",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.keyword rgb(103, 104, 103)"
+			"color": "#676867"
 		},
 		{
 			"content": "mut",
-			"color": "#9872A2",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.storage rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": " guess)",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "        .",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "ok",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "()",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "        .",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "expect",
-			"color": "#CE6700",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.entity.name.function rgb(206, 103, 0)"
+			"color": "#CE6700"
 		},
 		{
 			"content": "(",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#9AA83A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": ");",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "    ",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "println!",
-			"color": "#9872A2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.support.function rgb(152, 114, 162)"
+			"color": "#9872A2"
 		},
 		{
 			"content": "(",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#9AA83A",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token.string rgb(154, 168, 58)"
+			"color": "#9AA83A"
 		},
 		{
 			"content": ", guess);",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		},
 		{
 			"content": "}",
-			"color": "#C5C8C6",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-monokai-dimmed-themes-dimmed-monokai-tmTheme .token rgb(197, 200, 198)"
+			"color": "#C5C8C6"
 		}
 	],
 	"quietlight": [
 		{
 			"content": "use",
-			"color": "#4B83CD",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " std",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "::",
-			"color": "#777777",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+			"color": "#777777"
 		},
 		{
 			"content": "io;",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "fn",
-			"color": "#4B83CD",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "main",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "() {",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "    ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "println!",
-			"color": "#AA3731",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "(",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#448C27",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": ");",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "    ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "println!",
-			"color": "#AA3731",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "(",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#448C27",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": ");",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "    ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "let",
-			"color": "#4B83CD",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "mut",
-			"color": "#4B83CD",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " guess ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "=",
-			"color": "#777777",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+			"color": "#777777"
 		},
 		{
 			"content": " ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "String",
-			"color": "#4B83CD",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": "::",
-			"color": "#777777",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+			"color": "#777777"
 		},
 		{
 			"content": "new",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "();",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "    io",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "::",
-			"color": "#777777",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+			"color": "#777777"
 		},
 		{
 			"content": "stdin",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "().",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "read_line",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "(",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "&",
-			"color": "#777777",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.keyword.operator rgb(119, 119, 119)"
+			"color": "#777777"
 		},
 		{
 			"content": "mut",
-			"color": "#4B83CD",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.storage rgb(75, 131, 205)"
+			"color": "#4B83CD"
 		},
 		{
 			"content": " guess)",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "        .",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "ok",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "()",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "        .",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "expect",
-			"color": "#AA3731",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.entity.name.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "(",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#448C27",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": ");",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "    ",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "println!",
-			"color": "#AA3731",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.support.function rgb(170, 55, 49)"
+			"color": "#AA3731"
 		},
 		{
 			"content": "(",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#448C27",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token.string rgb(68, 140, 39)"
+			"color": "#448C27"
 		},
 		{
 			"content": ", guess);",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		},
 		{
 			"content": "}",
-			"color": "#333333",
-			"_t": "",
-			"_r": ".vs.vscode-theme-quietlight-themes-QuietLight-tmTheme .token rgb(51, 51, 51)"
+			"color": "#333333"
 		}
 	],
 	"red": [
 		{
 			"content": "use",
-			"color": "#F12727",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " std",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "::",
-			"color": "#F12727",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "io;",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "fn",
-			"color": "#F12727",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "main",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "() {",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "println!",
-			"color": "#FFB454",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+			"color": "#FFB454FF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#CD8D8D",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "println!",
-			"color": "#FFB454",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+			"color": "#FFB454FF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#CD8D8D",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "let",
-			"color": "#F12727",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "mut",
-			"color": "#FF6262",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+			"color": "#FF6262FF"
 		},
 		{
 			"content": " guess ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "=",
-			"color": "#F12727",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": " ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "String",
-			"color": "#FF6262",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+			"color": "#FF6262FF"
 		},
 		{
 			"content": "::",
-			"color": "#F12727",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "new",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "();",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "    io",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "::",
-			"color": "#F12727",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "stdin",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "().",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "read_line",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "&",
-			"color": "#F12727",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.keyword rgb(241, 39, 39)"
+			"color": "#F12727FF"
 		},
 		{
 			"content": "mut",
-			"color": "#FF6262",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.storage rgb(255, 98, 98)"
+			"color": "#FF6262FF"
 		},
 		{
 			"content": " guess)",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "        .",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "ok",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "()",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "        .",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "expect",
-			"color": "#FEC758",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.entity rgb(254, 199, 88)"
+			"color": "#FEC758FF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#CD8D8D",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": ");",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "    ",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "println!",
-			"color": "#FFB454",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.support.function rgb(255, 180, 84)"
+			"color": "#FFB454FF"
 		},
 		{
 			"content": "(",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#CD8D8D",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token.string rgb(205, 141, 141)"
+			"color": "#CD8D8DFF"
 		},
 		{
 			"content": ", guess);",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		},
 		{
 			"content": "}",
-			"color": "#F8F8F8",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-red-themes-red-tmTheme .token rgb(248, 248, 248)"
+			"color": "#F8F8F8"
 		}
 	],
 	"solarized_dark": [
 		{
 			"content": "use",
-			"color": "#859900",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " std",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "io;",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "fn",
-			"color": "#859900",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "main",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "() {",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "    ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "    ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "    ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "let",
-			"color": "#859900",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "mut",
-			"color": "#93A1A1",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": " guess ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "=",
-			"color": "#859900",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "String",
-			"color": "#93A1A1",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "new",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "();",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "    io",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "stdin",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "().",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "read_line",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "&",
-			"color": "#859900",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "mut",
-			"color": "#93A1A1",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.storage rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": " guess)",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "        .",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "ok",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "()",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "        .",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "expect",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "    ",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ", guess);",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		},
 		{
 			"content": "}",
-			"color": "#93A1A1",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-solarized-dark-themes-Solarized-dark-tmTheme .token rgb(147, 161, 161)"
+			"color": "#93A1A1"
 		}
 	],
 	"solarized_light": [
 		{
 			"content": "use",
-			"color": "#859900",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " std",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "io;",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "fn",
-			"color": "#859900",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "main",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "() {",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "    ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "    ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "    ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "let",
-			"color": "#859900",
-			"_t": "keyword.other.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "mut",
-			"color": "#073642",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+			"color": "#073642"
 		},
 		{
 			"content": " guess ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "=",
-			"color": "#859900",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": " ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "String",
-			"color": "#073642",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+			"color": "#073642"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "new",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "();",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "    io",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "::",
-			"color": "#859900",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "stdin",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "().",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "read_line",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "&",
-			"color": "#859900",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.keyword rgb(133, 153, 0)"
+			"color": "#859900"
 		},
 		{
 			"content": "mut",
-			"color": "#073642",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.storage rgb(7, 54, 66)"
+			"color": "#073642"
 		},
 		{
 			"content": " guess)",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "        .",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "ok",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "()",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "        .",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "expect",
-			"color": "#268BD2",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.entity.name.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ");",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "    ",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "println!",
-			"color": "#268BD2",
-			"_t": "function.rust.std.support",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.support.function rgb(38, 139, 210)"
+			"color": "#268BD2"
 		},
 		{
 			"content": "(",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#2AA198",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token.string rgb(42, 161, 152)"
+			"color": "#2AA198"
 		},
 		{
 			"content": ", guess);",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		},
 		{
 			"content": "}",
-			"color": "#586E75",
-			"_t": "",
-			"_r": ".vs.vscode-theme-solarized-light-themes-Solarized-light-tmTheme .token rgb(88, 110, 117)"
+			"color": "#586E75"
 		}
 	],
 	"tomorrow_night_blue": [
 		{
 			"content": "use",
-			"color": "#EBBBFF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " std",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "::",
-			"color": "#99FFFF",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+			"color": "#99FFFF"
 		},
 		{
 			"content": "io;",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "fn",
-			"color": "#EBBBFF",
-			"_t": "fn.keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "main",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "() {",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "println!",
-			"color": "#BBDAFF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Guess the number!\"",
-			"color": "#D1F1A9",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "println!",
-			"color": "#BBDAFF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Please input your guess.\"",
-			"color": "#D1F1A9",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "let",
-			"color": "#EBBBFF",
-			"_t": "keyword.other.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "mut",
-			"color": "#EBBBFF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " guess ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "=",
-			"color": "#99FFFF",
-			"_t": "assignment.keyword.operator.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+			"color": "#99FFFF"
 		},
 		{
 			"content": " ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "String",
-			"color": "#EBBBFF",
-			"_t": "class.rust.std.storage",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": "::",
-			"color": "#99FFFF",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+			"color": "#99FFFF"
 		},
 		{
 			"content": "new",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "();",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    io",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "::",
-			"color": "#99FFFF",
-			"_t": "keyword.misc.operator.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+			"color": "#99FFFF"
 		},
 		{
 			"content": "stdin",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "().",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "read_line",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "&",
-			"color": "#99FFFF",
-			"_t": "keyword.operator.rust.sigil",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.keyword.operator rgb(153, 255, 255)"
+			"color": "#99FFFF"
 		},
 		{
 			"content": "mut",
-			"color": "#EBBBFF",
-			"_t": "modifier.mut.rust.storage",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.storage rgb(235, 187, 255)"
+			"color": "#EBBBFF"
 		},
 		{
 			"content": " guess)",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "        .",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "ok",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "()",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "        .",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "expect",
-			"color": "#BBDAFF",
-			"_t": "entity.function.name.rust",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.entity.name.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"Failed to read line\"",
-			"color": "#D1F1A9",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": ");",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "    ",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "println!",
-			"color": "#BBDAFF",
-			"_t": "function.rust.std.support",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.support.function rgb(187, 218, 255)"
+			"color": "#BBDAFF"
 		},
 		{
 			"content": "(",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "\"You guessed: {}\"",
-			"color": "#D1F1A9",
-			"_t": "double.quoted.rust.string",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token.string rgb(209, 241, 169)"
+			"color": "#D1F1A9"
 		},
 		{
 			"content": ", guess);",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		},
 		{
 			"content": "}",
-			"color": "#FFFFFF",
-			"_t": "",
-			"_r": ".vs-dark.vscode-theme-tomorrow-night-blue-themes-Tomorrow-Night-Blue-tmTheme .token rgb(255, 255, 255)"
+			"color": "#FFFFFF"
 		}
 	]
 }
