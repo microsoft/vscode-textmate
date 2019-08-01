@@ -401,7 +401,7 @@
 				</dict>
 			</dict>
 			<key>comment</key>
-			<string>the method pattern comes from the symbol pattern, see there for a explaination</string>
+			<string>the method pattern comes from the symbol pattern, see there for a explanation</string>
 			<key>end</key>
 			<string>\)</string>
 			<key>endCaptures</key>
@@ -621,7 +621,7 @@
 		</dict>
 		<dict>
 			<key>comment</key>
-			<string>Needs higher precidence than regular expressions.</string>
+			<string>Needs higher precedence than regular expressions.</string>
 			<key>match</key>
 			<string>(?&lt;!\()/=</string>
 			<key>name</key>
@@ -753,7 +753,7 @@
 			     | [\s;]unless\s
 			     | [\s;]when\s
 			     | [\s;]assert_match\s
-			     | [\s;]or\s			# boolean opperators
+			     | [\s;]or\s			# boolean operators
 			     | [\s;]and\s
 			     | [\s;]not\s
 			     | [\s.]index\s			# methods
