@@ -268,7 +268,7 @@
 							<key>match</key>
 							<string>,</string>
 							<key>name</key>
-							<string>punctuation.definition.seperator.groovy</string>
+							<string>punctuation.definition.separator.groovy</string>
 						</dict>
 					</array>
 				</dict>
@@ -752,7 +752,7 @@
 									<key>match</key>
 									<string>,</string>
 									<key>name</key>
-									<string>punctuation.definition.seperator.parameter.groovy</string>
+									<string>punctuation.definition.separator.parameter.groovy</string>
 								</dict>
 								<dict>
 									<key>include</key>
@@ -947,7 +947,7 @@
 							<key>match</key>
 							<string>:</string>
 							<key>name</key>
-							<string>keyword.operator.assert.expression-seperator.groovy</string>
+							<string>keyword.operator.assert.expression-separator.groovy</string>
 						</dict>
 						<dict>
 							<key>include</key>
@@ -1042,7 +1042,7 @@
 							<key>match</key>
 							<string>:</string>
 							<key>name</key>
-							<string>keyword.operator.ternary.expression-seperator.groovy</string>
+							<string>keyword.operator.ternary.expression-separator.groovy</string>
 						</dict>
 						<dict>
 							<key>include</key>
@@ -1127,7 +1127,7 @@
 						<key>2</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.seperator.key-value.groovy</string>
+							<string>punctuation.definition.separator.key-value.groovy</string>
 						</dict>
 					</dict>
 					<key>match</key>
@@ -1170,7 +1170,7 @@
 					<key>match</key>
 					<string>,</string>
 					<key>name</key>
-					<string>punctuation.definition.seperator.parameter.groovy</string>
+					<string>punctuation.definition.separator.parameter.groovy</string>
 				</dict>
 				<dict>
 					<key>include</key>
@@ -1309,7 +1309,7 @@
 									<key>match</key>
 									<string>,</string>
 									<key>name</key>
-									<string>punctuation.definition.seperator.groovy</string>
+									<string>punctuation.definition.separator.groovy</string>
 								</dict>
 							</array>
 						</dict>

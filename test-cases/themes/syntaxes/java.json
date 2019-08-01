@@ -266,7 +266,7 @@
 					"patterns": [
 						{
 							"match": ":",
-							"name": "keyword.operator.assert.expression-seperator.java"
+							"name": "keyword.operator.assert.expression-separator.java"
 						},
 						{
 							"include": "#code"
@@ -672,7 +672,7 @@
 			"patterns": [
 				{
 					"match": ",",
-					"name": "punctuation.definition.seperator.parameter.java"
+					"name": "punctuation.definition.separator.parameter.java"
 				},
 				{
 					"include": "#code"
