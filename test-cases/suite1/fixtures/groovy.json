@@ -844,7 +844,7 @@
         {
           "begin": "(?=<)",
           "end": "(?=\\s)",
-          "name": "meta.method.paramerised-type.groovy",
+          "name": "meta.method.parameterized-type.groovy",
           "patterns": [
             {
               "begin": "<",

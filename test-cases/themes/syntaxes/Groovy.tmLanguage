@@ -1289,7 +1289,7 @@
 					<key>end</key>
 					<string>(?=\s)</string>
 					<key>name</key>
-					<string>meta.method.paramerised-type.groovy</string>
+					<string>meta.method.parameterized-type.groovy</string>
 					<key>patterns</key>
 					<array>
 						<dict>
