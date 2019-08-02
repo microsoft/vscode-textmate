@@ -389,7 +389,7 @@
 				<key>1</key>
 				<dict>
 					<key>name</key>
-					<string>punctuation.definition.arbitrary-repitition.css</string>
+					<string>punctuation.definition.arbitrary-repetition.css</string>
 				</dict>
 			</dict>
 			<key>patterns</key>
