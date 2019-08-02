@@ -16,7 +16,7 @@ clean:
     rm *o hello
 
 define defined
-	$(info Checkng existance of $(1))
+	$(info Checkng existence of $(1))
 	$(if ifeq "$(flavor $(1))" "undefined",0,1)
 endef
 

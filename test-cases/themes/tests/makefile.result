@@ -89,7 +89,7 @@
 			"color": "#9966B8"
 		},
 		{
-			"content": " Checkng existance of $(1))",
+			"content": " Checkng existence of $(1))",
 			"color": "#22AA44"
 		},
 		{
@@ -251,7 +251,7 @@
 			"color": "#D4D4D4"
 		},
 		{
-			"content": "$(info Checkng existance of $(1))",
+			"content": "$(info Checkng existence of $(1))",
 			"color": "#CE9178"
 		},
 		{
@@ -389,7 +389,7 @@
 			"color": "#000000"
 		},
 		{
-			"content": "$(info Checkng existance of $(1))",
+			"content": "$(info Checkng existence of $(1))",
 			"color": "#A31515"
 		},
 		{
@@ -527,7 +527,7 @@
 			"color": "#FFFFFF"
 		},
 		{
-			"content": "$(info Checkng existance of $(1))",
+			"content": "$(info Checkng existence of $(1))",
 			"color": "#CE9178"
 		},
 		{
@@ -701,7 +701,7 @@
 			"color": "#DCDCAA"
 		},
 		{
-			"content": " Checkng existance of $(",
+			"content": " Checkng existence of $(",
 			"color": "#CE9178"
 		},
 		{
@@ -923,7 +923,7 @@
 			"color": "#795E26"
 		},
 		{
-			"content": " Checkng existance of $(",
+			"content": " Checkng existence of $(",
 			"color": "#A31515"
 		},
 		{
@@ -1145,7 +1145,7 @@
 			"color": "#7E602C"
 		},
 		{
-			"content": " Checkng existance of ",
+			"content": " Checkng existence of ",
 			"color": "#889B4A"
 		},
 		{
@@ -1395,7 +1395,7 @@
 			"color": "#66D9EF"
 		},
 		{
-			"content": " Checkng existance of $(1))",
+			"content": " Checkng existence of $(1))",
 			"color": "#E6DB74"
 		},
 		{
@@ -1593,7 +1593,7 @@
 			"color": "#9872A2"
 		},
 		{
-			"content": " Checkng existance of $(",
+			"content": " Checkng existence of $(",
 			"color": "#9AA83A"
 		},
 		{
@@ -1835,7 +1835,7 @@
 			"color": "#AA3731"
 		},
 		{
-			"content": " Checkng existance of ",
+			"content": " Checkng existence of ",
 			"color": "#448C27"
 		},
 		{
@@ -2089,7 +2089,7 @@
 			"color": "#FFB454FF"
 		},
 		{
-			"content": " Checkng existance of $(",
+			"content": " Checkng existence of $(",
 			"color": "#CD8D8DFF"
 		},
 		{
@@ -2311,7 +2311,7 @@
 			"color": "#268BD2"
 		},
 		{
-			"content": " Checkng existance of ",
+			"content": " Checkng existence of ",
 			"color": "#2AA198"
 		},
 		{
@@ -2565,7 +2565,7 @@
 			"color": "#268BD2"
 		},
 		{
-			"content": " Checkng existance of ",
+			"content": " Checkng existence of ",
 			"color": "#2AA198"
 		},
 		{
@@ -2819,7 +2819,7 @@
 			"color": "#BBDAFF"
 		},
 		{
-			"content": " Checkng existance of $(",
+			"content": " Checkng existence of $(",
 			"color": "#D1F1A9"
 		},
 		{
