@@ -47,7 +47,7 @@ function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawR
 			_extractIncludedScopesInPatterns(result, patterns[i].patterns);
 		}
 
-		let include = patterns[i].include;
+		const include = patterns[i].include;
 
 		if (!include) {
 			continue;
@@ -63,7 +63,7 @@ function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawR
 			continue;
 		}
 
-		let sharpIndex = include.indexOf('#');
+		const sharpIndex = include.indexOf('#');
 		if (sharpIndex >= 0) {
 			result[include.substring(0, sharpIndex)] = true;
 		} else {
@@ -77,7 +77,7 @@ function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawR
  */
 function _extractIncludedScopesInRepository(result: IScopeNameSet, repository: IRawRepository): void {
 	for (let name in repository) {
-		let rule = repository[name];
+		const rule = repository[name];
 
 		if (rule.patterns && Array.isArray(rule.patterns)) {
 			_extractIncludedScopesInPatterns(result, rule.patterns);
@@ -140,9 +140,9 @@ function nameMatcher(identifers: string[], scopes: string[]) {
 }
 
 function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
-	let matchers = createMatchers(selector, nameMatcher);
-	let ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
-	for (let matcher of matchers) {
+	const matchers = createMatchers(selector, nameMatcher);
+	const ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
+	for (const matcher of matchers) {
 		result.push({
 			matcher: matcher.matcher,
 			ruleId: ruleId,
@@ -185,10 +185,10 @@ class ScopeMetadataProvider {
 
 		if (embeddedLanguages) {
 			// If embeddedLanguages are configured, fill in `this._embeddedLanguages`
-			let scopes = Object.keys(embeddedLanguages);
+			const scopes = Object.keys(embeddedLanguages);
 			for (let i = 0, len = scopes.length; i < len; i++) {
-				let scope = scopes[i];
-				let language = embeddedLanguages[scope];
+				const scope = scopes[i];
+				const language = embeddedLanguages[scope];
 				if (typeof language !== 'number' || language === 0) {
 					console.warn('Invalid embedded language found at scope ' + scope + ': <<' + language + '>>');
 					// never hurts to be too careful
@@ -199,7 +199,7 @@ class ScopeMetadataProvider {
 		}
 
 		// create the regex
-		let escapedScopes = Object.keys(this._embeddedLanguages).map((scopeName) => ScopeMetadataProvider._escapeRegExpCharacters(scopeName));
+		const escapedScopes = Object.keys(this._embeddedLanguages).map((scopeName) => ScopeMetadataProvider._escapeRegExpCharacters(scopeName));
 		if (escapedScopes.length === 0) {
 			// no scopes registered
 			this._embeddedLanguagesRegex = null;
@@ -246,9 +246,9 @@ class ScopeMetadataProvider {
 	}
 
 	private _doGetMetadataForScope(scopeName: string): ScopeMetadata {
-		let languageId = this._scopeToLanguage(scopeName);
-		let standardTokenType = this._toStandardTokenType(scopeName);
-		let themeData = this._themeProvider.themeMatch(scopeName);
+		const languageId = this._scopeToLanguage(scopeName);
+		const standardTokenType = this._toStandardTokenType(scopeName);
+		const themeData = this._themeProvider.themeMatch(scopeName);
 
 		return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
 	}
@@ -265,13 +265,13 @@ class ScopeMetadataProvider {
 			// no scopes registered
 			return 0;
 		}
-		let m = scope.match(this._embeddedLanguagesRegex);
+		const m = scope.match(this._embeddedLanguagesRegex);
 		if (!m) {
 			// no scopes matched
 			return 0;
 		}
 
-		let language = this._embeddedLanguages[m[1]] || 0;
+		const language = this._embeddedLanguages[m[1]] || 0;
 		if (!language) {
 			return 0;
 		}
@@ -281,7 +281,7 @@ class ScopeMetadataProvider {
 
 	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
 	private _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
-		let m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
+		const m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
 			return TemporaryStandardTokenType.Other;
 		}
@@ -366,12 +366,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 			// add injection grammars contributed for the current scope
 			if (this._grammarRepository) {
-				let injectionScopeNames = this._grammarRepository.injections(this._grammar.scopeName);
+				const injectionScopeNames = this._grammarRepository.injections(this._grammar.scopeName);
 				if (injectionScopeNames) {
 					injectionScopeNames.forEach(injectionScopeName => {
-						let injectionGrammar = this.getExternalGrammar(injectionScopeName);
+						const injectionGrammar = this.getExternalGrammar(injectionScopeName);
 						if (injectionGrammar) {
-							let selector = injectionGrammar.injectionSelector;
+							const selector = injectionGrammar.injectionSelector;
 							if (selector) {
 								collectInjections(this._injections, selector, injectionGrammar, this, injectionGrammar);
 							}
@@ -385,8 +385,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	}
 
 	public registerRule<T extends Rule>(factory: (id: number) => T): T {
-		let id = (++this._lastRuleId);
-		let result = factory(id);
+		const id = (++this._lastRuleId);
+		const result = factory(id);
 		this._ruleId2desc[id] = result;
 		return result;
 	}
@@ -399,7 +399,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		if (this._includedGrammars[scopeName]) {
 			return this._includedGrammars[scopeName];
 		} else if (this._grammarRepository) {
-			let rawIncludedGrammar = this._grammarRepository.lookup(scopeName);
+			const rawIncludedGrammar = this._grammarRepository.lookup(scopeName);
 			if (rawIncludedGrammar) {
 				// console.log('LOADED GRAMMAR ' + pattern.include);
 				this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository && repository.$base);
@@ -409,7 +409,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	}
 
 	public tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult {
-		let r = this._tokenize(lineText, prevState, false);
+		const r = this._tokenize(lineText, prevState, false);
 		return {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack
@@ -417,7 +417,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	}
 
 	public tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2 {
-		let r = this._tokenize(lineText, prevState, true);
+		const r = this._tokenize(lineText, prevState, true);
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack
@@ -432,15 +432,15 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		let isFirstLine: boolean;
 		if (!prevState || prevState === StackElement.NULL) {
 			isFirstLine = true;
-			let rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
-			let defaultTheme = rawDefaultMetadata.themeData[0];
-			let defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
+			const rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
+			const defaultTheme = rawDefaultMetadata.themeData[0];
+			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
 
-			let rootScopeName = this.getRule(this._rootId).getName(null, null);
-			let rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
-			let rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
+			const rootScopeName = this.getRule(this._rootId).getName(null, null);
+			const rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
+			const rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
 
-			let scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
+			const scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
 
 			prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
 		} else {
@@ -449,10 +449,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		}
 
 		lineText = lineText + '\n';
-		let onigLineText = this.createOnigString(lineText);
-		let lineLength = onigLineText.content.length;
-		let lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
-		let nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
+		const onigLineText = this.createOnigString(lineText);
+		const lineLength = onigLineText.content.length;
+		const lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
+		const nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
 
 		disposeOnigString(onigLineText);
 
@@ -488,20 +488,20 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		return;
 	}
 
-	let lineTextContent = lineText.content;
+	const lineTextContent = lineText.content;
 
-	let len = Math.min(captures.length, captureIndices.length);
-	let localStack: LocalStackElement[] = [];
-	let maxEnd = captureIndices[0].end;
+	const len = Math.min(captures.length, captureIndices.length);
+	const localStack: LocalStackElement[] = [];
+	const maxEnd = captureIndices[0].end;
 
 	for (let i = 0; i < len; i++) {
-		let captureRule = captures[i];
+		const captureRule = captures[i];
 		if (captureRule === null) {
 			// Not interested
 			continue;
 		}
 
-		let captureIndex = captureIndices[i];
+		const captureIndex = captureIndices[i];
 
 		if (captureIndex.length === 0) {
 			// Nothing really captured
@@ -528,23 +528,23 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
-			let scopeName = captureRule.getName(lineTextContent, captureIndices);
-			let nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-			let contentName = captureRule.getContentName(lineTextContent, captureIndices);
-			let contentNameScopesList = nameScopesList.push(grammar, contentName);
+			const scopeName = captureRule.getName(lineTextContent, captureIndices);
+			const nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+			const contentName = captureRule.getContentName(lineTextContent, captureIndices);
+			const contentNameScopesList = nameScopesList.push(grammar, contentName);
 
-			let stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
-			let onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
+			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
+			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
 			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
 			disposeOnigString(onigSubStr);
 			continue;
 		}
 
-		let captureRuleScopeName = captureRule.getName(lineTextContent, captureIndices);
+		const captureRuleScopeName = captureRule.getName(lineTextContent, captureIndices);
 		if (captureRuleScopeName !== null) {
 			// push
-			let base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
-			let captureRuleScopesList = base.push(grammar, captureRuleScopeName);
+			const base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
+			const captureRuleScopesList = base.push(grammar, captureRuleScopeName);
 			localStack.push(new LocalStackElement(captureRuleScopesList, captureIndex.end));
 		}
 	}
@@ -563,7 +563,7 @@ interface IMatchInjectionsResult {
 }
 
 function debugCompiledRuleToString(ruleScanner: ICompiledRule): string {
-	let r: string[] = [];
+	const r: string[] = [];
 	for (let i = 0, len = ruleScanner.rules.length; i < len; i++) {
 		r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);
 	}
@@ -577,16 +577,16 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 	let bestMatchRuleId: number;
 	let bestMatchResultPriority: number = 0;
 
-	let scopes = stack.contentNameScopesList.generateScopes();
+	const scopes = stack.contentNameScopesList.generateScopes();
 
 	for (let i = 0, len = injections.length; i < len; i++) {
-		let injection = injections[i];
+		const injection = injections[i];
 		if (!injection.matcher(scopes)) {
 			// injection selector doesn't match stack
 			continue;
 		}
-		let ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
-		let matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+		const ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
+		const matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for injections');
 			console.log(debugCompiledRuleToString(ruleScanner));
@@ -596,7 +596,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 			continue;
 		}
 
-		let matchRating = matchResult.captureIndices[0].start;
+		const matchRating = matchResult.captureIndices[0].start;
 		if (matchRating >= bestMatchRating) {
 			// Injections are sorted by priority, so the previous injection had a better or equal priority
 			continue;
@@ -630,9 +630,9 @@ interface IMatchResult {
 }
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult {
-	let rule = stack.getRule(grammar);
-	let ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
-	let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+	const rule = stack.getRule(grammar);
+	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
+	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 	if (DebugFlags.InDebugMode) {
 		//console.log('  scanning for');
 		//console.log(debugCompiledRuleToString(ruleScanner));
@@ -652,16 +652,16 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 
 function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult {
 	// Look for normal grammar rule
-	let matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+	const matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 	// Look for injected rules
-	let injections = grammar.getInjections();
+	const injections = grammar.getInjections();
 	if (injections.length === 0) {
 		// No injections whatsoever => early return
 		return matchResult;
 	}
 
-	let injectionResult = matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+	const injectionResult = matchInjections(injections, grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 	if (!injectionResult) {
 		// No injections matched => early return
 		return matchResult;
@@ -673,8 +673,8 @@ function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLi
 	}
 
 	// Decide if `matchResult` or `injectionResult` should win
-	let matchResultScore = matchResult.captureIndices[0].start;
-	let injectionResultScore = injectionResult.captureIndices[0].start;
+	const matchResultScore = matchResult.captureIndices[0].start;
+	const injectionResultScore = injectionResult.captureIndices[0].start;
 
 	if (injectionResultScore < matchResultScore || (injectionResult.priorityMatch && injectionResultScore === matchResultScore)) {
 		// injection won!
@@ -702,9 +702,9 @@ interface IWhileCheckResult {
  */
 function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
 	let anchorPosition = -1;
-	let whileRules: IWhileStack[] = [];
+	const whileRules: IWhileStack[] = [];
 	for (let node = stack; node; node = node.pop()) {
-		let nodeRule = node.getRule(grammar);
+		const nodeRule = node.getRule(grammar);
 		if (nodeRule instanceof BeginWhileRule) {
 			whileRules.push({
 				rule: nodeRule,
@@ -714,15 +714,15 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	}
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
-		let ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
-		let r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+		const ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
+		const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for while rule');
 			console.log(debugCompiledRuleToString(ruleScanner));
 		}
 
 		if (r) {
-			let matchedRuleId = ruleScanner.rules[r.index];
+			const matchedRuleId = ruleScanner.rules[r.index];
 			if (matchedRuleId !== -2) {
 				// we shouldn't end up here
 				stack = whileRule.stack.pop();
@@ -754,7 +754,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	let anchorPosition = -1;
 
 	if (checkWhileConditions) {
-		let whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
+		const whileCheckResult = _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens);
 		stack = whileCheckResult.stack;
 		linePos = whileCheckResult.linePos;
 		isFirstLine = whileCheckResult.isFirstLine;
@@ -770,7 +770,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			console.log('');
 			console.log(`@@scanNext ${linePos}: |${lineText.content.substr(linePos).replace(/\n$/, '\\n')}|`);
 		}
-		let r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
+		const r = matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
 		if (!r) {
 			if (DebugFlags.InDebugMode) {
@@ -782,14 +782,14 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			return;
 		}
 
-		let captureIndices: IOnigCaptureIndex[] = r.captureIndices;
-		let matchedRuleId: number = r.matchedRuleId;
+		const captureIndices: IOnigCaptureIndex[] = r.captureIndices;
+		const matchedRuleId: number = r.matchedRuleId;
 
-		let hasAdvanced = (captureIndices && captureIndices.length > 0) ? (captureIndices[0].end > linePos) : false;
+		const hasAdvanced = (captureIndices && captureIndices.length > 0) ? (captureIndices[0].end > linePos) : false;
 
 		if (matchedRuleId === -1) {
 			// We matched the `end` for this rule => pop it
-			let poppedRule = <BeginEndRule>stack.getRule(grammar);
+			const poppedRule = <BeginEndRule>stack.getRule(grammar);
 
 			if (DebugFlags.InDebugMode) {
 				console.log('  popping ' + poppedRule.debugName + ' - ' + poppedRule.debugEndRegExp);
@@ -801,7 +801,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			lineTokens.produce(stack, captureIndices[0].end);
 
 			// pop
-			let popped = stack;
+			const popped = stack;
 			stack = stack.pop();
 			anchorPosition = popped.getAnchorPos();
 
@@ -821,18 +821,18 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			}
 		} else {
 			// We matched a rule!
-			let _rule = grammar.getRule(matchedRuleId);
+			const _rule = grammar.getRule(matchedRuleId);
 
 			lineTokens.produce(stack, captureIndices[0].start);
 
-			let beforePush = stack;
+			const beforePush = stack;
 			// push it on the stack rule
-			let scopeName = _rule.getName(lineText.content, captureIndices);
-			let nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+			const scopeName = _rule.getName(lineText.content, captureIndices);
+			const nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
 			stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
-				let pushedRule = <BeginEndRule>_rule;
+				const pushedRule = <BeginEndRule>_rule;
 				if (DebugFlags.InDebugMode) {
 					console.log('  pushing ' + pushedRule.debugName + ' - ' + pushedRule.debugBeginRegExp);
 				}
@@ -841,8 +841,8 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
 
-				let contentName = pushedRule.getContentName(lineText.content, captureIndices);
-				let contentNameScopesList = nameScopesList.push(grammar, contentName);
+				const contentName = pushedRule.getContentName(lineText.content, captureIndices);
+				const contentNameScopesList = nameScopesList.push(grammar, contentName);
 				stack = stack.setContentNameScopesList(contentNameScopesList);
 
 				if (pushedRule.endHasBackReferences) {
@@ -860,7 +860,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					return;
 				}
 			} else if (_rule instanceof BeginWhileRule) {
-				let pushedRule = <BeginWhileRule>_rule;
+				const pushedRule = <BeginWhileRule>_rule;
 				if (DebugFlags.InDebugMode) {
 					console.log('  pushing ' + pushedRule.debugName);
 				}
@@ -868,8 +868,8 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, pushedRule.beginCaptures, captureIndices);
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
-				let contentName = pushedRule.getContentName(lineText.content, captureIndices);
-				let contentNameScopesList = nameScopesList.push(grammar, contentName);
+				const contentName = pushedRule.getContentName(lineText.content, captureIndices);
+				const contentNameScopesList = nameScopesList.push(grammar, contentName);
 				stack = stack.setContentNameScopesList(contentNameScopesList);
 
 				if (pushedRule.whileHasBackReferences) {
@@ -887,7 +887,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					return;
 				}
 			} else {
-				let matchingRule = <MatchRule>_rule;
+				const matchingRule = <MatchRule>_rule;
 				if (DebugFlags.InDebugMode) {
 					console.log('  matched ' + matchingRule.debugName + ' - ' + matchingRule.debugMatchRegExp);
 				}
@@ -933,11 +933,11 @@ export class StackElementMetadata {
 	}
 
 	public static printMetadata(metadata: number): void {
-		let languageId = StackElementMetadata.getLanguageId(metadata);
-		let tokenType = StackElementMetadata.getTokenType(metadata);
-		let fontStyle = StackElementMetadata.getFontStyle(metadata);
-		let foreground = StackElementMetadata.getForeground(metadata);
-		let background = StackElementMetadata.getBackground(metadata);
+		const languageId = StackElementMetadata.getLanguageId(metadata);
+		const tokenType = StackElementMetadata.getTokenType(metadata);
+		const fontStyle = StackElementMetadata.getFontStyle(metadata);
+		const foreground = StackElementMetadata.getForeground(metadata);
+		const background = StackElementMetadata.getBackground(metadata);
 
 		console.log({
 			languageId: languageId,
@@ -1054,7 +1054,7 @@ export class ScopeListElement {
 			return true;
 		}
 
-		let len = parentScopes.length;
+		const len = parentScopes.length;
 		let index = 0;
 		let selector = parentScopes[index];
 		let selectorWithDot = selector + '.';
@@ -1086,7 +1086,7 @@ export class ScopeListElement {
 		if (source.themeData !== null) {
 			// Find the first themeData that matches
 			for (let i = 0, len = source.themeData.length; i < len; i++) {
-				let themeData = source.themeData[i];
+				const themeData = source.themeData[i];
 
 				if (this._matches(scopesList, themeData.parentScopes)) {
 					fontStyle = themeData.fontStyle;
@@ -1102,9 +1102,9 @@ export class ScopeListElement {
 
 	private static _push(target: ScopeListElement, grammar: Grammar, scopes: string[]): ScopeListElement {
 		for (let i = 0, len = scopes.length; i < len; i++) {
-			let scope = scopes[i];
-			let rawMetadata = grammar.getMetadataForScope(scope);
-			let metadata = ScopeListElement.mergeMetadata(target.metadata, target, rawMetadata);
+			const scope = scopes[i];
+			const rawMetadata = grammar.getMetadataForScope(scope);
+			const metadata = ScopeListElement.mergeMetadata(target.metadata, target, rawMetadata);
 			target = new ScopeListElement(target, scope, metadata);
 		}
 		return target;
@@ -1123,7 +1123,8 @@ export class ScopeListElement {
 	}
 
 	private static _generateScopes(scopesList: ScopeListElement): string[] {
-		let result: string[] = [], resultLen = 0;
+		const result: string[] = [];
+		let resultLen = 0;
 		while (scopesList) {
 			result[resultLen++] = scopesList.scope;
 			scopesList = scopesList.parent;
@@ -1298,7 +1299,7 @@ export class StackElement implements StackElementDef {
 	}
 
 	public toString(): string {
-		let r: string[] = [];
+		const r: string[] = [];
 		this._writeString(r, 0);
 		return '[' + r.join(',') + ']';
 	}
@@ -1402,7 +1403,7 @@ class LineTokens {
 			return;
 		}
 
-		let scopes = scopesList.generateScopes();
+		const scopes = scopesList.generateScopes();
 
 		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
@@ -1449,7 +1450,7 @@ class LineTokens {
 			this._binaryTokens[this._binaryTokens.length - 2] = 0;
 		}
 
-		let result = new Uint32Array(this._binaryTokens.length);
+		const result = new Uint32Array(this._binaryTokens.length);
 		for (let i = 0, len = this._binaryTokens.length; i < len; i++) {
 			result[i] = this._binaryTokens[i];
 		}
