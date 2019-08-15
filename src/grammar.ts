@@ -170,7 +170,7 @@ class ScopeMetadataProvider {
 
 	private readonly _initialLanguage: number;
 	private readonly _themeProvider: IThemeProvider;
-	private _cache: { [scopeName: string]: ScopeMetadata; };
+	private _cache: Map<string, ScopeMetadata>;
 	private _defaultMetaData: ScopeMetadata;
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp;
@@ -211,7 +211,7 @@ class ScopeMetadataProvider {
 	}
 
 	public onDidChangeTheme(): void {
-		this._cache = Object.create(null);
+		this._cache = new Map();
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
@@ -236,12 +236,12 @@ class ScopeMetadataProvider {
 		if (scopeName === null) {
 			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
 		}
-		let value = this._cache[scopeName];
+		let value = this._cache.get(scopeName);
 		if (value) {
 			return value;
 		}
 		value = this._doGetMetadataForScope(scopeName);
-		this._cache[scopeName] = value;
+		this._cache.set(scopeName, value);
 		return value;
 	}
 
