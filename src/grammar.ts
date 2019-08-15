@@ -41,13 +41,13 @@ export interface IScopeNameSet {
  * Fill in `result` all external included scopes in `patterns`
  */
 function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawRule[]): void {
-	for (let i = 0, len = patterns.length; i < len; i++) {
+	for (const pattern of patterns) {
 
-		if (Array.isArray(patterns[i].patterns)) {
-			_extractIncludedScopesInPatterns(result, patterns[i].patterns);
+		if (Array.isArray(pattern.patterns)) {
+			_extractIncludedScopesInPatterns(result, pattern.patterns);
 		}
 
-		const include = patterns[i].include;
+		const include = pattern.include;
 
 		if (!include) {
 			continue;
