@@ -605,12 +605,16 @@ export class RuleFactory {
 					if (desc.repository) {
 						repository = mergeObjects({}, repository, desc.repository);
 					}
+					let patterns = desc.patterns;
+					if (typeof patterns === 'undefined' && desc.include) {
+						patterns = [{ include: desc.include }];
+					}
 					return new IncludeOnlyRule(
 						desc.$vscodeTextmateLocation,
 						desc.id,
 						desc.name,
 						desc.contentName,
-						RuleFactory._compilePatterns(desc.patterns, helper, repository)
+						RuleFactory._compilePatterns(patterns, helper, repository)
 					);
 				}
 

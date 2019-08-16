@@ -2100,7 +2100,11 @@ var RuleFactory = /** @class */ (function () {
                     if (desc.repository) {
                         repository = utils_1.mergeObjects({}, repository, desc.repository);
                     }
-                    return new IncludeOnlyRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(desc.patterns, helper, repository));
+                    var patterns = desc.patterns;
+                    if (typeof patterns === 'undefined' && desc.include) {
+                        patterns = [{ include: desc.include }];
+                    }
+                    return new IncludeOnlyRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, RuleFactory._compilePatterns(patterns, helper, repository));
                 }
                 if (desc.while) {
                     return new BeginWhileRule(desc.$vscodeTextmateLocation, desc.id, desc.name, desc.contentName, desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository), desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository), RuleFactory._compilePatterns(desc.patterns, helper, repository));

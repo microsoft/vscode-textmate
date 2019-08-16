@@ -1,0 +1,14 @@
+{
+	"scopeName": "source.test.embedded",
+	"patterns": [{ "include": "#test" }],
+	"repository": {
+		"test": {
+			"begin": "testStart",
+			"end": "testEnd",
+			"patterns": [{ "include": "#test2" }]
+		},
+		"test2": {
+			"include": "source.test#test2"
+		}
+	}
+}

@@ -1474,5 +1474,49 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/105.grammarA.json",
+			"fixtures/105.grammarB.json"
+		],
+		"grammarPath": "fixtures/105.grammarA.json",
+		"desc": "Issue #105",
+		"lines": [
+			{
+				"line": "embedStart",
+				"tokens": [
+					{
+						"value": "embedStart",
+						"scopes": [
+							"source.test"
+						]
+					}
+				]
+			},
+			{
+				"line": "testStart",
+				"tokens": [
+					{
+						"value": "testStart",
+						"scopes": [
+							"source.test"
+						]
+					}
+				]
+			},
+			{
+				"line": "some test pattern",
+				"tokens": [
+					{
+						"value": "some test pattern",
+						"scopes": [
+							"source.test",
+							"test.name"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

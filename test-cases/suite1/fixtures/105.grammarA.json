@@ -1,0 +1,20 @@
+{
+	"scopeName": "source.test",
+	"patterns": [{ "include": "#test" }, { "include": "#embedded" }],
+	"repository": {
+		"test": {
+			"begin": "testStart",
+			"end": "testEnd",
+			"patterns": [{ "include": "#test2" }]
+		},
+		"test2": {
+			"match": "some test pattern",
+			"name": "test.name"
+		},
+		"embedded": {
+			"begin": "embedStart",
+			"end": "embedEnd",
+			"patterns": [{ "include": "source.test.embedded" }]
+		}
+	}
+}
