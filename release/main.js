@@ -2241,11 +2241,12 @@ exports.createGrammar = createGrammar;
  * Fill in `result` all external included scopes in `patterns`
  */
 function _extractIncludedScopesInPatterns(result, patterns) {
-    for (var i = 0, len = patterns.length; i < len; i++) {
-        if (Array.isArray(patterns[i].patterns)) {
-            _extractIncludedScopesInPatterns(result, patterns[i].patterns);
+    for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
+        var pattern = patterns_1[_i];
+        if (Array.isArray(pattern.patterns)) {
+            _extractIncludedScopesInPatterns(result, pattern.patterns);
         }
-        var include = patterns[i].include;
+        var include = pattern.include;
         if (!include) {
             continue;
         }
@@ -3124,7 +3125,8 @@ var ScopeListElement = /** @class */ (function () {
         return ScopeListElement._push(this, grammar, [scope]);
     };
     ScopeListElement._generateScopes = function (scopesList) {
-        var result = [], resultLen = 0;
+        var result = [];
+        var resultLen = 0;
         while (scopesList) {
             result[resultLen++] = scopesList.scope;
             scopesList = scopesList.parent;
