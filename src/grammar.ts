@@ -697,8 +697,8 @@ interface IWhileCheckResult {
 
 /**
  * Walk the stack from bottom to top, and check each while condition in this order.
- * If any fails, cut off the entire stack above the failed while condition. While conditions
- * may also advance the linePosition.
+ * For each that fails, cut off the entire stack above the highest instance of the failed
+ * while condition. While conditions may also advance the linePosition.
  */
 function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
 	let anchorPosition = -1;
@@ -739,8 +739,27 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 				}
 			}
 		} else {
+			// While condition failed, cut off stack above the highest instance.
+			for (let i = 0, len = whileRules.length; ; i++) {
+				if (i >= len) {
+					// No higher instance found, prepare to cut stack and return
+					whileRules.splice(0);
+					break;
+				}
+				if (whileRules[i].rule === whileRule.rule) {
+					// Prepare to cut the stack to this higher instance and continue while condition testing.
+					whileRule = whileRules[i];
+					whileRules.splice(0, i + 1);
+					break;
+				}
+			}
+
+			if (DebugFlags.InDebugMode) {
+				console.log('  popping ' + whileRule.rule.debugName + ' - ' + whileRule.rule.debugWhileRegExp);
+			}
+
 			stack = whileRule.stack.pop();
-			break;
+			continue;
 		}
 	}
 
