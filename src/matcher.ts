@@ -13,11 +13,11 @@ export interface Matcher<T> {
 }
 
 export function createMatchers<T>(selector: string, matchesName: (names: string[], matcherInput: T) => boolean): MatcherWithPriority<T>[] {
-	var results = <MatcherWithPriority<T>[]> [];
-	var tokenizer = newTokenizer(selector);
-	var token = tokenizer.next();
+	const results = <MatcherWithPriority<T>[]>[];
+	const tokenizer = newTokenizer(selector);
+	let token = tokenizer.next();
 	while (token !== null) {
-		let priority : -1 | 0 | 1 = 0;
+		let priority: -1 | 0 | 1 = 0;
 		if (token.length === 2 && token.charAt(1) === ':') {
 			switch (token.charAt(0)) {
 				case 'R': priority = 1; break;
@@ -38,22 +38,22 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 	}
 	return results;
 
-	function parseOperand(): Matcher<T> {
+	function parseOperand(): Matcher<T> | null {
 		if (token === '-') {
 			token = tokenizer.next();
-			var expressionToNegate = parseOperand();
-			return matcherInput => expressionToNegate && !expressionToNegate(matcherInput);
+			const expressionToNegate = parseOperand();
+			return matcherInput => !!expressionToNegate && !expressionToNegate(matcherInput);
 		}
 		if (token === '(') {
 			token = tokenizer.next();
-			var expressionInParents = parseInnerExpression();
+			const expressionInParents = parseInnerExpression();
 			if (token === ')') {
 				token = tokenizer.next();
 			}
 			return expressionInParents;
 		}
 		if (isIdentifier(token)) {
-			var identifiers: string[] = [];
+			const identifiers: string[] = [];
 			do {
 				identifiers.push(token);
 				token = tokenizer.next();
@@ -63,8 +63,8 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 		return null;
 	}
 	function parseConjunction(): Matcher<T> {
-		var matchers: Matcher<T>[] = [];
-		var matcher = parseOperand();
+		const matchers: Matcher<T>[] = [];
+		let matcher = parseOperand();
 		while (matcher) {
 			matchers.push(matcher);
 			matcher = parseOperand();
@@ -72,8 +72,8 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 		return matcherInput => matchers.every(matcher => matcher(matcherInput)); // and
 	}
 	function parseInnerExpression(): Matcher<T> {
-		var matchers: Matcher<T>[] = [];
-		var matcher = parseConjunction();
+		const matchers: Matcher<T>[] = [];
+		let matcher = parseConjunction();
 		while (matcher) {
 			matchers.push(matcher);
 			if (token === '|' || token === ',') {
@@ -89,19 +89,19 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 	}
 }
 
-function isIdentifier(token: string) {
-	return token && token.match(/[\w\.:]+/);
+function isIdentifier(token: string | null): token is string {
+	return !!token && !!token.match(/[\w\.:]+/);
 }
 
-function newTokenizer(input: string): { next: () => string } {
+function newTokenizer(input: string): { next: () => string | null } {
 	let regex = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g;
-	var match = regex.exec(input);
+	let match = regex.exec(input);
 	return {
 		next: () => {
 			if (!match) {
 				return null;
 			}
-			var res = match[0];
+			const res = match[0];
 			match = regex.exec(input);
 			return res;
 		}
