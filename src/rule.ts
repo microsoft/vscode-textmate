@@ -529,6 +529,14 @@ export class BeginWhileRule extends Rule {
 		this._cachedCompiledWhilePatterns = null;
 	}
 
+	public get debugBeginRegExp(): string {
+		return `${this._begin.source}`;
+	}
+
+	public get debugWhileRegExp(): string {
+		return `${this._while.source}`;
+	}
+
 	public getWhileWithResolvedBackReferences(lineText: string, captureIndices: IOnigCaptureIndex[]): string {
 		return this._while.resolveBackReferences(lineText, captureIndices);
 	}
