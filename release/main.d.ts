@@ -58,6 +58,7 @@ export interface IGrammarConfiguration {
 export declare class Registry {
     private readonly _locator;
     private readonly _syncRegistry;
+    private readonly _ensureGrammarCache;
     constructor(locator?: RegistryOptions);
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
@@ -81,6 +82,9 @@ export declare class Registry {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
     loadGrammar(initialScopeName: string): Thenable<IGrammar>;
+    private _doLoadSingleGrammar;
+    private _loadSingleGrammar;
+    private _collectDependenciesForDep;
     private _loadGrammar;
     /**
      * Adds a rawGrammar.

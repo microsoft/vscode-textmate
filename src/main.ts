@@ -6,7 +6,7 @@
 import { SyncRegistry } from './registry';
 import * as grammarReader from './grammarReader';
 import { Theme } from './theme';
-import { StackElement as StackElementImpl } from './grammar';
+import { StackElement as StackElementImpl, collectDependencies, ScopeDependencyCollector, collectSpecificDependencies, FullScopeDependency, PartialScopeDependency, ScopeDependency } from './grammar';
 import { IRawGrammar, IOnigLib } from './types';
 
 export * from './types';
@@ -78,10 +78,12 @@ export class Registry {
 
 	private readonly _locator: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
+	private readonly _ensureGrammarCache: Map<string, Promise<void>>;
 
 	constructor(locator: RegistryOptions = { loadGrammar: () => null }) {
 		this._locator = locator;
 		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
+		this._ensureGrammarCache = new Map<string, Promise<void>>();
 	}
 
 	/**
@@ -121,34 +123,83 @@ export class Registry {
 		return this._loadGrammar(initialScopeName, 0, null, null);
 	}
 
+	private async _doLoadSingleGrammar(scopeName: string): Promise<void> {
+		const grammar = await this._locator.loadGrammar(scopeName);
+		if (grammar) {
+			const injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
+			this._syncRegistry.addGrammar(grammar, injections);
+		}
+	}
+
+	private async _loadSingleGrammar(scopeName: string): Promise<void> {
+		if (!this._ensureGrammarCache.has(scopeName)) {
+			this._ensureGrammarCache.set(scopeName, this._doLoadSingleGrammar(scopeName));
+		}
+		return this._ensureGrammarCache.get(scopeName);
+	}
+
+	private _collectDependenciesForDep(initialScopeName: string, result: ScopeDependencyCollector, dep: FullScopeDependency | PartialScopeDependency) {
+		const grammar = this._syncRegistry.lookup(dep.scopeName);
+		if (!grammar) {
+			if (dep.scopeName === initialScopeName) {
+				throw new Error(`No grammar provided for <${initialScopeName}>`);
+			}
+			return;
+		}
+
+		if (dep instanceof FullScopeDependency) {
+			collectDependencies(result, grammar);
+		} else {
+			collectSpecificDependencies(result, grammar, dep.include);
+		}
+
+		const injections = this._syncRegistry.injections(dep.scopeName);
+		if (injections) {
+			for (const injection of injections) {
+				result.add(new FullScopeDependency(injection));
+			}
+		}
+	}
+
 	private async _loadGrammar(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap): Promise<IGrammar> {
 
-		let remainingScopeNames = [initialScopeName];
+		const seenFullScopeRequests = new Set<string>();
+		const seenPartialScopeRequests = new Set<string>();
 
-		let seenScopeNames: { [name: string]: boolean; } = {};
-		seenScopeNames[initialScopeName] = true;
+		seenFullScopeRequests.add(initialScopeName);
+		let Q: ScopeDependency[] = [new FullScopeDependency(initialScopeName)];
 
-		while (remainingScopeNames.length > 0) {
-			let scopeName = remainingScopeNames.shift();
+		while (Q.length > 0) {
+			const q = Q;
+			Q = [];
 
-			if (this._syncRegistry.lookup(scopeName)) {
-				continue;
+			await Promise.all(q.map(request => this._loadSingleGrammar(request.scopeName)));
+
+			const deps = new ScopeDependencyCollector();
+			for (const dep of q) {
+				this._collectDependenciesForDep(initialScopeName, deps, dep);
 			}
 
-			let grammar = await this._locator.loadGrammar(scopeName);
-			if (!grammar) {
-				if (scopeName === initialScopeName) {
-					throw new Error(`No grammar provided for <${initialScopeName}>`);
+			for (const dep of deps.full) {
+				if (seenFullScopeRequests.has(dep.scopeName)) {
+					// already processed
+					continue;
 				}
-			} else {
-				let injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
-				let deps = this._syncRegistry.addGrammar(grammar, injections);
-				deps.forEach((dep) => {
-					if (!seenScopeNames[dep]) {
-						seenScopeNames[dep] = true;
-						remainingScopeNames.push(dep);
-					}
-				});
+				seenFullScopeRequests.add(dep.scopeName);
+				Q.push(dep);
+			}
+
+			for (const dep of deps.partial) {
+				if (seenFullScopeRequests.has(dep.scopeName)) {
+					// already processed in full
+					continue;
+				}
+				if (seenPartialScopeRequests.has(dep.toKey())) {
+					// already processed
+					continue;
+				}
+				seenPartialScopeRequests.add(dep.toKey());
+				Q.push(dep);
 			}
 		}
 

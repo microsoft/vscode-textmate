@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { createGrammar, Grammar, collectIncludedScopes, IGrammarRepository, IScopeNameSet } from './grammar';
+import { createGrammar, Grammar, IGrammarRepository } from './grammar';
 import { IRawGrammar } from './types';
 import { Thenable } from './main';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
@@ -42,19 +42,12 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Add `grammar` to registry and return a list of referenced scope names
 	 */
-	public addGrammar(grammar: IRawGrammar, injectionScopeNames?: string[]): string[] {
+	public addGrammar(grammar: IRawGrammar, injectionScopeNames?: string[]): void {
 		this._rawGrammars[grammar.scopeName] = grammar;
-
-		let includedScopes: IScopeNameSet = {};
-		collectIncludedScopes(includedScopes, grammar);
 
 		if (injectionScopeNames) {
 			this._injectionGrammars[grammar.scopeName] = injectionScopeNames;
-			injectionScopeNames.forEach(scopeName => {
-				includedScopes[scopeName] = true;
-			});
 		}
-		return Object.keys(includedScopes);
 	}
 
 	/**

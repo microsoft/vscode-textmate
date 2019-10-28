@@ -603,8 +603,8 @@ function createMatchers(selector, matchesName) {
     function parseOperand() {
         if (token === '-') {
             token = tokenizer.next();
-            var expressionToNegate = parseOperand();
-            return function (matcherInput) { return expressionToNegate && !expressionToNegate(matcherInput); };
+            var expressionToNegate_1 = parseOperand();
+            return function (matcherInput) { return !!expressionToNegate_1 && !expressionToNegate_1(matcherInput); };
         }
         if (token === '(') {
             token = tokenizer.next();
@@ -615,12 +615,12 @@ function createMatchers(selector, matchesName) {
             return expressionInParents;
         }
         if (isIdentifier(token)) {
-            var identifiers = [];
+            var identifiers_1 = [];
             do {
-                identifiers.push(token);
+                identifiers_1.push(token);
                 token = tokenizer.next();
             } while (isIdentifier(token));
-            return function (matcherInput) { return matchesName(identifiers, matcherInput); };
+            return function (matcherInput) { return matchesName(identifiers_1, matcherInput); };
         }
         return null;
     }
@@ -653,7 +653,7 @@ function createMatchers(selector, matchesName) {
 }
 exports.createMatchers = createMatchers;
 function isIdentifier(token) {
-    return token && token.match(/[\w\.:]+/);
+    return !!token && !!token.match(/[\w\.:]+/);
 }
 function newTokenizer(input) {
     var regex = /([LR]:|[\w\.:][\w\.:\-]*|[\,\|\-\(\)])/g;
@@ -2241,14 +2241,56 @@ function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, 
     return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
 }
 exports.createGrammar = createGrammar;
+var FullScopeDependency = /** @class */ (function () {
+    function FullScopeDependency(scopeName) {
+        this.scopeName = scopeName;
+    }
+    return FullScopeDependency;
+}());
+exports.FullScopeDependency = FullScopeDependency;
+var PartialScopeDependency = /** @class */ (function () {
+    function PartialScopeDependency(scopeName, include) {
+        this.scopeName = scopeName;
+        this.include = include;
+    }
+    PartialScopeDependency.prototype.toKey = function () {
+        return this.scopeName + "#" + this.include;
+    };
+    return PartialScopeDependency;
+}());
+exports.PartialScopeDependency = PartialScopeDependency;
+var ScopeDependencyCollector = /** @class */ (function () {
+    function ScopeDependencyCollector() {
+        this.full = [];
+        this.partial = [];
+        this._seenFull = new Set();
+        this._seenPartial = new Set();
+    }
+    ScopeDependencyCollector.prototype.add = function (dep) {
+        if (dep instanceof FullScopeDependency) {
+            if (!this._seenFull.has(dep.scopeName)) {
+                this._seenFull.add(dep.scopeName);
+                this.full.push(dep);
+            }
+        }
+        else {
+            if (!this._seenPartial.has(dep.toKey())) {
+                this._seenPartial.add(dep.toKey());
+                this.partial.push(dep);
+            }
+        }
+    };
+    return ScopeDependencyCollector;
+}());
+exports.ScopeDependencyCollector = ScopeDependencyCollector;
 /**
  * Fill in `result` all external included scopes in `patterns`
  */
-function _extractIncludedScopesInPatterns(result, patterns) {
+function _extractIncludedScopesInPatterns(result, grammarScopeName, patterns) {
     for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
         var pattern = patterns_1[_i];
         if (Array.isArray(pattern.patterns)) {
-            _extractIncludedScopesInPatterns(result, pattern.patterns);
+            _extractIncludedScopesInPatterns(result, grammarScopeName, pattern.patterns);
         }
         var include = pattern.include;
         if (!include) {
@@ -2264,41 +2306,59 @@ function _extractIncludedScopesInPatterns(result, patterns) {
         }
         var sharpIndex = include.indexOf('#');
         if (sharpIndex >= 0) {
-            result[include.substring(0, sharpIndex)] = true;
+            var scopeName = include.substring(0, sharpIndex);
+            if (scopeName !== grammarScopeName) {
+                result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
+            }
         }
         else {
-            result[include] = true;
+            if (include !== grammarScopeName) {
+                result.add(new FullScopeDependency(include));
+            }
         }
     }
 }
 /**
  * Fill in `result` all external included scopes in `repository`
  */
-function _extractIncludedScopesInRepository(result, repository) {
+function _extractIncludedScopesInRepository(result, grammarScopeName, repository) {
     for (var name in repository) {
         var rule = repository[name];
         if (rule.patterns && Array.isArray(rule.patterns)) {
-            _extractIncludedScopesInPatterns(result, rule.patterns);
+            _extractIncludedScopesInPatterns(result, grammarScopeName, rule.patterns);
         }
         if (rule.repository) {
-            _extractIncludedScopesInRepository(result, rule.repository);
+            _extractIncludedScopesInRepository(result, grammarScopeName, rule.repository);
         }
     }
 }
 /**
+ * Collect a specific dependency from the grammar's repository
+ */
+function collectSpecificDependencies(result, grammar, include) {
+    if (grammar.repository && grammar.repository[include]) {
+        var rule = grammar.repository[include];
+        if (rule.patterns && Array.isArray(rule.patterns)) {
+            _extractIncludedScopesInPatterns(result, grammar.scopeName, rule.patterns);
+        }
+        if (rule.repository) {
+            _extractIncludedScopesInRepository(result, grammar.scopeName, rule.repository);
+        }
+    }
+}
+exports.collectSpecificDependencies = collectSpecificDependencies;
+/**
  * Collects the list of all external included scopes in `grammar`.
  */
-function collectIncludedScopes(result, grammar) {
+function collectDependencies(result, grammar) {
     if (grammar.patterns && Array.isArray(grammar.patterns)) {
-        _extractIncludedScopesInPatterns(result, grammar.patterns);
+        _extractIncludedScopesInPatterns(result, grammar.scopeName, grammar.patterns);
     }
     if (grammar.repository) {
-        _extractIncludedScopesInRepository(result, grammar.repository);
+        _extractIncludedScopesInRepository(result, grammar.scopeName, grammar.repository);
     }
-    // remove references to own scope (avoid recursion)
-    delete result[grammar.scopeName];
 }
-exports.collectIncludedScopes = collectIncludedScopes;
+exports.collectDependencies = collectDependencies;
 function scopesAreMatching(thisScopeName, scopeName) {
     if (!thisScopeName) {
         return false;
@@ -2381,7 +2441,7 @@ var ScopeMetadataProvider = /** @class */ (function () {
         }
     }
     ScopeMetadataProvider.prototype.onDidChangeTheme = function () {
-        this._cache = Object.create(null);
+        this._cache = new Map();
         this._defaultMetaData = new ScopeMetadata('', this._initialLanguage, 0 /* Other */, [this._themeProvider.getDefaults()]);
     };
     ScopeMetadataProvider.prototype.getDefaultMetadata = function () {
@@ -2397,12 +2457,12 @@ var ScopeMetadataProvider = /** @class */ (function () {
         if (scopeName === null) {
             return ScopeMetadataProvider._NULL_SCOPE_METADATA;
         }
-        var value = this._cache[scopeName];
+        var value = this._cache.get(scopeName);
         if (value) {
             return value;
         }
         value = this._doGetMetadataForScope(scopeName);
-        this._cache[scopeName] = value;
+        this._cache.set(scopeName, value);
         return value;
     };
     ScopeMetadataProvider.prototype._doGetMetadataForScope = function (scopeName) {
@@ -3440,15 +3500,9 @@ var SyncRegistry = /** @class */ (function () {
      */
     SyncRegistry.prototype.addGrammar = function (grammar, injectionScopeNames) {
         this._rawGrammars[grammar.scopeName] = grammar;
-        var includedScopes = {};
-        grammar_1.collectIncludedScopes(includedScopes, grammar);
         if (injectionScopeNames) {
             this._injectionGrammars[grammar.scopeName] = injectionScopeNames;
-            injectionScopeNames.forEach(function (scopeName) {
-                includedScopes[scopeName] = true;
-            });
         }
-        return Object.keys(includedScopes);
     };
     /**
      * Lookup a raw grammar.
@@ -3559,6 +3613,7 @@ var Registry = /** @class */ (function () {
         if (locator === void 0) { locator = { loadGrammar: function () { return null; } }; }
         this._locator = locator;
         this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
+        this._ensureGrammarCache = new Map();
     }
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
@@ -3592,39 +3647,100 @@ var Registry = /** @class */ (function () {
     Registry.prototype.loadGrammar = function (initialScopeName) {
         return this._loadGrammar(initialScopeName, 0, null, null);
     };
-    Registry.prototype._loadGrammar = function (initialScopeName, initialLanguage, embeddedLanguages, tokenTypes) {
+    Registry.prototype._doLoadSingleGrammar = function (scopeName) {
         return __awaiter(this, void 0, void 0, function () {
-            var remainingScopeNames, seenScopeNames, scopeName, grammar, injections, deps;
+            var grammar, injections;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        remainingScopeNames = [initialScopeName];
-                        seenScopeNames = {};
-                        seenScopeNames[initialScopeName] = true;
-                        _a.label = 1;
+                    case 0: return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
                     case 1:
-                        if (!(remainingScopeNames.length > 0)) return [3 /*break*/, 3];
-                        scopeName = remainingScopeNames.shift();
-                        if (this._syncRegistry.lookup(scopeName)) {
-                            return [3 /*break*/, 1];
-                        }
-                        return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
-                    case 2:
                         grammar = _a.sent();
-                        if (!grammar) {
-                            if (scopeName === initialScopeName) {
-                                throw new Error("No grammar provided for <" + initialScopeName + ">");
-                            }
-                        }
-                        else {
+                        if (grammar) {
                             injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
-                            deps = this._syncRegistry.addGrammar(grammar, injections);
-                            deps.forEach(function (dep) {
-                                if (!seenScopeNames[dep]) {
-                                    seenScopeNames[dep] = true;
-                                    remainingScopeNames.push(dep);
-                                }
-                            });
+                            this._syncRegistry.addGrammar(grammar, injections);
+                        }
+                        return [2 /*return*/];
+                }
+            });
+        });
+    };
+    Registry.prototype._loadSingleGrammar = function (scopeName) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                if (!this._ensureGrammarCache.has(scopeName)) {
+                    this._ensureGrammarCache.set(scopeName, this._doLoadSingleGrammar(scopeName));
+                }
+                return [2 /*return*/, this._ensureGrammarCache.get(scopeName)];
+            });
+        });
+    };
+    Registry.prototype._collectDependenciesForDep = function (initialScopeName, result, dep) {
+        var grammar = this._syncRegistry.lookup(dep.scopeName);
+        if (!grammar) {
+            if (dep.scopeName === initialScopeName) {
+                throw new Error("No grammar provided for <" + initialScopeName + ">");
+            }
+            return;
+        }
+        if (dep instanceof grammar_1.FullScopeDependency) {
+            grammar_1.collectDependencies(result, grammar);
+        }
+        else {
+            grammar_1.collectSpecificDependencies(result, grammar, dep.include);
+        }
+        var injections = this._syncRegistry.injections(dep.scopeName);
+        if (injections) {
+            for (var _i = 0, injections_1 = injections; _i < injections_1.length; _i++) {
+                var injection = injections_1[_i];
+                result.add(new grammar_1.FullScopeDependency(injection));
+            }
+        }
+    };
+    Registry.prototype._loadGrammar = function (initialScopeName, initialLanguage, embeddedLanguages, tokenTypes) {
+        return __awaiter(this, void 0, void 0, function () {
+            var seenFullScopeRequests, seenPartialScopeRequests, Q, q, deps, _i, q_1, dep, _a, _b, dep, _c, _d, dep;
+            var _this = this;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
+                    case 0:
+                        seenFullScopeRequests = new Set();
+                        seenPartialScopeRequests = new Set();
+                        seenFullScopeRequests.add(initialScopeName);
+                        Q = [new grammar_1.FullScopeDependency(initialScopeName)];
+                        _e.label = 1;
+                    case 1:
+                        if (!(Q.length > 0)) return [3 /*break*/, 3];
+                        q = Q;
+                        Q = [];
+                        return [4 /*yield*/, Promise.all(q.map(function (request) { return _this._loadSingleGrammar(request.scopeName); }))];
+                    case 2:
+                        _e.sent();
+                        deps = new grammar_1.ScopeDependencyCollector();
+                        for (_i = 0, q_1 = q; _i < q_1.length; _i++) {
+                            dep = q_1[_i];
+                            this._collectDependenciesForDep(initialScopeName, deps, dep);
+                        }
+                        for (_a = 0, _b = deps.full; _a < _b.length; _a++) {
+                            dep = _b[_a];
+                            if (seenFullScopeRequests.has(dep.scopeName)) {
+                                // already processed
+                                continue;
+                            }
+                            seenFullScopeRequests.add(dep.scopeName);
+                            Q.push(dep);
+                        }
+                        for (_c = 0, _d = deps.partial; _c < _d.length; _c++) {
+                            dep = _d[_c];
+                            if (seenFullScopeRequests.has(dep.scopeName)) {
+                                // already processed in full
+                                continue;
+                            }
+                            if (seenPartialScopeRequests.has(dep.toKey())) {
+                                // already processed
+                                continue;
+                            }
+                            seenPartialScopeRequests.add(dep.toKey());
+                            Q.push(dep);
                         }
                         return [3 /*break*/, 1];
                     case 3: return [2 /*return*/, this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes)];

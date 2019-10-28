@@ -37,14 +37,63 @@ export interface IScopeNameSet {
 	[scopeName: string]: boolean;
 }
 
+export class FullScopeDependency {
+	constructor(
+		public readonly scopeName: string
+	) { }
+}
+
+export class PartialScopeDependency {
+	constructor(
+		public readonly scopeName: string,
+		public readonly include: string
+	) { }
+
+	public toKey(): string {
+		return `${this.scopeName}#${this.include}`;
+	}
+}
+
+export type ScopeDependency = FullScopeDependency | PartialScopeDependency;
+
+export class ScopeDependencyCollector {
+
+	public readonly full: FullScopeDependency[];
+	public readonly partial: PartialScopeDependency[];
+
+	private readonly _seenFull: Set<string>;
+	private readonly _seenPartial: Set<string>;
+
+	constructor() {
+		this.full = [];
+		this.partial = [];
+		this._seenFull = new Set<string>();
+		this._seenPartial = new Set<string>();
+	}
+
+	public add(dep: ScopeDependency): void {
+		if (dep instanceof FullScopeDependency) {
+			if (!this._seenFull.has(dep.scopeName)) {
+				this._seenFull.add(dep.scopeName);
+				this.full.push(dep);
+			}
+		} else {
+			if (!this._seenPartial.has(dep.toKey())) {
+				this._seenPartial.add(dep.toKey());
+				this.partial.push(dep);
+			}
+		}
+	}
+}
+
 /**
  * Fill in `result` all external included scopes in `patterns`
  */
-function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawRule[]): void {
+function _extractIncludedScopesInPatterns(result: ScopeDependencyCollector, grammarScopeName: string, patterns: IRawRule[]): void {
 	for (const pattern of patterns) {
 
 		if (Array.isArray(pattern.patterns)) {
-			_extractIncludedScopesInPatterns(result, pattern.patterns);
+			_extractIncludedScopesInPatterns(result, grammarScopeName, pattern.patterns);
 		}
 
 		const include = pattern.include;
@@ -65,9 +114,14 @@ function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawR
 
 		const sharpIndex = include.indexOf('#');
 		if (sharpIndex >= 0) {
-			result[include.substring(0, sharpIndex)] = true;
+			const scopeName = include.substring(0, sharpIndex);
+			if (scopeName !== grammarScopeName) {
+				result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
+			}
 		} else {
-			result[include] = true;
+			if (include !== grammarScopeName) {
+				result.add(new FullScopeDependency(include));
+			}
 		}
 	}
 }
@@ -75,16 +129,33 @@ function _extractIncludedScopesInPatterns(result: IScopeNameSet, patterns: IRawR
 /**
  * Fill in `result` all external included scopes in `repository`
  */
-function _extractIncludedScopesInRepository(result: IScopeNameSet, repository: IRawRepository): void {
+function _extractIncludedScopesInRepository(result: ScopeDependencyCollector, grammarScopeName: string, repository: IRawRepository): void {
 	for (let name in repository) {
 		const rule = repository[name];
 
 		if (rule.patterns && Array.isArray(rule.patterns)) {
-			_extractIncludedScopesInPatterns(result, rule.patterns);
+			_extractIncludedScopesInPatterns(result, grammarScopeName, rule.patterns);
 		}
 
 		if (rule.repository) {
-			_extractIncludedScopesInRepository(result, rule.repository);
+			_extractIncludedScopesInRepository(result, grammarScopeName, rule.repository);
+		}
+	}
+}
+
+/**
+ * Collect a specific dependency from the grammar's repository
+ */
+export function collectSpecificDependencies(result: ScopeDependencyCollector, grammar: IRawGrammar, include: string): void {
+	if (grammar.repository && grammar.repository[include]) {
+		const rule = grammar.repository[include];
+
+		if (rule.patterns && Array.isArray(rule.patterns)) {
+			_extractIncludedScopesInPatterns(result, grammar.scopeName, rule.patterns);
+		}
+
+		if (rule.repository) {
+			_extractIncludedScopesInRepository(result, grammar.scopeName, rule.repository);
 		}
 	}
 }
@@ -92,17 +163,14 @@ function _extractIncludedScopesInRepository(result: IScopeNameSet, repository: I
 /**
  * Collects the list of all external included scopes in `grammar`.
  */
-export function collectIncludedScopes(result: IScopeNameSet, grammar: IRawGrammar): void {
+export function collectDependencies(result: ScopeDependencyCollector, grammar: IRawGrammar): void {
 	if (grammar.patterns && Array.isArray(grammar.patterns)) {
-		_extractIncludedScopesInPatterns(result, grammar.patterns);
+		_extractIncludedScopesInPatterns(result, grammar.scopeName, grammar.patterns);
 	}
 
 	if (grammar.repository) {
-		_extractIncludedScopesInRepository(result, grammar.repository);
+		_extractIncludedScopesInRepository(result, grammar.scopeName, grammar.repository);
 	}
-
-	// remove references to own scope (avoid recursion)
-	delete result[grammar.scopeName];
 }
 
 export interface Injection {
