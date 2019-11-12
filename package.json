@@ -33,7 +33,7 @@
     "@types/node": "^12.6.2",
     "durations": "^3.4.1",
     "mocha": "^6.1.4",
-    "onigasm": "^2.2.2",
+    "onigasm": "^2.2.3",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   }
