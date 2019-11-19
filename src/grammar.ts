@@ -510,7 +510,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 			const scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
 
-			prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
+			prevState = new StackElement(null, this._rootId, -1, -1, false, null, scopeList, scopeList);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
@@ -601,7 +601,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 			const contentName = captureRule.getContentName(lineTextContent, captureIndices);
 			const contentNameScopesList = nameScopesList.push(grammar, contentName);
 
-			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
+			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
 			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
 			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
 			disposeOnigString(onigSubStr);
@@ -702,10 +702,10 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 	if (DebugFlags.InDebugMode) {
-		//console.log('  scanning for');
-		//console.log(debugCompiledRuleToString(ruleScanner));
+		// console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
+		// console.log(debugCompiledRuleToString(ruleScanner));
 		if (r) {
-			console.log(`matched: ${r.captureIndices[0].start} / ${r.captureIndices[0].end}`);
+			console.log(`matched rule id: ${ruleScanner.rules[r.index]} from ${r.captureIndices[0].start} to ${r.captureIndices[0].end}`);
 		}
 	}
 
@@ -769,7 +769,7 @@ interface IWhileCheckResult {
  * may also advance the linePosition.
  */
 function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
-	let anchorPosition = -1;
+	let anchorPosition = (stack.beginRuleCapturedEOL ? 0 : -1);
 	const whileRules: IWhileStack[] = [];
 	for (let node = stack; node; node = node.pop()) {
 		const nodeRule = node.getRule(grammar);
@@ -897,7 +897,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			// push it on the stack rule
 			const scopeName = _rule.getName(lineText.content, captureIndices);
 			const nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-			stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
+			stack = stack.push(matchedRuleId, linePos, anchorPosition, captureIndices[0].end === lineLength, null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
 				const pushedRule = <BeginEndRule>_rule;
@@ -1212,7 +1212,7 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
-	public static NULL = new StackElement(null, 0, 0, 0, null, null, null);
+	public static NULL = new StackElement(null, 0, 0, 0, false, null, null, null);
 
 	/**
 	 * The position on the current line where this state was pushed.
@@ -1242,6 +1242,10 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly ruleId: number;
 	/**
+	 * The state has entered and captured \n. This means that the next line should have an anchorPosition of 0.
+	 */
+	public readonly beginRuleCapturedEOL: boolean;
+	/**
 	 * The "pop" (end) condition for this state in case that it was dynamically generated through captured text.
 	 */
 	public readonly endRule: string;
@@ -1255,12 +1259,13 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly contentNameScopesList: ScopeListElement;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement, ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
 		this._enterPos = enterPos;
 		this._anchorPos = anchorPos;
+		this.beginRuleCapturedEOL = beginRuleCapturedEOL;
 		this.endRule = endRule;
 		this.nameScopesList = nameScopesList;
 		this.contentNameScopesList = contentNameScopesList;
@@ -1340,8 +1345,8 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, anchorPos: number, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
-		return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
+	public push(ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+		return new StackElement(this, ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList);
 	}
 
 	public getEnterPos(): number {
@@ -1376,14 +1381,14 @@ export class StackElement implements StackElementDef {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
-		return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
+		return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, this.endRule, this.nameScopesList, contentNameScopesList);
 	}
 
 	public setEndRule(endRule: string): StackElement {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
+		return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, endRule, this.nameScopesList, this.contentNameScopesList);
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {

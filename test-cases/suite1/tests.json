@@ -1518,5 +1518,198 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/YAML.tmLanguage"
+		],
+		"grammarPath": "fixtures/YAML.tmLanguage",
+		"desc": "Issue #119",
+		"lines": [
+			{
+				"line": "- run:",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"punctuation.definition.block.sequence.item.yaml"
+						],
+						"value": "-"
+					},
+					{
+						"scopes": [
+							"source.yaml"
+						],
+						"value": " "
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "r"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "un"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"punctuation.separator.key-value.mapping.yaml"
+						],
+						"value": ":"
+					}
+				]
+			},
+			{
+				"line": "  command: |",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml"
+						],
+						"value": "  "
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "c"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "ommand"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"punctuation.separator.key-value.mapping.yaml"
+						],
+						"value": ":"
+					},
+					{
+						"scopes": [
+							"source.yaml"
+						],
+						"value": " "
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"keyword.control.flow.block-scalar.literal.yaml"
+						],
+						"value": "|"
+					}
+				]
+			},
+			{
+				"line": "    docker run \\",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.block.yaml"
+						],
+						"value": "    "
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.block.yaml"
+						],
+						"value": "docker run \\"
+					}
+				]
+			},
+			{
+				"line": "          sh -c \"\\",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.block.yaml"
+						],
+						"value": "          sh -c \"\\"
+					}
+				]
+			},
+			{
+				"line": "            command3",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.block.yaml"
+						],
+						"value": "            command3"
+					}
+				]
+			},
+			{
+				"line": "          \"",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.block.yaml"
+						],
+						"value": "          \""
+					}
+				]
+			},
+			{
+				"line": "- run:",
+				"tokens": [
+					{
+						"scopes": [
+							"source.yaml",
+							"punctuation.definition.block.sequence.item.yaml"
+						],
+						"value": "-"
+					},
+					{
+						"scopes": [
+							"source.yaml"
+						],
+						"value": " "
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "r"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"string.unquoted.plain.out.yaml",
+							"entity.name.tag.yaml"
+						],
+						"value": "un"
+					},
+					{
+						"scopes": [
+							"source.yaml",
+							"punctuation.separator.key-value.mapping.yaml"
+						],
+						"value": ":"
+					}
+				]
+			}
+		]
 	}
 ]

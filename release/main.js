@@ -2632,7 +2632,7 @@ var Grammar = /** @class */ (function () {
             var rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
             var rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
             var scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
-            prevState = new StackElement(null, this._rootId, -1, -1, null, scopeList, scopeList);
+            prevState = new StackElement(null, this._rootId, -1, -1, false, null, scopeList, scopeList);
         }
         else {
             isFirstLine = false;
@@ -2710,7 +2710,7 @@ function handleCaptures(grammar, lineText, isFirstLine, stack, lineTokens, captu
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
             var contentName = captureRule.getContentName(lineTextContent, captureIndices);
             var contentNameScopesList = nameScopesList.push(grammar, contentName);
-            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, null, nameScopesList, contentNameScopesList);
+            var stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
             var onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
             _tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
             disposeOnigString(onigSubStr);
@@ -2787,10 +2787,10 @@ function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPositio
     var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
     var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
     if (debug_1.DebugFlags.InDebugMode) {
-        //console.log('  scanning for');
-        //console.log(debugCompiledRuleToString(ruleScanner));
+        // console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
+        // console.log(debugCompiledRuleToString(ruleScanner));
         if (r) {
-            console.log("matched: " + r.captureIndices[0].start + " / " + r.captureIndices[0].end);
+            console.log("matched rule id: " + ruleScanner.rules[r.index] + " from " + r.captureIndices[0].start + " to " + r.captureIndices[0].end);
         }
     }
     if (r) {
@@ -2834,7 +2834,7 @@ function matchRuleOrInjections(grammar, lineText, isFirstLine, linePos, stack, a
  * may also advance the linePosition.
  */
 function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, lineTokens) {
-    var anchorPosition = -1;
+    var anchorPosition = (stack.beginRuleCapturedEOL ? 0 : -1);
     var whileRules = [];
     for (var node = stack; node; node = node.pop()) {
         var nodeRule = node.getRule(grammar);
@@ -2944,7 +2944,7 @@ function _tokenizeString(grammar, lineText, isFirstLine, linePos, stack, lineTok
             // push it on the stack rule
             var scopeName = _rule.getName(lineText.content, captureIndices);
             var nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
-            stack = stack.push(matchedRuleId, linePos, anchorPosition, null, nameScopesList, nameScopesList);
+            stack = stack.push(matchedRuleId, linePos, anchorPosition, captureIndices[0].end === lineLength, null, nameScopesList, nameScopesList);
             if (_rule instanceof rule_1.BeginEndRule) {
                 var pushedRule = _rule;
                 if (debug_1.DebugFlags.InDebugMode) {
@@ -3208,12 +3208,13 @@ exports.ScopeListElement = ScopeListElement;
  * Represents a "pushed" state on the stack (as a linked list element).
  */
 var StackElement = /** @class */ (function () {
-    function StackElement(parent, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
+    function StackElement(parent, ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList) {
         this.parent = parent;
         this.depth = (this.parent ? this.parent.depth + 1 : 1);
         this.ruleId = ruleId;
         this._enterPos = enterPos;
         this._anchorPos = anchorPos;
+        this.beginRuleCapturedEOL = beginRuleCapturedEOL;
         this.endRule = endRule;
         this.nameScopesList = nameScopesList;
         this.contentNameScopesList = contentNameScopesList;
@@ -3279,8 +3280,8 @@ var StackElement = /** @class */ (function () {
         }
         return this;
     };
-    StackElement.prototype.push = function (ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList) {
-        return new StackElement(this, ruleId, enterPos, anchorPos, endRule, nameScopesList, contentNameScopesList);
+    StackElement.prototype.push = function (ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList) {
+        return new StackElement(this, ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.getEnterPos = function () {
         return this._enterPos;
@@ -3307,18 +3308,18 @@ var StackElement = /** @class */ (function () {
         if (this.contentNameScopesList === contentNameScopesList) {
             return this;
         }
-        return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.endRule, this.nameScopesList, contentNameScopesList);
+        return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, this.endRule, this.nameScopesList, contentNameScopesList);
     };
     StackElement.prototype.setEndRule = function (endRule) {
         if (this.endRule === endRule) {
             return this;
         }
-        return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, endRule, this.nameScopesList, this.contentNameScopesList);
+        return new StackElement(this.parent, this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, endRule, this.nameScopesList, this.contentNameScopesList);
     };
     StackElement.prototype.hasSameRuleAs = function (other) {
         return this.ruleId === other.ruleId;
     };
-    StackElement.NULL = new StackElement(null, 0, 0, 0, null, null, null);
+    StackElement.NULL = new StackElement(null, 0, 0, 0, false, null, null, null);
     return StackElement;
 }());
 exports.StackElement = StackElement;
