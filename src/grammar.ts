@@ -187,7 +187,7 @@ function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
 	if (thisScopeName === scopeName) {
 		return true;
 	}
-	var len = scopeName.length;
+	const len = scopeName.length;
 	return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
 }
 
@@ -195,9 +195,9 @@ function nameMatcher(identifers: string[], scopes: string[]) {
 	if (scopes.length < identifers.length) {
 		return false;
 	}
-	var lastIndex = 0;
+	let lastIndex = 0;
 	return identifers.every(identifier => {
-		for (var i = lastIndex; i < scopes.length; i++) {
+		for (let i = lastIndex; i < scopes.length; i++) {
 			if (scopesAreMatching(scopes[i], identifier)) {
 				lastIndex = i + 1;
 				return true;
@@ -432,9 +432,9 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		if (this._injections === null) {
 			this._injections = [];
 			// add injections from the current grammar
-			var rawInjections = this._grammar.injections;
+			const rawInjections = this._grammar.injections;
 			if (rawInjections) {
-				for (var expression in rawInjections) {
+				for (let expression in rawInjections) {
 					collectInjections(this._injections, expression, rawInjections[expression], this, this._grammar);
 				}
 			}
@@ -1489,7 +1489,7 @@ class LineTokens {
 
 		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
-			for (var k = 0; k < scopes.length; k++) {
+			for (let k = 0; k < scopes.length; k++) {
 				console.log('      * ' + scopes[k]);
 			}
 		}

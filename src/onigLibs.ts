@@ -27,7 +27,7 @@ export function getOnigasm(): Promise<IOnigLib> {
 export function getOniguruma(): Promise<IOnigLib> {
 	if (!onigurumaLib) {
 		let getOnigModule : any = (function () {
-			var onigurumaModule: any = null;
+			let onigurumaModule: any = null;
 			return function () {
 				if (!onigurumaModule) {
 					onigurumaModule = require('oniguruma');
