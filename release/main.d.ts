@@ -19,16 +19,14 @@ export interface IRawTheme {
     readonly name?: string;
     readonly settings: IRawThemeSetting[];
 }
-export interface Thenable<T> extends PromiseLike<T> {
-}
 /**
  * A registry helper that can locate grammar file paths given scope names.
  */
 export interface RegistryOptions {
     theme?: IRawTheme;
-    loadGrammar(scopeName: string): Thenable<IRawGrammar | undefined | null>;
-    getInjections?(scopeName: string): string[];
-    getOnigLib?(): Thenable<IOnigLib>;
+    loadGrammar(scopeName: string): Promise<IRawGrammar | undefined | null>;
+    getInjections?(scopeName: string): string[] | undefined;
+    getOnigLib?(): Promise<IOnigLib>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -72,16 +70,16 @@ export declare class Registry {
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Thenable<IGrammar>;
+    loadGrammarWithEmbeddedLanguages(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap): Promise<IGrammar | null>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      * Please do not use language id 0.
      */
-    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Thenable<IGrammar>;
+    loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Promise<IGrammar | null>;
     /**
      * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
      */
-    loadGrammar(initialScopeName: string): Thenable<IGrammar>;
+    loadGrammar(initialScopeName: string): Promise<IGrammar | null>;
     private _doLoadSingleGrammar;
     private _loadSingleGrammar;
     private _collectDependenciesForDep;
@@ -89,11 +87,11 @@ export declare class Registry {
     /**
      * Adds a rawGrammar.
      */
-    addGrammar(rawGrammar: IRawGrammar, injections?: string[], initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap): Thenable<IGrammar>;
+    addGrammar(rawGrammar: IRawGrammar, injections?: string[], initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap | null): Promise<IGrammar>;
     /**
      * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
      */
-    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap, tokenTypes?: ITokenTypeMap): Thenable<IGrammar>;
+    grammarForScopeName(scopeName: string, initialLanguage?: number, embeddedLanguages?: IEmbeddedLanguagesMap | null, tokenTypes?: ITokenTypeMap | null): Promise<IGrammar | null>;
 }
 /**
  * A grammar
@@ -102,7 +100,7 @@ export interface IGrammar {
     /**
      * Tokenize `lineText` using previous line state `prevState`.
      */
-    tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult;
+    tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult;
     /**
      * Tokenize `lineText` using previous line state `prevState`.
      * The result contains the tokens in binary format, resolved with the following information:
@@ -113,7 +111,7 @@ export interface IGrammar {
      *  - background color
      * e.g. for getting the languageId: `(metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET`
      */
-    tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2;
+    tokenizeLine2(lineText: string, prevState: StackElement | null): ITokenizeLineResult2;
 }
 export interface ITokenizeLineResult {
     readonly tokens: IToken[];

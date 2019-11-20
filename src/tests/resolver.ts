@@ -5,7 +5,7 @@
 
 import { IRawGrammar, IOnigLib } from '../types';
 import { parseRawGrammar } from '../grammarReader';
-import { RegistryOptions, Thenable } from '../main';
+import { RegistryOptions } from '../main';
 
 import * as path from 'path';
 import * as fs from 'fs';
@@ -21,7 +21,7 @@ export interface IGrammarRegistration {
 	scopeName: string;
 	path: string;
 	embeddedLanguages: { [scopeName: string]: string; };
-	grammar?: Thenable<IRawGrammar>;
+	grammar?: Promise<IRawGrammar>;
 }
 
 export class Resolver implements RegistryOptions {
@@ -30,10 +30,10 @@ export class Resolver implements RegistryOptions {
 	private _id2language: string[];
 	private readonly _grammars: IGrammarRegistration[];
 	private readonly _languages: ILanguageRegistration[];
-	private readonly _onigLibPromise: Thenable<IOnigLib>;
+	private readonly _onigLibPromise: Promise<IOnigLib>;
 	private readonly _onigLibName: string;
 
-	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigLibPromise: Thenable<IOnigLib>, onigLibName: string) {
+	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigLibPromise: Promise<IOnigLib>, onigLibName: string) {
 		this._grammars = grammars;
 		this._languages = languages;
 		this._onigLibPromise = onigLibPromise;
@@ -50,7 +50,7 @@ export class Resolver implements RegistryOptions {
 		}
 	}
 
-	public getOnigLib(): Thenable<IOnigLib> {
+	public getOnigLib(): Promise<IOnigLib> {
 		return this._onigLibPromise;
 	}
 
@@ -58,7 +58,7 @@ export class Resolver implements RegistryOptions {
 		return this._onigLibName;
 	}
 
-	public findLanguageByExtension(fileExtension: string): string {
+	public findLanguageByExtension(fileExtension: string): string | null {
 		for (let i = 0; i < this._languages.length; i++) {
 			let language = this._languages[i];
 
@@ -78,7 +78,7 @@ export class Resolver implements RegistryOptions {
 		return null;
 	}
 
-	public findLanguageByFilename(filename: string): string {
+	public findLanguageByFilename(filename: string): string | null {
 		for (let i = 0; i < this._languages.length; i++) {
 			let language = this._languages[i];
 
@@ -98,7 +98,7 @@ export class Resolver implements RegistryOptions {
 		return null;
 	}
 
-	public findScopeByFilename(filename: string): string {
+	public findScopeByFilename(filename: string): string | null {
 		let language = this.findLanguageByExtension(path.extname(filename)) || this.findLanguageByFilename(filename);
 		if (language) {
 			let grammar = this.findGrammarByLanguage(language);
@@ -121,7 +121,7 @@ export class Resolver implements RegistryOptions {
 		throw new Error('Could not findGrammarByLanguage for ' + language);
 	}
 
-	public loadGrammar(scopeName: string): Thenable<IRawGrammar | null> {
+	public async loadGrammar(scopeName: string): Promise<IRawGrammar | null> {
 		for (let i = 0; i < this._grammars.length; i++) {
 			let grammar = this._grammars[i];
 			if (grammar.scopeName === scopeName) {
@@ -136,7 +136,7 @@ export class Resolver implements RegistryOptions {
 	}
 }
 
-function readGrammarFromPath(path: string) : Thenable<IRawGrammar> {
+function readGrammarFromPath(path: string) : Promise<IRawGrammar> {
 	return new Promise((c,e) => {
 		fs.readFile(path, (error, content) => {
 			if (error) {

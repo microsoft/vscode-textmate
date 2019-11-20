@@ -8,8 +8,8 @@ import * as plist from './plist';
 import { DebugFlags } from './debug';
 import { parse as manualParseJSON } from './json';
 
-export function parseRawGrammar(content: string, filePath: string = null): IRawGrammar {
-	if (/\.json$/.test(filePath)) {
+export function parseRawGrammar(content: string, filePath: string | null = null): IRawGrammar {
+	if (filePath !== null && /\.json$/.test(filePath)) {
 		return parseJSONGrammar(content, filePath);
 	}
 	return parsePLISTGrammar(content, filePath);

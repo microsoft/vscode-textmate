@@ -4,8 +4,7 @@
 'use strict';
 
 import { RegexSource, mergeObjects, basename } from './utils';
-import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './types';
-import { IOnigLib, OnigScanner, IOnigCaptureIndex } from './types';
+import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures, IOnigLib, OnigScanner, IOnigCaptureIndex } from './types';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
 const BACK_REFERENCING_END = /\\(\d+)/g;
@@ -16,7 +15,7 @@ export interface IRuleRegistry {
 }
 
 export interface IGrammarRegistry {
-	getExternalGrammar(scopeName: string, repository: IRawRepository): IRawGrammar;
+	getExternalGrammar(scopeName: string, repository: IRawRepository): IRawGrammar | null | undefined;
 }
 
 export interface IRuleFactoryHelper extends IRuleRegistry, IGrammarRegistry {
@@ -30,16 +29,16 @@ export interface ICompiledRule {
 
 export abstract class Rule {
 
-	public readonly $location: ILocation;
+	public readonly $location: ILocation | undefined;
 	public readonly id: number;
 
 	private readonly _nameIsCapturing: boolean;
-	private readonly _name: string;
+	private readonly _name: string | null;
 
 	private readonly _contentNameIsCapturing: boolean;
-	private readonly _contentName: string;
+	private readonly _contentName: string | null;
 
-	constructor($location: ILocation, id: number, name: string, contentName: string) {
+	constructor($location: ILocation | undefined, id: number, name: string | null | undefined, contentName: string | null | undefined) {
 		this.$location = $location;
 		this.id = id;
 		this._name = name || null;
@@ -49,30 +48,27 @@ export abstract class Rule {
 	}
 
 	public get debugName(): string {
-		return `${(<any>this.constructor).name}#${this.id} @ ${basename(this.$location.filename)}:${this.$location.line}`;
+		const location = this.$location ? `${basename(this.$location.filename)}:${this.$location.line}` : 'unknown';
+		return `${(<any>this.constructor).name}#${this.id} @ ${location}`;
 	}
 
-	public getName(lineText: string, captureIndices: IOnigCaptureIndex[]): string {
-		if (!this._nameIsCapturing) {
+	public getName(lineText: string | null, captureIndices: IOnigCaptureIndex[] | null): string | null {
+		if (!this._nameIsCapturing || this._name === null || lineText === null || captureIndices === null) {
 			return this._name;
 		}
 		return RegexSource.replaceCaptures(this._name, lineText, captureIndices);
 	}
 
-	public getContentName(lineText: string, captureIndices: IOnigCaptureIndex[]): string {
-		if (!this._contentNameIsCapturing) {
+	public getContentName(lineText: string, captureIndices: IOnigCaptureIndex[]): string | null {
+		if (!this._contentNameIsCapturing || this._contentName === null) {
 			return this._contentName;
 		}
 		return RegexSource.replaceCaptures(this._contentName, lineText, captureIndices);
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
-		throw new Error('Implement me!');
-	}
+	public abstract collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean): void;
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
-		throw new Error('Implement me!');
-	}
+	public abstract compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): ICompiledRule;
 }
 
 export interface ICompilePatternsResult {
@@ -84,9 +80,17 @@ export class CaptureRule extends Rule {
 
 	public readonly retokenizeCapturedWithRuleId: number;
 
-	constructor($location: ILocation, id: number, name: string, contentName: string, retokenizeCapturedWithRuleId: number) {
+	constructor($location: ILocation | undefined, id: number, name: string | null | undefined, contentName: string | null | undefined, retokenizeCapturedWithRuleId: number) {
 		super($location, id, name, contentName);
 		this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
+	}
+
+	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
+		throw new Error('Not supported!');
+	}
+
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+		throw new Error('Not supported!');
 	}
 }
 
@@ -103,18 +107,55 @@ export class RegExpSource {
 	public readonly ruleId: number;
 	public hasAnchor: boolean;
 	public readonly hasBackReferences: boolean;
-	private _anchorCache: IRegExpSourceAnchorCache;
+	private _anchorCache: IRegExpSourceAnchorCache | null;
 
 	constructor(regExpSource: string, ruleId: number, handleAnchors: boolean = true) {
 		if (handleAnchors) {
-			this._handleAnchors(regExpSource);
+			if (regExpSource) {
+				const len = regExpSource.length;
+				let lastPushedPos = 0;
+				let output: string[] = [];
+
+				let hasAnchor = false;
+				for (let pos = 0; pos < len; pos++) {
+					const ch = regExpSource.charAt(pos);
+
+					if (ch === '\\') {
+						if (pos + 1 < len) {
+							const nextCh = regExpSource.charAt(pos + 1);
+							if (nextCh === 'z') {
+								output.push(regExpSource.substring(lastPushedPos, pos));
+								output.push('$(?!\\n)(?<!\\n)');
+								lastPushedPos = pos + 2;
+							} else if (nextCh === 'A' || nextCh === 'G') {
+								hasAnchor = true;
+							}
+							pos++;
+						}
+					}
+				}
+
+				this.hasAnchor = hasAnchor;
+				if (lastPushedPos === 0) {
+					// No \z hit
+					this.source = regExpSource;
+				} else {
+					output.push(regExpSource.substring(lastPushedPos, len));
+					this.source = output.join('');
+				}
+			} else {
+				this.hasAnchor = false;
+				this.source = regExpSource;
+			}
 		} else {
-			this.source = regExpSource;
 			this.hasAnchor = false;
+			this.source = regExpSource;
 		}
 
 		if (this.hasAnchor) {
 			this._anchorCache = this._buildAnchorCache();
+		} else {
+			this._anchorCache = null;
 		}
 
 		this.ruleId = ruleId;
@@ -135,48 +176,6 @@ export class RegExpSource {
 
 		if (this.hasAnchor) {
 			this._anchorCache = this._buildAnchorCache();
-		}
-	}
-
-	private _handleAnchors(regExpSource: string): void {
-		if (regExpSource) {
-			let pos: number,
-				len: number,
-				ch: string,
-				nextCh: string,
-				lastPushedPos = 0,
-				output: string[] = [];
-
-			let hasAnchor = false;
-			for (pos = 0, len = regExpSource.length; pos < len; pos++) {
-				ch = regExpSource.charAt(pos);
-
-				if (ch === '\\') {
-					if (pos + 1 < len) {
-						nextCh = regExpSource.charAt(pos + 1);
-						if (nextCh === 'z') {
-							output.push(regExpSource.substring(lastPushedPos, pos));
-							output.push('$(?!\\n)(?<!\\n)');
-							lastPushedPos = pos + 2;
-						} else if (nextCh === 'A' || nextCh === 'G') {
-							hasAnchor = true;
-						}
-						pos++;
-					}
-				}
-			}
-
-			this.hasAnchor = hasAnchor;
-			if (lastPushedPos === 0) {
-				// No \z hit
-				this.source = regExpSource;
-			} else {
-				output.push(regExpSource.substring(lastPushedPos, len));
-				this.source = output.join('');
-			}
-		} else {
-			this.hasAnchor = false;
-			this.source = regExpSource;
 		}
 	}
 
@@ -241,7 +240,7 @@ export class RegExpSource {
 	}
 
 	public resolveAnchors(allowA: boolean, allowG: boolean): string {
-		if (!this.hasAnchor) {
+		if (!this.hasAnchor || !this._anchorCache) {
 			return this.source;
 		}
 
@@ -262,25 +261,23 @@ export class RegExpSource {
 }
 
 interface IRegExpSourceListAnchorCache {
-	A0_G0: ICompiledRule;
-	A0_G1: ICompiledRule;
-	A1_G0: ICompiledRule;
-	A1_G1: ICompiledRule;
+	A0_G0: ICompiledRule | null;
+	A0_G1: ICompiledRule | null;
+	A1_G0: ICompiledRule | null;
+	A1_G1: ICompiledRule | null;
 }
 
 export class RegExpSourceList {
 
 	private readonly _items: RegExpSource[];
 	private _hasAnchors: boolean;
-	private _cached: ICompiledRule;
+	private _cached: ICompiledRule | null;
 	private _anchorCache: IRegExpSourceListAnchorCache;
-	private readonly _cachedSources: string[];
 
 	constructor() {
 		this._items = [];
 		this._hasAnchors = false;
 		this._cached = null;
-		this._cachedSources = null;
 		this._anchorCache = {
 			A0_G0: null,
 			A0_G1: null,
@@ -327,22 +324,28 @@ export class RegExpSourceList {
 			}
 			return this._cached;
 		} else {
-			this._anchorCache = {
-				A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-				A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-				A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-				A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-			};
 			if (allowA) {
 				if (allowG) {
+					if (!this._anchorCache.A1_G1) {
+						this._anchorCache.A1_G1 = this._resolveAnchors(onigLib, allowA, allowG);
+					}
 					return this._anchorCache.A1_G1;
 				} else {
+					if (!this._anchorCache.A1_G0) {
+						this._anchorCache.A1_G0 = this._resolveAnchors(onigLib, allowA, allowG);
+					}
 					return this._anchorCache.A1_G0;
 				}
 			} else {
 				if (allowG) {
+					if (!this._anchorCache.A0_G1) {
+						this._anchorCache.A0_G1 = this._resolveAnchors(onigLib, allowA, allowG);
+					}
 					return this._anchorCache.A0_G1;
 				} else {
+					if (!this._anchorCache.A0_G0) {
+						this._anchorCache.A0_G0 = this._resolveAnchors(onigLib, allowA, allowG);
+					}
 					return this._anchorCache.A0_G0;
 				}
 			}
@@ -362,10 +365,10 @@ export class RegExpSourceList {
 
 export class MatchRule extends Rule {
 	private readonly _match: RegExpSource;
-	public readonly captures: CaptureRule[];
-	private _cachedCompiledPatterns: RegExpSourceList;
+	public readonly captures: (CaptureRule | null)[];
+	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation, id: number, name: string, match: string, captures: CaptureRule[]) {
+	constructor($location: ILocation | undefined, id: number, name: string | undefined, match: string, captures: (CaptureRule | null)[]) {
 		super($location, id, name, null);
 		this._match = new RegExpSource(match, this.id);
 		this.captures = captures;
@@ -392,9 +395,9 @@ export class MatchRule extends Rule {
 export class IncludeOnlyRule extends Rule {
 	public readonly hasMissingPatterns: boolean;
 	public readonly patterns: number[];
-	private _cachedCompiledPatterns: RegExpSourceList;
+	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation, id: number, name: string, contentName: string, patterns: ICompilePatternsResult) {
+	constructor($location: ILocation | undefined, id: number, name: string | null | undefined, contentName: string | null | undefined, patterns: ICompilePatternsResult) {
 		super($location, id, name, contentName);
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
@@ -427,16 +430,16 @@ function escapeRegExpCharacters(value: string): string {
 
 export class BeginEndRule extends Rule {
 	private readonly _begin: RegExpSource;
-	public readonly beginCaptures: CaptureRule[];
+	public readonly beginCaptures: (CaptureRule | null)[];
 	private readonly _end: RegExpSource;
 	public readonly endHasBackReferences: boolean;
-	public readonly endCaptures: CaptureRule[];
+	public readonly endCaptures: (CaptureRule | null)[];
 	public readonly applyEndPatternLast: boolean;
 	public readonly hasMissingPatterns: boolean;
 	public readonly patterns: number[];
-	private _cachedCompiledPatterns: RegExpSourceList;
+	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], end: string, endCaptures: CaptureRule[], applyEndPatternLast: boolean, patterns: ICompilePatternsResult) {
+	constructor($location: ILocation | undefined, id: number, name: string | null | undefined, contentName: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], end: string | undefined, endCaptures: (CaptureRule | null)[], applyEndPatternLast: boolean | undefined, patterns: ICompilePatternsResult) {
 		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
@@ -477,19 +480,6 @@ export class BeginEndRule extends Rule {
 	}
 
 	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
-		let precompiled = this._precompile(grammar);
-
-		if (this._end.hasBackReferences) {
-			if (this.applyEndPatternLast) {
-				precompiled.setSource(precompiled.length() - 1, endRegexSource);
-			} else {
-				precompiled.setSource(0, endRegexSource);
-			}
-		}
-		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
-	}
-
-	private _precompile(grammar: IRuleRegistry): RegExpSourceList {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 
@@ -501,22 +491,29 @@ export class BeginEndRule extends Rule {
 				this._cachedCompiledPatterns.unshift(this._end.hasBackReferences ? this._end.clone() : this._end);
 			}
 		}
-		return this._cachedCompiledPatterns;
+		if (this._end.hasBackReferences) {
+			if (this.applyEndPatternLast) {
+				this._cachedCompiledPatterns.setSource(this._cachedCompiledPatterns.length() - 1, endRegexSource);
+			} else {
+				this._cachedCompiledPatterns.setSource(0, endRegexSource);
+			}
+		}
+		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
 	}
 }
 
 export class BeginWhileRule extends Rule {
 	private readonly _begin: RegExpSource;
-	public readonly beginCaptures: CaptureRule[];
-	public readonly whileCaptures: CaptureRule[];
+	public readonly beginCaptures: (CaptureRule | null)[];
+	public readonly whileCaptures: (CaptureRule | null)[];
 	private readonly _while: RegExpSource;
 	public readonly whileHasBackReferences: boolean;
 	public readonly hasMissingPatterns: boolean;
 	public readonly patterns: number[];
-	private _cachedCompiledPatterns: RegExpSourceList;
-	private _cachedCompiledWhilePatterns: RegExpSourceList;
+	private _cachedCompiledPatterns: RegExpSourceList | null;
+	private _cachedCompiledWhilePatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation, id: number, name: string, contentName: string, begin: string, beginCaptures: CaptureRule[], _while: string, whileCaptures: CaptureRule[], patterns: ICompilePatternsResult) {
+	constructor($location: ILocation | undefined, id: number, name: string | null | undefined, contentName: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], _while: string, whileCaptures: (CaptureRule | null)[], patterns: ICompilePatternsResult) {
 		super($location, id, name, contentName);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
@@ -557,38 +554,28 @@ export class BeginWhileRule extends Rule {
 	}
 
 	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
-		this._precompile(grammar);
-		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
-	}
-
-	private _precompile(grammar: IRuleRegistry): void {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
 		}
+		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
 	}
 
-
-	public compileWhile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
-		this._precompileWhile(grammar);
-		if (this._while.hasBackReferences) {
-			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource);
-		}
-		return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
-	}
-
-
-	private _precompileWhile(grammar: IRuleRegistry): void {
+	public compileWhile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): ICompiledRule {
 		if (!this._cachedCompiledWhilePatterns) {
 			this._cachedCompiledWhilePatterns = new RegExpSourceList();
 			this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);
 		}
+		if (this._while.hasBackReferences) {
+			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource ? endRegexSource : '\uFFFF');
+		}
+		return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
 	}
 }
 
 export class RuleFactory {
 
-	public static createCaptureRule(helper: IRuleFactoryHelper, $location: ILocation, name: string, contentName: string, retokenizeCapturedWithRuleId: number): CaptureRule {
+	public static createCaptureRule(helper: IRuleFactoryHelper, $location: ILocation | undefined, name: string | null | undefined, contentName: string | null | undefined, retokenizeCapturedWithRuleId: number): CaptureRule {
 		return helper.registerRule((id) => {
 			return new CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId);
 		});
@@ -651,40 +638,36 @@ export class RuleFactory {
 			});
 		}
 
-		return desc.id;
+		return desc.id!;
 	}
 
-	private static _compileCaptures(captures: IRawCaptures, helper: IRuleFactoryHelper, repository: IRawRepository): CaptureRule[] {
-		let r: CaptureRule[] = [],
-			numericCaptureId: number,
-			maximumCaptureId: number,
-			i: number,
-			captureId: string;
+	private static _compileCaptures(captures: IRawCaptures | undefined, helper: IRuleFactoryHelper, repository: IRawRepository): (CaptureRule | null)[] {
+		let r: (CaptureRule | null)[] = [];
 
 		if (captures) {
 			// Find the maximum capture id
-			maximumCaptureId = 0;
-			for (captureId in captures) {
+			let maximumCaptureId = 0;
+			for (const captureId in captures) {
 				if (captureId === '$vscodeTextmateLocation') {
 					continue;
 				}
-				numericCaptureId = parseInt(captureId, 10);
+				const numericCaptureId = parseInt(captureId, 10);
 				if (numericCaptureId > maximumCaptureId) {
 					maximumCaptureId = numericCaptureId;
 				}
 			}
 
 			// Initialize result
-			for (i = 0; i <= maximumCaptureId; i++) {
+			for (let i = 0; i <= maximumCaptureId; i++) {
 				r[i] = null;
 			}
 
 			// Fill out result
-			for (captureId in captures) {
+			for (const captureId in captures) {
 				if (captureId === '$vscodeTextmateLocation') {
 					continue;
 				}
-				numericCaptureId = parseInt(captureId, 10);
+				const numericCaptureId = parseInt(captureId, 10);
 				let retokenizeCapturedWithRuleId = 0;
 				if (captures[captureId].patterns) {
 					retokenizeCapturedWithRuleId = RuleFactory.getCompiledRuleId(captures[captureId], helper, repository);
@@ -696,20 +679,13 @@ export class RuleFactory {
 		return r;
 	}
 
-	private static _compilePatterns(patterns: IRawRule[], helper: IRuleFactoryHelper, repository: IRawRepository): ICompilePatternsResult {
-		let r: number[] = [],
-			pattern: IRawRule,
-			i: number,
-			len: number,
-			patternId: number,
-			externalGrammar: IRawGrammar,
-			rule: Rule,
-			skipRule: boolean;
+	private static _compilePatterns(patterns: IRawRule[] | undefined, helper: IRuleFactoryHelper, repository: IRawRepository): ICompilePatternsResult {
+		let r: number[] = [];
 
 		if (patterns) {
-			for (i = 0, len = patterns.length; i < len; i++) {
-				pattern = patterns[i];
-				patternId = -1;
+			for (let i = 0, len = patterns.length; i < len; i++) {
+				const pattern = patterns[i];
+				let patternId = -1;
 
 				if (pattern.include) {
 					if (pattern.include.charAt(0) === '#') {
@@ -724,9 +700,10 @@ export class RuleFactory {
 						// Special include also found in `repository`
 						patternId = RuleFactory.getCompiledRuleId(repository[pattern.include], helper, repository);
 					} else {
-						let externalGrammarName: string = null,
-							externalGrammarInclude: string = null,
-							sharpIndex = pattern.include.indexOf('#');
+						let externalGrammarName: string | null = null;
+						let externalGrammarInclude: string | null = null;
+						let sharpIndex = pattern.include.indexOf('#');
+
 						if (sharpIndex >= 0) {
 							externalGrammarName = pattern.include.substring(0, sharpIndex);
 							externalGrammarInclude = pattern.include.substring(sharpIndex + 1);
@@ -734,7 +711,7 @@ export class RuleFactory {
 							externalGrammarName = pattern.include;
 						}
 						// External include
-						externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
+						const externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
 
 						if (externalGrammar) {
 							if (externalGrammarInclude) {
@@ -757,9 +734,9 @@ export class RuleFactory {
 				}
 
 				if (patternId !== -1) {
-					rule = helper.getRule(patternId);
+					const rule = helper.getRule(patternId);
 
-					skipRule = false;
+					let skipRule = false;
 
 					if (rule instanceof IncludeOnlyRule || rule instanceof BeginEndRule || rule instanceof BeginWhileRule) {
 						if (rule.hasMissingPatterns && rule.patterns.length === 0) {

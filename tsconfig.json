@@ -6,6 +6,7 @@
 		"noImplicitAny": true,
 		"sourceMap": true,
 		"declaration": true,
+		"strict": true,
 		"lib": [
 			"es5",
 			"es2015.promise"

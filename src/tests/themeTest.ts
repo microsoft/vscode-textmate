@@ -17,11 +17,7 @@ interface IThemesTokens {
 export class ThemeTest {
 
 	private static _readFile(filename: string): string {
-		try {
-			return fs.readFileSync(filename).toString('utf8');
-		} catch (err) {
-			return null;
-		}
+		return fs.readFileSync(filename).toString('utf8');
 	}
 
 	private static _normalizeNewLines(str: string): string {
@@ -33,7 +29,7 @@ export class ThemeTest {
 
 	public readonly expected: string;
 	public readonly testName: string;
-	public actual: string;
+	public actual: string | null;
 
 	constructor(THEMES_TEST_PATH: string, testFile: string, themeDatas: ThemeData[], resolver: Resolver) {
 		const TEST_FILE_PATH = path.join(THEMES_TEST_PATH, 'tests', testFile);
@@ -68,6 +64,7 @@ export class ThemeTest {
 		}
 
 		this.testName = testFile + '-' + resolver.getOnigLibName();
+		this.actual = null;
 	}
 
 	public async evaluate(): Promise<any> {
@@ -75,7 +72,7 @@ export class ThemeTest {
 
 		let actual: IThemesTokens = {};
 		for (let i = 0; i < this.tests.length; i++) {
-			actual[this.tests[i].themeData.themeName] = this.tests[i].actual;
+			actual[this.tests[i].themeData.themeName] = this.tests[i].actual!;
 		}
 
 		this.actual = ThemeTest._normalizeNewLines(JSON.stringify(actual, null, '\t'));
@@ -94,7 +91,7 @@ class SingleThemeTest {
 	private readonly initialLanguage: number;
 	private readonly embeddedLanguages: IEmbeddedLanguagesMap;
 
-	public actual: IThemedToken[];
+	public actual: IThemedToken[] | null;
 
 	constructor(
 		themeData: ThemeData,
@@ -118,6 +115,9 @@ class SingleThemeTest {
 
 	private async _tokenizeWithThemeAsync(): Promise<IThemedToken[]> {
 		const grammar = await this.themeData.registry.loadGrammarWithEmbeddedLanguages(this.initialScopeName, this.initialLanguage, this.embeddedLanguages);
+		if (!grammar) {
+			throw new Error(`Cannot load grammar for ${this.initialScopeName}`);
+		}
 		return tokenizeWithTheme(this.themeData.registry.getColorMap(), this.contents, grammar);
 	}
 }

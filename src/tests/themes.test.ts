@@ -29,7 +29,7 @@ export interface ThemeData {
 class ThemeInfo {
 	private _themeName: string;
 	private _filename: string;
-	private _includeFilename: string;
+	private _includeFilename: string | undefined;
 
 	constructor(themeName: string, filename: string, includeFilename?: string) {
 		this._themeName = themeName;
@@ -413,7 +413,7 @@ describe('Theme resolving', () => {
 	});
 
 	it('strArrCmp works', () => {
-		function assertStrArrCmp(testCase: string, a: string[], b: string[], expected: number): void {
+		function assertStrArrCmp(testCase: string, a: string[] | null, b: string[] | null, expected: number): void {
 			assert.equal(strArrCmp(a, b), expected, testCase);
 
 		}

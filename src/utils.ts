@@ -59,7 +59,10 @@ let CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
 
 export class RegexSource {
 
-	public static hasCaptures(regexSource: string): boolean {
+	public static hasCaptures(regexSource: string | null): boolean {
+		if (regexSource === null) {
+			return false;
+		}
 		return CAPTURING_REGEX_SOURCE.test(regexSource);
 	}
 

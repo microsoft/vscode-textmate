@@ -6,7 +6,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar, Thenable } from '../main';
+import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
 import { IOnigLib, IRawGrammar } from '../types';
 import { getOnigasm, getOniguruma } from '../onigLibs';
 
@@ -52,7 +52,7 @@ function assertTokenizationSuite(testLocation: string): void {
 		});
 	});
 
-	async function performTest(test: IRawTest, onigLib: Thenable<IOnigLib>): Promise<void> {
+	async function performTest(test: IRawTest, onigLib: Promise<IOnigLib>): Promise<void> {
 
 		let grammarScopeName = test.grammarScopeName;
 		let grammarByScope : { [scope:string]:IRawGrammar } = {};
@@ -63,7 +63,10 @@ function assertTokenizationSuite(testLocation: string): void {
 			if (!grammarScopeName && grammarPath === test.grammarPath) {
 				grammarScopeName = rawGrammar.scopeName;
 			}
-		};
+		}
+		if (!grammarScopeName) {
+			throw new Error('I HAVE NO GRAMMAR FOR TEST');
+		}
 
 		let locator: RegistryOptions = {
 			loadGrammar: (scopeName: string) => Promise.resolve(grammarByScope[scopeName]),
@@ -75,17 +78,17 @@ function assertTokenizationSuite(testLocation: string): void {
 			getOnigLib: () => onigLib
 		};
 		let registry = new Registry(locator);
-		let grammar: IGrammar = await registry.loadGrammar(grammarScopeName);
+		let grammar: IGrammar | null = await registry.loadGrammar(grammarScopeName);
 		if (!grammar) {
 			throw new Error('I HAVE NO GRAMMAR FOR TEST');
 		}
-		let prevState: StackElement = null;
+		let prevState: StackElement | null = null;
 		for (let i = 0; i < test.lines.length; i++) {
 			prevState = assertLineTokenization(grammar, test.lines[i], prevState);
 		}
 	}
 
-	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement): StackElement {
+	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement | null): StackElement {
 		let actual = grammar.tokenizeLine(testCase.line, prevState);
 
 		let actualTokens: IRawToken[] = actual.tokens.map((token) => {

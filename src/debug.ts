@@ -3,6 +3,6 @@
  *--------------------------------------------------------*/
 'use strict';
 
-export let DebugFlags = {
+export const DebugFlags = {
 	InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
 };

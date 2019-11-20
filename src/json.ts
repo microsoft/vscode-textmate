@@ -9,7 +9,7 @@ function doFail(streamState: JSONStreamState, msg: string): void {
 }
 
 export interface ILocation {
-	readonly filename: string;
+	readonly filename: string | null;
 	readonly line: number;
 	readonly char: number;
 }
@@ -28,7 +28,7 @@ export function parse(source: string, filename: string | null, withMetadata: boo
 	}
 
 	function popState(): void {
-		state = stateStack.pop();
+		state = stateStack.pop()!;
 		cur = objStack.pop();
 	}
 
@@ -88,7 +88,7 @@ export function parse(source: string, filename: string | null, withMetadata: boo
 			}
 
 			if (token.type === JSONTokenType.STRING) {
-				let keyValue = token.value;
+				let keyValue = token.value!;
 
 				if (!nextJSONToken(streamState, token) || (/*TS bug*/<any>token.type) !== JSONTokenType.COLON) {
 					fail('expected colon');
@@ -116,7 +116,7 @@ export function parse(source: string, filename: string | null, withMetadata: boo
 					continue;
 				}
 				if (token.type === JSONTokenType.NUMBER) {
-					cur[keyValue] = parseFloat(token.value);
+					cur[keyValue] = parseFloat(token.value!);
 					continue;
 				}
 				if (token.type === JSONTokenType.LEFT_SQUARE_BRACKET) {
@@ -184,7 +184,7 @@ export function parse(source: string, filename: string | null, withMetadata: boo
 				continue;
 			}
 			if (token.type === JSONTokenType.NUMBER) {
-				cur.push(parseFloat(token.value));
+				cur.push(parseFloat(token.value!));
 				continue;
 			}
 
@@ -300,7 +300,7 @@ const enum ChCode {
 }
 
 class JSONToken {
-	value: string;
+	value: string | null;
 	type: JSONTokenType;
 
 	offset: number;
@@ -311,13 +311,14 @@ class JSONToken {
 
 	constructor() {
 		this.value = null;
+		this.type = JSONTokenType.UNKNOWN;
 		this.offset = -1;
 		this.len = -1;
 		this.line = -1;
 		this.char = -1;
 	}
 
-	toLocation(filename: string): ILocation {
+	toLocation(filename: string | null): ILocation {
 		return {
 			filename: filename,
 			line: this.line,
@@ -411,6 +412,7 @@ function nextJSONToken(_state: JSONStreamState, _out: JSONToken): boolean {
 				case 't': return '\t';
 				default: doFail(_state, 'invalid escape sequence');
 			}
+			throw new Error('unreachable');
 		});
 
 	} else if (chCode === ChCode.LEFT_SQUARE_BRACKET) {

@@ -19,7 +19,7 @@ export const enum TemporaryStandardTokenType {
 	MetaEmbedded = 8
 }
 
-export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
+export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
 	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
 }
 
@@ -224,9 +224,9 @@ export class ScopeMetadata {
 	public readonly scopeName: string;
 	public readonly languageId: number;
 	public readonly tokenType: TemporaryStandardTokenType;
-	public readonly themeData: ThemeTrieElementRule[];
+	public readonly themeData: ThemeTrieElementRule[] | null;
 
-	constructor(scopeName: string, languageId: number, tokenType: TemporaryStandardTokenType, themeData: ThemeTrieElementRule[]) {
+	constructor(scopeName: string, languageId: number, tokenType: TemporaryStandardTokenType, themeData: ThemeTrieElementRule[] | null) {
 		this.scopeName = scopeName;
 		this.languageId = languageId;
 		this.tokenType = tokenType;
@@ -241,12 +241,18 @@ class ScopeMetadataProvider {
 	private _cache: Map<string, ScopeMetadata>;
 	private _defaultMetaData: ScopeMetadata;
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
-	private readonly _embeddedLanguagesRegex: RegExp;
+	private readonly _embeddedLanguagesRegex: RegExp | null;
 
-	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap) {
+	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap | null) {
 		this._initialLanguage = initialLanguage;
 		this._themeProvider = themeProvider;
-		this.onDidChangeTheme();
+		this._cache = new Map();
+		this._defaultMetaData = new ScopeMetadata(
+			'',
+			this._initialLanguage,
+			TemporaryStandardTokenType.Other,
+			[this._themeProvider.getDefaults()]
+		);
 
 		// embeddedLanguages handling
 		this._embeddedLanguages = Object.create(null);
@@ -300,7 +306,7 @@ class ScopeMetadataProvider {
 	}
 
 	private static _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
-	public getMetadataForScope(scopeName: string): ScopeMetadata {
+	public getMetadataForScope(scopeName: string | null): ScopeMetadata {
 		if (scopeName === null) {
 			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
 		}
@@ -375,12 +381,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	private readonly _includedGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _grammarRepository: IGrammarRepository;
 	private readonly _grammar: IRawGrammar;
-	private _injections: Injection[];
+	private _injections: Injection[] | null;
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
 	private readonly _onigLib: IOnigLib;
 
-	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
+	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
 		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
 		this._onigLib = onigLib;
@@ -390,6 +396,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
+		this._injections = null;
 
 		this._tokenTypeMatchers = [];
 		if (tokenTypes) {
@@ -422,7 +429,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	}
 
 	public getInjections(): Injection[] {
-		if (!this._injections) {
+		if (this._injections === null) {
 			this._injections = [];
 			// add injections from the current grammar
 			var rawInjections = this._grammar.injections;
@@ -441,7 +448,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 						if (injectionGrammar) {
 							const selector = injectionGrammar.injectionSelector;
 							if (selector) {
-								collectInjections(this._injections, selector, injectionGrammar, this, injectionGrammar);
+								collectInjections(this._injections!, selector, injectionGrammar, this, injectionGrammar);
 							}
 						}
 					});
@@ -463,7 +470,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return this._ruleId2desc[patternId];
 	}
 
-	public getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar {
+	public getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar | null | undefined {
 		if (this._includedGrammars[scopeName]) {
 			return this._includedGrammars[scopeName];
 		} else if (this._grammarRepository) {
@@ -474,9 +481,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				return this._includedGrammars[scopeName];
 			}
 		}
+		return null;
 	}
 
-	public tokenizeLine(lineText: string, prevState: StackElement): ITokenizeLineResult {
+	public tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false);
 		return {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
@@ -484,7 +492,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		};
 	}
 
-	public tokenizeLine2(lineText: string, prevState: StackElement): ITokenizeLineResult2 {
+	public tokenizeLine2(lineText: string, prevState: StackElement | null): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true);
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
@@ -492,7 +500,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		};
 	}
 
-	private _tokenize(lineText: string, prevState: StackElement, emitBinaryTokens: boolean): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; } {
+	private _tokenize(lineText: string, prevState: StackElement | null, emitBinaryTokens: boolean): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; } {
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
 		}
@@ -501,14 +509,14 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		if (!prevState || prevState === StackElement.NULL) {
 			isFirstLine = true;
 			const rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
-			const defaultTheme = rawDefaultMetadata.themeData[0];
+			const defaultTheme = rawDefaultMetadata.themeData![0];
 			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
 
 			const rootScopeName = this.getRule(this._rootId).getName(null, null);
 			const rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
 			const rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
 
-			const scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
+			const scopeList = new ScopeListElement(null, rootScopeName === null ? 'unknown' : rootScopeName, rootMetadata);
 
 			prevState = new StackElement(null, this._rootId, -1, -1, false, null, scopeList, scopeList);
 		} else {
@@ -538,7 +546,7 @@ function disposeOnigString(str: OnigString) {
 	}
 }
 
-function initGrammar(grammar: IRawGrammar, base: IRawRule): IRawGrammar {
+function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): IRawGrammar {
 	grammar = clone(grammar);
 
 	grammar.repository = grammar.repository || <any>{};
@@ -551,7 +559,7 @@ function initGrammar(grammar: IRawGrammar, base: IRawRule): IRawGrammar {
 	return grammar;
 }
 
-function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StackElement, lineTokens: LineTokens, captures: CaptureRule[], captureIndices: IOnigCaptureIndex[]): void {
+function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StackElement, lineTokens: LineTokens, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
 	if (captures.length === 0) {
 		return;
 	}
@@ -638,10 +646,10 @@ function debugCompiledRuleToString(ruleScanner: ICompiledRule): string {
 	return r.join('\n');
 }
 
-function matchInjections(injections: Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchInjectionsResult {
+function matchInjections(injections: Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchInjectionsResult | null {
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
-	let bestMatchCaptureIndices: IOnigCaptureIndex[] = null;
+	let bestMatchCaptureIndices: IOnigCaptureIndex[] | null = null;
 	let bestMatchRuleId: number;
 	let bestMatchResultPriority: number = 0;
 
@@ -685,7 +693,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		return {
 			priorityMatch: bestMatchResultPriority === -1,
 			captureIndices: bestMatchCaptureIndices,
-			matchedRuleId: bestMatchRuleId
+			matchedRuleId: bestMatchRuleId!
 		};
 	}
 
@@ -697,7 +705,7 @@ interface IMatchResult {
 	readonly matchedRuleId: number;
 }
 
-function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult {
+function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult | null {
 	const rule = stack.getRule(grammar);
 	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
@@ -718,7 +726,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	return null;
 }
 
-function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult {
+function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult | null {
 	// Look for normal grammar rule
 	const matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
@@ -771,7 +779,7 @@ interface IWhileCheckResult {
 function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens): IWhileCheckResult {
 	let anchorPosition = (stack.beginRuleCapturedEOL ? 0 : -1);
 	const whileRules: IWhileStack[] = [];
-	for (let node = stack; node; node = node.pop()) {
+	for (let node: StackElement | null = stack; node; node = node.pop()) {
 		const nodeRule = node.getRule(grammar);
 		if (nodeRule instanceof BeginWhileRule) {
 			whileRules.push({
@@ -793,7 +801,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 			const matchedRuleId = ruleScanner.rules[r.index];
 			if (matchedRuleId !== -2) {
 				// we shouldn't end up here
-				stack = whileRule.stack.pop();
+				stack = whileRule.stack.pop()!;
 				break;
 			}
 			if (r.captureIndices && r.captureIndices.length) {
@@ -811,7 +819,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 				console.log('  popping ' + whileRule.rule.debugName + ' - ' + whileRule.rule.debugWhileRegExp);
 			}
 
-			stack = whileRule.stack.pop();
+			stack = whileRule.stack.pop()!;
 			break;
 		}
 	}
@@ -874,7 +882,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 
 			// pop
 			const popped = stack;
-			stack = stack.pop();
+			stack = stack.pop()!;
 			anchorPosition = popped.getAnchorPos();
 
 			if (!hasAdvanced && popped.getEnterPos() === linePos) {
@@ -926,7 +934,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					if (DebugFlags.InDebugMode) {
 						console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					}
-					stack = stack.pop();
+					stack = stack.pop()!;
 					lineTokens.produce(stack, lineLength);
 					STOP = true;
 					return;
@@ -953,7 +961,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					if (DebugFlags.InDebugMode) {
 						console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
 					}
-					stack = stack.pop();
+					stack = stack.pop()!;
 					lineTokens.produce(stack, lineLength);
 					STOP = true;
 					return;
@@ -968,7 +976,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				lineTokens.produce(stack, captureIndices[0].end);
 
 				// pop rule immediately since it is a MatchRule
-				stack = stack.pop();
+				stack = stack.pop()!;
 
 				if (!hasAdvanced) {
 					// Grammar is not advancing, nor is it pushing/popping
@@ -1076,29 +1084,21 @@ export class StackElementMetadata {
 export class ScopeListElement {
 	_scopeListElementBrand: void;
 
-	public readonly parent: ScopeListElement;
+	public readonly parent: ScopeListElement | null;
 	public readonly scope: string;
 	public readonly metadata: number;
 
-	constructor(parent: ScopeListElement, scope: string, metadata: number) {
+	constructor(parent: ScopeListElement | null, scope: string, metadata: number) {
 		this.parent = parent;
 		this.scope = scope;
 		this.metadata = metadata;
 	}
 
-	private static _equals(a: ScopeListElement, b: ScopeListElement): boolean {
+	private static _equals(a: ScopeListElement | null, b: ScopeListElement | null): boolean {
 		do {
 			if (a === b) {
 				return true;
 			}
-
-			if (a.scope !== b.scope || a.metadata !== b.metadata) {
-				return false;
-			}
-
-			// Go to previous pair
-			a = a.parent;
-			b = b.parent;
 
 			if (!a && !b) {
 				// End of list reached for both
@@ -1110,6 +1110,13 @@ export class ScopeListElement {
 				return false;
 			}
 
+			if (a.scope !== b.scope || a.metadata !== b.metadata) {
+				return false;
+			}
+
+			// Go to previous pair
+			a = a.parent;
+			b = b.parent;
 		} while (true);
 	}
 
@@ -1121,7 +1128,7 @@ export class ScopeListElement {
 		return (selector === scope || scope.substring(0, selectorWithDot.length) === selectorWithDot);
 	}
 
-	private static _matches(target: ScopeListElement, parentScopes: string[]): boolean {
+	private static _matches(target: ScopeListElement | null, parentScopes: string[] | null): boolean {
 		if (parentScopes === null) {
 			return true;
 		}
@@ -1146,7 +1153,7 @@ export class ScopeListElement {
 		return false;
 	}
 
-	public static mergeMetadata(metadata: number, scopesList: ScopeListElement, source: ScopeMetadata): number {
+	public static mergeMetadata(metadata: number, scopesList: ScopeListElement | null, source: ScopeMetadata): number {
 		if (source === null) {
 			return metadata;
 		}
@@ -1182,7 +1189,7 @@ export class ScopeListElement {
 		return target;
 	}
 
-	public push(grammar: Grammar, scope: string): ScopeListElement {
+	public push(grammar: Grammar, scope: string | null): ScopeListElement {
 		if (scope === null) {
 			return this;
 		}
@@ -1194,7 +1201,7 @@ export class ScopeListElement {
 		return ScopeListElement._push(this, grammar, [scope]);
 	}
 
-	private static _generateScopes(scopesList: ScopeListElement): string[] {
+	private static _generateScopes(scopesList: ScopeListElement | null): string[] {
 		const result: string[] = [];
 		let resultLen = 0;
 		while (scopesList) {
@@ -1216,7 +1223,7 @@ export class ScopeListElement {
 export class StackElement implements StackElementDef {
 	_stackElementBrand: void;
 
-	public static NULL = new StackElement(null, 0, 0, 0, false, null, null, null);
+	public static NULL = new StackElement(null, 0, 0, 0, false, null, null!, null!);
 
 	/**
 	 * The position on the current line where this state was pushed.
@@ -1235,7 +1242,7 @@ export class StackElement implements StackElementDef {
 	/**
 	 * The previous state on the stack (or null for the root state).
 	 */
-	public readonly parent: StackElement;
+	public readonly parent: StackElement | null;
 	/**
 	 * The depth of the stack.
 	 */
@@ -1252,7 +1259,7 @@ export class StackElement implements StackElementDef {
 	/**
 	 * The "pop" (end) condition for this state in case that it was dynamically generated through captured text.
 	 */
-	public readonly endRule: string;
+	public readonly endRule: string | null;
 	/**
 	 * The list of scopes containing the "name" for this state.
 	 */
@@ -1263,7 +1270,7 @@ export class StackElement implements StackElementDef {
 	 */
 	public readonly contentNameScopesList: ScopeListElement;
 
-	constructor(parent: StackElement, ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement | null, ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
@@ -1278,19 +1285,11 @@ export class StackElement implements StackElementDef {
 	/**
 	 * A structural equals check. Does not take into account `scopes`.
 	 */
-	private static _structuralEquals(a: StackElement, b: StackElement): boolean {
+	private static _structuralEquals(a: StackElement | null, b: StackElement | null): boolean {
 		do {
 			if (a === b) {
 				return true;
 			}
-
-			if (a.depth !== b.depth || a.ruleId !== b.ruleId || a.endRule !== b.endRule) {
-				return false;
-			}
-
-			// Go to previous pair
-			a = a.parent;
-			b = b.parent;
 
 			if (!a && !b) {
 				// End of list reached for both
@@ -1302,6 +1301,13 @@ export class StackElement implements StackElementDef {
 				return false;
 			}
 
+			if (a.depth !== b.depth || a.ruleId !== b.ruleId || a.endRule !== b.endRule) {
+				return false;
+			}
+
+			// Go to previous pair
+			a = a.parent;
+			b = b.parent;
 		} while (true);
 	}
 
@@ -1326,7 +1332,7 @@ export class StackElement implements StackElementDef {
 		return StackElement._equals(this, other);
 	}
 
-	private static _reset(el: StackElement): void {
+	private static _reset(el: StackElement | null): void {
 		while (el) {
 			el._enterPos = -1;
 			el._anchorPos = -1;
@@ -1338,7 +1344,7 @@ export class StackElement implements StackElementDef {
 		StackElement._reset(this);
 	}
 
-	public pop(): StackElement {
+	public pop(): StackElement | null {
 		return this.parent;
 	}
 
@@ -1349,7 +1355,7 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+	public push(ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
 		return new StackElement(this, ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList);
 	}
 
@@ -1385,7 +1391,7 @@ export class StackElement implements StackElementDef {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
-		return this.parent.push(this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, this.endRule, this.nameScopesList, contentNameScopesList);
+		return this.parent!.push(this.ruleId, this._enterPos, this._anchorPos, this.beginRuleCapturedEOL, this.endRule, this.nameScopesList, contentNameScopesList);
 	}
 
 	public setEndRule(endRule: string): StackElement {
@@ -1421,7 +1427,7 @@ class LineTokens {
 	/**
 	 * defined only if `DebugFlags.InDebugMode`.
 	 */
-	private readonly _lineText: string;
+	private readonly _lineText: string | null;
 	/**
 	 * used only if `_emitBinaryTokens` is false.
 	 */
@@ -1440,12 +1446,11 @@ class LineTokens {
 		this._tokenTypeOverrides = tokenTypeOverrides;
 		if (DebugFlags.InDebugMode) {
 			this._lineText = lineText;
-		}
-		if (this._emitBinaryTokens) {
-			this._binaryTokens = [];
 		} else {
-			this._tokens = [];
+			this._lineText = null;
 		}
+		this._tokens = [];
+		this._binaryTokens = [];
 		this._lastTokenEndIndex = 0;
 	}
 
@@ -1483,7 +1488,7 @@ class LineTokens {
 		const scopes = scopesList.generateScopes();
 
 		if (DebugFlags.InDebugMode) {
-			console.log('  token: |' + this._lineText.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
+			console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
 			for (var k = 0; k < scopes.length; k++) {
 				console.log('      * ' + scopes[k]);
 			}

@@ -143,6 +143,9 @@ var RegexSource = /** @class */ (function () {
     function RegexSource() {
     }
     RegexSource.hasCaptures = function (regexSource) {
+        if (regexSource === null) {
+            return false;
+        }
         return CAPTURING_REGEX_SOURCE.test(regexSource);
     };
     RegexSource.replaceCaptures = function (regexSource, captureSource, captureIndices) {
@@ -878,6 +881,7 @@ var JSONStreamState = /** @class */ (function () {
 var JSONToken = /** @class */ (function () {
     function JSONToken() {
         this.value = null;
+        this.type = 0 /* UNKNOWN */;
         this.offset = -1;
         this.len = -1;
         this.line = -1;
@@ -970,6 +974,7 @@ function nextJSONToken(_state, _out) {
                 case 't': return '\t';
                 default: doFail(_state, 'invalid escape sequence');
             }
+            throw new Error('unreachable');
         });
     }
     else if (chCode === 91 /* LEFT_SQUARE_BRACKET */) {
@@ -1581,7 +1586,7 @@ var debug_1 = require("./debug");
 var json_1 = require("./json");
 function parseRawGrammar(content, filePath) {
     if (filePath === void 0) { filePath = null; }
-    if (/\.json$/.test(filePath)) {
+    if (filePath !== null && /\.json$/.test(filePath)) {
         return parseJSONGrammar(content, filePath);
     }
     return parsePLISTGrammar(content, filePath);
@@ -1634,28 +1639,23 @@ var Rule = /** @class */ (function () {
     }
     Object.defineProperty(Rule.prototype, "debugName", {
         get: function () {
-            return this.constructor.name + "#" + this.id + " @ " + utils_1.basename(this.$location.filename) + ":" + this.$location.line;
+            var location = this.$location ? utils_1.basename(this.$location.filename) + ":" + this.$location.line : 'unknown';
+            return this.constructor.name + "#" + this.id + " @ " + location;
         },
         enumerable: true,
         configurable: true
     });
     Rule.prototype.getName = function (lineText, captureIndices) {
-        if (!this._nameIsCapturing) {
+        if (!this._nameIsCapturing || this._name === null || lineText === null || captureIndices === null) {
             return this._name;
         }
         return utils_1.RegexSource.replaceCaptures(this._name, lineText, captureIndices);
     };
     Rule.prototype.getContentName = function (lineText, captureIndices) {
-        if (!this._contentNameIsCapturing) {
+        if (!this._contentNameIsCapturing || this._contentName === null) {
             return this._contentName;
         }
         return utils_1.RegexSource.replaceCaptures(this._contentName, lineText, captureIndices);
-    };
-    Rule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
-        throw new Error('Implement me!');
-    };
-    Rule.prototype.compile = function (grammar, endRegexSource, allowA, allowG) {
-        throw new Error('Implement me!');
     };
     return Rule;
 }());
@@ -1667,6 +1667,12 @@ var CaptureRule = /** @class */ (function (_super) {
         _this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
         return _this;
     }
+    CaptureRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
+        throw new Error('Not supported!');
+    };
+    CaptureRule.prototype.compile = function (grammar, endRegexSource, allowA, allowG) {
+        throw new Error('Not supported!');
+    };
     return CaptureRule;
 }(Rule));
 exports.CaptureRule = CaptureRule;
@@ -1674,14 +1680,52 @@ var RegExpSource = /** @class */ (function () {
     function RegExpSource(regExpSource, ruleId, handleAnchors) {
         if (handleAnchors === void 0) { handleAnchors = true; }
         if (handleAnchors) {
-            this._handleAnchors(regExpSource);
+            if (regExpSource) {
+                var len = regExpSource.length;
+                var lastPushedPos = 0;
+                var output = [];
+                var hasAnchor = false;
+                for (var pos = 0; pos < len; pos++) {
+                    var ch = regExpSource.charAt(pos);
+                    if (ch === '\\') {
+                        if (pos + 1 < len) {
+                            var nextCh = regExpSource.charAt(pos + 1);
+                            if (nextCh === 'z') {
+                                output.push(regExpSource.substring(lastPushedPos, pos));
+                                output.push('$(?!\\n)(?<!\\n)');
+                                lastPushedPos = pos + 2;
+                            }
+                            else if (nextCh === 'A' || nextCh === 'G') {
+                                hasAnchor = true;
+                            }
+                            pos++;
+                        }
+                    }
+                }
+                this.hasAnchor = hasAnchor;
+                if (lastPushedPos === 0) {
+                    // No \z hit
+                    this.source = regExpSource;
+                }
+                else {
+                    output.push(regExpSource.substring(lastPushedPos, len));
+                    this.source = output.join('');
+                }
+            }
+            else {
+                this.hasAnchor = false;
+                this.source = regExpSource;
+            }
         }
         else {
-            this.source = regExpSource;
             this.hasAnchor = false;
+            this.source = regExpSource;
         }
         if (this.hasAnchor) {
             this._anchorCache = this._buildAnchorCache();
+        }
+        else {
+            this._anchorCache = null;
         }
         this.ruleId = ruleId;
         this.hasBackReferences = HAS_BACK_REFERENCES.test(this.source);
@@ -1697,42 +1741,6 @@ var RegExpSource = /** @class */ (function () {
         this.source = newSource;
         if (this.hasAnchor) {
             this._anchorCache = this._buildAnchorCache();
-        }
-    };
-    RegExpSource.prototype._handleAnchors = function (regExpSource) {
-        if (regExpSource) {
-            var pos = void 0, len = void 0, ch = void 0, nextCh = void 0, lastPushedPos = 0, output = [];
-            var hasAnchor = false;
-            for (pos = 0, len = regExpSource.length; pos < len; pos++) {
-                ch = regExpSource.charAt(pos);
-                if (ch === '\\') {
-                    if (pos + 1 < len) {
-                        nextCh = regExpSource.charAt(pos + 1);
-                        if (nextCh === 'z') {
-                            output.push(regExpSource.substring(lastPushedPos, pos));
-                            output.push('$(?!\\n)(?<!\\n)');
-                            lastPushedPos = pos + 2;
-                        }
-                        else if (nextCh === 'A' || nextCh === 'G') {
-                            hasAnchor = true;
-                        }
-                        pos++;
-                    }
-                }
-            }
-            this.hasAnchor = hasAnchor;
-            if (lastPushedPos === 0) {
-                // No \z hit
-                this.source = regExpSource;
-            }
-            else {
-                output.push(regExpSource.substring(lastPushedPos, len));
-                this.source = output.join('');
-            }
-        }
-        else {
-            this.hasAnchor = false;
-            this.source = regExpSource;
         }
     };
     RegExpSource.prototype.resolveBackReferences = function (lineText, captureIndices) {
@@ -1789,7 +1797,7 @@ var RegExpSource = /** @class */ (function () {
         };
     };
     RegExpSource.prototype.resolveAnchors = function (allowA, allowG) {
-        if (!this.hasAnchor) {
+        if (!this.hasAnchor || !this._anchorCache) {
             return this.source;
         }
         if (allowA) {
@@ -1817,7 +1825,6 @@ var RegExpSourceList = /** @class */ (function () {
         this._items = [];
         this._hasAnchors = false;
         this._cached = null;
-        this._cachedSources = null;
         this._anchorCache = {
             A0_G0: null,
             A0_G1: null,
@@ -1860,25 +1867,31 @@ var RegExpSourceList = /** @class */ (function () {
             return this._cached;
         }
         else {
-            this._anchorCache = {
-                A0_G0: this._anchorCache.A0_G0 || (allowA === false && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-                A0_G1: this._anchorCache.A0_G1 || (allowA === false && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-                A1_G0: this._anchorCache.A1_G0 || (allowA === true && allowG === false ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-                A1_G1: this._anchorCache.A1_G1 || (allowA === true && allowG === true ? this._resolveAnchors(onigLib, allowA, allowG) : null),
-            };
             if (allowA) {
                 if (allowG) {
+                    if (!this._anchorCache.A1_G1) {
+                        this._anchorCache.A1_G1 = this._resolveAnchors(onigLib, allowA, allowG);
+                    }
                     return this._anchorCache.A1_G1;
                 }
                 else {
+                    if (!this._anchorCache.A1_G0) {
+                        this._anchorCache.A1_G0 = this._resolveAnchors(onigLib, allowA, allowG);
+                    }
                     return this._anchorCache.A1_G0;
                 }
             }
             else {
                 if (allowG) {
+                    if (!this._anchorCache.A0_G1) {
+                        this._anchorCache.A0_G1 = this._resolveAnchors(onigLib, allowA, allowG);
+                    }
                     return this._anchorCache.A0_G1;
                 }
                 else {
+                    if (!this._anchorCache.A0_G0) {
+                        this._anchorCache.A0_G0 = this._resolveAnchors(onigLib, allowA, allowG);
+                    }
                     return this._anchorCache.A0_G0;
                 }
             }
@@ -1998,18 +2011,6 @@ var BeginEndRule = /** @class */ (function (_super) {
         }
     };
     BeginEndRule.prototype.compile = function (grammar, endRegexSource, allowA, allowG) {
-        var precompiled = this._precompile(grammar);
-        if (this._end.hasBackReferences) {
-            if (this.applyEndPatternLast) {
-                precompiled.setSource(precompiled.length() - 1, endRegexSource);
-            }
-            else {
-                precompiled.setSource(0, endRegexSource);
-            }
-        }
-        return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
-    };
-    BeginEndRule.prototype._precompile = function (grammar) {
         if (!this._cachedCompiledPatterns) {
             this._cachedCompiledPatterns = new RegExpSourceList();
             this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -2020,7 +2021,15 @@ var BeginEndRule = /** @class */ (function (_super) {
                 this._cachedCompiledPatterns.unshift(this._end.hasBackReferences ? this._end.clone() : this._end);
             }
         }
-        return this._cachedCompiledPatterns;
+        if (this._end.hasBackReferences) {
+            if (this.applyEndPatternLast) {
+                this._cachedCompiledPatterns.setSource(this._cachedCompiledPatterns.length() - 1, endRegexSource);
+            }
+            else {
+                this._cachedCompiledPatterns.setSource(0, endRegexSource);
+            }
+        }
+        return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     return BeginEndRule;
 }(Rule));
@@ -2070,27 +2079,21 @@ var BeginWhileRule = /** @class */ (function (_super) {
         }
     };
     BeginWhileRule.prototype.compile = function (grammar, endRegexSource, allowA, allowG) {
-        this._precompile(grammar);
-        return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
-    };
-    BeginWhileRule.prototype._precompile = function (grammar) {
         if (!this._cachedCompiledPatterns) {
             this._cachedCompiledPatterns = new RegExpSourceList();
             this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
         }
+        return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
     };
     BeginWhileRule.prototype.compileWhile = function (grammar, endRegexSource, allowA, allowG) {
-        this._precompileWhile(grammar);
-        if (this._while.hasBackReferences) {
-            this._cachedCompiledWhilePatterns.setSource(0, endRegexSource);
-        }
-        return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
-    };
-    BeginWhileRule.prototype._precompileWhile = function (grammar) {
         if (!this._cachedCompiledWhilePatterns) {
             this._cachedCompiledWhilePatterns = new RegExpSourceList();
             this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);
         }
+        if (this._while.hasBackReferences) {
+            this._cachedCompiledWhilePatterns.setSource(0, endRegexSource ? endRegexSource : '\uFFFF');
+        }
+        return this._cachedCompiledWhilePatterns.compile(grammar, allowA, allowG);
     };
     return BeginWhileRule;
 }(Rule));
@@ -2129,29 +2132,29 @@ var RuleFactory = /** @class */ (function () {
         return desc.id;
     };
     RuleFactory._compileCaptures = function (captures, helper, repository) {
-        var r = [], numericCaptureId, maximumCaptureId, i, captureId;
+        var r = [];
         if (captures) {
             // Find the maximum capture id
-            maximumCaptureId = 0;
-            for (captureId in captures) {
+            var maximumCaptureId = 0;
+            for (var captureId in captures) {
                 if (captureId === '$vscodeTextmateLocation') {
                     continue;
                 }
-                numericCaptureId = parseInt(captureId, 10);
+                var numericCaptureId = parseInt(captureId, 10);
                 if (numericCaptureId > maximumCaptureId) {
                     maximumCaptureId = numericCaptureId;
                 }
             }
             // Initialize result
-            for (i = 0; i <= maximumCaptureId; i++) {
+            for (var i = 0; i <= maximumCaptureId; i++) {
                 r[i] = null;
             }
             // Fill out result
-            for (captureId in captures) {
+            for (var captureId in captures) {
                 if (captureId === '$vscodeTextmateLocation') {
                     continue;
                 }
-                numericCaptureId = parseInt(captureId, 10);
+                var numericCaptureId = parseInt(captureId, 10);
                 var retokenizeCapturedWithRuleId = 0;
                 if (captures[captureId].patterns) {
                     retokenizeCapturedWithRuleId = RuleFactory.getCompiledRuleId(captures[captureId], helper, repository);
@@ -2162,11 +2165,11 @@ var RuleFactory = /** @class */ (function () {
         return r;
     };
     RuleFactory._compilePatterns = function (patterns, helper, repository) {
-        var r = [], pattern, i, len, patternId, externalGrammar, rule, skipRule;
+        var r = [];
         if (patterns) {
-            for (i = 0, len = patterns.length; i < len; i++) {
-                pattern = patterns[i];
-                patternId = -1;
+            for (var i = 0, len = patterns.length; i < len; i++) {
+                var pattern = patterns[i];
+                var patternId = -1;
                 if (pattern.include) {
                     if (pattern.include.charAt(0) === '#') {
                         // Local include found in `repository`
@@ -2183,7 +2186,9 @@ var RuleFactory = /** @class */ (function () {
                         patternId = RuleFactory.getCompiledRuleId(repository[pattern.include], helper, repository);
                     }
                     else {
-                        var externalGrammarName = null, externalGrammarInclude = null, sharpIndex = pattern.include.indexOf('#');
+                        var externalGrammarName = null;
+                        var externalGrammarInclude = null;
+                        var sharpIndex = pattern.include.indexOf('#');
                         if (sharpIndex >= 0) {
                             externalGrammarName = pattern.include.substring(0, sharpIndex);
                             externalGrammarInclude = pattern.include.substring(sharpIndex + 1);
@@ -2192,7 +2197,7 @@ var RuleFactory = /** @class */ (function () {
                             externalGrammarName = pattern.include;
                         }
                         // External include
-                        externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
+                        var externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
                         if (externalGrammar) {
                             if (externalGrammarInclude) {
                                 var externalIncludedRule = externalGrammar.repository[externalGrammarInclude];
@@ -2216,8 +2221,8 @@ var RuleFactory = /** @class */ (function () {
                     patternId = RuleFactory.getCompiledRuleId(pattern, helper, repository);
                 }
                 if (patternId !== -1) {
-                    rule = helper.getRule(patternId);
-                    skipRule = false;
+                    var rule = helper.getRule(patternId);
+                    var skipRule = false;
                     if (rule instanceof IncludeOnlyRule || rule instanceof BeginEndRule || rule instanceof BeginWhileRule) {
                         if (rule.hasMissingPatterns && rule.patterns.length === 0) {
                             skipRule = true;
@@ -2425,7 +2430,8 @@ var ScopeMetadataProvider = /** @class */ (function () {
     function ScopeMetadataProvider(initialLanguage, themeProvider, embeddedLanguages) {
         this._initialLanguage = initialLanguage;
         this._themeProvider = themeProvider;
-        this.onDidChangeTheme();
+        this._cache = new Map();
+        this._defaultMetaData = new ScopeMetadata('', this._initialLanguage, 0 /* Other */, [this._themeProvider.getDefaults()]);
         // embeddedLanguages handling
         this._embeddedLanguages = Object.create(null);
         if (embeddedLanguages) {
@@ -2539,6 +2545,7 @@ var Grammar = /** @class */ (function () {
         this._includedGrammars = {};
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
+        this._injections = null;
         this._tokenTypeMatchers = [];
         if (tokenTypes) {
             for (var _i = 0, _a = Object.keys(tokenTypes); _i < _a.length; _i++) {
@@ -2568,7 +2575,7 @@ var Grammar = /** @class */ (function () {
     };
     Grammar.prototype.getInjections = function () {
         var _this = this;
-        if (!this._injections) {
+        if (this._injections === null) {
             this._injections = [];
             // add injections from the current grammar
             var rawInjections = this._grammar.injections;
@@ -2617,6 +2624,7 @@ var Grammar = /** @class */ (function () {
                 return this._includedGrammars[scopeName];
             }
         }
+        return null;
     };
     Grammar.prototype.tokenizeLine = function (lineText, prevState) {
         var r = this._tokenize(lineText, prevState, false);
@@ -2645,7 +2653,7 @@ var Grammar = /** @class */ (function () {
             var rootScopeName = this.getRule(this._rootId).getName(null, null);
             var rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
             var rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
-            var scopeList = new ScopeListElement(null, rootScopeName, rootMetadata);
+            var scopeList = new ScopeListElement(null, rootScopeName === null ? 'unknown' : rootScopeName, rootMetadata);
             prevState = new StackElement(null, this._rootId, -1, -1, false, null, scopeList, scopeList);
         }
         else {
@@ -3121,12 +3129,6 @@ var ScopeListElement = /** @class */ (function () {
             if (a === b) {
                 return true;
             }
-            if (a.scope !== b.scope || a.metadata !== b.metadata) {
-                return false;
-            }
-            // Go to previous pair
-            a = a.parent;
-            b = b.parent;
             if (!a && !b) {
                 // End of list reached for both
                 return true;
@@ -3135,6 +3137,12 @@ var ScopeListElement = /** @class */ (function () {
                 // End of list reached only for one
                 return false;
             }
+            if (a.scope !== b.scope || a.metadata !== b.metadata) {
+                return false;
+            }
+            // Go to previous pair
+            a = a.parent;
+            b = b.parent;
         } while (true);
     };
     ScopeListElement.prototype.equals = function (other) {
@@ -3244,12 +3252,6 @@ var StackElement = /** @class */ (function () {
             if (a === b) {
                 return true;
             }
-            if (a.depth !== b.depth || a.ruleId !== b.ruleId || a.endRule !== b.endRule) {
-                return false;
-            }
-            // Go to previous pair
-            a = a.parent;
-            b = b.parent;
             if (!a && !b) {
                 // End of list reached for both
                 return true;
@@ -3258,6 +3260,12 @@ var StackElement = /** @class */ (function () {
                 // End of list reached only for one
                 return false;
             }
+            if (a.depth !== b.depth || a.ruleId !== b.ruleId || a.endRule !== b.endRule) {
+                return false;
+            }
+            // Go to previous pair
+            a = a.parent;
+            b = b.parent;
         } while (true);
     };
     StackElement._equals = function (a, b) {
@@ -3355,12 +3363,11 @@ var LineTokens = /** @class */ (function () {
         if (debug_1.DebugFlags.InDebugMode) {
             this._lineText = lineText;
         }
-        if (this._emitBinaryTokens) {
-            this._binaryTokens = [];
-        }
         else {
-            this._tokens = [];
+            this._lineText = null;
         }
+        this._tokens = [];
+        this._binaryTokens = [];
         this._lastTokenEndIndex = 0;
     }
     LineTokens.prototype.produce = function (stack, endIndex) {
@@ -3628,7 +3635,10 @@ var grammar_1 = require("./grammar");
  */
 var Registry = /** @class */ (function () {
     function Registry(locator) {
-        if (locator === void 0) { locator = { loadGrammar: function () { return null; } }; }
+        var _this = this;
+        if (locator === void 0) { locator = { loadGrammar: function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
+                return [2 /*return*/, null];
+            }); }); } }; }
         this._locator = locator;
         this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
         this._ensureGrammarCache = new Map();
@@ -3674,7 +3684,7 @@ var Registry = /** @class */ (function () {
                     case 1:
                         grammar = _a.sent();
                         if (grammar) {
-                            injections = (typeof this._locator.getInjections === 'function') && this._locator.getInjections(scopeName);
+                            injections = (typeof this._locator.getInjections === 'function' ? this._locator.getInjections(scopeName) : undefined);
                             this._syncRegistry.addGrammar(grammar, injections);
                         }
                         return [2 /*return*/];
@@ -3773,8 +3783,16 @@ var Registry = /** @class */ (function () {
         if (injections === void 0) { injections = []; }
         if (initialLanguage === void 0) { initialLanguage = 0; }
         if (embeddedLanguages === void 0) { embeddedLanguages = null; }
-        this._syncRegistry.addGrammar(rawGrammar, injections);
-        return this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages);
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this._syncRegistry.addGrammar(rawGrammar, injections);
+                        return [4 /*yield*/, this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages)];
+                    case 1: return [2 /*return*/, (_a.sent())];
+                }
+            });
+        });
     };
     /**
      * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.

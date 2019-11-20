@@ -17,23 +17,23 @@ export class ParsedThemeRule {
 	_parsedThemeRuleBrand: void;
 
 	readonly scope: string;
-	readonly parentScopes: string[];
+	readonly parentScopes: string[] | null;
 	readonly index: number;
 
 	/**
 	 * -1 if not set. An or mask of `FontStyle` otherwise.
 	 */
 	readonly fontStyle: number;
-	readonly foreground: string;
-	readonly background: string;
+	readonly foreground: string | null;
+	readonly background: string | null;
 
 	constructor(
 		scope: string,
-		parentScopes: string[],
+		parentScopes: string[] | null,
 		index: number,
 		fontStyle: number,
-		foreground: string,
-		background: string,
+		foreground: string | null,
+		background: string | null,
 	) {
 		this.scope = scope;
 		this.parentScopes = parentScopes;
@@ -71,7 +71,7 @@ function isValidHexColor(hex: string): boolean {
 /**
  * Parse a raw theme into rules.
  */
-export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
+export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 	if (!source) {
 		return [];
 	}
@@ -125,12 +125,12 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 			}
 		}
 
-		let foreground: string = null;
+		let foreground: string | null = null;
 		if (typeof entry.settings.foreground === 'string' && isValidHexColor(entry.settings.foreground)) {
 			foreground = entry.settings.foreground;
 		}
 
-		let background: string = null;
+		let background: string | null = null;
 		if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.background)) {
 			background = entry.settings.background;
 		}
@@ -141,7 +141,7 @@ export function parseTheme(source: IRawTheme): ParsedThemeRule[] {
 			let segments = _scope.split(' ');
 
 			let scope = segments[segments.length - 1];
-			let parentScopes: string[] = null;
+			let parentScopes: string[] | null = null;
 			if (segments.length > 1) {
 				parentScopes = segments.slice(0, segments.length - 1);
 				parentScopes.reverse();
@@ -184,7 +184,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
 	let defaultForeground = '#000000';
 	let defaultBackground = '#ffffff';
 	while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
-		let incomingDefaults = parsedThemeRules.shift();
+		let incomingDefaults = parsedThemeRules.shift()!;
 		if (incomingDefaults.fontStyle !== FontStyle.NotSet) {
 			defaultFontStyle = incomingDefaults.fontStyle;
 		}
@@ -219,7 +219,7 @@ export class ColorMap {
 		this._color2id = Object.create(null);
 	}
 
-	public getId(color: string): number {
+	public getId(color: string | null): number {
 		if (color === null) {
 			return 0;
 		}
@@ -242,7 +242,7 @@ export class ColorMap {
 
 export class Theme {
 
-	public static createFromRawTheme(source: IRawTheme): Theme {
+	public static createFromRawTheme(source: IRawTheme | undefined): Theme {
 		return this.createFromParsedTheme(parseTheme(source));
 	}
 
@@ -288,7 +288,7 @@ export function strcmp(a: string, b: string): number {
 	return 0;
 }
 
-export function strArrCmp(a: string[], b: string[]): number {
+export function strArrCmp(a: string[] | null, b: string[] | null): number {
 	if (a === null && b === null) {
 		return 0;
 	}
@@ -316,12 +316,12 @@ export class ThemeTrieElementRule {
 	_themeTrieElementRuleBrand: void;
 
 	scopeDepth: number;
-	parentScopes: string[];
+	parentScopes: string[] | null;
 	fontStyle: number;
 	foreground: number;
 	background: number;
 
-	constructor(scopeDepth: number, parentScopes: string[], fontStyle: number, foreground: number, background: number) {
+	constructor(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes;
 		this.fontStyle = fontStyle;
@@ -399,8 +399,8 @@ export class ThemeTrieElement {
 			let bParentScopesLen = bParentScopes === null ? 0 : bParentScopes.length;
 			if (aParentScopesLen === bParentScopesLen) {
 				for (let i = 0; i < aParentScopesLen; i++) {
-					const aLen = aParentScopes[i].length;
-					const bLen = bParentScopes[i].length;
+					const aLen = aParentScopes![i].length;
+					const bLen = bParentScopes![i].length;
 					if (aLen !== bLen) {
 						return bLen - aLen;
 					}
@@ -413,7 +413,7 @@ export class ThemeTrieElement {
 
 	public match(scope: string): ThemeTrieElementRule[] {
 		if (scope === '') {
-			return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
+			return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 		}
 
 		let dotIndex = scope.indexOf('.');
@@ -431,10 +431,10 @@ export class ThemeTrieElement {
 			return this._children[head].match(tail);
 		}
 
-		return ThemeTrieElement._sortBySpecificity([].concat(this._mainRule).concat(this._rulesWithParentScopes));
+		return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 	}
 
-	public insert(scopeDepth: number, scope: string, parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
+	public insert(scopeDepth: number, scope: string, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
 		if (scope === '') {
 			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
 			return;
@@ -462,7 +462,7 @@ export class ThemeTrieElement {
 		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background);
 	}
 
-	private _doInsertHere(scopeDepth: number, parentScopes: string[], fontStyle: number, foreground: number, background: number): void {
+	private _doInsertHere(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule

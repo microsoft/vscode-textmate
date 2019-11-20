@@ -4,18 +4,17 @@
 'use strict';
 
 import { IOnigLib } from './types';
-import { Thenable } from './main';
 
-let onigasmLib: Thenable<IOnigLib> = null;
-let onigurumaLib: Thenable<IOnigLib> = null;
+let onigasmLib: Promise<IOnigLib> | null = null;
+let onigurumaLib: Promise<IOnigLib> | null = null;
 
-export function getOnigasm(): Thenable<IOnigLib> {
+export function getOnigasm(): Promise<IOnigLib> {
 	if (!onigasmLib) {
 		let onigasmModule = require('onigasm');
 		let fs = require('fs');
 		let path = require('path');
 		const wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
-		onigasmLib = onigasmModule.loadWASM(wasmBin).then((_: any) => {
+		onigasmLib = (<Promise<any>>onigasmModule.loadWASM(wasmBin)).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },
 				createOnigString(s: string) { return new onigasmModule.OnigString(s); }
@@ -25,7 +24,7 @@ export function getOnigasm(): Thenable<IOnigLib> {
 	return onigasmLib;
 }
 
-export function getOniguruma(): Thenable<IOnigLib> {
+export function getOniguruma(): Promise<IOnigLib> {
 	if (!onigurumaLib) {
 		let getOnigModule : any = (function () {
 			var onigurumaModule: any = null;

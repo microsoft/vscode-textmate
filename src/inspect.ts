@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import * as fs from 'fs';
-import { Registry, IGrammar, parseRawGrammar, Thenable } from './main';
+import { Registry, IGrammar, parseRawGrammar } from './main';
 import { StackElement as StackElementImpl, Grammar as GrammarImpl } from './grammar';
 import * as debug from './debug';
 
@@ -22,7 +22,7 @@ const GRAMMAR_PATHS = process.argv.slice(2, process.argv.length - 1);
 const FILE_PATH = process.argv[process.argv.length - 1];
 
 const registry = new Registry();
-let grammarPromises: Thenable<IGrammar>[] = [];
+let grammarPromises: Promise<IGrammar>[] = [];
 for (let path of GRAMMAR_PATHS) {
 	console.log('LOADING GRAMMAR: ' + path);
 	const content = fs.readFileSync(path).toString();
@@ -48,7 +48,7 @@ Promise.all(grammarPromises).then(_grammars => {
 
 		console.log('');
 
-		let stackElement = <ExtendedStackElement>r.ruleStack;
+		let stackElement: ExtendedStackElement | null = <ExtendedStackElement>r.ruleStack;
 		let cnt = 0;
 		while (stackElement) {
 			cnt++;

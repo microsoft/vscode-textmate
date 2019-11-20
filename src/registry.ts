@@ -5,7 +5,6 @@
 
 import { createGrammar, Grammar, IGrammarRepository } from './grammar';
 import { IRawGrammar } from './types';
-import { Thenable } from './main';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './types';
@@ -17,9 +16,9 @@ export class SyncRegistry implements IGrammarRepository {
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
-	private _onigLibPromise: Thenable<IOnigLib>;
+	private _onigLibPromise: Promise<IOnigLib>;
 
-	constructor(theme: Theme, onigLibPromise: Thenable<IOnigLib>) {
+	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib> | undefined) {
 		this._theme = theme;
 		this._grammars = {};
 		this._rawGrammars = {};
@@ -82,7 +81,7 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Lookup a grammar.
 	 */
-	public async grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap, tokenTypes: ITokenTypeMap): Promise<IGrammar> {
+	public async grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null): Promise<IGrammar | null> {
 		if (!this._grammars[scopeName]) {
 			let rawGrammar = this._rawGrammars[scopeName];
 			if (!rawGrammar) {

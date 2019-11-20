@@ -21,7 +21,7 @@ interface IFactoryRequireFunc {
 
 let $map: IModuleMap = {};
 
-function $load(name: string, factory: IFactoryFunc) {
+function $load(this: any, name: string, factory: IFactoryFunc) {
 	let mod: IModule = {
 		exports: {}
 	};

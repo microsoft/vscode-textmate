@@ -15,7 +15,7 @@ import { Registry, StackElement } from '../main';
 declare module 'durations';
 
 describe.skip('Compare OnigLibs outputs', () => {
-	let registrations = getVSCodeRegistrations();;
+	let registrations = getVSCodeRegistrations();
 	if (!registrations) {
 		console.log('vscode repo ot found, skipping OnigLibs tests');
 		return;
@@ -28,6 +28,9 @@ describe.skip('Compare OnigLibs outputs', () => {
 	for (let fixturesFile of fixturesFiles) {
 		let testFilePath = path.join(fixturesDir, fixturesFile);
 		let scopeName = onigurumaResolver.findScopeByFilename(fixturesFile);
+		if (!scopeName) {
+			throw new Error(`Cannot find scopeName for fixture ${fixturesFile}`);
+		}
 		addTest(scopeName, testFilePath, new Registry(onigurumaResolver), new Registry(onigasmResolver));
 	}
 });
@@ -35,12 +38,16 @@ describe.skip('Compare OnigLibs outputs', () => {
 async function addTest(scopeName: string, filePath: string, onigurumaRegistry: Registry, onigasmRegistry: Registry) {
 	(<any>it(scopeName + '/' + path.basename(filePath), async () => {
 		const fileContent = fs.readFileSync(filePath).toString();
-		let lines = fileContent.match(/[^\r\n]+/g);
-		let prevState1: StackElement = null;
-		let prevState2: StackElement = null;
+		let lines = fileContent.split(/\r\n|\r|\n/g);
+		let prevState1: StackElement | null = null;
+		let prevState2: StackElement | null = null;
 
 		let grammar1 = await onigurumaRegistry.loadGrammar(scopeName);
 		let grammar2 = await onigasmRegistry.loadGrammar(scopeName);
+
+		if (!grammar1 || !grammar2) {
+			throw new Error(`Cannot load grammar for scope ${scopeName}`);
+		}
 
 		let stopWatch1 = durations.stopwatch();
 		let stopWatch2 = durations.stopwatch();
@@ -60,7 +67,7 @@ async function addTest(scopeName: string, filePath: string, onigurumaRegistry: R
 	})).timeout(1000000);
 }
 
-function getVSCodeRegistrations(): { grammarRegistrations: IGrammarRegistration[], languageRegistrations: ILanguageRegistration[] } {
+function getVSCodeRegistrations(): { grammarRegistrations: IGrammarRegistration[], languageRegistrations: ILanguageRegistration[] } | null {
 	const grammarRegistrations: IGrammarRegistration[] = [];
 	const languageRegistrations: ILanguageRegistration[] = [];
 
