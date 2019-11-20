@@ -2040,6 +2040,20 @@ var BeginWhileRule = /** @class */ (function (_super) {
         _this._cachedCompiledWhilePatterns = null;
         return _this;
     }
+    Object.defineProperty(BeginWhileRule.prototype, "debugBeginRegExp", {
+        get: function () {
+            return "" + this._begin.source;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(BeginWhileRule.prototype, "debugWhileRegExp", {
+        get: function () {
+            return "" + this._while.source;
+        },
+        enumerable: true,
+        configurable: true
+    });
     BeginWhileRule.prototype.getWhileWithResolvedBackReferences = function (lineText, captureIndices) {
         return this._while.resolveBackReferences(lineText, captureIndices);
     };
@@ -2871,6 +2885,9 @@ function _checkWhileConditions(grammar, lineText, isFirstLine, linePos, stack, l
             }
         }
         else {
+            if (debug_1.DebugFlags.InDebugMode) {
+                console.log('  popping ' + whileRule.rule.debugName + ' - ' + whileRule.rule.debugWhileRegExp);
+            }
             stack = whileRule.stack.pop();
             break;
         }
