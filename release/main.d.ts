@@ -24,6 +24,7 @@ export interface IRawTheme {
  */
 export interface RegistryOptions {
     theme?: IRawTheme;
+    colorMap?: string[];
     loadGrammar(scopeName: string): Promise<IRawGrammar | undefined | null>;
     getInjections?(scopeName: string): string[] | undefined;
     getOnigLib?(): Promise<IOnigLib>;
@@ -61,7 +62,7 @@ export declare class Registry {
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */
-    setTheme(theme: IRawTheme): void;
+    setTheme(theme: IRawTheme, colorMap?: string[]): void;
     /**
      * Returns a lookup array for color ids.
      */

@@ -290,7 +290,7 @@ exports.parseTheme = parseTheme;
 /**
  * Resolve rules (i.e. inheritance).
  */
-function resolveParsedThemeRules(parsedThemeRules) {
+function resolveParsedThemeRules(parsedThemeRules, _colorMap) {
     // Sort rules lexicographically, and then by index if necessary
     parsedThemeRules.sort(function (a, b) {
         var r = strcmp(a.scope, b.scope);
@@ -319,7 +319,7 @@ function resolveParsedThemeRules(parsedThemeRules) {
             defaultBackground = incomingDefaults.background;
         }
     }
-    var colorMap = new ColorMap();
+    var colorMap = new ColorMap(_colorMap);
     var defaults = new ThemeTrieElementRule(0, null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
     var root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1 /* NotSet */, 0, 0), []);
     for (var i = 0, len = parsedThemeRules.length; i < len; i++) {
@@ -329,10 +329,20 @@ function resolveParsedThemeRules(parsedThemeRules) {
     return new Theme(colorMap, defaults, root);
 }
 var ColorMap = /** @class */ (function () {
-    function ColorMap() {
+    function ColorMap(_colorMap) {
         this._lastColorId = 0;
         this._id2color = [];
         this._color2id = Object.create(null);
+        if (Array.isArray(_colorMap)) {
+            this._isFrozen = true;
+            for (var i = 0, len = _colorMap.length; i < len; i++) {
+                this._color2id[_colorMap[i]] = i;
+                this._id2color[i] = _colorMap[i];
+            }
+        }
+        else {
+            this._isFrozen = false;
+        }
     }
     ColorMap.prototype.getId = function (color) {
         if (color === null) {
@@ -342,6 +352,9 @@ var ColorMap = /** @class */ (function () {
         var value = this._color2id[color];
         if (value) {
             return value;
+        }
+        if (this._isFrozen) {
+            throw new Error("Missing color in color map - " + color);
         }
         value = ++this._lastColorId;
         this._color2id[color] = value;
@@ -361,11 +374,11 @@ var Theme = /** @class */ (function () {
         this._defaults = defaults;
         this._cache = {};
     }
-    Theme.createFromRawTheme = function (source) {
-        return this.createFromParsedTheme(parseTheme(source));
+    Theme.createFromRawTheme = function (source, colorMap) {
+        return this.createFromParsedTheme(parseTheme(source), colorMap);
     };
-    Theme.createFromParsedTheme = function (source) {
-        return resolveParsedThemeRules(source);
+    Theme.createFromParsedTheme = function (source, colorMap) {
+        return resolveParsedThemeRules(source, colorMap);
     };
     Theme.prototype.getColorMap = function () {
         return this._colorMap.getColorMap();
@@ -2282,6 +2295,7 @@ var ScopeDependencyCollector = /** @class */ (function () {
     function ScopeDependencyCollector() {
         this.full = [];
         this.partial = [];
+        this.visitedRule = new Set();
         this._seenFull = new Set();
         this._seenPartial = new Set();
     }
@@ -2305,76 +2319,68 @@ exports.ScopeDependencyCollector = ScopeDependencyCollector;
 /**
  * Fill in `result` all external included scopes in `patterns`
  */
-function _extractIncludedScopesInPatterns(result, grammarScopeName, patterns) {
+function _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, patterns, repository) {
     for (var _i = 0, patterns_1 = patterns; _i < patterns_1.length; _i++) {
         var pattern = patterns_1[_i];
+        if (result.visitedRule.has(pattern)) {
+            continue;
+        }
+        result.visitedRule.add(pattern);
+        var patternRepository = (pattern.repository ? utils_1.mergeObjects({}, repository, pattern.repository) : repository);
         if (Array.isArray(pattern.patterns)) {
-            _extractIncludedScopesInPatterns(result, grammarScopeName, pattern.patterns);
+            _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, pattern.patterns, patternRepository);
         }
         var include = pattern.include;
         if (!include) {
             continue;
         }
-        if (include === '$base' || include === '$self') {
-            // Special includes that can be resolved locally in this grammar
-            continue;
+        if (include === '$base' || include === baseGrammar.scopeName) {
+            collectDependencies(result, baseGrammar, baseGrammar);
         }
-        if (include.charAt(0) === '#') {
-            // Local include from this grammar
-            continue;
+        else if (include === '$self' || include === selfGrammar.scopeName) {
+            collectDependencies(result, baseGrammar, selfGrammar);
         }
-        var sharpIndex = include.indexOf('#');
-        if (sharpIndex >= 0) {
-            var scopeName = include.substring(0, sharpIndex);
-            if (scopeName !== grammarScopeName) {
-                result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
-            }
+        else if (include.charAt(0) === '#') {
+            collectSpecificDependencies(result, baseGrammar, selfGrammar, include.substring(1), patternRepository);
         }
         else {
-            if (include !== grammarScopeName) {
+            var sharpIndex = include.indexOf('#');
+            if (sharpIndex >= 0) {
+                var scopeName = include.substring(0, sharpIndex);
+                var includedName = include.substring(sharpIndex + 1);
+                if (scopeName === baseGrammar.scopeName) {
+                    collectSpecificDependencies(result, baseGrammar, baseGrammar, includedName, patternRepository);
+                }
+                else if (scopeName === selfGrammar.scopeName) {
+                    collectSpecificDependencies(result, baseGrammar, selfGrammar, includedName, patternRepository);
+                }
+                else {
+                    result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
+                }
+            }
+            else {
                 result.add(new FullScopeDependency(include));
             }
         }
     }
 }
 /**
- * Fill in `result` all external included scopes in `repository`
- */
-function _extractIncludedScopesInRepository(result, grammarScopeName, repository) {
-    for (var name in repository) {
-        var rule = repository[name];
-        if (rule.patterns && Array.isArray(rule.patterns)) {
-            _extractIncludedScopesInPatterns(result, grammarScopeName, rule.patterns);
-        }
-        if (rule.repository) {
-            _extractIncludedScopesInRepository(result, grammarScopeName, rule.repository);
-        }
-    }
-}
-/**
  * Collect a specific dependency from the grammar's repository
  */
-function collectSpecificDependencies(result, grammar, include) {
-    if (grammar.repository && grammar.repository[include]) {
-        var rule = grammar.repository[include];
-        if (rule.patterns && Array.isArray(rule.patterns)) {
-            _extractIncludedScopesInPatterns(result, grammar.scopeName, rule.patterns);
-        }
-        if (rule.repository) {
-            _extractIncludedScopesInRepository(result, grammar.scopeName, rule.repository);
-        }
+function collectSpecificDependencies(result, baseGrammar, selfGrammar, include, repository) {
+    if (repository === void 0) { repository = selfGrammar.repository; }
+    if (repository && repository[include]) {
+        var rule = repository[include];
+        _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, [rule], repository);
     }
 }
 exports.collectSpecificDependencies = collectSpecificDependencies;
 /**
  * Collects the list of all external included scopes in `grammar`.
  */
-function collectDependencies(result, grammar) {
-    if (grammar.patterns && Array.isArray(grammar.patterns)) {
-        _extractIncludedScopesInPatterns(result, grammar.scopeName, grammar.patterns);
-    }
-    if (grammar.repository) {
-        _extractIncludedScopesInRepository(result, grammar.scopeName, grammar.repository);
+function collectDependencies(result, baseGrammar, selfGrammar) {
+    if (selfGrammar.patterns && Array.isArray(selfGrammar.patterns)) {
+        _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, selfGrammar.patterns, selfGrammar.repository);
     }
 }
 exports.collectDependencies = collectDependencies;
@@ -3640,14 +3646,14 @@ var Registry = /** @class */ (function () {
                 return [2 /*return*/, null];
             }); }); } }; }
         this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme, locator.colorMap), locator.getOnigLib && locator.getOnigLib());
         this._ensureGrammarCache = new Map();
     }
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */
-    Registry.prototype.setTheme = function (theme) {
-        this._syncRegistry.setTheme(theme_1.Theme.createFromRawTheme(theme));
+    Registry.prototype.setTheme = function (theme, colorMap) {
+        this._syncRegistry.setTheme(theme_1.Theme.createFromRawTheme(theme, colorMap));
     };
     /**
      * Returns a lookup array for color ids.
@@ -3711,10 +3717,10 @@ var Registry = /** @class */ (function () {
             return;
         }
         if (dep instanceof grammar_1.FullScopeDependency) {
-            grammar_1.collectDependencies(result, grammar);
+            grammar_1.collectDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar);
         }
         else {
-            grammar_1.collectSpecificDependencies(result, grammar, dep.include);
+            grammar_1.collectSpecificDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar, dep.include);
         }
         var injections = this._syncRegistry.injections(dep.scopeName);
         if (injections) {

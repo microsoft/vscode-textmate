@@ -37,6 +37,7 @@ export interface IRawTheme {
  */
 export interface RegistryOptions {
 	theme?: IRawTheme;
+	colorMap?: string[];
 	loadGrammar(scopeName: string): Promise<IRawGrammar | undefined | null>;
 	getInjections?(scopeName: string): string[] | undefined;
 	getOnigLib?(): Promise<IOnigLib>;
@@ -79,15 +80,15 @@ export class Registry {
 
 	constructor(locator: RegistryOptions = { loadGrammar: async () => null }) {
 		this._locator = locator;
-		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme), locator.getOnigLib && locator.getOnigLib());
+		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme, locator.colorMap), locator.getOnigLib && locator.getOnigLib());
 		this._ensureGrammarCache = new Map<string, Promise<void>>();
 	}
 
 	/**
 	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
 	 */
-	public setTheme(theme: IRawTheme): void {
-		this._syncRegistry.setTheme(Theme.createFromRawTheme(theme));
+	public setTheme(theme: IRawTheme, colorMap?: string[]): void {
+		this._syncRegistry.setTheme(Theme.createFromRawTheme(theme, colorMap));
 	}
 
 	/**

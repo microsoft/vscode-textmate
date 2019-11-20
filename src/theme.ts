@@ -164,7 +164,7 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 /**
  * Resolve rules (i.e. inheritance).
  */
-function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
+function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap: string[] | undefined): Theme {
 
 	// Sort rules lexicographically, and then by index if necessary
 	parsedThemeRules.sort((a, b) => {
@@ -195,7 +195,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
 			defaultBackground = incomingDefaults.background;
 		}
 	}
-	let colorMap = new ColorMap();
+	let colorMap = new ColorMap(_colorMap);
 	let defaults = new ThemeTrieElementRule(0, null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
 
 	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0), []);
@@ -209,14 +209,25 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[]): Theme {
 
 export class ColorMap {
 
+	private readonly _isFrozen: boolean;
 	private _lastColorId: number;
 	private _id2color: string[];
 	private _color2id: { [color: string]: number; };
 
-	constructor() {
+	constructor(_colorMap?: string[]) {
 		this._lastColorId = 0;
 		this._id2color = [];
 		this._color2id = Object.create(null);
+
+		if (Array.isArray(_colorMap)) {
+			this._isFrozen = true;
+			for (let i = 0, len = _colorMap.length; i < len; i++) {
+				this._color2id[_colorMap[i]] = i;
+				this._id2color[i] = _colorMap[i];
+			}
+		} else {
+			this._isFrozen = false;
+		}
 	}
 
 	public getId(color: string | null): number {
@@ -227,6 +238,9 @@ export class ColorMap {
 		let value = this._color2id[color];
 		if (value) {
 			return value;
+		}
+		if (this._isFrozen) {
+			throw new Error(`Missing color in color map - ${color}`);
 		}
 		value = ++this._lastColorId;
 		this._color2id[color] = value;
@@ -242,12 +256,12 @@ export class ColorMap {
 
 export class Theme {
 
-	public static createFromRawTheme(source: IRawTheme | undefined): Theme {
-		return this.createFromParsedTheme(parseTheme(source));
+	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
+		return this.createFromParsedTheme(parseTheme(source), colorMap);
 	}
 
-	public static createFromParsedTheme(source: ParsedThemeRule[]): Theme {
-		return resolveParsedThemeRules(source);
+	public static createFromParsedTheme(source: ParsedThemeRule[], colorMap?: string[]): Theme {
+		return resolveParsedThemeRules(source, colorMap);
 	}
 
 	private readonly _colorMap: ColorMap;
