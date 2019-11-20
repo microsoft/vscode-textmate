@@ -67,7 +67,7 @@ export type IRawCaptures = IRawCapturesMap & ILocatable;
 
 export interface IOnigLib {
 	createOnigScanner(sources: string[]): OnigScanner;
-	createOnigString(sources: string): OnigString;
+	createOnigString(str: string): OnigString;
 }
 
 export interface IOnigCaptureIndex {

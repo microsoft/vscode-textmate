@@ -145,9 +145,9 @@ export class Registry {
 		}
 
 		if (dep instanceof FullScopeDependency) {
-			collectDependencies(result, grammar);
+			collectDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar);
 		} else {
-			collectSpecificDependencies(result, grammar, dep.include);
+			collectSpecificDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar, dep.include);
 		}
 
 		const injections = this._syncRegistry.injections(dep.scopeName);

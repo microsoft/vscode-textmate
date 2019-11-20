@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { clone } from './utils';
+import { clone, mergeObjects } from './utils';
 import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
@@ -61,12 +61,14 @@ export class ScopeDependencyCollector {
 	public readonly full: FullScopeDependency[];
 	public readonly partial: PartialScopeDependency[];
 
+	public readonly visitedRule: Set<IRawRule>;
 	private readonly _seenFull: Set<string>;
 	private readonly _seenPartial: Set<string>;
 
 	constructor() {
 		this.full = [];
 		this.partial = [];
+		this.visitedRule = new Set<IRawRule>();
 		this._seenFull = new Set<string>();
 		this._seenPartial = new Set<string>();
 	}
@@ -89,11 +91,17 @@ export class ScopeDependencyCollector {
 /**
  * Fill in `result` all external included scopes in `patterns`
  */
-function _extractIncludedScopesInPatterns(result: ScopeDependencyCollector, grammarScopeName: string, patterns: IRawRule[]): void {
+function _extractIncludedScopesInPatterns(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar, patterns: IRawRule[], repository: IRawRepository | undefined): void {
 	for (const pattern of patterns) {
+		if (result.visitedRule.has(pattern)) {
+			continue;
+		}
+		result.visitedRule.add(pattern);
+
+		const patternRepository = (pattern.repository ? mergeObjects({}, repository, pattern.repository) : repository);
 
 		if (Array.isArray(pattern.patterns)) {
-			_extractIncludedScopesInPatterns(result, grammarScopeName, pattern.patterns);
+			_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, pattern.patterns, patternRepository);
 		}
 
 		const include = pattern.include;
@@ -102,43 +110,29 @@ function _extractIncludedScopesInPatterns(result: ScopeDependencyCollector, gram
 			continue;
 		}
 
-		if (include === '$base' || include === '$self') {
-			// Special includes that can be resolved locally in this grammar
-			continue;
-		}
-
-		if (include.charAt(0) === '#') {
-			// Local include from this grammar
-			continue;
-		}
-
-		const sharpIndex = include.indexOf('#');
-		if (sharpIndex >= 0) {
-			const scopeName = include.substring(0, sharpIndex);
-			if (scopeName !== grammarScopeName) {
-				result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
-			}
+		if (include === '$base' || include === baseGrammar.scopeName) {
+			collectDependencies(result, baseGrammar, baseGrammar);
+		} else if (include === '$self' || include === selfGrammar.scopeName) {
+			collectDependencies(result, baseGrammar, selfGrammar);
+		} else if (include.charAt(0) === '#') {
+			collectSpecificDependencies(result, baseGrammar, selfGrammar, include.substring(1), patternRepository);
 		} else {
-			if (include !== grammarScopeName) {
+
+			const sharpIndex = include.indexOf('#');
+			if (sharpIndex >= 0) {
+				const scopeName = include.substring(0, sharpIndex);
+				const includedName = include.substring(sharpIndex + 1);
+				if (scopeName === baseGrammar.scopeName) {
+					collectSpecificDependencies(result, baseGrammar, baseGrammar, includedName, patternRepository);
+				} else if (scopeName === selfGrammar.scopeName) {
+					collectSpecificDependencies(result, baseGrammar, selfGrammar, includedName, patternRepository);
+				} else {
+					result.add(new PartialScopeDependency(scopeName, include.substring(sharpIndex + 1)));
+				}
+			} else {
 				result.add(new FullScopeDependency(include));
 			}
-		}
-	}
-}
 
-/**
- * Fill in `result` all external included scopes in `repository`
- */
-function _extractIncludedScopesInRepository(result: ScopeDependencyCollector, grammarScopeName: string, repository: IRawRepository): void {
-	for (let name in repository) {
-		const rule = repository[name];
-
-		if (rule.patterns && Array.isArray(rule.patterns)) {
-			_extractIncludedScopesInPatterns(result, grammarScopeName, rule.patterns);
-		}
-
-		if (rule.repository) {
-			_extractIncludedScopesInRepository(result, grammarScopeName, rule.repository);
 		}
 	}
 }
@@ -146,30 +140,19 @@ function _extractIncludedScopesInRepository(result: ScopeDependencyCollector, gr
 /**
  * Collect a specific dependency from the grammar's repository
  */
-export function collectSpecificDependencies(result: ScopeDependencyCollector, grammar: IRawGrammar, include: string): void {
-	if (grammar.repository && grammar.repository[include]) {
-		const rule = grammar.repository[include];
-
-		if (rule.patterns && Array.isArray(rule.patterns)) {
-			_extractIncludedScopesInPatterns(result, grammar.scopeName, rule.patterns);
-		}
-
-		if (rule.repository) {
-			_extractIncludedScopesInRepository(result, grammar.scopeName, rule.repository);
-		}
+export function collectSpecificDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar, include: string, repository: IRawRepository | undefined = selfGrammar.repository): void {
+	if (repository && repository[include]) {
+		const rule = repository[include];
+		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, [rule], repository);
 	}
 }
 
 /**
  * Collects the list of all external included scopes in `grammar`.
  */
-export function collectDependencies(result: ScopeDependencyCollector, grammar: IRawGrammar): void {
-	if (grammar.patterns && Array.isArray(grammar.patterns)) {
-		_extractIncludedScopesInPatterns(result, grammar.scopeName, grammar.patterns);
-	}
-
-	if (grammar.repository) {
-		_extractIncludedScopesInRepository(result, grammar.scopeName, grammar.repository);
+export function collectDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar): void {
+	if (selfGrammar.patterns && Array.isArray(selfGrammar.patterns)) {
+		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, selfGrammar.patterns, selfGrammar.repository);
 	}
 }
 
