@@ -2382,6 +2382,13 @@ function collectDependencies(result, baseGrammar, selfGrammar) {
     if (selfGrammar.patterns && Array.isArray(selfGrammar.patterns)) {
         _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, selfGrammar.patterns, selfGrammar.repository);
     }
+    if (selfGrammar.injections) {
+        var injections = [];
+        for (var injection in selfGrammar.injections) {
+            injections.push(selfGrammar.injections[injection]);
+        }
+        _extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, injections, selfGrammar.repository);
+    }
 }
 exports.collectDependencies = collectDependencies;
 function scopesAreMatching(thisScopeName, scopeName) {

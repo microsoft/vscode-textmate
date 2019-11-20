@@ -154,6 +154,13 @@ export function collectDependencies(result: ScopeDependencyCollector, baseGramma
 	if (selfGrammar.patterns && Array.isArray(selfGrammar.patterns)) {
 		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, selfGrammar.patterns, selfGrammar.repository);
 	}
+	if (selfGrammar.injections) {
+		let injections: IRawRule[] = [];
+		for (let injection in selfGrammar.injections) {
+			injections.push(selfGrammar.injections[injection]);
+		}
+		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, injections, selfGrammar.repository);
+	}
 }
 
 export interface Injection {
