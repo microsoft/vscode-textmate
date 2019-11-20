@@ -807,6 +807,10 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 				}
 			}
 		} else {
+			if (DebugFlags.InDebugMode) {
+				console.log('  popping ' + whileRule.rule.debugName + ' - ' + whileRule.rule.debugWhileRegExp);
+			}
+
 			stack = whileRule.stack.pop();
 			break;
 		}
