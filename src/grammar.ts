@@ -10,7 +10,11 @@ import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
-import { performance } from "perf_hooks";
+
+declare let performance: { now: () => number } | undefined;
+if (typeof process !== 'undefined' && process.release.name === 'node') {
+	performance = require('perf_hooks').performance;
+}
 
 export const enum TemporaryStandardTokenType {
 	Other = 0,
@@ -699,13 +703,21 @@ interface IMatchResult {
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult | null {
 	const rule = stack.getRule(grammar);
 	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
-	const perfStart = performance.now();
-	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
-	const timeMillis = performance.now() - perfStart;
-	if (timeMillis > 5) {
-		console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${timeMillis} against '${lineText}'`);
+
+	let perfStart = 0;
+	if (DebugFlags.InDebugMode && performance) {
+		perfStart = performance.now();
 	}
+
+	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+
 	if (DebugFlags.InDebugMode) {
+		if (performance) {
+			const timeMillis = performance.now() - perfStart;
+			if (timeMillis > 5) {
+				console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${timeMillis} against '${lineText}'`);
+			}
+		}
 		// console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
 		// console.log(debugCompiledRuleToString(ruleScanner));
 		if (r) {
