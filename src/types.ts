@@ -77,9 +77,8 @@ export interface IOnigCaptureIndex {
 }
 
 export interface IOnigMatch {
-    index: number;
-    captureIndices: IOnigCaptureIndex[];
-    scanner: OnigScanner;
+	index: number;
+	captureIndices: IOnigCaptureIndex[];
 }
 
 export interface OnigScanner {
