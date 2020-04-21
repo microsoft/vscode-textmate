@@ -9,11 +9,11 @@
   "typings": "./release/main.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-textmate"
+    "url": "https://github.com/microsoft/vscode-textmate"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Microsoft/vscode-textmate/issues"
+    "url": "https://github.com/microsoft/vscode-textmate/issues"
   },
   "scripts": {
     "watch": "tsc -watch",
