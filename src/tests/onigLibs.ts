@@ -3,9 +3,10 @@
  *--------------------------------------------------------*/
 'use strict';
 
-import { IOnigLib } from './types';
+import { IOnigLib } from '../types';
 
 let onigasmLib: Promise<IOnigLib> | null = null;
+let vscodeOnigurumaLib: Promise<IOnigLib> | null = null;
 let onigurumaLib: Promise<IOnigLib> | null = null;
 
 export function getOnigasm(): Promise<IOnigLib> {
@@ -13,7 +14,7 @@ export function getOnigasm(): Promise<IOnigLib> {
 		let onigasmModule = require('onigasm');
 		let fs = require('fs');
 		let path = require('path');
-		const wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
+		const wasmBin = fs.readFileSync(path.join(__dirname, '../../node_modules/onigasm/lib/onigasm.wasm')).buffer;
 		onigasmLib = (<Promise<any>>onigasmModule.loadWASM(wasmBin)).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },
@@ -22,6 +23,22 @@ export function getOnigasm(): Promise<IOnigLib> {
 		});
 	}
 	return onigasmLib;
+}
+
+export function getVSCodeOniguruma(): Promise<IOnigLib> {
+	if (!vscodeOnigurumaLib) {
+		let vscodeOnigurumaModule = require('vscode-oniguruma-wasm');
+		let fs = require('fs');
+		let path = require('path');
+		const wasmBin = fs.readFileSync(path.join(__dirname, '../../node_modules/vscode-oniguruma-wasm/release/onig.wasm')).buffer;
+		vscodeOnigurumaLib = (<Promise<any>>vscodeOnigurumaModule.loadWASM(wasmBin)).then((_: any) => {
+			return {
+				createOnigScanner(patterns: string[]) { return new vscodeOnigurumaModule.OnigScanner(patterns); },
+				createOnigString(s: string) { return new vscodeOnigurumaModule.OnigString(s); }
+			};
+		});
+	}
+	return vscodeOnigurumaLib;
 }
 
 export function getOniguruma(): Promise<IOnigLib> {

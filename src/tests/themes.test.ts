@@ -14,7 +14,7 @@ import {
 } from '../theme';
 import * as plist from '../plist';
 import { ThemeTest } from './themeTest';
-import { getOnigasm, getOniguruma } from '../onigLibs';
+import { getOnigasm, getOniguruma, getVSCodeOniguruma } from './onigLibs';
 import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
@@ -95,6 +95,7 @@ class ThemeInfo {
 
 	let _resolvers = [
 		new Resolver(_grammars, _languages, getOnigasm(), 'onigasm'),
+		new Resolver(_grammars, _languages, getVSCodeOniguruma(), 'vscode-oniguruma'),
 		new Resolver(_grammars, _languages, getOniguruma(), 'oniguruma')
 	];
 	let _themeDatas = _resolvers.map(resolver => THEMES.map(theme => theme.create(resolver)));

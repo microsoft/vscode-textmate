@@ -57,7 +57,6 @@ export interface IOnigCaptureIndex {
 export interface IOnigMatch {
     index: number;
     captureIndices: IOnigCaptureIndex[];
-    scanner: OnigScanner;
 }
 export interface OnigScanner {
     findNextMatchSync(string: string | OnigString, startPosition: number): IOnigMatch;

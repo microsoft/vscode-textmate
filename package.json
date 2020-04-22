@@ -20,13 +20,10 @@
     "compile": "tsc",
     "test": "npm run compile && mocha out/tests/*.test.js",
     "benchmark": "node benchmark/benchmark.js",
-    "inspect": "node scripts/inspect.js",
+    "inspect": "node out/tests/inspect.js",
     "version": "npm run test && node scripts/release.js",
     "postversion": "git push && git push --tags",
     "prepublishOnly": "node scripts/release.js"
-  },
-  "dependencies": {
-    "oniguruma": "^7.2.0"
   },
   "devDependencies": {
     "@types/mocha": "5.2.7",
@@ -34,7 +31,9 @@
     "durations": "^3.4.1",
     "mocha": "^6.1.4",
     "onigasm": "^2.2.3",
+    "oniguruma": "^7.2.0",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "vscode-oniguruma-wasm": "^1.1.0"
   }
 }

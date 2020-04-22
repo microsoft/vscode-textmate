@@ -14,7 +14,6 @@ if (!fs.existsSync(RELEASE_FOLDER)) {
 }
 
 var sources = [
-	'onigLibs.js',
 	'utils.js',
 	'theme.js',
 	'matcher.js',

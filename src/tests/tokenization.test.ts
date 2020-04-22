@@ -8,7 +8,7 @@ import * as path from 'path';
 import * as assert from 'assert';
 import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
 import { IOnigLib, IRawGrammar } from '../types';
-import { getOnigasm, getOniguruma } from '../onigLibs';
+import { getOnigasm, getOniguruma, getVSCodeOniguruma } from './onigLibs';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 
@@ -21,7 +21,6 @@ function assertTokenizationSuite(testLocation: string): void {
 		grammarScopeName?: string;
 		grammarInjections?: string[];
 		lines: IRawTestLine[];
-		skipOnigasm: boolean;
 	}
 	interface IRawTestLine {
 		line: string;
@@ -37,18 +36,16 @@ function assertTokenizationSuite(testLocation: string): void {
 
 	tests.forEach((test) => {
 
-		if (test.skipOnigasm) {
-			it.skip(test.desc + '-onigasm', () => {
-				return performTest(test, getOnigasm());
-			});
-		} else {
-			it(test.desc + '-onigasm', () => {
-				return performTest(test, getOnigasm());
-			});
-		}
+		it(test.desc + '-onigasm', () => {
+			return performTest(test, getOnigasm());
+		});
 
 		it(test.desc + '-oniguruma', () => {
 			return performTest(test, getOniguruma());
+		});
+
+		it(test.desc + '-vscode-oniguruma', () => {
+			return performTest(test, getVSCodeOniguruma());
 		});
 	});
 
@@ -68,16 +65,16 @@ function assertTokenizationSuite(testLocation: string): void {
 			throw new Error('I HAVE NO GRAMMAR FOR TEST');
 		}
 
-		let locator: RegistryOptions = {
+		let options: RegistryOptions = {
+			onigLib: onigLib,
 			loadGrammar: (scopeName: string) => Promise.resolve(grammarByScope[scopeName]),
 			getInjections: (scopeName: string) => {
 				if (scopeName === grammarScopeName) {
 					return test.grammarInjections;
 				}
-			},
-			getOnigLib: () => onigLib
+			}
 		};
-		let registry = new Registry(locator);
+		let registry = new Registry(options);
 		let grammar: IGrammar | null = await registry.loadGrammar(grammarScopeName);
 		if (!grammar) {
 			throw new Error('I HAVE NO GRAMMAR FOR TEST');

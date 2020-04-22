@@ -30,13 +30,13 @@ export class Resolver implements RegistryOptions {
 	private _id2language: string[];
 	private readonly _grammars: IGrammarRegistration[];
 	private readonly _languages: ILanguageRegistration[];
-	private readonly _onigLibPromise: Promise<IOnigLib>;
+	public readonly onigLib: Promise<IOnigLib>;
 	private readonly _onigLibName: string;
 
 	constructor(grammars: IGrammarRegistration[], languages: ILanguageRegistration[], onigLibPromise: Promise<IOnigLib>, onigLibName: string) {
 		this._grammars = grammars;
 		this._languages = languages;
-		this._onigLibPromise = onigLibPromise;
+		this.onigLib = onigLibPromise;
 		this._onigLibName = onigLibName;
 
 		this.language2id = Object.create(null);
@@ -48,10 +48,6 @@ export class Resolver implements RegistryOptions {
 			this.language2id[this._languages[i].id] = languageId;
 			this._id2language[languageId] = this._languages[i].id;
 		}
-	}
-
-	public getOnigLib(): Promise<IOnigLib> {
-		return this._onigLibPromise;
 	}
 
 	public getOnigLibName(): string {

@@ -778,7 +778,6 @@
 		],
 		"grammarPath": "fixtures/Makefile.plist",
 		"desc": "Issue #8",
-		"skipOnigasm": true,
 		"lines": [
 			{
 				"line": "ifeq (version,$(firstword $(MAKECMDGOALS)))",

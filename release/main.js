@@ -26,59 +26,6 @@ function $load(name, factory) {
     $map[name] = mod;
 }
 //# sourceMappingURL=_prefix.js.map
-$load('./onigLibs', function(require, module, exports) {
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var onigasmLib = null;
-var onigurumaLib = null;
-function getOnigasm() {
-    if (!onigasmLib) {
-        var onigasmModule_1 = require('onigasm');
-        var fs = require('fs');
-        var path = require('path');
-        var wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
-        onigasmLib = onigasmModule_1.loadWASM(wasmBin).then(function (_) {
-            return {
-                createOnigScanner: function (patterns) { return new onigasmModule_1.OnigScanner(patterns); },
-                createOnigString: function (s) { return new onigasmModule_1.OnigString(s); }
-            };
-        });
-    }
-    return onigasmLib;
-}
-exports.getOnigasm = getOnigasm;
-function getOniguruma() {
-    if (!onigurumaLib) {
-        var getOnigModule_1 = (function () {
-            var onigurumaModule = null;
-            return function () {
-                if (!onigurumaModule) {
-                    onigurumaModule = require('oniguruma');
-                }
-                return onigurumaModule;
-            };
-        })();
-        onigurumaLib = Promise.resolve({
-            createOnigScanner: function (patterns) {
-                var onigurumaModule = getOnigModule_1();
-                return new onigurumaModule.OnigScanner(patterns);
-            },
-            createOnigString: function (s) {
-                var onigurumaModule = getOnigModule_1();
-                var string = new onigurumaModule.OnigString(s);
-                string.content = s;
-                return string;
-            }
-        });
-    }
-    return onigurumaLib;
-}
-exports.getOniguruma = getOniguruma;
-//# sourceMappingURL=onigLibs.js.map
-});
 $load('./utils', function(require, module, exports) {
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
@@ -3513,14 +3460,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
-var onigLibs_1 = require("./onigLibs");
 var SyncRegistry = /** @class */ (function () {
     function SyncRegistry(theme, onigLibPromise) {
         this._theme = theme;
         this._grammars = {};
         this._rawGrammars = {};
         this._injectionGrammars = {};
-        this._onigLibPromise = onigLibPromise || onigLibs_1.getOniguruma();
+        this._onigLibPromise = onigLibPromise;
     }
     SyncRegistry.prototype.setTheme = function (theme) {
         var _this = this;
@@ -3647,13 +3593,9 @@ var grammar_1 = require("./grammar");
  * The registry that will hold all grammars.
  */
 var Registry = /** @class */ (function () {
-    function Registry(locator) {
-        var _this = this;
-        if (locator === void 0) { locator = { loadGrammar: function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-                return [2 /*return*/, null];
-            }); }); } }; }
-        this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme, locator.colorMap), locator.getOnigLib && locator.getOnigLib());
+    function Registry(options) {
+        this._options = options;
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(options.theme, options.colorMap), options.onigLib);
         this._ensureGrammarCache = new Map();
     }
     /**
@@ -3693,11 +3635,11 @@ var Registry = /** @class */ (function () {
             var grammar, injections;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
+                    case 0: return [4 /*yield*/, this._options.loadGrammar(scopeName)];
                     case 1:
                         grammar = _a.sent();
                         if (grammar) {
-                            injections = (typeof this._locator.getInjections === 'function' ? this._locator.getInjections(scopeName) : undefined);
+                            injections = (typeof this._options.getInjections === 'function' ? this._options.getInjections(scopeName) : undefined);
                             this._syncRegistry.addGrammar(grammar, injections);
                         }
                         return [2 /*return*/];
