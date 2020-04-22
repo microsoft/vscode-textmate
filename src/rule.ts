@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { RegexSource, mergeObjects, basename } from './utils';
 import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures, IOnigLib, OnigScanner, IOnigCaptureIndex } from './types';

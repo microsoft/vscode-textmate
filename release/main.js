@@ -7,10 +7,10 @@
     }
 })(function () {
 
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var $map = {};
 function $load(name, factory) {
     var mod = {
@@ -27,10 +27,10 @@ function $load(name, factory) {
 }
 //# sourceMappingURL=_prefix.js.map
 $load('./utils', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function clone(something) {
     return doClone(something);
@@ -124,10 +124,10 @@ exports.RegexSource = RegexSource;
 //# sourceMappingURL=utils.js.map
 });
 $load('./theme', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var ParsedThemeRule = /** @class */ (function () {
     function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
@@ -529,10 +529,10 @@ exports.ThemeTrieElement = ThemeTrieElement;
 //# sourceMappingURL=theme.js.map
 });
 $load('./matcher', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function createMatchers(selector, matchesName) {
     var results = [];
@@ -635,10 +635,10 @@ function newTokenizer(input) {
 //# sourceMappingURL=matcher.js.map
 });
 $load('./debug', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DebugFlags = {
     InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
@@ -646,10 +646,10 @@ exports.DebugFlags = {
 //# sourceMappingURL=debug.js.map
 });
 $load('./json', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function doFail(streamState, msg) {
     // console.log('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
@@ -1079,10 +1079,10 @@ function nextJSONToken(_state, _out) {
 //# sourceMappingURL=json.js.map
 });
 $load('./plist', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function parseWithLocation(content, filename, locationKeyName) {
     return _parse(content, filename, locationKeyName);
@@ -1536,10 +1536,10 @@ function _parse(content, filename, locationKeyName) {
 //# sourceMappingURL=plist.js.map
 });
 $load('./grammarReader', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var plist = require("./plist");
 var debug_1 = require("./debug");
@@ -1567,10 +1567,10 @@ function parsePLISTGrammar(contents, filename) {
 //# sourceMappingURL=grammarReader.js.map
 });
 $load('./rule', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -2207,10 +2207,10 @@ exports.RuleFactory = RuleFactory;
 //# sourceMappingURL=rule.js.map
 });
 $load('./grammar', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var rule_1 = require("./rule");
@@ -3419,10 +3419,10 @@ function toTemporaryType(standardType) {
 //# sourceMappingURL=grammar.js.map
 });
 $load('./registry', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -3545,10 +3545,10 @@ exports.SyncRegistry = SyncRegistry;
 //# sourceMappingURL=registry.js.map
 });
 $load('./main', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }

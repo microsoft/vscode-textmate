@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { IRawGrammar, IOnigLib } from '../types';
 import { parseRawGrammar } from '../grammarReader';

@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { createGrammar, Grammar, IGrammarRepository } from './grammar';
 import { IRawGrammar } from './types';
