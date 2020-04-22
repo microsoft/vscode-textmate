@@ -27,9 +27,7 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 			token = tokenizer.next();
 		}
 		let matcher = parseConjunction();
-		if (matcher) {
-			results.push({ matcher, priority });
-		}
+		results.push({ matcher, priority });
 		if (token !== ',') {
 			break;
 		}
