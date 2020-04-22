@@ -1,6 +1,6 @@
 # VSCode TextMate [![Build Status](https://dev.azure.com/ms/vscode-textmate/_apis/build/status/microsoft.vscode-textmate?branchName=master)](https://dev.azure.com/ms/vscode-textmate/_build/latest?definitionId=172&branchName=master)
 
-An interpreter for grammar files as defined by TextMate. TextMate grammars use the oniguruma dialect (https://github.com/kkos/oniguruma). Supports loading grammar files from JSON or PLIST format. This library is used in VS Code. Cross - grammar injections are currently not supported. 
+An interpreter for grammar files as defined by TextMate. TextMate grammars use the oniguruma dialect (https://github.com/kkos/oniguruma). Supports loading grammar files from JSON or PLIST format. This library is used in VS Code. Cross - grammar injections are currently not supported.
 
 ## Installing
 
@@ -12,7 +12,8 @@ npm install vscode-textmate
 
 ```javascript
 const fs = require('fs');
-const vsctm = require('vscode-textmate');
+const vsctm = require('./release/main');
+const oniguruma = require('oniguruma');
 
 /**
  * Utility to read a file as a promise
@@ -25,6 +26,10 @@ function readFile(path) {
 
 // Create a registry that can create a grammar from a scope name.
 const registry = new vsctm.Registry({
+    onigLib: Promise.resolve({
+        createOnigScanner: (sources) => new oniguruma.OnigScanner(sources),
+        createOnigString: (str) => new oniguruma.OnigString(str)
+    }),
     loadGrammar: (scopeName) => {
         if (scopeName === 'source.js') {
             // https://github.com/textmate/javascript.tmbundle/blob/master/Syntaxes/JavaScript.plist
@@ -94,7 +99,7 @@ Tokenizing line: }
 
 ## For grammar authors
 
-See [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test) that can help you write unit tests against your grammar. 
+See [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test) that can help you write unit tests against your grammar.
 
 ## API doc
 
