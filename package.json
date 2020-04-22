@@ -18,7 +18,7 @@
   "scripts": {
     "watch": "tsc -watch",
     "compile": "tsc",
-    "test": "npm run compile && mocha out/tests/*.test.js",
+    "test": "tape -r ./out/tests/*.test.js",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "version": "npm run test && node scripts/release.js",
@@ -26,12 +26,12 @@
     "prepublishOnly": "node scripts/release.js"
   },
   "devDependencies": {
-    "@types/mocha": "5.2.7",
     "@types/node": "^12.6.2",
+    "@types/tape": "^4.13.0",
     "durations": "^3.4.1",
-    "mocha": "^6.1.4",
     "onigasm": "^2.2.3",
     "oniguruma": "^7.2.0",
+    "tape": "^4.13.2",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3",
     "vscode-oniguruma-wasm": "^1.1.0"

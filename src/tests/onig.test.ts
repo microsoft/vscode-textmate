@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import * as assert from 'assert';
+import * as tape from 'tape';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as durations from 'durations';
@@ -13,7 +13,7 @@ import { Registry, StackElement } from '../main';
 
 declare module 'durations';
 
-describe.skip('Compare OnigLibs outputs', () => {
+tape.skip('Compare OnigLibs outputs', (t: tape.Test) => {
 	let registrations = getVSCodeRegistrations();
 	if (!registrations) {
 		console.log('vscode repo ot found, skipping OnigLibs tests');
@@ -33,10 +33,11 @@ describe.skip('Compare OnigLibs outputs', () => {
 		}
 		addTest(scopeName, testFilePath, new Registry(onigurumaResolver), new Registry(onigasmResolver), new Registry(vscodeOnigurumaResolver));
 	}
+	t.end();
 });
 
 async function addTest(scopeName: string, filePath: string, onigurumaRegistry: Registry, onigasmRegistry: Registry, vscodeOnigurumaRegistry: Registry) {
-	(<any>it(scopeName + '/' + path.basename(filePath), async () => {
+	tape(scopeName + '/' + path.basename(filePath), { timeout: 1000000 }, async (t: tape.Test) => {
 		const fileContent = fs.readFileSync(filePath).toString();
 		let lines = fileContent.split(/\r\n|\r|\n/g);
 		let prevState1: StackElement | null = null;
@@ -62,17 +63,18 @@ async function addTest(scopeName: string, filePath: string, onigurumaRegistry: R
 			stopWatch2.start();
 			let t2 = grammar2.tokenizeLine(lines[i], prevState2);
 			stopWatch2.stop();
-			assert.deepEqual(t2.tokens, t1.tokens, `Difference in onigasm at line ${i}: ${lines[i]}`);
+			t.deepEqual(t2.tokens, t1.tokens, `Difference in onigasm at line ${i}: ${lines[i]}`);
 			stopWatch3.start();
-			let t3 = grammar2.tokenizeLine(lines[i], prevState2);
+			let t3 = grammar2.tokenizeLine(lines[i], prevState3);
 			stopWatch3.stop();
-			assert.deepEqual(t3.tokens, t1.tokens, `Difference in vscode-oniguruma at line ${i}: ${lines[i]}`);
+			t.deepEqual(t3.tokens, t1.tokens, `Difference in vscode-oniguruma at line ${i}: ${lines[i]}`);
 			prevState1 = t1.ruleStack;
 			prevState2 = t2.ruleStack;
 			prevState3 = t3.ruleStack;
 		}
 		console.log(`Oniguruma: ${stopWatch1.format()}, Onigasm: ${stopWatch2.format()} (${comparison(stopWatch2, stopWatch1)}), VSCodeOniguruma: ${stopWatch3.format()} (${comparison(stopWatch3, stopWatch1)})`);
-	})).timeout(1000000);
+		t.end();
+	});
 }
 
 function comparison(actualSW: any, expectedSW: any): string {

@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as assert from 'assert';
+import * as tape from 'tape';
 import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
 import { IOnigLib, IRawGrammar } from '../types';
 import { getOnigasm, getOniguruma, getVSCodeOniguruma } from './onigLibs';
@@ -35,20 +35,23 @@ function assertTokenizationSuite(testLocation: string): void {
 
 	tests.forEach((test) => {
 
-		it(test.desc + '-onigasm', () => {
-			return performTest(test, getOnigasm());
+		tape(test.desc + '-onigasm', async (t: tape.Test) => {
+			await performTest(t, test, getOnigasm());
+			t.end();
 		});
 
-		it(test.desc + '-oniguruma', () => {
-			return performTest(test, getOniguruma());
+		tape(test.desc + '-oniguruma', async (t: tape.Test) => {
+			await performTest(t, test, getOniguruma());
+			t.end();
 		});
 
-		it(test.desc + '-vscode-oniguruma', () => {
-			return performTest(test, getVSCodeOniguruma());
+		tape(test.desc + '-vscode-oniguruma', async (t: tape.Test) => {
+			await performTest(t, test, getVSCodeOniguruma());
+			t.end();
 		});
 	});
 
-	async function performTest(test: IRawTest, onigLib: Promise<IOnigLib>): Promise<void> {
+	async function performTest(t: tape.Test, test: IRawTest, onigLib: Promise<IOnigLib>): Promise<void> {
 
 		let grammarScopeName = test.grammarScopeName;
 		let grammarByScope : { [scope:string]:IRawGrammar } = {};
@@ -80,11 +83,11 @@ function assertTokenizationSuite(testLocation: string): void {
 		}
 		let prevState: StackElement | null = null;
 		for (let i = 0; i < test.lines.length; i++) {
-			prevState = assertLineTokenization(grammar, test.lines[i], prevState);
+			prevState = assertLineTokenization(t, grammar, test.lines[i], prevState);
 		}
 	}
 
-	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement | null): StackElement {
+	function assertLineTokenization(t: tape.Test, grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement | null): StackElement {
 		let actual = grammar.tokenizeLine(testCase.line, prevState);
 
 		let actualTokens: IRawToken[] = actual.tokens.map((token) => {
@@ -102,18 +105,12 @@ function assertTokenizationSuite(testLocation: string): void {
 			});
 		}
 
-		assert.deepEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
+		t.deepEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
 
 		return actual.ruleStack;
 	}
 }
 
-describe('Tokenization /first-mate/', () => {
-	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/first-mate/tests.json'));
-});
-
-describe('Tokenization /suite1/', () => {
-	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/tests.json'));
-	assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/whileTests.json'));
-});
-
+assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/first-mate/tests.json'));
+assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/tests.json'));
+assertTokenizationSuite(path.join(REPO_ROOT, 'test-cases/suite1/whileTests.json'));
