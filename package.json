@@ -18,7 +18,7 @@
   "scripts": {
     "watch": "tsc -watch",
     "compile": "tsc",
-    "test": "tape -r ./out/tests/all.test.js",
+    "test": "tape -r ./out/tests/all.test",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "version": "npm run test && node scripts/release.js",
