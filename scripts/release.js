@@ -29,6 +29,7 @@ var sources = [
 	var name = './' + sourceFile.replace(/\.js$/, '');
 	var sourcePath = path.join(OUT_FOLDER, sourceFile);
 	var sourceContents = fs.readFileSync(sourcePath).toString();
+	sourceContents = sourceContents.replace(/\/\/# sourceMappingURL[^\n]+/gm, '');
 
 	return [
 		"$load('" + name + "', function(require, module, exports) {",

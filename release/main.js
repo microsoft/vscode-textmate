@@ -121,7 +121,7 @@ var RegexSource = /** @class */ (function () {
     return RegexSource;
 }());
 exports.RegexSource = RegexSource;
-//# sourceMappingURL=utils.js.map
+
 });
 $load('./theme', function(require, module, exports) {
 "use strict";
@@ -526,7 +526,7 @@ var ThemeTrieElement = /** @class */ (function () {
     return ThemeTrieElement;
 }());
 exports.ThemeTrieElement = ThemeTrieElement;
-//# sourceMappingURL=theme.js.map
+
 });
 $load('./matcher', function(require, module, exports) {
 "use strict";
@@ -630,7 +630,7 @@ function newTokenizer(input) {
         }
     };
 }
-//# sourceMappingURL=matcher.js.map
+
 });
 $load('./debug', function(require, module, exports) {
 "use strict";
@@ -641,7 +641,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DebugFlags = {
     InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
 };
-//# sourceMappingURL=debug.js.map
+
 });
 $load('./json', function(require, module, exports) {
 "use strict";
@@ -1074,7 +1074,7 @@ function nextJSONToken(_state, _out) {
     // console.log('PRODUCING TOKEN: ', _out.value, JSONTokenType[_out.type]);
     return true;
 }
-//# sourceMappingURL=json.js.map
+
 });
 $load('./plist', function(require, module, exports) {
 "use strict";
@@ -1531,7 +1531,7 @@ function _parse(content, filename, locationKeyName) {
     }
     return cur;
 }
-//# sourceMappingURL=plist.js.map
+
 });
 $load('./grammarReader', function(require, module, exports) {
 "use strict";
@@ -1562,7 +1562,7 @@ function parsePLISTGrammar(contents, filename) {
     }
     return plist.parse(contents);
 }
-//# sourceMappingURL=grammarReader.js.map
+
 });
 $load('./rule', function(require, module, exports) {
 "use strict";
@@ -2202,7 +2202,7 @@ var RuleFactory = /** @class */ (function () {
     return RuleFactory;
 }());
 exports.RuleFactory = RuleFactory;
-//# sourceMappingURL=rule.js.map
+
 });
 $load('./grammar', function(require, module, exports) {
 "use strict";
@@ -3414,7 +3414,7 @@ function toTemporaryType(standardType) {
             return 8 /* MetaEmbedded */;
     }
 }
-//# sourceMappingURL=grammar.js.map
+
 });
 $load('./registry', function(require, module, exports) {
 "use strict";
@@ -3541,7 +3541,7 @@ var SyncRegistry = /** @class */ (function () {
     return SyncRegistry;
 }());
 exports.SyncRegistry = SyncRegistry;
-//# sourceMappingURL=registry.js.map
+
 });
 $load('./main', function(require, module, exports) {
 "use strict";
@@ -3763,7 +3763,7 @@ var Registry = /** @class */ (function () {
 exports.Registry = Registry;
 exports.INITIAL = grammar_1.StackElement.NULL;
 exports.parseRawGrammar = grammarReader.parseRawGrammar;
-//# sourceMappingURL=main.js.map
+
 });
 
 return $map['./main'].exports;;
