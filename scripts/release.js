@@ -29,7 +29,6 @@ var sources = [
 	var name = './' + sourceFile.replace(/\.js$/, '');
 	var sourcePath = path.join(OUT_FOLDER, sourceFile);
 	var sourceContents = fs.readFileSync(sourcePath).toString();
-	sourceContents = sourceContents.replace(/\/\/# sourceMappingURL[^\n]+/gm, '');
 
 	return [
 		"$load('" + name + "', function(require, module, exports) {",
@@ -51,7 +50,7 @@ const result = `
     }
 })(function () {
 
-${all.join('\n')}
+${stripSourceMaps(all.join('\n'))}
 
 return $map['./main'].exports;;
 });`;
@@ -59,3 +58,7 @@ return $map['./main'].exports;;
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.js'), result);
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'main.d.ts')));
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'types.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'types.d.ts')));
+
+function stripSourceMaps(str) {
+	return str.replace(/\/\/# sourceMappingURL[^\n]+/gm, '');
+}

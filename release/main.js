@@ -25,7 +25,7 @@ function $load(name, factory) {
     factory.call(this, requireFunc, mod, mod.exports);
     $map[name] = mod;
 }
-//# sourceMappingURL=_prefix.js.map
+
 $load('./utils', function(require, module, exports) {
 "use strict";
 /*---------------------------------------------------------
