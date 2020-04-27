@@ -1,12 +1,12 @@
 var path = require('path');
 var fs = require('fs');
 var main = require('../release/main');
-var onigLibs = require('../out/onigLibs');
+var onigLibs = require('../out/tests/onigLibs');
 
 var Registry = main.Registry;
 
-var onigurumaRegistry = new Registry({ loadGrammar, getOnigLib: () => onigLibs.getOniguruma()});
-var onigasmRegistry = new Registry({ loadGrammar, getOnigLib: () => onigLibs.getOnigasm()});
+var onigurumaRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOniguruma()});
+var onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOnigasm()});
 
 function tokenize(grammar, content) {
 	var start = Date.now();
@@ -30,7 +30,8 @@ async function tokenizeFile(filePath, scope, message) {
 	console.log();
 	console.log(message);
 	console.log('TOKENIZING ' + content.length + ' lines using grammar ' + scope);
-	console.log(`Oniguruma: ${onigurumaTime} ms., Onigasm: ${onigasmTime} ms. (${Math.round(onigasmTime * 10 / onigurumaTime) / 10}x slower)`);
+	const comparison = (onigurumaTime < onigasmTime ? `${(onigasmTime / onigurumaTime).toFixed(1)}x slower` : `${(onigurumaTime / onigasmTime).toFixed(1)}x faster`);
+	console.log(`Oniguruma: ${onigurumaTime} ms., Onigasm: ${onigasmTime} ms. (${comparison})`);
 }
 
 function loadGrammar(scopeName) {
@@ -54,9 +55,9 @@ async function test() {
 	await tokenizeFile(path.join(__dirname, 'bootstrap.css.txt'), 'source.css', 'Bootstrap CSS v3.1.1'),
 	await tokenizeFile(path.join(__dirname, 'vscode.d.ts.txt'), 'source.ts', 'vscode.d.ts');
 	await tokenizeFile(path.join(__dirname, 'JavaScript.tmLanguage.json.txt'), 'source.ts', 'JSON');
-	//await tokenizeFile(path.join(__dirname, 'bootstrap.min.css.txt'), 'source.css', 'Bootstrap CSS v3.1.1 minified')
-	//await tokenizeFile(path.join(__dirname, 'large.min.js.txt'), 'source.js', 'jQuery v2.0.3 minified');
-	//await tokenizeFile(path.join(__dirname, 'main.08642f99.css.txt'), 'source.css', 'Bootstrap with multi-byte minified')
+	await tokenizeFile(path.join(__dirname, 'bootstrap.min.css.txt'), 'source.css', 'Bootstrap CSS v3.1.1 minified')
+	await tokenizeFile(path.join(__dirname, 'large.min.js.txt'), 'source.js', 'jQuery v2.0.3 minified');
+	await tokenizeFile(path.join(__dirname, 'main.08642f99.css.txt'), 'source.css', 'Bootstrap with multi-byte minified')
 };
 test();
 

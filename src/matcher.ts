@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 export interface MatcherWithPriority<T> {
 	matcher: Matcher<T>;
@@ -28,9 +27,7 @@ export function createMatchers<T>(selector: string, matchesName: (names: string[
 			token = tokenizer.next();
 		}
 		let matcher = parseConjunction();
-		if (matcher) {
-			results.push({ matcher, priority });
-		}
+		results.push({ matcher, priority });
 		if (token !== ',') {
 			break;
 		}

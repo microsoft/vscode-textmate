@@ -7,10 +7,10 @@
     }
 })(function () {
 
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var $map = {};
 function $load(name, factory) {
     var mod = {
@@ -25,65 +25,12 @@ function $load(name, factory) {
     factory.call(this, requireFunc, mod, mod.exports);
     $map[name] = mod;
 }
-//# sourceMappingURL=_prefix.js.map
-$load('./onigLibs', function(require, module, exports) {
-/*---------------------------------------------------------
- * Copyright (C) Microsoft Corporation. All rights reserved.
- *--------------------------------------------------------*/
-'use strict';
-Object.defineProperty(exports, "__esModule", { value: true });
-var onigasmLib = null;
-var onigurumaLib = null;
-function getOnigasm() {
-    if (!onigasmLib) {
-        var onigasmModule_1 = require('onigasm');
-        var fs = require('fs');
-        var path = require('path');
-        var wasmBin = fs.readFileSync(path.join(__dirname, '../node_modules/onigasm/lib/onigasm.wasm')).buffer;
-        onigasmLib = onigasmModule_1.loadWASM(wasmBin).then(function (_) {
-            return {
-                createOnigScanner: function (patterns) { return new onigasmModule_1.OnigScanner(patterns); },
-                createOnigString: function (s) { return new onigasmModule_1.OnigString(s); }
-            };
-        });
-    }
-    return onigasmLib;
-}
-exports.getOnigasm = getOnigasm;
-function getOniguruma() {
-    if (!onigurumaLib) {
-        var getOnigModule_1 = (function () {
-            var onigurumaModule = null;
-            return function () {
-                if (!onigurumaModule) {
-                    onigurumaModule = require('oniguruma');
-                }
-                return onigurumaModule;
-            };
-        })();
-        onigurumaLib = Promise.resolve({
-            createOnigScanner: function (patterns) {
-                var onigurumaModule = getOnigModule_1();
-                return new onigurumaModule.OnigScanner(patterns);
-            },
-            createOnigString: function (s) {
-                var onigurumaModule = getOnigModule_1();
-                var string = new onigurumaModule.OnigString(s);
-                string.content = s;
-                return string;
-            }
-        });
-    }
-    return onigurumaLib;
-}
-exports.getOniguruma = getOniguruma;
-//# sourceMappingURL=onigLibs.js.map
-});
+
 $load('./utils', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function clone(something) {
     return doClone(something);
@@ -174,13 +121,13 @@ var RegexSource = /** @class */ (function () {
     return RegexSource;
 }());
 exports.RegexSource = RegexSource;
-//# sourceMappingURL=utils.js.map
+
 });
 $load('./theme', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var ParsedThemeRule = /** @class */ (function () {
     function ParsedThemeRule(scope, parentScopes, index, fontStyle, foreground, background) {
@@ -579,13 +526,13 @@ var ThemeTrieElement = /** @class */ (function () {
     return ThemeTrieElement;
 }());
 exports.ThemeTrieElement = ThemeTrieElement;
-//# sourceMappingURL=theme.js.map
+
 });
 $load('./matcher', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function createMatchers(selector, matchesName) {
     var results = [];
@@ -607,9 +554,7 @@ function createMatchers(selector, matchesName) {
             token = tokenizer.next();
         }
         var matcher = parseConjunction();
-        if (matcher) {
-            results.push({ matcher: matcher, priority: priority });
-        }
+        results.push({ matcher: matcher, priority: priority });
         if (token !== ',') {
             break;
         }
@@ -685,24 +630,24 @@ function newTokenizer(input) {
         }
     };
 }
-//# sourceMappingURL=matcher.js.map
+
 });
 $load('./debug', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DebugFlags = {
     InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
 };
-//# sourceMappingURL=debug.js.map
+
 });
 $load('./json', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function doFail(streamState, msg) {
     // console.log('Near offset ' + streamState.pos + ': ' + msg + ' ~~~' + streamState.source.substr(streamState.pos, 50) + '~~~');
@@ -1129,13 +1074,13 @@ function nextJSONToken(_state, _out) {
     // console.log('PRODUCING TOKEN: ', _out.value, JSONTokenType[_out.type]);
     return true;
 }
-//# sourceMappingURL=json.js.map
+
 });
 $load('./plist', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 function parseWithLocation(content, filename, locationKeyName) {
     return _parse(content, filename, locationKeyName);
@@ -1586,13 +1531,13 @@ function _parse(content, filename, locationKeyName) {
     }
     return cur;
 }
-//# sourceMappingURL=plist.js.map
+
 });
 $load('./grammarReader', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var plist = require("./plist");
 var debug_1 = require("./debug");
@@ -1617,13 +1562,13 @@ function parsePLISTGrammar(contents, filename) {
     }
     return plist.parse(contents);
 }
-//# sourceMappingURL=grammarReader.js.map
+
 });
 $load('./rule', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -1641,6 +1586,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
+var CompiledRule = /** @class */ (function () {
+    function CompiledRule(onigLib, regExps, rules) {
+        this.debugRegExps = regExps;
+        this.rules = rules;
+        this.scanner = onigLib.createOnigScanner(regExps);
+    }
+    CompiledRule.prototype.dispose = function () {
+        if (typeof this.scanner.dispose === 'function') {
+            this.scanner.dispose();
+        }
+    };
+    return CompiledRule;
+}());
+exports.CompiledRule = CompiledRule;
 var Rule = /** @class */ (function () {
     function Rule($location, id, name, contentName) {
         this.$location = $location;
@@ -1680,6 +1639,9 @@ var CaptureRule = /** @class */ (function (_super) {
         _this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
         return _this;
     }
+    CaptureRule.prototype.dispose = function () {
+        // nothing to dispose
+    };
     CaptureRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         throw new Error('Not supported!');
     };
@@ -1845,6 +1807,31 @@ var RegExpSourceList = /** @class */ (function () {
             A1_G1: null
         };
     }
+    RegExpSourceList.prototype.dispose = function () {
+        this._disposeCaches();
+    };
+    RegExpSourceList.prototype._disposeCaches = function () {
+        if (this._cached) {
+            this._cached.dispose();
+            this._cached = null;
+        }
+        if (this._anchorCache.A0_G0) {
+            this._anchorCache.A0_G0.dispose();
+            this._anchorCache.A0_G0 = null;
+        }
+        if (this._anchorCache.A0_G1) {
+            this._anchorCache.A0_G1.dispose();
+            this._anchorCache.A0_G1 = null;
+        }
+        if (this._anchorCache.A1_G0) {
+            this._anchorCache.A1_G0.dispose();
+            this._anchorCache.A1_G0 = null;
+        }
+        if (this._anchorCache.A1_G1) {
+            this._anchorCache.A1_G1.dispose();
+            this._anchorCache.A1_G1 = null;
+        }
+    };
     RegExpSourceList.prototype.push = function (item) {
         this._items.push(item);
         this._hasAnchors = this._hasAnchors || item.hasAnchor;
@@ -1859,11 +1846,7 @@ var RegExpSourceList = /** @class */ (function () {
     RegExpSourceList.prototype.setSource = function (index, newSource) {
         if (this._items[index].source !== newSource) {
             // bust the cache
-            this._cached = null;
-            this._anchorCache.A0_G0 = null;
-            this._anchorCache.A0_G1 = null;
-            this._anchorCache.A1_G0 = null;
-            this._anchorCache.A1_G1 = null;
+            this._disposeCaches();
             this._items[index].setSource(newSource);
         }
     };
@@ -1871,11 +1854,7 @@ var RegExpSourceList = /** @class */ (function () {
         if (!this._hasAnchors) {
             if (!this._cached) {
                 var regExps = this._items.map(function (e) { return e.source; });
-                this._cached = {
-                    scanner: onigLib.createOnigScanner(regExps),
-                    rules: this._items.map(function (e) { return e.ruleId; }),
-                    debugRegExps: regExps
-                };
+                this._cached = new CompiledRule(onigLib, regExps, this._items.map(function (e) { return e.ruleId; }));
             }
             return this._cached;
         }
@@ -1912,11 +1891,7 @@ var RegExpSourceList = /** @class */ (function () {
     };
     RegExpSourceList.prototype._resolveAnchors = function (onigLib, allowA, allowG) {
         var regExps = this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); });
-        return {
-            scanner: onigLib.createOnigScanner(regExps),
-            rules: this._items.map(function (e) { return e.ruleId; }),
-            debugRegExps: regExps
-        };
+        return new CompiledRule(onigLib, regExps, this._items.map(function (e) { return e.ruleId; }));
     };
     return RegExpSourceList;
 }());
@@ -1930,6 +1905,12 @@ var MatchRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    MatchRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     Object.defineProperty(MatchRule.prototype, "debugMatchRegExp", {
         get: function () {
             return "" + this._match.source;
@@ -1959,6 +1940,12 @@ var IncludeOnlyRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    IncludeOnlyRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     IncludeOnlyRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         var i, len, rule;
         for (i = 0, len = this.patterns.length; i < len; i++) {
@@ -1994,6 +1981,12 @@ var BeginEndRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    BeginEndRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     Object.defineProperty(BeginEndRule.prototype, "debugBeginRegExp", {
         get: function () {
             return "" + this._begin.source;
@@ -2062,6 +2055,16 @@ var BeginWhileRule = /** @class */ (function (_super) {
         _this._cachedCompiledWhilePatterns = null;
         return _this;
     }
+    BeginWhileRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+        if (this._cachedCompiledWhilePatterns) {
+            this._cachedCompiledWhilePatterns.dispose();
+            this._cachedCompiledWhilePatterns = null;
+        }
+    };
     Object.defineProperty(BeginWhileRule.prototype, "debugBeginRegExp", {
         get: function () {
             return "" + this._begin.source;
@@ -2257,20 +2260,20 @@ var RuleFactory = /** @class */ (function () {
     return RuleFactory;
 }());
 exports.RuleFactory = RuleFactory;
-//# sourceMappingURL=rule.js.map
+
 });
 $load('./grammar', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
 function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib) {
-    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib); //TODO
 }
 exports.createGrammar = createGrammar;
 var FullScopeDependency = /** @class */ (function () {
@@ -2574,6 +2577,12 @@ var Grammar = /** @class */ (function () {
             }
         }
     }
+    Grammar.prototype.dispose = function () {
+        for (var _i = 0, _a = this._ruleId2desc; _i < _a.length; _i++) {
+            var rule = _a[_i];
+            rule.dispose();
+        }
+    };
     Grammar.prototype.createOnigScanner = function (sources) {
         return this._onigLib.createOnigScanner(sources);
     };
@@ -3469,18 +3478,19 @@ function toTemporaryType(standardType) {
             return 8 /* MetaEmbedded */;
     }
 }
-//# sourceMappingURL=grammar.js.map
+
 });
 $load('./registry', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -3513,15 +3523,21 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var grammar_1 = require("./grammar");
-var onigLibs_1 = require("./onigLibs");
 var SyncRegistry = /** @class */ (function () {
     function SyncRegistry(theme, onigLibPromise) {
         this._theme = theme;
         this._grammars = {};
         this._rawGrammars = {};
         this._injectionGrammars = {};
-        this._onigLibPromise = onigLibPromise || onigLibs_1.getOniguruma();
+        this._onigLibPromise = onigLibPromise;
     }
+    SyncRegistry.prototype.dispose = function () {
+        for (var scopeName in this._grammars) {
+            if (this._grammars.hasOwnProperty(scopeName)) {
+                this._grammars[scopeName].dispose();
+            }
+        }
+    };
     SyncRegistry.prototype.setTheme = function (theme) {
         var _this = this;
         this._theme = theme;
@@ -3596,18 +3612,19 @@ var SyncRegistry = /** @class */ (function () {
     return SyncRegistry;
 }());
 exports.SyncRegistry = SyncRegistry;
-//# sourceMappingURL=registry.js.map
+
 });
 $load('./main', function(require, module, exports) {
+"use strict";
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -3647,15 +3664,14 @@ var grammar_1 = require("./grammar");
  * The registry that will hold all grammars.
  */
 var Registry = /** @class */ (function () {
-    function Registry(locator) {
-        var _this = this;
-        if (locator === void 0) { locator = { loadGrammar: function () { return __awaiter(_this, void 0, void 0, function () { return __generator(this, function (_a) {
-                return [2 /*return*/, null];
-            }); }); } }; }
-        this._locator = locator;
-        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(locator.theme, locator.colorMap), locator.getOnigLib && locator.getOnigLib());
+    function Registry(options) {
+        this._options = options;
+        this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(options.theme, options.colorMap), options.onigLib);
         this._ensureGrammarCache = new Map();
     }
+    Registry.prototype.dispose = function () {
+        this._syncRegistry.dispose();
+    };
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */
@@ -3693,11 +3709,11 @@ var Registry = /** @class */ (function () {
             var grammar, injections;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, this._locator.loadGrammar(scopeName)];
+                    case 0: return [4 /*yield*/, this._options.loadGrammar(scopeName)];
                     case 1:
                         grammar = _a.sent();
                         if (grammar) {
-                            injections = (typeof this._locator.getInjections === 'function' ? this._locator.getInjections(scopeName) : undefined);
+                            injections = (typeof this._options.getInjections === 'function' ? this._options.getInjections(scopeName) : undefined);
                             this._syncRegistry.addGrammar(grammar, injections);
                         }
                         return [2 /*return*/];
@@ -3821,7 +3837,7 @@ var Registry = /** @class */ (function () {
 exports.Registry = Registry;
 exports.INITIAL = grammar_1.StackElement.NULL;
 exports.parseRawGrammar = grammarReader.parseRawGrammar;
-//# sourceMappingURL=main.js.map
+
 });
 
 return $map['./main'].exports;;

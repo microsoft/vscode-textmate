@@ -11,16 +11,11 @@ jobs:
 - job: ${{ parameters.name }}
   pool:
     vmImage: ${{ parameters.vmImage }}
-  strategy:
-    matrix:
-      node_10_x:
-        node_version: 10.x
-      node_12_x:
-        node_version: 12.x
   steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: $(node_version)
+      versionSpec: 12.x
     displayName: 'Install Node.js'
   - script: npm install
+  - script: npm run compile
   - script: npm test

@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "4.4.0",
+  "version": "5.0.2",
   "description": "VSCode TextMate grammar helpers",
   "author": {
     "name": "Microsoft Corporation"
@@ -9,32 +9,31 @@
   "typings": "./release/main.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Microsoft/vscode-textmate"
+    "url": "https://github.com/microsoft/vscode-textmate"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Microsoft/vscode-textmate/issues"
+    "url": "https://github.com/microsoft/vscode-textmate/issues"
   },
   "scripts": {
     "watch": "tsc -watch",
     "compile": "tsc",
-    "test": "npm run compile && mocha out/tests/*.test.js",
+    "test": "tape -r ./out/tests/all.test.js",
     "benchmark": "node benchmark/benchmark.js",
-    "inspect": "node scripts/inspect.js",
-    "version": "npm run test && node scripts/release.js",
+    "inspect": "node out/tests/inspect.js",
+    "version": "npm run compile && npm run test && node scripts/release.js",
     "postversion": "git push && git push --tags",
     "prepublishOnly": "node scripts/release.js"
   },
-  "dependencies": {
-    "oniguruma": "^7.2.0"
-  },
   "devDependencies": {
-    "@types/mocha": "5.2.7",
     "@types/node": "^12.6.2",
+    "@types/tape": "^4.13.0",
     "durations": "^3.4.1",
-    "mocha": "^6.1.4",
     "onigasm": "^2.2.3",
+    "oniguruma": "^7.2.0",
+    "tape": "^4.13.2",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.3"
+    "typescript": "^3.5.3",
+    "vscode-oniguruma-wasm": "^1.1.0"
   }
 }

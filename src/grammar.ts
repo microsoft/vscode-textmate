@@ -1,11 +1,10 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { clone, mergeObjects } from './utils';
 import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner } from './types';
-import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, ICompiledRule } from './rule';
+import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, CompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags } from './debug';
@@ -25,7 +24,7 @@ export const enum TemporaryStandardTokenType {
 }
 
 export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
-	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
+	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);//TODO
 }
 
 export interface IThemeProvider {
@@ -407,6 +406,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		}
 	}
 
+	public dispose(): void {
+		for (const rule of this._ruleId2desc) {
+			rule.dispose();
+		}
+	}
+
 	public createOnigScanner(sources: string[]): OnigScanner {
 		return this._onigLib.createOnigScanner(sources);
 	}
@@ -633,7 +638,7 @@ interface IMatchInjectionsResult {
 	readonly matchedRuleId: number;
 }
 
-function debugCompiledRuleToString(ruleScanner: ICompiledRule): string {
+function debugCompiledRuleToString(ruleScanner: CompiledRule): string {
 	const r: string[] = [];
 	for (let i = 0, len = ruleScanner.rules.length; i < len; i++) {
 		r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);

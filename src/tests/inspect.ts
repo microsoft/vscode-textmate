@@ -3,9 +3,10 @@
  *--------------------------------------------------------*/
 
 import * as fs from 'fs';
-import { Registry, IGrammar, parseRawGrammar } from './main';
-import { StackElement as StackElementImpl, Grammar as GrammarImpl } from './grammar';
-import * as debug from './debug';
+import { Registry, IGrammar, parseRawGrammar } from '../main';
+import { StackElement as StackElementImpl, Grammar as GrammarImpl } from '../grammar';
+import * as debug from '../debug';
+import { getOniguruma } from './onigLibs';
 
 class ExtendedStackElement extends StackElementImpl {
 	_instanceId?: number;
@@ -21,7 +22,10 @@ if (process.argv.length < 4) {
 const GRAMMAR_PATHS = process.argv.slice(2, process.argv.length - 1);
 const FILE_PATH = process.argv[process.argv.length - 1];
 
-const registry = new Registry();
+const registry = new Registry({
+	onigLib: getOniguruma(),
+	loadGrammar: () => Promise.resolve(null)
+});
 let grammarPromises: Promise<IGrammar>[] = [];
 for (let path of GRAMMAR_PATHS) {
 	console.log('LOADING GRAMMAR: ' + path);

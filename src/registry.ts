@@ -1,14 +1,12 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { createGrammar, Grammar, IGrammarRepository } from './grammar';
 import { IRawGrammar } from './types';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './types';
-import { getOniguruma } from './onigLibs';
 
 export class SyncRegistry implements IGrammarRepository {
 
@@ -16,14 +14,22 @@ export class SyncRegistry implements IGrammarRepository {
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
 	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
 	private _theme: Theme;
-	private _onigLibPromise: Promise<IOnigLib>;
+	private readonly _onigLibPromise: Promise<IOnigLib>;
 
-	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib> | undefined) {
+	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib>) {
 		this._theme = theme;
 		this._grammars = {};
 		this._rawGrammars = {};
 		this._injectionGrammars = {};
-		this._onigLibPromise = onigLibPromise || getOniguruma();
+		this._onigLibPromise = onigLibPromise;
+	}
+
+	public dispose(): void {
+		for (const scopeName in this._grammars) {
+			if (this._grammars.hasOwnProperty(scopeName)) {
+				this._grammars[scopeName].dispose();
+			}
+		}
 	}
 
 	public setTheme(theme: Theme): void {
@@ -76,7 +82,6 @@ export class SyncRegistry implements IGrammarRepository {
 	public themeMatch(scopeName: string): ThemeTrieElementRule[] {
 		return this._theme.match(scopeName);
 	}
-
 
 	/**
 	 * Lookup a grammar.

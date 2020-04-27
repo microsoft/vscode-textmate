@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 import { SyncRegistry } from './registry';
 import * as grammarReader from './grammarReader';
@@ -36,11 +35,11 @@ export interface IRawTheme {
  * A registry helper that can locate grammar file paths given scope names.
  */
 export interface RegistryOptions {
+	onigLib: Promise<IOnigLib>;
 	theme?: IRawTheme;
 	colorMap?: string[];
 	loadGrammar(scopeName: string): Promise<IRawGrammar | undefined | null>;
 	getInjections?(scopeName: string): string[] | undefined;
-	getOnigLib?(): Promise<IOnigLib>;
 }
 
 /**
@@ -74,14 +73,18 @@ export interface IGrammarConfiguration {
  */
 export class Registry {
 
-	private readonly _locator: RegistryOptions;
+	private readonly _options: RegistryOptions;
 	private readonly _syncRegistry: SyncRegistry;
 	private readonly _ensureGrammarCache: Map<string, Promise<void>>;
 
-	constructor(locator: RegistryOptions = { loadGrammar: async () => null }) {
-		this._locator = locator;
-		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(locator.theme, locator.colorMap), locator.getOnigLib && locator.getOnigLib());
+	constructor(options: RegistryOptions) {
+		this._options = options;
+		this._syncRegistry = new SyncRegistry(Theme.createFromRawTheme(options.theme, options.colorMap), options.onigLib);
 		this._ensureGrammarCache = new Map<string, Promise<void>>();
+	}
+
+	public dispose(): void {
+		this._syncRegistry.dispose();
 	}
 
 	/**
@@ -122,9 +125,9 @@ export class Registry {
 	}
 
 	private async _doLoadSingleGrammar(scopeName: string): Promise<void> {
-		const grammar = await this._locator.loadGrammar(scopeName);
+		const grammar = await this._options.loadGrammar(scopeName);
 		if (grammar) {
-			const injections = (typeof this._locator.getInjections === 'function' ? this._locator.getInjections(scopeName) : undefined);
+			const injections = (typeof this._options.getInjections === 'function' ? this._options.getInjections(scopeName) : undefined);
 			this._syncRegistry.addGrammar(grammar, injections);
 		}
 	}

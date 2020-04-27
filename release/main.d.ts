@@ -23,11 +23,11 @@ export interface IRawTheme {
  * A registry helper that can locate grammar file paths given scope names.
  */
 export interface RegistryOptions {
+    onigLib: Promise<IOnigLib>;
     theme?: IRawTheme;
     colorMap?: string[];
     loadGrammar(scopeName: string): Promise<IRawGrammar | undefined | null>;
     getInjections?(scopeName: string): string[] | undefined;
-    getOnigLib?(): Promise<IOnigLib>;
 }
 /**
  * A map from scope name to a language id. Please do not use language id 0.
@@ -55,10 +55,11 @@ export interface IGrammarConfiguration {
  * The registry that will hold all grammars.
  */
 export declare class Registry {
-    private readonly _locator;
+    private readonly _options;
     private readonly _syncRegistry;
     private readonly _ensureGrammarCache;
-    constructor(locator?: RegistryOptions);
+    constructor(options: RegistryOptions);
+    dispose(): void;
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */

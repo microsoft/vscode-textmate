@@ -1,7 +1,6 @@
 /*---------------------------------------------------------
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
-'use strict';
 
 // -- raw grammar typings
 
@@ -77,16 +76,16 @@ export interface IOnigCaptureIndex {
 }
 
 export interface IOnigMatch {
-    index: number;
-    captureIndices: IOnigCaptureIndex[];
-    scanner: OnigScanner;
+	index: number;
+	captureIndices: IOnigCaptureIndex[];
 }
 
 export interface OnigScanner {
 	findNextMatchSync(string: string | OnigString, startPosition: number): IOnigMatch;
+	dispose?(): void;
 }
 
 export interface OnigString {
 	readonly content: string;
-	readonly dispose?: () => void;
+	dispose?(): void;
 }

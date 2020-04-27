@@ -14,7 +14,6 @@ if (!fs.existsSync(RELEASE_FOLDER)) {
 }
 
 var sources = [
-	'onigLibs.js',
 	'utils.js',
 	'theme.js',
 	'matcher.js',
@@ -51,7 +50,7 @@ const result = `
     }
 })(function () {
 
-${all.join('\n')}
+${stripSourceMaps(all.join('\n'))}
 
 return $map['./main'].exports;;
 });`;
@@ -59,3 +58,7 @@ return $map['./main'].exports;;
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.js'), result);
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'main.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'main.d.ts')));
 fs.writeFileSync(path.join(RELEASE_FOLDER, 'types.d.ts'), fs.readFileSync(path.join(OUT_FOLDER, 'types.d.ts')));
+
+function stripSourceMaps(str) {
+	return str.replace(/\/\/# sourceMappingURL[^\n]+/gm, '');
+}
