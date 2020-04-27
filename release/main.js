@@ -1586,6 +1586,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var utils_1 = require("./utils");
 var HAS_BACK_REFERENCES = /\\(\d+)/;
 var BACK_REFERENCING_END = /\\(\d+)/g;
+var CompiledRule = /** @class */ (function () {
+    function CompiledRule(onigLib, regExps, rules) {
+        this.debugRegExps = regExps;
+        this.rules = rules;
+        this.scanner = onigLib.createOnigScanner(regExps);
+    }
+    CompiledRule.prototype.dispose = function () {
+        if (typeof this.scanner.dispose === 'function') {
+            this.scanner.dispose();
+        }
+    };
+    return CompiledRule;
+}());
+exports.CompiledRule = CompiledRule;
 var Rule = /** @class */ (function () {
     function Rule($location, id, name, contentName) {
         this.$location = $location;
@@ -1625,6 +1639,9 @@ var CaptureRule = /** @class */ (function (_super) {
         _this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
         return _this;
     }
+    CaptureRule.prototype.dispose = function () {
+        // nothing to dispose
+    };
     CaptureRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         throw new Error('Not supported!');
     };
@@ -1790,6 +1807,31 @@ var RegExpSourceList = /** @class */ (function () {
             A1_G1: null
         };
     }
+    RegExpSourceList.prototype.dispose = function () {
+        this._disposeCaches();
+    };
+    RegExpSourceList.prototype._disposeCaches = function () {
+        if (this._cached) {
+            this._cached.dispose();
+            this._cached = null;
+        }
+        if (this._anchorCache.A0_G0) {
+            this._anchorCache.A0_G0.dispose();
+            this._anchorCache.A0_G0 = null;
+        }
+        if (this._anchorCache.A0_G1) {
+            this._anchorCache.A0_G1.dispose();
+            this._anchorCache.A0_G1 = null;
+        }
+        if (this._anchorCache.A1_G0) {
+            this._anchorCache.A1_G0.dispose();
+            this._anchorCache.A1_G0 = null;
+        }
+        if (this._anchorCache.A1_G1) {
+            this._anchorCache.A1_G1.dispose();
+            this._anchorCache.A1_G1 = null;
+        }
+    };
     RegExpSourceList.prototype.push = function (item) {
         this._items.push(item);
         this._hasAnchors = this._hasAnchors || item.hasAnchor;
@@ -1804,11 +1846,7 @@ var RegExpSourceList = /** @class */ (function () {
     RegExpSourceList.prototype.setSource = function (index, newSource) {
         if (this._items[index].source !== newSource) {
             // bust the cache
-            this._cached = null;
-            this._anchorCache.A0_G0 = null;
-            this._anchorCache.A0_G1 = null;
-            this._anchorCache.A1_G0 = null;
-            this._anchorCache.A1_G1 = null;
+            this._disposeCaches();
             this._items[index].setSource(newSource);
         }
     };
@@ -1816,11 +1854,7 @@ var RegExpSourceList = /** @class */ (function () {
         if (!this._hasAnchors) {
             if (!this._cached) {
                 var regExps = this._items.map(function (e) { return e.source; });
-                this._cached = {
-                    scanner: onigLib.createOnigScanner(regExps),
-                    rules: this._items.map(function (e) { return e.ruleId; }),
-                    debugRegExps: regExps
-                };
+                this._cached = new CompiledRule(onigLib, regExps, this._items.map(function (e) { return e.ruleId; }));
             }
             return this._cached;
         }
@@ -1857,11 +1891,7 @@ var RegExpSourceList = /** @class */ (function () {
     };
     RegExpSourceList.prototype._resolveAnchors = function (onigLib, allowA, allowG) {
         var regExps = this._items.map(function (e) { return e.resolveAnchors(allowA, allowG); });
-        return {
-            scanner: onigLib.createOnigScanner(regExps),
-            rules: this._items.map(function (e) { return e.ruleId; }),
-            debugRegExps: regExps
-        };
+        return new CompiledRule(onigLib, regExps, this._items.map(function (e) { return e.ruleId; }));
     };
     return RegExpSourceList;
 }());
@@ -1875,6 +1905,12 @@ var MatchRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    MatchRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     Object.defineProperty(MatchRule.prototype, "debugMatchRegExp", {
         get: function () {
             return "" + this._match.source;
@@ -1904,6 +1940,12 @@ var IncludeOnlyRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    IncludeOnlyRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     IncludeOnlyRule.prototype.collectPatternsRecursive = function (grammar, out, isFirst) {
         var i, len, rule;
         for (i = 0, len = this.patterns.length; i < len; i++) {
@@ -1939,6 +1981,12 @@ var BeginEndRule = /** @class */ (function (_super) {
         _this._cachedCompiledPatterns = null;
         return _this;
     }
+    BeginEndRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+    };
     Object.defineProperty(BeginEndRule.prototype, "debugBeginRegExp", {
         get: function () {
             return "" + this._begin.source;
@@ -2007,6 +2055,16 @@ var BeginWhileRule = /** @class */ (function (_super) {
         _this._cachedCompiledWhilePatterns = null;
         return _this;
     }
+    BeginWhileRule.prototype.dispose = function () {
+        if (this._cachedCompiledPatterns) {
+            this._cachedCompiledPatterns.dispose();
+            this._cachedCompiledPatterns = null;
+        }
+        if (this._cachedCompiledWhilePatterns) {
+            this._cachedCompiledWhilePatterns.dispose();
+            this._cachedCompiledWhilePatterns = null;
+        }
+    };
     Object.defineProperty(BeginWhileRule.prototype, "debugBeginRegExp", {
         get: function () {
             return "" + this._begin.source;
@@ -2215,7 +2273,7 @@ var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
 function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib) {
-    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);
+    return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib); //TODO
 }
 exports.createGrammar = createGrammar;
 var FullScopeDependency = /** @class */ (function () {
@@ -2519,6 +2577,12 @@ var Grammar = /** @class */ (function () {
             }
         }
     }
+    Grammar.prototype.dispose = function () {
+        for (var _i = 0, _a = this._ruleId2desc; _i < _a.length; _i++) {
+            var rule = _a[_i];
+            rule.dispose();
+        }
+    };
     Grammar.prototype.createOnigScanner = function (sources) {
         return this._onigLib.createOnigScanner(sources);
     };
@@ -3467,6 +3531,13 @@ var SyncRegistry = /** @class */ (function () {
         this._injectionGrammars = {};
         this._onigLibPromise = onigLibPromise;
     }
+    SyncRegistry.prototype.dispose = function () {
+        for (var scopeName in this._grammars) {
+            if (this._grammars.hasOwnProperty(scopeName)) {
+                this._grammars[scopeName].dispose();
+            }
+        }
+    };
     SyncRegistry.prototype.setTheme = function (theme) {
         var _this = this;
         this._theme = theme;
@@ -3598,6 +3669,9 @@ var Registry = /** @class */ (function () {
         this._syncRegistry = new registry_1.SyncRegistry(theme_1.Theme.createFromRawTheme(options.theme, options.colorMap), options.onigLib);
         this._ensureGrammarCache = new Map();
     }
+    Registry.prototype.dispose = function () {
+        this._syncRegistry.dispose();
+    };
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */

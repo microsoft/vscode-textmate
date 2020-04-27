@@ -20,10 +20,23 @@ export interface IGrammarRegistry {
 export interface IRuleFactoryHelper extends IRuleRegistry, IGrammarRegistry {
 }
 
-export interface ICompiledRule {
-	readonly scanner: OnigScanner;
-	readonly rules: number[];
-	readonly debugRegExps: string[];
+export class CompiledRule {
+
+	public readonly debugRegExps: string[];
+	public readonly rules: number[];
+	public readonly scanner: OnigScanner;
+
+	constructor(onigLib: IOnigLib, regExps: string[], rules: number[]) {
+		this.debugRegExps = regExps;
+		this.rules = rules;
+		this.scanner = onigLib.createOnigScanner(regExps);
+	}
+
+	public dispose(): void {
+		if (typeof this.scanner.dispose === 'function') {
+			this.scanner.dispose();
+		}
+	}
 }
 
 export abstract class Rule {
@@ -46,6 +59,8 @@ export abstract class Rule {
 		this._contentNameIsCapturing = RegexSource.hasCaptures(this._contentName);
 	}
 
+	public abstract dispose(): void;
+
 	public get debugName(): string {
 		const location = this.$location ? `${basename(this.$location.filename)}:${this.$location.line}` : 'unknown';
 		return `${(<any>this.constructor).name}#${this.id} @ ${location}`;
@@ -67,7 +82,7 @@ export abstract class Rule {
 
 	public abstract collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean): void;
 
-	public abstract compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): ICompiledRule;
+	public abstract compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): CompiledRule;
 }
 
 export interface ICompilePatternsResult {
@@ -84,11 +99,15 @@ export class CaptureRule extends Rule {
 		this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
 	}
 
+	public dispose(): void {
+		// nothing to dispose
+	}
+
 	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
 		throw new Error('Not supported!');
 	}
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): CompiledRule {
 		throw new Error('Not supported!');
 	}
 }
@@ -260,17 +279,17 @@ export class RegExpSource {
 }
 
 interface IRegExpSourceListAnchorCache {
-	A0_G0: ICompiledRule | null;
-	A0_G1: ICompiledRule | null;
-	A1_G0: ICompiledRule | null;
-	A1_G1: ICompiledRule | null;
+	A0_G0: CompiledRule | null;
+	A0_G1: CompiledRule | null;
+	A1_G0: CompiledRule | null;
+	A1_G1: CompiledRule | null;
 }
 
 export class RegExpSourceList {
 
 	private readonly _items: RegExpSource[];
 	private _hasAnchors: boolean;
-	private _cached: ICompiledRule | null;
+	private _cached: CompiledRule | null;
 	private _anchorCache: IRegExpSourceListAnchorCache;
 
 	constructor() {
@@ -283,6 +302,33 @@ export class RegExpSourceList {
 			A1_G0: null,
 			A1_G1: null
 		};
+	}
+
+	public dispose(): void {
+		this._disposeCaches();
+	}
+
+	private _disposeCaches(): void {
+		if (this._cached) {
+			this._cached.dispose();
+			this._cached = null;
+		}
+		if (this._anchorCache.A0_G0) {
+			this._anchorCache.A0_G0.dispose();
+			this._anchorCache.A0_G0 = null;
+		}
+		if (this._anchorCache.A0_G1) {
+			this._anchorCache.A0_G1.dispose();
+			this._anchorCache.A0_G1 = null;
+		}
+		if (this._anchorCache.A1_G0) {
+			this._anchorCache.A1_G0.dispose();
+			this._anchorCache.A1_G0 = null;
+		}
+		if (this._anchorCache.A1_G1) {
+			this._anchorCache.A1_G1.dispose();
+			this._anchorCache.A1_G1 = null;
+		}
 	}
 
 	public push(item: RegExpSource): void {
@@ -302,24 +348,16 @@ export class RegExpSourceList {
 	public setSource(index: number, newSource: string): void {
 		if (this._items[index].source !== newSource) {
 			// bust the cache
-			this._cached = null;
-			this._anchorCache.A0_G0 = null;
-			this._anchorCache.A0_G1 = null;
-			this._anchorCache.A1_G0 = null;
-			this._anchorCache.A1_G1 = null;
+			this._disposeCaches();
 			this._items[index].setSource(newSource);
 		}
 	}
 
-	public compile(onigLib: IOnigLib, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(onigLib: IOnigLib, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._hasAnchors) {
 			if (!this._cached) {
 				let regExps = this._items.map(e => e.source);
-				this._cached = {
-					scanner: onigLib.createOnigScanner(regExps),
-					rules: this._items.map(e => e.ruleId),
-					debugRegExps: regExps
-				};
+				this._cached = new CompiledRule(onigLib, regExps, this._items.map(e => e.ruleId));
 			}
 			return this._cached;
 		} else {
@@ -349,16 +387,11 @@ export class RegExpSourceList {
 				}
 			}
 		}
-
 	}
 
-	private _resolveAnchors(onigLib: IOnigLib, allowA: boolean, allowG: boolean): ICompiledRule {
+	private _resolveAnchors(onigLib: IOnigLib, allowA: boolean, allowG: boolean): CompiledRule {
 		let regExps = this._items.map(e => e.resolveAnchors(allowA, allowG));
-		return {
-			scanner: onigLib.createOnigScanner(regExps),
-			rules: this._items.map(e => e.ruleId),
-			debugRegExps: regExps
-		};
+		return new CompiledRule(onigLib, regExps, this._items.map(e => e.ruleId));
 	}
 }
 
@@ -374,6 +407,13 @@ export class MatchRule extends Rule {
 		this._cachedCompiledPatterns = null;
 	}
 
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) {
+			this._cachedCompiledPatterns.dispose();
+			this._cachedCompiledPatterns = null;
+		}
+	}
+
 	public get debugMatchRegExp(): string {
 		return `${this._match.source}`;
 	}
@@ -382,7 +422,7 @@ export class MatchRule extends Rule {
 		out.push(this._match);
 	}
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -403,6 +443,13 @@ export class IncludeOnlyRule extends Rule {
 		this._cachedCompiledPatterns = null;
 	}
 
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) {
+			this._cachedCompiledPatterns.dispose();
+			this._cachedCompiledPatterns = null;
+		}
+	}
+
 	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList, isFirst: boolean) {
 		let i: number,
 			len: number,
@@ -414,7 +461,7 @@ export class IncludeOnlyRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -451,6 +498,13 @@ export class BeginEndRule extends Rule {
 		this._cachedCompiledPatterns = null;
 	}
 
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) {
+			this._cachedCompiledPatterns.dispose();
+			this._cachedCompiledPatterns = null;
+		}
+	}
+
 	public get debugBeginRegExp(): string {
 		return `${this._begin.source}`;
 	}
@@ -478,7 +532,7 @@ export class BeginEndRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 
@@ -525,6 +579,17 @@ export class BeginWhileRule extends Rule {
 		this._cachedCompiledWhilePatterns = null;
 	}
 
+	public dispose(): void {
+		if (this._cachedCompiledPatterns) {
+			this._cachedCompiledPatterns.dispose();
+			this._cachedCompiledPatterns = null;
+		}
+		if (this._cachedCompiledWhilePatterns) {
+			this._cachedCompiledWhilePatterns.dispose();
+			this._cachedCompiledWhilePatterns = null;
+		}
+	}
+
 	public get debugBeginRegExp(): string {
 		return `${this._begin.source}`;
 	}
@@ -552,7 +617,7 @@ export class BeginWhileRule extends Rule {
 		}
 	}
 
-	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
 			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns, true);
@@ -560,7 +625,7 @@ export class BeginWhileRule extends Rule {
 		return this._cachedCompiledPatterns.compile(grammar, allowA, allowG);
 	}
 
-	public compileWhile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): ICompiledRule {
+	public compileWhile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null, allowA: boolean, allowG: boolean): CompiledRule {
 		if (!this._cachedCompiledWhilePatterns) {
 			this._cachedCompiledWhilePatterns = new RegExpSourceList();
 			this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);

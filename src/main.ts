@@ -83,6 +83,10 @@ export class Registry {
 		this._ensureGrammarCache = new Map<string, Promise<void>>();
 	}
 
+	public dispose(): void {
+		this._syncRegistry.dispose();
+	}
+
 	/**
 	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
 	 */

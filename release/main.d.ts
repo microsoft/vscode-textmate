@@ -59,6 +59,7 @@ export declare class Registry {
     private readonly _syncRegistry;
     private readonly _ensureGrammarCache;
     constructor(options: RegistryOptions);
+    dispose(): void;
     /**
      * Change the theme. Once called, no previous `ruleStack` should be used anymore.
      */

@@ -24,6 +24,14 @@ export class SyncRegistry implements IGrammarRepository {
 		this._onigLibPromise = onigLibPromise;
 	}
 
+	public dispose(): void {
+		for (const scopeName in this._grammars) {
+			if (this._grammars.hasOwnProperty(scopeName)) {
+				this._grammars[scopeName].dispose();
+			}
+		}
+	}
+
 	public setTheme(theme: Theme): void {
 		this._theme = theme;
 		Object.keys(this._grammars).forEach((scopeName) => {

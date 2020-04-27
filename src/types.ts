@@ -82,9 +82,10 @@ export interface IOnigMatch {
 
 export interface OnigScanner {
 	findNextMatchSync(string: string | OnigString, startPosition: number): IOnigMatch;
+	dispose?(): void;
 }
 
 export interface OnigString {
 	readonly content: string;
-	readonly dispose?: () => void;
+	dispose?(): void;
 }
