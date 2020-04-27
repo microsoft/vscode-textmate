@@ -11,7 +11,7 @@ import { DebugFlags } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
 declare let performance: { now: () => number } | undefined;
-const performanceNow = (function() {
+const performanceNow = (function () {
 	if (typeof performance === 'undefined') {
 		// performance.now() is not available in this environment, so use Date.now()
 		return () => Date.now();
@@ -391,7 +391,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		this._onigLib = onigLib;
 		this._rootId = -1;
 		this._lastRuleId = 0;
-		this._ruleId2desc = [];
+		this._ruleId2desc = [null!];
 		this._includedGrammars = {};
 		this._grammarRepository = grammarRepository;
 		this._grammar = initGrammar(grammar, null);
@@ -413,7 +413,9 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 	public dispose(): void {
 		for (const rule of this._ruleId2desc) {
-			rule.dispose();
+			if (rule) {
+				rule.dispose();
+			}
 		}
 	}
 

@@ -2566,7 +2566,7 @@ var Grammar = /** @class */ (function () {
         this._onigLib = onigLib;
         this._rootId = -1;
         this._lastRuleId = 0;
-        this._ruleId2desc = [];
+        this._ruleId2desc = [null];
         this._includedGrammars = {};
         this._grammarRepository = grammarRepository;
         this._grammar = initGrammar(grammar, null);
@@ -2589,7 +2589,9 @@ var Grammar = /** @class */ (function () {
     Grammar.prototype.dispose = function () {
         for (var _i = 0, _a = this._ruleId2desc; _i < _a.length; _i++) {
             var rule = _a[_i];
-            rule.dispose();
+            if (rule) {
+                rule.dispose();
+            }
         }
     };
     Grammar.prototype.createOnigScanner = function (sources) {
