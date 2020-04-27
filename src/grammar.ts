@@ -11,9 +11,14 @@ import { DebugFlags } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
 
 declare let performance: { now: () => number } | undefined;
-if (typeof process !== 'undefined' && process.release.name === 'node') {
-	performance = require('perf_hooks').performance;
-}
+const performanceNow = (function() {
+	if (typeof performance === 'undefined') {
+		// performance.now() is not available in this environment, so use Date.now()
+		return () => Date.now();
+	} else {
+		return () => performance!.now();
+	}
+})();
 
 export const enum TemporaryStandardTokenType {
 	Other = 0,
@@ -710,18 +715,16 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 
 	let perfStart = 0;
-	if (DebugFlags.InDebugMode && performance) {
-		perfStart = performance.now();
+	if (DebugFlags.InDebugMode) {
+		perfStart = performanceNow();
 	}
 
 	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
 
 	if (DebugFlags.InDebugMode) {
-		if (performance) {
-			const timeMillis = performance.now() - perfStart;
-			if (timeMillis > 5) {
-				console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${timeMillis} against '${lineText}'`);
-			}
+		const elapsedMillis = performanceNow() - perfStart;
+		if (elapsedMillis > 5) {
+			console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${elapsedMillis} against '${lineText}'`);
 		}
 		// console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
 		// console.log(debugCompiledRuleToString(ruleScanner));

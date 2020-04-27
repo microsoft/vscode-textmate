@@ -2272,6 +2272,15 @@ var utils_1 = require("./utils");
 var rule_1 = require("./rule");
 var matcher_1 = require("./matcher");
 var debug_1 = require("./debug");
+var performanceNow = (function () {
+    if (typeof performance === 'undefined') {
+        // performance.now() is not available in this environment, so use Date.now()
+        return function () { return Date.now(); };
+    }
+    else {
+        return function () { return performance.now(); };
+    }
+})();
 function createGrammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib) {
     return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib); //TODO
 }
@@ -2829,8 +2838,16 @@ function matchInjections(injections, grammar, lineText, isFirstLine, linePos, st
 function matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition) {
     var rule = stack.getRule(grammar);
     var ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
+    var perfStart = 0;
+    if (debug_1.DebugFlags.InDebugMode) {
+        perfStart = performanceNow();
+    }
     var r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
     if (debug_1.DebugFlags.InDebugMode) {
+        var elapsedMillis = performanceNow() - perfStart;
+        if (elapsedMillis > 5) {
+            console.warn("Rule " + rule.debugName + " (" + rule.id + ") matching took " + elapsedMillis + " against '" + lineText + "'");
+        }
         // console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
         // console.log(debugCompiledRuleToString(ruleScanner));
         if (r) {
