@@ -6,7 +6,7 @@ var onigLibs = require('../out/tests/onigLibs');
 var Registry = main.Registry;
 
 var onigurumaRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOniguruma()});
-var onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOnigasm()});
+var onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getVSCodeOniguruma()});
 
 function tokenize(grammar, content) {
 	var start = Date.now();

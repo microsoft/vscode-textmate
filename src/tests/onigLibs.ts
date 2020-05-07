@@ -26,10 +26,10 @@ export function getOnigasm(): Promise<IOnigLib> {
 
 export function getVSCodeOniguruma(): Promise<IOnigLib> {
 	if (!vscodeOnigurumaLib) {
-		let vscodeOnigurumaModule = require('vscode-oniguruma-wasm');
+		let vscodeOnigurumaModule = require('vscode-oniguruma');
 		let fs = require('fs');
 		let path = require('path');
-		const wasmBin = fs.readFileSync(path.join(__dirname, '../../node_modules/vscode-oniguruma-wasm/release/onig.wasm')).buffer;
+		const wasmBin = fs.readFileSync(path.join(__dirname, '../../node_modules/vscode-oniguruma/release/onig.wasm')).buffer;
 		vscodeOnigurumaLib = (<Promise<any>>vscodeOnigurumaModule.loadWASM(wasmBin)).then((_: any) => {
 			return {
 				createOnigScanner(patterns: string[]) { return new vscodeOnigurumaModule.OnigScanner(patterns); },
