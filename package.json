@@ -21,7 +21,7 @@
     "test": "tape -r ./out/tests/all.test.js",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
-    "tmconvert": "node scripts/convert.js",
+    "tmconvert": "node scripts/tmconvert.js",
     "version": "npm run compile && npm run test && node scripts/release.js",
     "postversion": "git push && git push --tags",
     "prepublishOnly": "node scripts/release.js"
