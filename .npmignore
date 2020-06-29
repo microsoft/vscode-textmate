@@ -5,6 +5,7 @@
 /scripts/
 /src/
 /test-cases/
+/typings/
 /.npmignore
 /azure-pipelines.yml
 /build-template.yml
@@ -12,3 +13,4 @@
 /ThirdPartyNotices.txt
 /tsconfig.json
 /tslint.json
+/webpack.config.js
