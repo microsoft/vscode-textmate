@@ -13,7 +13,7 @@ import {
 } from '../theme';
 import * as plist from '../plist';
 import { ThemeTest } from './themeTest';
-import { getOniguruma, getVSCodeOniguruma } from './onigLibs';
+import { getOniguruma } from './onigLibs';
 import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
@@ -92,11 +92,8 @@ class ThemeInfo {
 
 	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 
-	let _resolvers = [
-		new Resolver(_grammars, _languages, getVSCodeOniguruma(), 'vscode-oniguruma'),
-		new Resolver(_grammars, _languages, getOniguruma(), 'oniguruma')
-	];
-	let _themeDatas = _resolvers.map(resolver => THEMES.map(theme => theme.create(resolver)));
+	let _resolver = new Resolver(_grammars, _languages, getOniguruma());
+	let _themeData = THEMES.map(theme => theme.create(_resolver));
 
 	// Discover all tests
 	let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
@@ -106,20 +103,18 @@ class ThemeInfo {
 	testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
 
 	for (let testFile of testFiles) {
-		for (let i = 0; i < _resolvers.length; i++) {
-			let test = new ThemeTest(THEMES_TEST_PATH, testFile, _themeDatas[i], _resolvers[i]);
-			tape(test.testName, { timeout: 20000 }, async (t: tape.Test) => {
-				test.evaluate().then(_ => {
-					try {
-						t.deepEqual(test.actual, test.expected);
-						t.end();
-					} catch(err) {
-						test.writeExpected();
-						t.end(err);
-					}
-				});
+		let test = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
+		tape(test.testName, { timeout: 20000 }, async (t: tape.Test) => {
+			test.evaluate().then(_ => {
+				try {
+					t.deepEqual(test.actual, test.expected);
+					t.end();
+				} catch(err) {
+					test.writeExpected();
+					t.end(err);
+				}
 			});
-		}
+		});
 	}
 
 })();

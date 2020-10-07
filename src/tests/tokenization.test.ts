@@ -7,7 +7,7 @@ import * as path from 'path';
 import * as tape from 'tape';
 import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
 import { IOnigLib, IRawGrammar } from '../types';
-import { getOniguruma, getVSCodeOniguruma } from './onigLibs';
+import { getOniguruma } from './onigLibs';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 
@@ -35,13 +35,8 @@ function assertTokenizationSuite(testLocation: string): void {
 
 	tests.forEach((test) => {
 
-		tape(test.desc + '-oniguruma', async (t: tape.Test) => {
+		tape(test.desc, async (t: tape.Test) => {
 			await performTest(t, test, getOniguruma());
-			t.end();
-		});
-
-		tape(test.desc + '-vscode-oniguruma', async (t: tape.Test) => {
-			await performTest(t, test, getVSCodeOniguruma());
 			t.end();
 		});
 	});

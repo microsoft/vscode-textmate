@@ -62,7 +62,7 @@ export class ThemeTest {
 			));
 		}
 
-		this.testName = testFile + '-' + resolver.getOnigLibName();
+		this.testName = testFile;
 		this.actual = null;
 	}
 
