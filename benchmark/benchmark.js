@@ -1,26 +1,26 @@
-var path = require('path');
-var fs = require('fs');
-var main = require('../release/main');
-var onigLibs = require('../out/tests/onigLibs');
+const path = require('path');
+const fs = require('fs');
+const main = require('../release/main');
+const onigLibs = require('../out/tests/onigLibs');
 
-var Registry = main.Registry;
+const Registry = main.Registry;
 
-var onigurumaRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOniguruma()});
-var onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getVSCodeOniguruma()});
+const onigurumaRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOniguruma()});
+const onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getVSCodeOniguruma()});
 
 function tokenize(grammar, content) {
-	var start = Date.now();
-	var ruleStack = null;
-	for (var i = 0; i < content.length; i++) {
-		var r = grammar.tokenizeLine(content[i], ruleStack);
+	const start = Date.now();
+	let ruleStack = null;
+	for (let i = 0; i < content.length; i++) {
+		const r = grammar.tokenizeLine(content[i], ruleStack);
 		ruleStack = r.ruleStack;
 	}
 	return Date.now() - start;
 }
 
 async function tokenizeFile(filePath, scope, message) {
-	var content = fs.readFileSync(filePath, 'utf8')
-	var lines = content.split(/\r\n|\r|\n/);
+	const content = fs.readFileSync(filePath, 'utf8')
+	const lines = content.split(/\r\n|\r|\n/);
 
 	let onigurumaGrammar  = await onigurumaRegistry.loadGrammar(scope);
 	let onigurumaTime = tokenize(onigurumaGrammar, lines);
