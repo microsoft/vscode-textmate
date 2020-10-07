@@ -78,7 +78,7 @@ export class ThemeTest {
 	}
 
 	public writeExpected(): void {
-		fs.writeFileSync(this.EXPECTED_FILE_PATH, this.actual);
+		fs.writeFileSync(this.EXPECTED_FILE_PATH, this.actual!);
 	}
 }
 
