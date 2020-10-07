@@ -65,7 +65,7 @@ async function addTest(scopeName: string, filePath: string, onigurumaRegistry: R
 			stopWatch2.stop();
 			t.deepEqual(t2.tokens, t1.tokens, `Difference in onigasm at line ${i}: ${lines[i]}`);
 			stopWatch3.start();
-			let t3 = grammar2.tokenizeLine(lines[i], prevState3);
+			let t3 = grammar3.tokenizeLine(lines[i], prevState3);
 			stopWatch3.stop();
 			t.deepEqual(t3.tokens, t1.tokens, `Difference in vscode-oniguruma at line ${i}: ${lines[i]}`);
 			prevState1 = t1.ruleStack;
