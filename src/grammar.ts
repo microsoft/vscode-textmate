@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { clone, mergeObjects } from './utils';
-import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner } from './types';
+import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner, FindOption } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, CompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
@@ -653,6 +653,17 @@ function debugCompiledRuleToString(ruleScanner: CompiledRule): string {
 	return r.join('\n');
 }
 
+function getFindOptions(allowA: boolean, allowG: boolean): number {
+	let options = FindOption.None;
+	if (!allowA) {
+		options |= FindOption.NotBeginString;
+	}
+	if (!allowG) {
+		options |= FindOption.NotBeginPosition;
+	}
+	return options;
+}
+
 function matchInjections(injections: Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchInjectionsResult | null {
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
@@ -668,8 +679,9 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 			// injection selector doesn't match stack
 			continue;
 		}
-		const ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null, isFirstLine, linePos === anchorPosition);
-		const matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+		const ruleScanner = grammar.getRule(injection.ruleId).compile(grammar, null);
+		const findOptions = getFindOptions(isFirstLine, linePos === anchorPosition);
+		const matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
 		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for injections');
 			console.log(debugCompiledRuleToString(ruleScanner));
@@ -714,14 +726,15 @@ interface IMatchResult {
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, anchorPosition: number): IMatchResult | null {
 	const rule = stack.getRule(grammar);
-	const ruleScanner = rule.compile(grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
+	const ruleScanner = rule.compile(grammar, stack.endRule);
+	const findOptions = getFindOptions(isFirstLine, linePos === anchorPosition);
 
 	let perfStart = 0;
 	if (DebugFlags.InDebugMode) {
 		perfStart = performanceNow();
 	}
 
-	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
 
 	if (DebugFlags.InDebugMode) {
 		const elapsedMillis = performanceNow() - perfStart;
@@ -808,8 +821,9 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	}
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
-		const ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule, isFirstLine, anchorPosition === linePos);
-		const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos);
+		const ruleScanner = whileRule.rule.compileWhile(grammar, whileRule.stack.endRule);
+		const findOptions = getFindOptions(isFirstLine, anchorPosition === linePos);
+		const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
 		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for while rule');
 			console.log(debugCompiledRuleToString(ruleScanner));
