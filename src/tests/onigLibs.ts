@@ -4,25 +4,8 @@
 
 import { IOnigLib } from '../types';
 
-let onigasmLib: Promise<IOnigLib> | null = null;
 let vscodeOnigurumaLib: Promise<IOnigLib> | null = null;
 let onigurumaLib: Promise<IOnigLib> | null = null;
-
-export function getOnigasm(): Promise<IOnigLib> {
-	if (!onigasmLib) {
-		let onigasmModule = require('onigasm');
-		let fs = require('fs');
-		let path = require('path');
-		const wasmBin = fs.readFileSync(path.join(__dirname, '../../node_modules/onigasm/lib/onigasm.wasm')).buffer;
-		onigasmLib = (<Promise<any>>onigasmModule.loadWASM(wasmBin)).then((_: any) => {
-			return {
-				createOnigScanner(patterns: string[]) { return new onigasmModule.OnigScanner(patterns); },
-				createOnigString(s: string) { return new onigasmModule.OnigString(s); }
-			};
-		});
-	}
-	return onigasmLib;
-}
 
 export function getVSCodeOniguruma(): Promise<IOnigLib> {
 	if (!vscodeOnigurumaLib) {
