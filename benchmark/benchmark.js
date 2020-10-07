@@ -6,7 +6,6 @@ const onigLibs = require('../out/tests/onigLibs');
 const Registry = main.Registry;
 
 const onigurumaRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getOniguruma()});
-const onigasmRegistry = new Registry({ loadGrammar, onigLib: onigLibs.getVSCodeOniguruma()});
 
 function tokenize(grammar, content) {
 	const start = Date.now();
@@ -25,13 +24,10 @@ async function tokenizeFile(filePath, scope, message) {
 	let onigurumaGrammar  = await onigurumaRegistry.loadGrammar(scope);
 	let onigurumaTime = tokenize(onigurumaGrammar, lines);
 
-	let onigasmGrammar  = await onigasmRegistry.loadGrammar(scope);
-	let onigasmTime = tokenize(onigasmGrammar, lines);
 	console.log();
 	console.log(message);
 	console.log('TOKENIZING ' + content.length + ' lines using grammar ' + scope);
-	const comparison = (onigurumaTime < onigasmTime ? `${(onigasmTime / onigurumaTime).toFixed(1)}x slower` : `${(onigurumaTime / onigasmTime).toFixed(1)}x faster`);
-	console.log(`Oniguruma: ${onigurumaTime} ms., Onigasm: ${onigasmTime} ms. (${comparison})`);
+	console.log(`Oniguruma: ${onigurumaTime} ms.`);
 }
 
 function loadGrammar(scopeName) {
