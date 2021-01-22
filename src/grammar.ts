@@ -961,7 +961,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					stack = stack.setEndRule(pushedRule.getEndWithResolvedBackReferences(lineText.content, captureIndices));
 				}
 
-				if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
+				if (stack.hasEndlessLoop(anchorPosition)) {
 					// Grammar pushed the same rule without advancing
 					if (DebugFlags.InDebugMode) {
 						console.error('[2] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
@@ -988,7 +988,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 					stack = stack.setEndRule(pushedRule.getWhileWithResolvedBackReferences(lineText.content, captureIndices));
 				}
 
-				if (!hasAdvanced && beforePush.hasSameRuleAs(stack)) {
+				if (stack.hasEndlessLoop(anchorPosition)) {
 					// Grammar pushed the same rule without advancing
 					if (DebugFlags.InDebugMode) {
 						console.error('[3] - Grammar is in an endless loop - Grammar pushed the same rule without advancing');
@@ -1435,6 +1435,24 @@ export class StackElement implements StackElementDef {
 
 	public hasSameRuleAs(other: StackElement): boolean {
 		return this.ruleId === other.ruleId;
+	}
+
+	public hasEndlessLoop(anchorPosition: number): boolean {
+		if (anchorPosition === -1) {
+			// method is unavailable
+			return true;
+		}
+
+		let se = this as StackElement;
+
+		while (anchorPosition === se._anchorPos && se.parent !== null) {
+			se = se.parent;
+			if (this.hasSameRuleAs(se)) {
+				// endless loop detected
+				return true;
+			}
+		}
+		return false;
 	}
 }
 
