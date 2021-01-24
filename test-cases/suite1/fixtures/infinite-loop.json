@@ -1,0 +1,79 @@
+{
+	"name": "infinite-loop-grammar",
+	"scopeName": "source.infinite-loop",
+	"patterns": [
+		{
+			"name": "start",
+			"begin": "\\A",
+			"end": "$",
+			"patterns": [
+				{
+					"name": "negative-look-ahead",
+					"match": "(?!a)"
+				}
+			]
+		},
+		{
+			"include": "#test"
+		},
+		{
+			"include": "#not_a_problem"
+		}
+	],
+	"repository": {
+		"test": {
+			"name": "test",
+			"begin": "(?=test)",
+			"end": "$",
+			"patterns": [
+				{
+					"include": "#test_this"
+				}
+			]
+		},
+		"test_this": {
+			"name": "test_this",
+			"begin": "(?=test this)",
+			"end": "$",
+			"patterns": [
+				{
+					"include": "#test_this_line"
+				}
+			]
+		},
+		"test_this_line": {
+			"name": "test_this_line",
+			"begin": "(?=test this line)",
+			"end": "$",
+			"patterns": [
+				{
+					"include": "#test"
+				}
+			]
+		},
+		"spaces":
+		{
+			"name": "spaces",
+			"begin": "^(?=\\s)",
+			"end": "(?=\\S)"
+		},
+		"not_a_problem":
+		{
+			"name": "not_a_problem",
+			"begin": "(?=not)",
+			"end": "\\z",
+			"patterns": [
+				{
+					"name": "not",
+					"match": "\\Gnot"
+				},
+				{
+					"include": "#not_a_problem"
+				},
+				{
+					"include": "#spaces"
+				}
+			]
+		}
+	}
+}

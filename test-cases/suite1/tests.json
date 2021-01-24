@@ -1710,5 +1710,101 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/infinite-loop.json"
+		],
+		"grammarPath": "fixtures/infinite-loop.json",
+		"desc": "Issue #145",
+		"lines": [
+			{
+				"line": "abc",
+				"tokens": [
+					{
+						"value": "a",
+						"scopes": [
+							"source.infinite-loop",
+							"start"
+						]
+					},
+					{
+						"value": "bc",
+						"scopes": [
+							"source.infinite-loop"
+						]
+					}
+				]
+			},
+			{
+				"line": "test this line",
+				"tokens": [
+					{
+						"value": "test this line",
+						"scopes": [
+							"source.infinite-loop",
+							"test",
+							"test_this",
+							"test_this_line"
+						]
+					}
+				]
+			},
+			{
+				"line": "not",
+				"tokens": [
+					{
+						"value": "not",
+						"scopes": [
+							"source.infinite-loop",
+							"test",
+							"test_this",
+							"test_this_line"
+						]
+					}
+				]
+			},
+			{
+				"line": "    not",
+				"tokens": [
+					{
+						"value": "    ",
+						"scopes": [
+							"source.infinite-loop"
+						]
+					},
+					{
+						"value": "not",
+						"scopes": [
+							"source.infinite-loop",
+							"not_a_problem",
+							"not"
+						]
+					}
+				]
+			},
+			{
+				"line": "        not",
+				"tokens": [
+					{
+						"value": "        ",
+						"scopes": [
+							"source.infinite-loop",
+							"not_a_problem",
+							"spaces"
+						]
+					},
+					{
+						"value": "not",
+						"scopes": [
+							"source.infinite-loop",
+							"not_a_problem",
+							"not_a_problem",
+							"not"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
