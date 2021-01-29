@@ -105,15 +105,13 @@ class ThemeInfo {
 	for (let testFile of testFiles) {
 		let test = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
 		tape(test.testName, { timeout: 20000 }, async (t: tape.Test) => {
-			test.evaluate().then(_ => {
-				try {
-					t.deepEqual(test.actual, test.expected);
-					t.end();
-				} catch(err) {
-					test.writeExpected();
-					t.end(err);
-				}
-			});
+			try {
+				await test.evaluate();
+				t.deepEqual(test.actual, test.expected);
+			} catch(err) {
+				test.writeExpected();
+				throw err;
+			}
 		});
 	}
 
