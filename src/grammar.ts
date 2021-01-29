@@ -1434,7 +1434,14 @@ export class StackElement implements StackElementDef {
 	}
 
 	public hasSameRuleAs(other: StackElement): boolean {
-		return this.ruleId === other.ruleId;
+		let el: StackElement | null = this;
+		while (el && el._enterPos === other._enterPos) {
+			if (el.ruleId === other.ruleId) {
+				return true;
+			}
+			el = el.parent;
+		}
+		return false;
 	}
 }
 
