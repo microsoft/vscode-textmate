@@ -1806,5 +1806,27 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/147.grammar.json"
+		],
+		"grammarPath": "fixtures/147.grammar.json",
+		"desc": "Issue #147",
+		"lines": [
+			{
+				"line": "Function",
+				"tokens": [
+					{
+						"value": "Function",
+						"scopes": [
+							"source.test",
+							"storage.type.Function",
+							"keyword.declaration.Function"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
