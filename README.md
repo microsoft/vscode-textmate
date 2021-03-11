@@ -13,7 +13,7 @@ npm install vscode-textmate
 ```javascript
 const fs = require('fs');
 const path = require('path');
-const vsctm = require('./release/main');
+const vsctm = require('vscode-textmate');
 const oniguruma = require('vscode-oniguruma');
 
 /**
