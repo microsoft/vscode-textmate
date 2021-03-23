@@ -1,0 +1,9 @@
+{
+	"scopeName": "source.test",
+	"patterns": [
+		{
+			"match": "\\b(?i:function)\\b",
+			"name": "storage.type.$0 keyword.declaration.$0"
+		}
+	]
+}

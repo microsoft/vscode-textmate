@@ -54,7 +54,7 @@ export function basename(path: string): string {
 	}
 }
 
-let CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/;
+let CAPTURING_REGEX_SOURCE = /\$(\d+)|\${(\d+):\/(downcase|upcase)}/g;
 
 export class RegexSource {
 
@@ -62,6 +62,7 @@ export class RegexSource {
 		if (regexSource === null) {
 			return false;
 		}
+		CAPTURING_REGEX_SOURCE.lastIndex = 0;
 		return CAPTURING_REGEX_SOURCE.test(regexSource);
 	}
 
