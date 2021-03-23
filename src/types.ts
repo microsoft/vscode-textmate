@@ -101,7 +101,7 @@ export const enum FindOption {
 }
 
 export interface OnigScanner {
-	findNextMatchSync(string: string | OnigString, startPosition: number, options: number): IOnigMatch;
+	findNextMatchSync(string: string | OnigString, startPosition: number, options: number): IOnigMatch | null;
 	dispose?(): void;
 }
 

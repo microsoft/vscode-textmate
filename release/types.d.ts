@@ -78,7 +78,7 @@ export declare const enum FindOption {
     DebugCall = 8
 }
 export interface OnigScanner {
-    findNextMatchSync(string: string | OnigString, startPosition: number, options: number): IOnigMatch;
+    findNextMatchSync(string: string | OnigString, startPosition: number, options: number): IOnigMatch | null;
     dispose?(): void;
 }
 export interface OnigString {
