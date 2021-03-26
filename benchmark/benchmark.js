@@ -33,7 +33,7 @@ async function tokenizeFile(filePath, scope, message) {
 function loadGrammar(scopeName) {
 	let grammarPath = null;
 	if (scopeName === 'source.js') {
-		grammarPath = path.resolve(__dirname, '..', 'test-cases/first-mate/fixtures/javascript.json');
+		grammarPath = path.resolve(__dirname, 'JavaScript.tmLanguage.json');
 	} else if (scopeName === 'source.ts') {
 		grammarPath = path.resolve(__dirname, '..', 'test-cases/themes/syntaxes/TypeScript.tmLanguage.json');
 	} else if (scopeName === 'source.css') {
@@ -54,6 +54,7 @@ async function test() {
 	await tokenizeFile(path.join(__dirname, 'bootstrap.min.css.txt'), 'source.css', 'Bootstrap CSS v3.1.1 minified')
 	await tokenizeFile(path.join(__dirname, 'large.min.js.txt'), 'source.js', 'jQuery v2.0.3 minified');
 	await tokenizeFile(path.join(__dirname, 'main.08642f99.css.txt'), 'source.css', 'Bootstrap with multi-byte minified')
+	await tokenizeFile(path.join(__dirname, 'minified.js.txt'), 'source.js', 'Simple minified file');
 };
 test();
 
