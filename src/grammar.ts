@@ -1132,7 +1132,6 @@ export class StackElementMetadata {
 }
 
 export class ScopeListElement {
-	_scopeListElementBrand: void;
 
 	public readonly parent: ScopeListElement | null;
 	public readonly scope: string;
@@ -1271,7 +1270,7 @@ export class ScopeListElement {
  * Represents a "pushed" state on the stack (as a linked list element).
  */
 export class StackElement implements StackElementDef {
-	_stackElementBrand: void;
+	_stackElementBrand: void = undefined;
 
 	public static NULL = new StackElement(null, 0, 0, 0, false, null, null!, null!);
 

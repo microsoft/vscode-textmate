@@ -13,7 +13,6 @@ export const enum FontStyle {
 }
 
 export class ParsedThemeRule {
-	_parsedThemeRuleBrand: void;
 
 	readonly scope: string;
 	readonly parentScopes: string[] | null;
@@ -326,7 +325,6 @@ export function strArrCmp(a: string[] | null, b: string[] | null): number {
 }
 
 export class ThemeTrieElementRule {
-	_themeTrieElementRuleBrand: void;
 
 	scopeDepth: number;
 	parentScopes: string[] | null;
@@ -378,7 +376,6 @@ export interface ITrieChildrenMap {
 }
 
 export class ThemeTrieElement {
-	_themeTrieElementBrand: void;
 
 	private readonly _mainRule: ThemeTrieElementRule;
 	private readonly _rulesWithParentScopes: ThemeTrieElementRule[];
