@@ -58,7 +58,7 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Lookup a raw grammar.
 	 */
-	public lookup(scopeName: string): IRawGrammar {
+	public lookup(scopeName: string): IRawGrammar | undefined {
 		return this._rawGrammars[scopeName];
 	}
 

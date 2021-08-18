@@ -38,7 +38,7 @@ export interface IThemeProvider {
 }
 
 export interface IGrammarRepository {
-	lookup(scopeName: string): IRawGrammar;
+	lookup(scopeName: string): IRawGrammar | undefined;
 	injections(scopeName: string): string[];
 }
 
@@ -146,10 +146,80 @@ function _extractIncludedScopesInPatterns(result: ScopeDependencyCollector, base
 	}
 }
 
+export class ScopeDependencyProcessor {
+
+	public readonly seenFullScopeRequests = new Set<string>();
+	public readonly seenPartialScopeRequests = new Set<string>();
+	public Q: ScopeDependency[];
+
+	constructor(
+		public readonly repo: IGrammarRepository,
+		public readonly initialScopeName: string
+	) {
+		this.seenFullScopeRequests.add(this.initialScopeName);
+		this.Q = [new FullScopeDependency(this.initialScopeName)];
+	}
+
+	public processQueue(): void {
+		const q = this.Q;
+		this.Q = [];
+
+		const deps = new ScopeDependencyCollector();
+		for (const dep of q) {
+			collectDependenciesForDep(this.repo, this.initialScopeName, deps, dep);
+		}
+
+		for (const dep of deps.full) {
+			if (this.seenFullScopeRequests.has(dep.scopeName)) {
+				// already processed
+				continue;
+			}
+			this.seenFullScopeRequests.add(dep.scopeName);
+			this.Q.push(dep);
+		}
+
+		for (const dep of deps.partial) {
+			if (this.seenFullScopeRequests.has(dep.scopeName)) {
+				// already processed in full
+				continue;
+			}
+			if (this.seenPartialScopeRequests.has(dep.toKey())) {
+				// already processed
+				continue;
+			}
+			this.seenPartialScopeRequests.add(dep.toKey());
+			this.Q.push(dep);
+		}
+	}
+}
+
+function collectDependenciesForDep(repo: IGrammarRepository, initialScopeName: string, result: ScopeDependencyCollector, dep: FullScopeDependency | PartialScopeDependency) {
+	const grammar = repo.lookup(dep.scopeName);
+	if (!grammar) {
+		if (dep.scopeName === initialScopeName) {
+			throw new Error(`No grammar provided for <${initialScopeName}>`);
+		}
+		return;
+	}
+
+	if (dep instanceof FullScopeDependency) {
+		collectDependencies(result, repo.lookup(initialScopeName)!, grammar);
+	} else {
+		collectSpecificDependencies(result, repo.lookup(initialScopeName)!, grammar, dep.include);
+	}
+
+	const injections = repo.injections(dep.scopeName);
+	if (injections) {
+		for (const injection of injections) {
+			result.add(new FullScopeDependency(injection));
+		}
+	}
+}
+
 /**
  * Collect a specific dependency from the grammar's repository
  */
-export function collectSpecificDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar, include: string, repository: IRawRepository | undefined = selfGrammar.repository): void {
+function collectSpecificDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar, include: string, repository: IRawRepository | undefined = selfGrammar.repository): void {
 	if (repository && repository[include]) {
 		const rule = repository[include];
 		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, [rule], repository);
@@ -159,7 +229,7 @@ export function collectSpecificDependencies(result: ScopeDependencyCollector, ba
 /**
  * Collects the list of all external included scopes in `grammar`.
  */
-export function collectDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar): void {
+function collectDependencies(result: ScopeDependencyCollector, baseGrammar: IRawGrammar, selfGrammar: IRawGrammar): void {
 	if (selfGrammar.patterns && Array.isArray(selfGrammar.patterns)) {
 		_extractIncludedScopesInPatterns(result, baseGrammar, selfGrammar, selfGrammar.patterns, selfGrammar.repository);
 	}
@@ -439,35 +509,68 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return this._scopeMetadataProvider.getMetadataForScope(scope);
 	}
 
-	public getInjections(): Injection[] {
-		if (this._injections === null) {
-			this._injections = [];
+	private _collectInjections(): Injection[] {
+		const grammarRepository: IGrammarRepository = {
+			lookup: (scopeName: string): IRawGrammar | undefined => {
+				if (scopeName === this._scopeName) {
+					return this._grammar;
+				}
+				return this.getExternalGrammar(scopeName);
+			},
+			injections: (scopeName: string): string[] => {
+				return this._grammarRepository.injections(scopeName);
+			}
+		};
+
+		const dependencyProcessor = new ScopeDependencyProcessor(grammarRepository, this._scopeName);
+		// TODO: uncomment below to visit all scopes
+		// while (dependencyProcessor.Q.length > 0) {
+		// 	dependencyProcessor.processQueue();
+		// }
+
+		const result: Injection[] = [];
+
+		dependencyProcessor.seenFullScopeRequests.forEach((scopeName) => {
+			const grammar = grammarRepository.lookup(scopeName);
+			if (!grammar) {
+				return;
+			}
+
 			// add injections from the current grammar
-			const rawInjections = this._grammar.injections;
+			const rawInjections = grammar.injections;
 			if (rawInjections) {
 				for (let expression in rawInjections) {
-					collectInjections(this._injections, expression, rawInjections[expression], this, this._grammar);
+					collectInjections(result, expression, rawInjections[expression], this, grammar);
 				}
 			}
 
 			// add injection grammars contributed for the current scope
 			if (this._grammarRepository) {
-				const injectionScopeNames = this._grammarRepository.injections(this._grammar.scopeName);
+				const injectionScopeNames = this._grammarRepository.injections(scopeName);
 				if (injectionScopeNames) {
 					injectionScopeNames.forEach(injectionScopeName => {
 						const injectionGrammar = this.getExternalGrammar(injectionScopeName);
 						if (injectionGrammar) {
 							const selector = injectionGrammar.injectionSelector;
 							if (selector) {
-								collectInjections(this._injections!, selector, injectionGrammar, this, injectionGrammar);
+								collectInjections(result, selector, injectionGrammar, this, injectionGrammar);
 							}
 						}
 					});
 				}
 			}
-			this._injections.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
+		});
 
-			if (DebugFlags.InDebugMode) {
+		result.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
+
+		return result;
+	}
+
+	public getInjections(): Injection[] {
+		if (this._injections === null) {
+			this._injections = this._collectInjections();
+
+			if (DebugFlags.InDebugMode && this._injections.length > 0) {
 				console.log(`Grammar ${this._scopeName} contains the following injections:`);
 				for (const injection of this._injections) {
 					console.log(`  - ${injection.debugSelector}`);
@@ -488,7 +591,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return this._ruleId2desc[patternId];
 	}
 
-	public getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar | null | undefined {
+	public getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar | undefined {
 		if (this._includedGrammars[scopeName]) {
 			return this._includedGrammars[scopeName];
 		} else if (this._grammarRepository) {
@@ -499,7 +602,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				return this._includedGrammars[scopeName];
 			}
 		}
-		return null;
+		return undefined;
 	}
 
 	public tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult {

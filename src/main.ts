@@ -5,7 +5,7 @@
 import { SyncRegistry } from './registry';
 import * as grammarReader from './grammarReader';
 import { Theme } from './theme';
-import { StackElement as StackElementImpl, collectDependencies, ScopeDependencyCollector, collectSpecificDependencies, FullScopeDependency, PartialScopeDependency, ScopeDependency } from './grammar';
+import { StackElement as StackElementImpl, ScopeDependencyProcessor } from './grammar';
 import { IRawGrammar, IOnigLib } from './types';
 
 export * from './types';
@@ -139,69 +139,12 @@ export class Registry {
 		return this._ensureGrammarCache.get(scopeName);
 	}
 
-	private _collectDependenciesForDep(initialScopeName: string, result: ScopeDependencyCollector, dep: FullScopeDependency | PartialScopeDependency) {
-		const grammar = this._syncRegistry.lookup(dep.scopeName);
-		if (!grammar) {
-			if (dep.scopeName === initialScopeName) {
-				throw new Error(`No grammar provided for <${initialScopeName}>`);
-			}
-			return;
-		}
-
-		if (dep instanceof FullScopeDependency) {
-			collectDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar);
-		} else {
-			collectSpecificDependencies(result, this._syncRegistry.lookup(initialScopeName), grammar, dep.include);
-		}
-
-		const injections = this._syncRegistry.injections(dep.scopeName);
-		if (injections) {
-			for (const injection of injections) {
-				result.add(new FullScopeDependency(injection));
-			}
-		}
-	}
-
 	private async _loadGrammar(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null | undefined, tokenTypes: ITokenTypeMap | null | undefined): Promise<IGrammar | null> {
 
-		const seenFullScopeRequests = new Set<string>();
-		const seenPartialScopeRequests = new Set<string>();
-
-		seenFullScopeRequests.add(initialScopeName);
-		let Q: ScopeDependency[] = [new FullScopeDependency(initialScopeName)];
-
-		while (Q.length > 0) {
-			const q = Q;
-			Q = [];
-
-			await Promise.all(q.map(request => this._loadSingleGrammar(request.scopeName)));
-
-			const deps = new ScopeDependencyCollector();
-			for (const dep of q) {
-				this._collectDependenciesForDep(initialScopeName, deps, dep);
-			}
-
-			for (const dep of deps.full) {
-				if (seenFullScopeRequests.has(dep.scopeName)) {
-					// already processed
-					continue;
-				}
-				seenFullScopeRequests.add(dep.scopeName);
-				Q.push(dep);
-			}
-
-			for (const dep of deps.partial) {
-				if (seenFullScopeRequests.has(dep.scopeName)) {
-					// already processed in full
-					continue;
-				}
-				if (seenPartialScopeRequests.has(dep.toKey())) {
-					// already processed
-					continue;
-				}
-				seenPartialScopeRequests.add(dep.toKey());
-				Q.push(dep);
-			}
+		const dependencyProcessor = new ScopeDependencyProcessor(this._syncRegistry, initialScopeName);
+		while (dependencyProcessor.Q.length > 0) {
+			await Promise.all(dependencyProcessor.Q.map(request => this._loadSingleGrammar(request.scopeName)));
+			dependencyProcessor.processQueue();
 		}
 
 		return this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes);
