@@ -28,8 +28,8 @@ export const enum TemporaryStandardTokenType {
 	MetaEmbedded = 8
 }
 
-export function createGrammar(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
-	return new Grammar(grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);//TODO
+export function createGrammar(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
+	return new Grammar(scopeName, grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);//TODO
 }
 
 export interface IThemeProvider {
@@ -173,6 +173,7 @@ export function collectDependencies(result: ScopeDependencyCollector, baseGramma
 }
 
 export interface Injection {
+	readonly debugSelector: string;
 	readonly matcher: Matcher<string[]>;
 	readonly priority: -1 | 0 | 1; // 0 is the default. -1 for 'L' and 1 for 'R'
 	readonly ruleId: number;
@@ -211,6 +212,7 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 	const ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
 	for (const matcher of matchers) {
 		result.push({
+			debugSelector: selector,
 			matcher: matcher.matcher,
 			ruleId: ruleId,
 			grammar: grammar,
@@ -374,6 +376,7 @@ class ScopeMetadataProvider {
 
 export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
+	private readonly _scopeName: string;
 	private _rootId: number;
 	private _lastRuleId: number;
 	private readonly _ruleId2desc: Rule[];
@@ -385,7 +388,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
 	private readonly _onigLib: IOnigLib;
 
-	constructor(grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
+	constructor(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
+		this._scopeName = scopeName;
 		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
 		this._onigLib = onigLib;
@@ -462,6 +466,13 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				}
 			}
 			this._injections.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
+
+			if (DebugFlags.InDebugMode) {
+				console.log(`Grammar ${this._scopeName} contains the following injections:`);
+				for (const injection of this._injections) {
+					console.log(`  - ${injection.debugSelector}`);
+				}
+			}
 		}
 		return this._injections;
 	}
@@ -702,13 +713,13 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		const rule = grammar.getRule(injection.ruleId);
 		const { ruleScanner, findOptions } = prepareRuleSearch(rule, grammar, null, isFirstLine, linePos === anchorPosition);
 		const matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
-		if (DebugFlags.InDebugMode) {
-			console.log('  scanning for injections');
-			console.log(debugCompiledRuleToString(ruleScanner));
-		}
-
 		if (!matchResult) {
 			continue;
+		}
+
+		if (DebugFlags.InDebugMode) {
+			console.log(`  matched injection: ${injection.debugSelector}`);
+			console.log(debugCompiledRuleToString(ruleScanner));
 		}
 
 		const matchRating = matchResult.captureIndices[0].start;
@@ -760,8 +771,8 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 		if (elapsedMillis > 5) {
 			console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${elapsedMillis} against '${lineText}'`);
 		}
-		// console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
-		// console.log(debugCompiledRuleToString(ruleScanner));
+		console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
+		console.log(debugCompiledRuleToString(ruleScanner));
 		if (r) {
 			console.log(`matched rule id: ${ruleScanner.rules[r.index]} from ${r.captureIndices[0].start} to ${r.captureIndices[0].end}`);
 		}
@@ -1532,6 +1543,14 @@ class LineTokens {
 				// no need to push a token with the same metadata
 				this._lastTokenEndIndex = endIndex;
 				return;
+			}
+
+			if (DebugFlags.InDebugMode) {
+				const scopes = scopesList.generateScopes();
+				console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
+				for (let k = 0; k < scopes.length; k++) {
+					console.log('      * ' + scopes[k]);
+				}
 			}
 
 			this._binaryTokens.push(this._lastTokenEndIndex);

@@ -92,7 +92,7 @@ export class SyncRegistry implements IGrammarRepository {
 			if (!rawGrammar) {
 				return null;
 			}
-			this._grammars[scopeName] = createGrammar(rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this, await this._onigLibPromise);
+			this._grammars[scopeName] = createGrammar(scopeName, rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this, await this._onigLibPromise);
 		}
 		return this._grammars[scopeName];
 	}
