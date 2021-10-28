@@ -84,7 +84,6 @@ export declare class Registry {
     loadGrammar(initialScopeName: string): Promise<IGrammar | null>;
     private _doLoadSingleGrammar;
     private _loadSingleGrammar;
-    private _collectDependenciesForDep;
     private _loadGrammar;
     /**
      * Adds a rawGrammar.

@@ -1636,9 +1636,12 @@ class LineTokens {
 		if (this._emitBinaryTokens) {
 			let metadata = scopesList.metadata;
 
-			for (const tokenType of this._tokenTypeOverrides) {
-				if (tokenType.matcher(scopesList.generateScopes())) {
-					metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), FontStyle.NotSet, 0, 0);
+			if (this._tokenTypeOverrides.length > 0) {
+				const scopes = scopesList.generateScopes();
+				for (const tokenType of this._tokenTypeOverrides) {
+					if (tokenType.matcher(scopes)) {
+						metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), FontStyle.NotSet, 0, 0);
+					}
 				}
 			}
 
