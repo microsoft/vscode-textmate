@@ -605,23 +605,25 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return undefined;
 	}
 
-	public tokenizeLine(lineText: string, prevState: StackElement | null): ITokenizeLineResult {
-		const r = this._tokenize(lineText, prevState, false);
+	public tokenizeLine(lineText: string, prevState: StackElement | null, timeLimit: number = 0): ITokenizeLineResult {
+		const r = this._tokenize(lineText, prevState, false, timeLimit);
 		return {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
-			ruleStack: r.ruleStack
+			ruleStack: r.ruleStack,
+			stoppedEarly: r.stoppedEarly
 		};
 	}
 
-	public tokenizeLine2(lineText: string, prevState: StackElement | null): ITokenizeLineResult2 {
-		const r = this._tokenize(lineText, prevState, true);
+	public tokenizeLine2(lineText: string, prevState: StackElement | null, timeLimit: number = 0): ITokenizeLineResult2 {
+		const r = this._tokenize(lineText, prevState, true, timeLimit);
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
-			ruleStack: r.ruleStack
+			ruleStack: r.ruleStack,
+			stoppedEarly: r.stoppedEarly
 		};
 	}
 
-	private _tokenize(lineText: string, prevState: StackElement | null, emitBinaryTokens: boolean): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; } {
+	private _tokenize(lineText: string, prevState: StackElement | null, emitBinaryTokens: boolean, timeLimit: number): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; stoppedEarly: boolean; } {
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
 		}
@@ -649,14 +651,15 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		const onigLineText = this.createOnigString(lineText);
 		const lineLength = onigLineText.content.length;
 		const lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
-		const nextState = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true);
+		const r = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true, timeLimit);
 
 		disposeOnigString(onigLineText);
 
 		return {
 			lineLength: lineLength,
 			lineTokens: lineTokens,
-			ruleStack: nextState
+			ruleStack: r.stack,
+			stoppedEarly: r.stoppedEarly
 		};
 	}
 }
@@ -732,7 +735,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
 			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
-			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false);
+			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, false, /* no time limit */0);
 			disposeOnigString(onigSubStr);
 			continue;
 		}
@@ -991,7 +994,26 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 	return { stack: stack, linePos: linePos, anchorPosition: anchorPosition, isFirstLine: isFirstLine };
 }
 
-function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens, checkWhileConditions: boolean): StackElement {
+class TokenizeStringResult {
+	constructor(
+		public readonly stack: StackElement,
+		public readonly stoppedEarly: boolean
+	) { }
+}
+
+/**
+ * Tokenize a string
+ * @param grammar
+ * @param lineText
+ * @param isFirstLine
+ * @param linePos
+ * @param stack
+ * @param lineTokens
+ * @param checkWhileConditions
+ * @param timeLimit Use `0` to indicate no time limit
+ * @returns the StackElement or StackElement.TIME_LIMIT_REACHED if the time limit has been reached
+ */
+function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StackElement, lineTokens: LineTokens, checkWhileConditions: boolean, timeLimit: number): TokenizeStringResult {
 	const lineLength = lineText.content.length;
 
 	let STOP = false;
@@ -1005,9 +1027,18 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 		anchorPosition = whileCheckResult.anchorPosition;
 	}
 
+	const startTime = Date.now();
 	while (!STOP) {
+		if (timeLimit !== 0) {
+			const elapsedTime = Date.now() - startTime;
+			if (elapsedTime > timeLimit) {
+				return new TokenizeStringResult(stack, true);
+			}
+		}
 		scanNext(); // potentially modifies linePos && anchorPosition
 	}
+
+	return new TokenizeStringResult(stack, false);
 
 	function scanNext(): void {
 		if (DebugFlags.InDebugMode) {
@@ -1161,8 +1192,6 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			isFirstLine = false;
 		}
 	}
-
-	return stack;
 }
 
 
