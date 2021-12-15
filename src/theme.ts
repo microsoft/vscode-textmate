@@ -9,7 +9,8 @@ export const enum FontStyle {
 	None = 0,
 	Italic = 1,
 	Bold = 2,
-	Underline = 4
+	Underline = 4,
+	Strikethrough = 8
 }
 
 export class ParsedThemeRule {
@@ -118,6 +119,9 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 						break;
 					case 'underline':
 						fontStyle = fontStyle | FontStyle.Underline;
+						break;
+					case 'strikethrough':
+						fontStyle = fontStyle | FontStyle.Strikethrough;
 						break;
 				}
 			}
