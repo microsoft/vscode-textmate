@@ -45,7 +45,7 @@ export declare const enum StandardTokenType {
     Other = 0,
     Comment = 1,
     String = 2,
-    RegEx = 4
+    RegEx = 3
 }
 export interface IGrammarConfiguration {
     embeddedLanguages?: IEmbeddedLanguagesMap;
@@ -137,23 +137,23 @@ export interface ITokenizeLineResult {
  *     1098 7654 3210 9876 5432 1098 7654 3210
  * - -------------------------------------------
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *     bbbb bbbb bfff ffff ffFF FTTT LLLL LLLL
+ *     bbbb bbbb bfff ffff ffFF FFTT LLLL LLLL
  * - -------------------------------------------
  *  - L = LanguageId (8 bits)
- *  - T = StandardTokenType (3 bits)
- *  - F = FontStyle (3 bits)
+ *  - T = StandardTokenType (2 bits)
+ *  - F = FontStyle (4 bits)
  *  - f = foreground color (9 bits)
  *  - b = background color (9 bits)
  */
 export declare const enum MetadataConsts {
     LANGUAGEID_MASK = 255,
-    TOKEN_TYPE_MASK = 1792,
-    FONT_STYLE_MASK = 14336,
+    TOKEN_TYPE_MASK = 768,
+    FONT_STYLE_MASK = 15360,
     FOREGROUND_MASK = 8372224,
     BACKGROUND_MASK = 4286578688,
     LANGUAGEID_OFFSET = 0,
     TOKEN_TYPE_OFFSET = 8,
-    FONT_STYLE_OFFSET = 11,
+    FONT_STYLE_OFFSET = 10,
     FOREGROUND_OFFSET = 14,
     BACKGROUND_OFFSET = 23
 }

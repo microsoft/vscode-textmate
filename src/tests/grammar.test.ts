@@ -60,6 +60,15 @@ tape('StackElementMetadata can overwrite font style', (t: tape.Test) => {
 	t.end();
 });
 
+tape('StackElementMetadata can overwrite font style with strikethrough', (t: tape.Test) => {
+	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Strikethrough, 101, 102);
+	assertEquals(t, value, 1, StandardTokenType.RegEx, FontStyle.Strikethrough, 101, 102);
+
+	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.None, 0, 0);
+	assertEquals(t, value, 1, StandardTokenType.RegEx, FontStyle.None, 101, 102);
+	t.end();
+});
+
 tape('StackElementMetadata can overwrite foreground', (t: tape.Test) => {
 	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(t, value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
