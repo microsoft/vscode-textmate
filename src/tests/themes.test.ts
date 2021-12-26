@@ -82,6 +82,7 @@ class ThemeInfo {
 		new ThemeInfo('solarized_dark', 'Solarized-dark.tmTheme'),
 		new ThemeInfo('solarized_light', 'Solarized-light.tmTheme'),
 		new ThemeInfo('tomorrow_night_blue', 'Tomorrow-Night-Blue.tmTheme'),
+		new ThemeInfo('light_css_vars', 'light_css_vars.json', 'light_vs.json'),
 	];
 
 	// Load all language/grammar metadata
