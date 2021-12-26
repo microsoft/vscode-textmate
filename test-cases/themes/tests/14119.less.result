@@ -678,5 +678,47 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "#f",
+			"color": "#800000"
+		},
+		{
+			"content": "(@hm: ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"broken highlighting in VS Code\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "content",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

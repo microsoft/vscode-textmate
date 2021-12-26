@@ -1194,5 +1194,87 @@
 			"content": "initial",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "swagger",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "'2.0'",
+			"color": "#0000FF"
+		},
+		{
+			"content": "info",
+			"color": "#800000"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "description",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "'The API Management Service API defines an updated and refined version",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    of the concepts currently known as Developer, APP, and API Product in Edge. Of",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    note is the introduction of the API concept, missing previously from Edge",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    '",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "title",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "API Management Service API",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "version",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "initial",
+			"color": "#0000FF"
+		}
 	]
 }

@@ -4202,5 +4202,219 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "// classes example",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#include ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "<iostream>",
+			"color": "#A31515"
+		},
+		{
+			"content": "using",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "namespace",
+			"color": "#0000FF"
+		},
+		{
+			"content": " std;",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Rectangle {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " width, height;",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "public:",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " set_values (",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " area() {",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " width*height;}",
+			"color": "#000000"
+		},
+		{
+			"content": "};",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Rectangle::set_values (",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x, ",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " y) {",
+			"color": "#000000"
+		},
+		{
+			"content": "  width = x;",
+			"color": "#000000"
+		},
+		{
+			"content": "  height = y;",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main () {",
+			"color": "#000000"
+		},
+		{
+			"content": "  Rectangle rect;",
+			"color": "#000000"
+		},
+		{
+			"content": "  rect.set_values (",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "  cout << ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"area: \"",
+			"color": "#A31515"
+		},
+		{
+			"content": " << rect.area();",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

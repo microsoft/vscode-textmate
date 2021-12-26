@@ -8594,5 +8594,371 @@
 			"content": "@end",
 			"color": "#EBBBFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "//",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//  Copyright (c) Microsoft Corporation. All rights reserved.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#import ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\"UseQuotes.h\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "#import ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "<Use/GTLT.h>",
+			"color": "#A31515"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\tMulti",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\tLine",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\tComments",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "@implementation",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Test",
+			"color": "#000000"
+		},
+		{
+			"content": "- (",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": ") applicationWillFinishLaunching:(NSNotification *)notification",
+			"color": "#000000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "- (IBAction)onSelectInput:(id)sender",
+			"color": "#000000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    NSString* defaultDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, ",
+			"color": "#000000"
+		},
+		{
+			"content": "true",
+			"color": "#0000FF"
+		},
+		{
+			"content": ")[",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "];",
+			"color": "#000000"
+		},
+		{
+			"content": "    NSOpenPanel* panel = [NSOpenPanel openPanel];",
+			"color": "#000000"
+		},
+		{
+			"content": "    [panel setAllowedFileTypes:[[NSArray alloc] initWithObjects:",
+			"color": "#000000"
+		},
+		{
+			"content": "@\"ipa\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "@\"xcarchive\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "@\"app\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "nil",
+			"color": "#0000FF"
+		},
+		{
+			"content": "]];",
+			"color": "#000000"
+		},
+		{
+			"content": "    [panel beginWithCompletionHandler:^(NSInteger result)",
+			"color": "#000000"
+		},
+		{
+			"content": "     {",
+			"color": "#000000"
+		},
+		{
+			"content": "         ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (result == NSFileHandlingPanelOKButton)",
+			"color": "#000000"
+		},
+		{
+			"content": "             [",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".inputTextField setStringValue:[panel.URL path]];",
+			"color": "#000000"
+		},
+		{
+			"content": "     }];",
+			"color": "#000000"
+		},
+		{
+			"content": "     ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "YES",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "     ",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " hex = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0xFEF1F0F",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t ",
+			"color": "#000000"
+		},
+		{
+			"content": "float",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ing = ",
+			"color": "#000000"
+		},
+		{
+			"content": "3.14",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t ing = ",
+			"color": "#000000"
+		},
+		{
+			"content": "3.14e0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t ing = ",
+			"color": "#000000"
+		},
+		{
+			"content": "31.4e-2",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "-(id) initWithParams:(id<anObject>) aHandler withDeviceStateManager:(id<anotherObject>) deviceStateManager",
+			"color": "#000000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// add a tap gesture recognizer",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": " action:",
+			"color": "#000000"
+		},
+		{
+			"content": "@selector",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(handleTap:)",
+			"color": "#800000"
+		},
+		{
+			"content": "];",
+			"color": "#000000"
+		},
+		{
+			"content": "    NSMutableArray *gestureRecognizers = [NSMutableArray array];",
+			"color": "#000000"
+		},
+		{
+			"content": "    [gestureRecognizers addObject:tapGesture];",
+			"color": "#000000"
+		},
+		{
+			"content": "    [gestureRecognizers addObjectsFromArray:scnView.gestureRecognizers];",
+			"color": "#000000"
+		},
+		{
+			"content": "    scnView.gestureRecognizers = gestureRecognizers;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " tapGesture;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "nil",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "@end",
+			"color": "#0000FF"
+		}
 	]
 }

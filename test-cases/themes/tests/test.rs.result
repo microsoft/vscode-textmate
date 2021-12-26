@@ -2594,5 +2594,119 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "use",
+			"color": "#0000FF"
+		},
+		{
+			"content": " std::io;",
+			"color": "#000000"
+		},
+		{
+			"content": "fn",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main() {",
+			"color": "#000000"
+		},
+		{
+			"content": "    println!(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Guess the number!\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    println!(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Please input your guess.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "mut",
+			"color": "#0000FF"
+		},
+		{
+			"content": " guess = ",
+			"color": "#000000"
+		},
+		{
+			"content": "String",
+			"color": "#0000FF"
+		},
+		{
+			"content": "::new();",
+			"color": "#000000"
+		},
+		{
+			"content": "    io::stdin().read_line(&",
+			"color": "#000000"
+		},
+		{
+			"content": "mut",
+			"color": "#0000FF"
+		},
+		{
+			"content": " guess)",
+			"color": "#000000"
+		},
+		{
+			"content": "        .ok()",
+			"color": "#000000"
+		},
+		{
+			"content": "        .expect(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Failed to read line\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    println!(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"You guessed: {}\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", guess);",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

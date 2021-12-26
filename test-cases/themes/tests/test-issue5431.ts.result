@@ -1850,5 +1850,99 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo(isAll, startTime, endTime) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "const",
+			"color": "#0000FF"
+		},
+		{
+			"content": " timeRange = isAll ? ",
+			"color": "#000000"
+		},
+		{
+			"content": "'所有时间'",
+			"color": "#A31515"
+		},
+		{
+			"content": " : ",
+			"color": "#000000"
+		},
+		{
+			"content": "`",
+			"color": "#A31515"
+		},
+		{
+			"content": "${",
+			"color": "#0000FF"
+		},
+		{
+			"content": "startTime",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#0000FF"
+		},
+		{
+			"content": " - ",
+			"color": "#A31515"
+		},
+		{
+			"content": "${",
+			"color": "#0000FF"
+		},
+		{
+			"content": "endTime",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#0000FF"
+		},
+		{
+			"content": "`",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "true",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

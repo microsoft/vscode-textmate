@@ -4154,5 +4154,291 @@
 			"content": "Susan Williams",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "# sequencer protocols for Laser eye surgery",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "---",
+			"color": "#000000"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "step",
+			"color": "#800000"
+		},
+		{
+			"content": ":  ",
+			"color": "#000000"
+		},
+		{
+			"content": "&",
+			"color": "#0000FF"
+		},
+		{
+			"content": "id001                  ",
+			"color": "#000000"
+		},
+		{
+			"content": "# defines anchor label &id001",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "instrument",
+			"color": "#800000"
+		},
+		{
+			"content": ":      ",
+			"color": "#000000"
+		},
+		{
+			"content": "Lasik 2000",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "pulseEnergy",
+			"color": "#800000"
+		},
+		{
+			"content": ":     ",
+			"color": "#000000"
+		},
+		{
+			"content": "5.4",
+			"color": "#09885A"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "spotSize",
+			"color": "#800000"
+		},
+		{
+			"content": ":        ",
+			"color": "#000000"
+		},
+		{
+			"content": "1mm",
+			"color": "#0000FF"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "step",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0000FF"
+		},
+		{
+			"content": "id001                   ",
+			"color": "#000000"
+		},
+		{
+			"content": "# refers to the first step (with anchor &id001)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "step",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0000FF"
+		},
+		{
+			"content": "id001",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "spotSize",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "2mm",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "step",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0000FF"
+		},
+		{
+			"content": "id002",
+			"color": "#000000"
+		},
+		{
+			"content": "- {",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "John Smith",
+			"color": "#0000FF"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "age",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "33",
+			"color": "#09885A"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "Mary Smith",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "age",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "27",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "men",
+			"color": "#800000"
+		},
+		{
+			"content": ": [",
+			"color": "#000000"
+		},
+		{
+			"content": "John Smith",
+			"color": "#0000FF"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "Bill Jones",
+			"color": "#0000FF"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "women",
+			"color": "#800000"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "  - ",
+			"color": "#000000"
+		},
+		{
+			"content": "Mary Smith",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  - ",
+			"color": "#000000"
+		},
+		{
+			"content": "Susan Williams",
+			"color": "#0000FF"
+		}
 	]
 }

@@ -7506,5 +7506,367 @@
 			"content": ", document.body);",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ToggleText = React.createClass({",
+			"color": "#000000"
+		},
+		{
+			"content": "  getInitialState: ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " () {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "      showDefault: ",
+			"color": "#000000"
+		},
+		{
+			"content": "true",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "  },",
+			"color": "#000000"
+		},
+		{
+			"content": "  toggle: ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (e) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// Prevent following the link.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    e.preventDefault();",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// Invert the chosen default.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// This will trigger an intelligent re-render of the component.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".setState({ showDefault: !",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".state.showDefault })",
+			"color": "#000000"
+		},
+		{
+			"content": "  },",
+			"color": "#000000"
+		},
+		{
+			"content": "  render: ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " () {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// Default to the default message.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " message = ",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".props.default;",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// If toggled, show the alternate message.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (!",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".state.showDefault) {",
+			"color": "#000000"
+		},
+		{
+			"content": "      message = ",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".props.alt;",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "<div>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "Hello {message}!",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<a",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "onClick",
+			"color": "#FF0000"
+		},
+		{
+			"content": "={",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".toggle}",
+			"color": "#000000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "Toggle",
+			"color": "#000000"
+		},
+		{
+			"content": "</a>",
+			"color": "#800000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "    );",
+			"color": "#000000"
+		},
+		{
+			"content": "  }",
+			"color": "#000000"
+		},
+		{
+			"content": "});",
+			"color": "#000000"
+		},
+		{
+			"content": "React.render(",
+			"color": "#000000"
+		},
+		{
+			"content": "<ToggleText",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "default",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"World\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "alt",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Mars\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "/>",
+			"color": "#800000"
+		},
+		{
+			"content": ", document.body);",
+			"color": "#000000"
+		}
 	]
 }

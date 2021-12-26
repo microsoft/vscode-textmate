@@ -1962,5 +1962,115 @@
 			"content": ";",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "`Hello ",
+			"color": "#A31515"
+		},
+		{
+			"content": "${",
+			"color": "#0000FF"
+		},
+		{
+			"content": "foo",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#0000FF"
+		},
+		{
+			"content": "!`",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "console.log(",
+			"color": "#000000"
+		},
+		{
+			"content": "`string text line 1",
+			"color": "#A31515"
+		},
+		{
+			"content": "string text line 2`",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "tag`Hello ",
+			"color": "#A31515"
+		},
+		{
+			"content": "${",
+			"color": "#0000FF"
+		},
+		{
+			"content": " a ",
+			"color": "#A31515"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": " b ",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#0000FF"
+		},
+		{
+			"content": " world ",
+			"color": "#A31515"
+		},
+		{
+			"content": "${",
+			"color": "#0000FF"
+		},
+		{
+			"content": " a ",
+			"color": "#A31515"
+		},
+		{
+			"content": "*",
+			"color": "#000000"
+		},
+		{
+			"content": " b ",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#0000FF"
+		},
+		{
+			"content": "`",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		}
 	]
 }

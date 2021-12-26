@@ -7414,5 +7414,479 @@
 			"content": ";; ⇒ {:foo 2}",
 			"color": "#7285B7"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": ";; from http://clojure-doc.org/articles/tutorials/introduction.html",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "require",
+			"color": "#0000FF"
+		},
+		{
+			"content": " '[clojure.string :as str])",
+			"color": "#000000"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " the-answer ",
+			"color": "#000000"
+		},
+		{
+			"content": "42",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "[",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": "]            ",
+			"color": "#000000"
+		},
+		{
+			"content": "; A vector",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "[",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " :two ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"three\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "{:a ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " :b ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#{:a :b :c}",
+			"color": "#000000"
+		},
+		{
+			"content": "'(",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " my-stuff [",
+			"color": "#000000"
+		},
+		{
+			"content": "\"shirt\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"coat\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"hat\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "])   ",
+			"color": "#000000"
+		},
+		{
+			"content": "; this is more typical usage.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(my-func (my-func2 arg1",
+			"color": "#000000"
+		},
+		{
+			"content": "                   arg2)",
+			"color": "#000000"
+		},
+		{
+			"content": "         (other-func arg-a",
+			"color": "#000000"
+		},
+		{
+			"content": "                     (foo-bar arg-x",
+			"color": "#000000"
+		},
+		{
+			"content": "                              arg-y",
+			"color": "#000000"
+		},
+		{
+			"content": "                              (+ arg-xx",
+			"color": "#000000"
+		},
+		{
+			"content": "                                 arg-yy",
+			"color": "#000000"
+		},
+		{
+			"content": "                                 arg-zz))",
+			"color": "#000000"
+		},
+		{
+			"content": "                     arg-b))",
+			"color": "#000000"
+		},
+		{
+			"content": "'(+ ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": ";; ⇒ (+ 1 2 3)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [width     ",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": "      height    ",
+			"color": "#000000"
+		},
+		{
+			"content": "20",
+			"color": "#09885A"
+		},
+		{
+			"content": "      thickness ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "  (println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"hello from inside the `let`.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "  (* width",
+			"color": "#000000"
+		},
+		{
+			"content": "     height",
+			"color": "#000000"
+		},
+		{
+			"content": "     thickness))",
+			"color": "#000000"
+		},
+		{
+			"content": ";; Vectors",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " v   [:a :b :c])",
+			"color": "#000000"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " li '(:a :b :c))",
+			"color": "#000000"
+		},
+		{
+			"content": "(conj v  :d)          ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ [:a :b :c :d]",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(conj li :d)          ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ (:d :a :b :c)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "v   ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ is still [:a :b :c]",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "li  ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ is still (:a :b :c)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": ";; Maps",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " m {:a ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " :b ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "})",
+			"color": "#000000"
+		},
+		{
+			"content": "(assoc m :c ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ")        ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ {:a 1 :c 3 :b 2}",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(dissoc m :b)         ",
+			"color": "#000000"
+		},
+		{
+			"content": "; ⇒ {:a 1}",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " my-atom (atom {:foo ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "}))",
+			"color": "#000000"
+		},
+		{
+			"content": ";; ⇒ #'user/my-atom",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "@my-atom",
+			"color": "#000000"
+		},
+		{
+			"content": ";; ⇒ {:foo 1}",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "(swap! my-atom update-in [:foo] inc)",
+			"color": "#000000"
+		},
+		{
+			"content": ";; ⇒ {:foo 2}",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "@my-atom",
+			"color": "#000000"
+		},
+		{
+			"content": ";; ⇒ {:foo 2}",
+			"color": "var(--text-comment-color, #008000)"
+		}
 	]
 }

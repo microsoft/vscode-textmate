@@ -2898,5 +2898,187 @@
 			"content": "{ }",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "impl",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo<A,B>",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "{ }",
+			"color": "#000000"
+		},
+		{
+			"content": "impl",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo<A,B> ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " C",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "{ }",
+			"color": "#000000"
+		},
+		{
+			"content": "impl",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo<A,B> ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " C",
+			"color": "#000000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "fn",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo<A,B> -> C",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "    { }",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "fn",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo<A,B> -> C",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "{ }",
+			"color": "#000000"
+		},
+		{
+			"content": "struct",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo<A,B>",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "{ }",
+			"color": "#000000"
+		},
+		{
+			"content": "trait",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo<A,B> : C",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "where",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A: B",
+			"color": "#000000"
+		},
+		{
+			"content": "{ }",
+			"color": "#000000"
+		}
 	]
 }

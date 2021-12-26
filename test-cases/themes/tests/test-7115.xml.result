@@ -2142,5 +2142,131 @@
 			"content": "</WorkFine>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<?xml",
+			"color": "#800000"
+		},
+		{
+			"content": " version",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"1.0\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " encoding",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"utf-8\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " standalone",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"no\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "?>",
+			"color": "#800000"
+		},
+		{
+			"content": "<WorkFine>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<NoColorWithNonLatinCharacters_АБВ",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "NextTagnotWork",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"something\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Поле",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"tagnotwork\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "     ",
+			"color": "#000000"
+		},
+		{
+			"content": "<WorkFine/>",
+			"color": "#800000"
+		},
+		{
+			"content": "     ",
+			"color": "#000000"
+		},
+		{
+			"content": "<Error_АБВГД/>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</NoColorWithNonLatinCharacters_АБВ>",
+			"color": "#800000"
+		},
+		{
+			"content": "</WorkFine>",
+			"color": "#800000"
+		}
 	]
 }

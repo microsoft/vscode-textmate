@@ -6666,5 +6666,295 @@
 			"content": "</div>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"entry\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{title}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t{{#if author}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{author.firstName}} {{author.lastName}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t{{else}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "Unknown Author",
+			"color": "#000000"
+		},
+		{
+			"content": "</h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t{{/if}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t{{contentBody}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{#unless license}}",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<h3",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"warning\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "WARNING: This entry does not have a license!",
+			"color": "#000000"
+		},
+		{
+			"content": "</h3>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{/unless}}",
+			"color": "#000000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"footnotes\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<ul>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\t{{#each footnotes}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<li>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{this}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</li>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\t{{/each}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "</ul>",
+			"color": "#800000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "Comments",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "id",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"comments\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t{{#each comments}}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<h2><a",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"/posts/{{../permalink}}#{{id}}\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "{{title}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</a></h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<div>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{body}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t{{/each}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		}
 	]
 }

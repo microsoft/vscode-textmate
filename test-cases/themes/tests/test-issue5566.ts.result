@@ -1158,5 +1158,55 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo3() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "const",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo = (): any ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ({ ",
+			"color": "#000000"
+		},
+		{
+			"content": "'bar'",
+			"color": "#A31515"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "'baz'",
+			"color": "#A31515"
+		},
+		{
+			"content": " })",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

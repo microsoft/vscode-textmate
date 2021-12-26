@@ -774,5 +774,39 @@
 			"content": "};",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " s1 = {",
+			"color": "#000000"
+		},
+		{
+			"content": "\tk: {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\tk1: s,",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\tk2: ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "};",
+			"color": "#000000"
+		}
 	]
 }

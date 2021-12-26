@@ -926,5 +926,59 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "function*",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo2() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "yield",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "'bar'",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "yield*",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [",
+			"color": "#000000"
+		},
+		{
+			"content": "'bar'",
+			"color": "#A31515"
+		},
+		{
+			"content": "];",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

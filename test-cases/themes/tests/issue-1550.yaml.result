@@ -730,5 +730,55 @@
 			"content": "abc-def",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "test1",
+			"color": "#800000"
+		},
+		{
+			"content": "  : ",
+			"color": "#000000"
+		},
+		{
+			"content": "dsd",
+			"color": "#0000FF"
+		},
+		{
+			"content": "test2",
+			"color": "#800000"
+		},
+		{
+			"content": "  : ",
+			"color": "#000000"
+		},
+		{
+			"content": "abc-def",
+			"color": "#0000FF"
+		},
+		{
+			"content": "test-3",
+			"color": "#800000"
+		},
+		{
+			"content": "  : ",
+			"color": "#000000"
+		},
+		{
+			"content": "abcdef",
+			"color": "#0000FF"
+		},
+		{
+			"content": "test-4",
+			"color": "#800000"
+		},
+		{
+			"content": "  : ",
+			"color": "#000000"
+		},
+		{
+			"content": "abc-def",
+			"color": "#0000FF"
+		}
 	]
 }

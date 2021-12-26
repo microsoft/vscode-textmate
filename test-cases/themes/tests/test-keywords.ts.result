@@ -838,5 +838,47 @@
 			"content": ");",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "export",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo = () ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " RegExp(",
+			"color": "#000000"
+		},
+		{
+			"content": "''",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		}
 	]
 }

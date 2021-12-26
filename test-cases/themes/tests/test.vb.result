@@ -5506,5 +5506,199 @@
 			"content": "End Sub",
 			"color": "#EBBBFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "' Copyright (c) Microsoft Corporation. All rights reserved.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "Public Sub ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "LongTask(ByVal Duration As Single, _",
+			"color": "#000000"
+		},
+		{
+			"content": "                     ByVal MinimumInterval As Single)",
+			"color": "#000000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "Dim",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Threshold As Single",
+			"color": "#000000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "Dim",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Start As Single",
+			"color": "#000000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "Dim",
+			"color": "#0000FF"
+		},
+		{
+			"content": " blnCancel As Boolean",
+			"color": "#000000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "' The Timer property of the DateAndTime object returns the seconds",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "' and milliseconds that have passed since midnight.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "   Start = CSng(Timer)",
+			"color": "#000000"
+		},
+		{
+			"content": "   Threshold = MinimumInterval",
+			"color": "#000000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "Do",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "While",
+			"color": "#0000FF"
+		},
+		{
+			"content": " CSng(Timer)< (Start + Duration)",
+			"color": "#000000"
+		},
+		{
+			"content": "       ",
+			"color": "#000000"
+		},
+		{
+			"content": "' In a real application, some unit of work would",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "       ",
+			"color": "#000000"
+		},
+		{
+			"content": "' be done here each time through the loop.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "       ",
+			"color": "#000000"
+		},
+		{
+			"content": "If",
+			"color": "#0000FF"
+		},
+		{
+			"content": " CSng(Timer)> (Start + Threshold) ",
+			"color": "#000000"
+		},
+		{
+			"content": "Then",
+			"color": "#0000FF"
+		},
+		{
+			"content": "              RaiseEvent PercentDone( _",
+			"color": "#000000"
+		},
+		{
+			"content": "              Threshold / Duration, blnCancel)",
+			"color": "#000000"
+		},
+		{
+			"content": "              ",
+			"color": "#000000"
+		},
+		{
+			"content": "' Check to see if the operation was canceled.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "              ",
+			"color": "#000000"
+		},
+		{
+			"content": "If",
+			"color": "#0000FF"
+		},
+		{
+			"content": " blnCancel ",
+			"color": "#000000"
+		},
+		{
+			"content": "Then",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Exit Sub",
+			"color": "#0000FF"
+		},
+		{
+			"content": "              Threshold = Threshold + MinimumInterval",
+			"color": "#000000"
+		},
+		{
+			"content": "       ",
+			"color": "#000000"
+		},
+		{
+			"content": "End If",
+			"color": "#0000FF"
+		},
+		{
+			"content": "     ",
+			"color": "#000000"
+		},
+		{
+			"content": "Loop",
+			"color": "#0000FF"
+		},
+		{
+			"content": "End Sub",
+			"color": "#0000FF"
+		}
 	]
 }

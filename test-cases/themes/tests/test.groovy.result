@@ -33246,5 +33246,1567 @@
 			"content": "7",
 			"color": "#FFC58F"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "// Hello World",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Hello world!\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  Variables:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  You can assign values to variables for later use",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "println x",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "java.util.Date",
+			"color": "#0000FF"
+		},
+		{
+			"content": "()",
+			"color": "#000000"
+		},
+		{
+			"content": "println x",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "-3.1499392",
+			"color": "#09885A"
+		},
+		{
+			"content": "println x",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "false",
+			"color": "#0000FF"
+		},
+		{
+			"content": "println x",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Groovy!\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "println x",
+			"color": "#000000"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  Collections and maps",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//Creating an empty list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " technologies = []",
+			"color": "#000000"
+		},
+		{
+			"content": "/*** Adding a elements to the list ***/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "// As with Java",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies.add(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Grails\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "// Left shift adds, and returns the list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies << ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Groovy\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "// Add multiple elements",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies.addAll([",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Gradle\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Griffon\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "])",
+			"color": "#000000"
+		},
+		{
+			"content": "/*** Removing elements from the list ***/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "// As with Java",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies.remove(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Griffon\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "// Subtraction works also",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies = technologies - ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Grails'",
+			"color": "#A31515"
+		},
+		{
+			"content": "/*** Iterating Lists ***/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "// Iterate over elements of a list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies.each { println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Technology: $it\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "technologies.eachWithIndex { it, i -> println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$i: $it\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "/*** Checking List contents ***/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//Evaluate if a list contains element(s) (boolean)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "contained = technologies.contains( ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Groovy'",
+			"color": "#A31515"
+		},
+		{
+			"content": " )",
+			"color": "#000000"
+		},
+		{
+			"content": "// Or",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "contained = ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Groovy'",
+			"color": "#A31515"
+		},
+		{
+			"content": " in technologies",
+			"color": "#000000"
+		},
+		{
+			"content": "// To sort without mutating original, you can do:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "sortedTechnologies = technologies.sort( ",
+			"color": "#000000"
+		},
+		{
+			"content": "false",
+			"color": "#0000FF"
+		},
+		{
+			"content": " )",
+			"color": "#000000"
+		},
+		{
+			"content": "//Replace all elements in the list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "Collections",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".replaceAll(technologies, ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Gradle'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'gradle'",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "//Shuffle a list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "Collections",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".shuffle(technologies, ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Random",
+			"color": "#0000FF"
+		},
+		{
+			"content": "())",
+			"color": "#000000"
+		},
+		{
+			"content": "//Clear a list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "technologies.clear()",
+			"color": "#000000"
+		},
+		{
+			"content": "//Creating an empty map",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " devMap = [:]",
+			"color": "#000000"
+		},
+		{
+			"content": "//Add values",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "devMap = [",
+			"color": "#000000"
+		},
+		{
+			"content": "'name'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Roberto'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'framework'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Grails'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'language'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Groovy'",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "devMap.put(",
+			"color": "#000000"
+		},
+		{
+			"content": "'lastName'",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "'Perez'",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "//Iterate over elements of a map",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "devMap.each { println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$it",
+			"color": "#A31515"
+		},
+		{
+			"content": ".",
+			"color": "#0000FF"
+		},
+		{
+			"content": "key: $it",
+			"color": "#A31515"
+		},
+		{
+			"content": ".",
+			"color": "#0000FF"
+		},
+		{
+			"content": "value\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " }",
+			"color": "#000000"
+		},
+		{
+			"content": "devMap.eachWithIndex { it, i -> println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$i: $it\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//Evaluate if a map contains a key",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "assert",
+			"color": "#0000FF"
+		},
+		{
+			"content": " devMap.containsKey(",
+			"color": "#000000"
+		},
+		{
+			"content": "'name'",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "//Get the keys of a map",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "println devMap.keySet()",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Foo {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// read only property",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "final",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "String",
+			"color": "#0000FF"
+		},
+		{
+			"content": " name = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Roberto\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// read only property with public getter and protected setter",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "String",
+			"color": "#0000FF"
+		},
+		{
+			"content": " language",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "protected",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " setLanguage(",
+			"color": "#000000"
+		},
+		{
+			"content": "String",
+			"color": "#0000FF"
+		},
+		{
+			"content": " language) { ",
+			"color": "#000000"
+		},
+		{
+			"content": "this",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".language = language }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// dynamically typed property",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " lastName",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  Logical Branching and Looping",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//Groovy supports the usual if - else syntax",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(x==",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "    println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"One\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "} ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(x==",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "    println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Two\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "} ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "    println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"X greater than Two\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//Groovy also supports the ternary operator:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " y = ",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = (y > ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ") ? ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"worked\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " : ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"failed\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "assert",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x == ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"worked\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "//Groovy supports 'The Elvis Operator' too!",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//Instead of using the ternary operator:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "displayName = user.name ? user.name : ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Anonymous'",
+			"color": "#A31515"
+		},
+		{
+			"content": "//We can write it:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "displayName = user.name ?: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'Anonymous'",
+			"color": "#A31515"
+		},
+		{
+			"content": "//For loop",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "//Iterate over a range",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (i in ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " .. ",
+			"color": "#000000"
+		},
+		{
+			"content": "30",
+			"color": "#09885A"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "    x += i",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//Iterate over a list",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": "( i in [",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "] ) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    x += i",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//Iterate over an array",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "array = (",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "..",
+			"color": "#000000"
+		},
+		{
+			"content": "20",
+			"color": "#09885A"
+		},
+		{
+			"content": ").toArray()",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (i in array) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    x += i",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//Iterate over a map",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " map = [",
+			"color": "#000000"
+		},
+		{
+			"content": "'name'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Roberto'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'framework'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Grails'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'language'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "'Groovy'",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ( e in map ) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    x += e.value",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " technologies = [",
+			"color": "#000000"
+		},
+		{
+			"content": "'Groovy'",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "'Grails'",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "'Gradle'",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "technologies*.toUpperCase() ",
+			"color": "#000000"
+		},
+		{
+			"content": "// = to technologies.collect { it?.toUpperCase() }",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " user = ",
+			"color": "#000000"
+		},
+		{
+			"content": "User",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".get(",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " username = user?.username",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " clos = { println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Hello World!\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " }",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " sum = { a, b -> println a+b }",
+			"color": "#000000"
+		},
+		{
+			"content": "sum(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x = ",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " multiplyBy = { num -> num * x }",
+			"color": "#000000"
+		},
+		{
+			"content": "println multiplyBy(",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " clos = { print it }",
+			"color": "#000000"
+		},
+		{
+			"content": "clos( ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"hi\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " )",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " cl = {a, b ->",
+			"color": "#000000"
+		},
+		{
+			"content": "    sleep(",
+			"color": "#000000"
+		},
+		{
+			"content": "3000",
+			"color": "#09885A"
+		},
+		{
+			"content": ") ",
+			"color": "#000000"
+		},
+		{
+			"content": "// simulate some time consuming processing",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    a + b",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "mem = cl.memoize()",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " callClosure(a, b) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " start = ",
+			"color": "#000000"
+		},
+		{
+			"content": "System",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".currentTimeMillis()",
+			"color": "#000000"
+		},
+		{
+			"content": "    mem(a, b)",
+			"color": "#000000"
+		},
+		{
+			"content": "    println ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Inputs(a = $a, b = $b) - took ${System.currentTimeMillis() - start} msecs.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "callClosure(",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "//Another example:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "groovy.transform.TypeChecked",
+			"color": "#0000FF"
+		},
+		{
+			"content": "@TypeChecked",
+			"color": "#0000FF"
+		},
+		{
+			"content": "Integer",
+			"color": "#0000FF"
+		},
+		{
+			"content": " test() {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "Integer",
+			"color": "#0000FF"
+		},
+		{
+			"content": " num = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"1\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "Integer",
+			"color": "#0000FF"
+		},
+		{
+			"content": "[] numbers = [",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "Date",
+			"color": "#0000FF"
+		},
+		{
+			"content": " date = numbers[",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Test\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "//CompileStatic example:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "groovy.transform.CompileStatic",
+			"color": "#0000FF"
+		},
+		{
+			"content": "@CompileStatic",
+			"color": "#0000FF"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " sum(",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x, ",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " y) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    x + y",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "assert",
+			"color": "#0000FF"
+		},
+		{
+			"content": " sum(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": ") == ",
+			"color": "#000000"
+		},
+		{
+			"content": "7",
+			"color": "#09885A"
+		}
 	]
 }

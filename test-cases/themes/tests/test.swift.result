@@ -1894,5 +1894,115 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " teamScore = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " greeting = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Hello!\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "func",
+			"color": "#0000FF"
+		},
+		{
+			"content": " hasAnyMatches(list: [Int], condition: (Int) -> Bool) -> Bool {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " item ",
+			"color": "#000000"
+		},
+		{
+			"content": "in",
+			"color": "#0000FF"
+		},
+		{
+			"content": " list {",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " condition(item) {",
+			"color": "#000000"
+		},
+		{
+			"content": "            ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "true",
+			"color": "#0000FF"
+		},
+		{
+			"content": "        }",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "false",
+			"color": "#0000FF"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

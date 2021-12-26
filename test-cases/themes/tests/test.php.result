@@ -10446,5 +10446,383 @@
 			"content": "</html>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<html>",
+			"color": "#800000"
+		},
+		{
+			"content": "<head>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<title>",
+			"color": "#800000"
+		},
+		{
+			"content": "Example page",
+			"color": "#000000"
+		},
+		{
+			"content": "</title>",
+			"color": "#800000"
+		},
+		{
+			"content": "</head>",
+			"color": "#800000"
+		},
+		{
+			"content": "<body>",
+			"color": "#800000"
+		},
+		{
+			"content": "<?php",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " functionName(){",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// Code to be executed",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "/* Example PHP file",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\tmultiline comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t$cards = array(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"ah\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"ac\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"ad\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"as\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "\"2h\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"2c\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"2d\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"2s\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\tsrand(time());",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($i = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; $i < ",
+			"color": "#000000"
+		},
+		{
+			"content": "52",
+			"color": "#09885A"
+		},
+		{
+			"content": "; $i++) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t$count = count($cards);",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t$random = (rand()%$count);",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($cards[$random] == ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t$i--;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t} ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t$deck[] = $cards[$random];",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t$cards[$random] = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\tsrand(time());",
+			"color": "#000000"
+		},
+		{
+			"content": "\t$starting_point = (rand()%",
+			"color": "#000000"
+		},
+		{
+			"content": "51",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\tprint(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Starting point for cut cards is: $starting_point<p>\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "// display shuffled cards (EXAMPLE ONLY)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($index = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; $index < ",
+			"color": "#000000"
+		},
+		{
+			"content": "52",
+			"color": "#09885A"
+		},
+		{
+			"content": "; $index++) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($starting_point == ",
+			"color": "#000000"
+		},
+		{
+			"content": "52",
+			"color": "#09885A"
+		},
+		{
+			"content": ") { $starting_point = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; }",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\tprint(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Uncut Point: <strong>$deck[$index]</strong> \"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t$starting_point++;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "?",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "</body>",
+			"color": "#800000"
+		},
+		{
+			"content": "</html>",
+			"color": "#800000"
+		}
 	]
 }

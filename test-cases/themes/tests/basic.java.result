@@ -7666,5 +7666,427 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "package",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo;",
+			"color": "#000000"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " org.junit.Test;",
+			"color": "#000000"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " org.junit.runners.*;",
+			"color": "#000000"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": " * Multi line comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": " */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "public",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " TestClass {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "private",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "String",
+			"color": "#0000FF"
+		},
+		{
+			"content": " aString;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "/**",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t * @param args",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "public",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " doSomething(",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " a) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "double",
+			"color": "#0000FF"
+		},
+		{
+			"content": " b = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0.0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "double",
+			"color": "#0000FF"
+		},
+		{
+			"content": " c = ",
+			"color": "#000000"
+		},
+		{
+			"content": "10e3",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "long",
+			"color": "#0000FF"
+		},
+		{
+			"content": " l = ",
+			"color": "#000000"
+		},
+		{
+			"content": "134l",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "/*",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t * multiline comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "@SuppressWarnings",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(value = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"aString\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "private",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "long",
+			"color": "#0000FF"
+		},
+		{
+			"content": " privateMethod(",
+			"color": "#000000"
+		},
+		{
+			"content": "long",
+			"color": "#0000FF"
+		},
+		{
+			"content": " b){",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i < ",
+			"color": "#000000"
+		},
+		{
+			"content": "9",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i++) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "System",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".out.println(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Hello\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " + i);",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "//single line comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "@Test",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "public",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " someTests() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " hex = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0x5",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "Vector<Number>",
+			"color": "#0000FF"
+		},
+		{
+			"content": " v = ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Vector",
+			"color": "#0000FF"
+		},
+		{
+			"content": "();",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

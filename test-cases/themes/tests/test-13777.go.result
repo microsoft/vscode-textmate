@@ -214,5 +214,15 @@
 			"content": " in highligher?)",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " e [][]*aType // ( bug in highligher?)",
+			"color": "#000000"
+		}
 	]
 }

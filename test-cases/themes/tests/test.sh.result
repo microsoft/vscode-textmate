@@ -6098,5 +6098,243 @@
 			"content": "\"",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "#!/usr/bin/env bash",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [[ ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$OSTYPE\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " == ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"darwin\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "* ]]; ",
+			"color": "#000000"
+		},
+		{
+			"content": "then",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\trealpath() { [[ $1 = /* ]] && echo ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$1\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " || echo ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$PWD/${1",
+			"color": "#A31515"
+		},
+		{
+			"content": "#",
+			"color": "#000000"
+		},
+		{
+			"content": ".",
+			"color": "#A31515"
+		},
+		{
+			"content": "/",
+			"color": "#000000"
+		},
+		{
+			"content": "}\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "; }",
+			"color": "#000000"
+		},
+		{
+			"content": "\tROOT=",
+			"color": "#000000"
+		},
+		{
+			"content": "$(dirname $(dirname $(realpath \"$0\")))",
+			"color": "#A31515"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\tROOT=",
+			"color": "#000000"
+		},
+		{
+			"content": "$(dirname $(dirname $(readlink -f $0)))",
+			"color": "#A31515"
+		},
+		{
+			"content": "fi",
+			"color": "#0000FF"
+		},
+		{
+			"content": "DEVELOPER=",
+			"color": "#000000"
+		},
+		{
+			"content": "$(xcode-select -print-path)",
+			"color": "#A31515"
+		},
+		{
+			"content": "LIPO=",
+			"color": "#000000"
+		},
+		{
+			"content": "$(xcrun -sdk iphoneos -find lipo)",
+			"color": "#A31515"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " code() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\tcd $ROOT",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# Node modules",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\ttest -d node_modules || ./scripts/npm.sh install",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# Configuration",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "export",
+			"color": "#0000FF"
+		},
+		{
+			"content": " NODE_ENV=development",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# Launch Code",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [[ ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$OSTYPE\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " == ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"darwin\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "* ]]; ",
+			"color": "#000000"
+		},
+		{
+			"content": "then",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\t\texec ./.build/electron/Electron.app/Contents/MacOS/Electron . ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$@\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\t\texec ./.build/electron/electron . ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$@\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "fi",
+			"color": "#0000FF"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "code ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$@\"",
+			"color": "#A31515"
+		}
 	]
 }

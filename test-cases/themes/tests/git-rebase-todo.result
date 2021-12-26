@@ -1650,5 +1650,147 @@
 			"content": "#  x, exec = run command (the rest of the line) using shell",
 			"color": "#7285B7"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "pick",
+			"color": "#0451A5"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "1fc6c95",
+			"color": "#09885A"
+		},
+		{
+			"content": "  Patch A",
+			"color": "#000000"
+		},
+		{
+			"content": "squash",
+			"color": "#0451A5"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "fa39187",
+			"color": "#09885A"
+		},
+		{
+			"content": "  Something to add to patch A",
+			"color": "#000000"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "7b36971",
+			"color": "#09885A"
+		},
+		{
+			"content": "  Something to move before patch B",
+			"color": "#000000"
+		},
+		{
+			"content": "pick",
+			"color": "#0451A5"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "6b2481b",
+			"color": "#09885A"
+		},
+		{
+			"content": "  Patch B",
+			"color": "#000000"
+		},
+		{
+			"content": "fixup",
+			"color": "#0451A5"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "c619268",
+			"color": "#09885A"
+		},
+		{
+			"content": "  A fix for Patch B",
+			"color": "#000000"
+		},
+		{
+			"content": "edit",
+			"color": "#0451A5"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "dd1475d",
+			"color": "#09885A"
+		},
+		{
+			"content": "  Something I want to split",
+			"color": "#000000"
+		},
+		{
+			"content": "reword",
+			"color": "#0451A5"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "4ca2acc",
+			"color": "#09885A"
+		},
+		{
+			"content": "  i cant' typ goods",
+			"color": "#000000"
+		},
+		{
+			"content": "# Commands:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  p, pick = use commit",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  r, reword = use commit, but edit the commit message",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  e, edit = use commit, but stop for amending",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  s, squash = use commit, but meld into previous commit",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  f, fixup = like \"squash\", but discard this commit's log message",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#  x, exec = run command (the rest of the line) using shell",
+			"color": "var(--text-comment-color, #008000)"
+		}
 	]
 }

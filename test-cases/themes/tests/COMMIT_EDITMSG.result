@@ -806,5 +806,67 @@
 			"content": "#",
 			"color": "#7285B7"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "This is the summary line. It can't be too long.",
+			"color": "#000000"
+		},
+		{
+			"content": "After I can write a much more detailed description without quite the same restrictions on length.",
+			"color": "#000000"
+		},
+		{
+			"content": "# Please enter the commit message for your changes. Lines starting",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# with '#' will be ignored, and an empty message aborts the commit.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# On branch master",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# Your branch is up-to-date with 'origin/master'.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# Changes to be committed:",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#\t",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "deleted:    README.md",
+			"color": "#A31515"
+		},
+		{
+			"content": "#\t",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "modified:   index.less",
+			"color": "#0451A5"
+		},
+		{
+			"content": "#\t",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "new file:   spec/COMMIT_EDITMSG",
+			"color": "#09885A"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		}
 	]
 }

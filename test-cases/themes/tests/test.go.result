@@ -3938,5 +3938,167 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "package",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main",
+			"color": "#000000"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"encoding/base64\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"fmt\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "func",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main() {",
+			"color": "#000000"
+		},
+		{
+			"content": "    dnsName := ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"test-vm-from-go\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    storageAccount := ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mystorageaccount\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    client, err := management.ClientFromPublishSettingsFile(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"path/to/downloaded.publishsettings\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " err != ",
+			"color": "#000000"
+		},
+		{
+			"content": "nil",
+			"color": "#0000FF"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "        panic(err)",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// create virtual machine",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    role := vmutils.NewVMConfiguration(dnsName, vmSize)",
+			"color": "#000000"
+		},
+		{
+			"content": "    vmutils.ConfigureDeploymentFromPlatformImage(",
+			"color": "#000000"
+		},
+		{
+			"content": "        &role,",
+			"color": "#000000"
+		},
+		{
+			"content": "        vmImage,",
+			"color": "#000000"
+		},
+		{
+			"content": "        fmt.Sprintf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"http://%s.blob.core.windows.net/sdktest/%s.vhd\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", storageAccount, dnsName),",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

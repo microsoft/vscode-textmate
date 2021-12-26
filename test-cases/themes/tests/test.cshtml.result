@@ -13634,5 +13634,863 @@
 			"content": "</html>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "@",
+			"color": "#0000FF"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "total",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "totalMessage",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = \"\";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "@* a multiline",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "      razor comment embedded in csharp *@",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "IsPost",
+			"color": "#0000FF"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "        // ",
+			"color": "#000000"
+		},
+		{
+			"content": "Retrieve",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "the",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "numbers",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "that",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "the",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "user",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "entered",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "num1",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = ",
+			"color": "#000000"
+		},
+		{
+			"content": "Request",
+			"color": "#0000FF"
+		},
+		{
+			"content": "[\"",
+			"color": "#000000"
+		},
+		{
+			"content": "text1",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\"];",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "num2",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = ",
+			"color": "#000000"
+		},
+		{
+			"content": "Request",
+			"color": "#0000FF"
+		},
+		{
+			"content": "[\"",
+			"color": "#000000"
+		},
+		{
+			"content": "text2",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\"];",
+			"color": "#000000"
+		},
+		{
+			"content": "        // ",
+			"color": "#000000"
+		},
+		{
+			"content": "Convert",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "the",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "entered",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "strings",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "into",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "integers",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "numbers",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "and",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "add",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "total",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = ",
+			"color": "#000000"
+		},
+		{
+			"content": "num1",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "AsInt",
+			"color": "#800000"
+		},
+		{
+			"content": "() + ",
+			"color": "#000000"
+		},
+		{
+			"content": "num2",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "AsInt",
+			"color": "#800000"
+		},
+		{
+			"content": "();",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<italic><bold>",
+			"color": "#800000"
+		},
+		{
+			"content": "totalMessage",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = \"",
+			"color": "#000000"
+		},
+		{
+			"content": "Total",
+			"color": "#0000FF"
+		},
+		{
+			"content": " = \" + ",
+			"color": "#000000"
+		},
+		{
+			"content": "total",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "</bold></italic>",
+			"color": "#800000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "<!",
+			"color": "#800000"
+		},
+		{
+			"content": "DOCTYPE html",
+			"color": "#000000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "<html",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "lang",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"en\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<head>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<title>",
+			"color": "#800000"
+		},
+		{
+			"content": "Add Numbers",
+			"color": "#000000"
+		},
+		{
+			"content": "</title>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<meta",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "charset",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"utf-8\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " />",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</head>",
+			"color": "#800000"
+		},
+		{
+			"content": "<body>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p>",
+			"color": "#800000"
+		},
+		{
+			"content": "Enter two whole numbers and then click ",
+			"color": "#000000"
+		},
+		{
+			"content": "<strong>",
+			"color": "#800000"
+		},
+		{
+			"content": "Add",
+			"color": "#000000"
+		},
+		{
+			"content": "</strong>",
+			"color": "#800000"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<form",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "action",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "method",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"post\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p><label",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text1\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "First Number:",
+			"color": "#000000"
+		},
+		{
+			"content": "</label>",
+			"color": "#800000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "<input",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text1\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " />",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p><label",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text2\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "Second Number:",
+			"color": "#000000"
+		},
+		{
+			"content": "</label>",
+			"color": "#800000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "<input",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text2\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " />",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p><input",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"submit\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "value",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Add\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " /></p>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</form>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "@* now we call the totalMessage method",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t   (a multi line razor comment outside code) *@",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p>",
+			"color": "#800000"
+		},
+		{
+			"content": "@totalMessage",
+			"color": "#0000FF"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p>",
+			"color": "#800000"
+		},
+		{
+			"content": "@(totalMessage+\"!\")",
+			"color": "#000000"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "  An email address (with escaped at character): name@",
+			"color": "#000000"
+		},
+		{
+			"content": "@domain",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "com",
+			"color": "#800000"
+		},
+		{
+			"content": "</body>",
+			"color": "#800000"
+		},
+		{
+			"content": "</html>",
+			"color": "#800000"
+		}
 	]
 }

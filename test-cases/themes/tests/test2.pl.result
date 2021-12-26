@@ -10238,5 +10238,391 @@
 			"content": "    };",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "die",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"[$sheet->{label}] Unexpected sheet format.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ") ",
+			"color": "#000000"
+		},
+		{
+			"content": "unless",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "        $sheet->{",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$date_col$row\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "} =~ ",
+			"color": "#000000"
+		},
+		{
+			"content": "/CALL_DATE/",
+			"color": "#811F3F"
+		},
+		{
+			"content": "i",
+			"color": "#0000FF"
+		},
+		{
+			"content": " &&",
+			"color": "#000000"
+		},
+		{
+			"content": "        $sheet->{",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$pixel_cols[4]$row\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "} =~ ",
+			"color": "#000000"
+		},
+		{
+			"content": "/Home_Bind_Count/",
+			"color": "#811F3F"
+		},
+		{
+			"content": "i",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "    );",
+			"color": "#000000"
+		},
+		{
+			"content": "    $row++;",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "while",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($row < $sheet->{maxrow}) {",
+			"color": "#000000"
+		},
+		{
+			"content": "        $row++;",
+			"color": "#000000"
+		},
+		{
+			"content": "        $total_lines++;",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $date = $sheet->{",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$date_col$row\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "};",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "next",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "unless",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $date;",
+			"color": "#000000"
+		},
+		{
+			"content": "        (warning ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Unexpected date format: '$date'\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "), ",
+			"color": "#000000"
+		},
+		{
+			"content": "next",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "unless",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($date =~ ",
+			"color": "#000000"
+		},
+		{
+			"content": "/^2\\d\\d\\d-\\d\\d-\\d\\d",
+			"color": "#811F3F"
+		},
+		{
+			"content": "$",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/",
+			"color": "#811F3F"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $phone = trim($sheet->{",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$phone_col$row\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "});",
+			"color": "#000000"
+		},
+		{
+			"content": "        (warning ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Unexpected phone format: '$phone'.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "), ",
+			"color": "#000000"
+		},
+		{
+			"content": "next",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "unless",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($phone =~ ",
+			"color": "#000000"
+		},
+		{
+			"content": "/^\\d{10}",
+			"color": "#811F3F"
+		},
+		{
+			"content": "$",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/",
+			"color": "#811F3F"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "        info $phone;",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "next",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ($date gt $date_to || $date lt $date_from);",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": " @pixels = (0) x 5;",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (1..4) {",
+			"color": "#000000"
+		},
+		{
+			"content": "            $pixels[$_] = trim($sheet->{",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$pixel_cols[4]$row\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "});",
+			"color": "#000000"
+		},
+		{
+			"content": "            (warning ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Pixel $_ is not a number in the row # $row.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "), ",
+			"color": "#000000"
+		},
+		{
+			"content": "next",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "unless",
+			"color": "#0000FF"
+		},
+		{
+			"content": " looks_like_number($pixels[$_]);",
+			"color": "#000000"
+		},
+		{
+			"content": "        };",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (1..4) {",
+			"color": "#000000"
+		},
+		{
+			"content": "            add_phone_activity($date, $phone, ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"pixel-$_\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", $pixels[$_]) ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $pixels[$_];",
+			"color": "#000000"
+		},
+		{
+			"content": "        };",
+			"color": "#000000"
+		},
+		{
+			"content": "        $parsed_lines++;",
+			"color": "#000000"
+		},
+		{
+			"content": "    };",
+			"color": "#000000"
+		}
 	]
 }

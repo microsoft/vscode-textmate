@@ -5126,5 +5126,235 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "#if B4G_DEBUG_CHECK",
+			"color": "#0000FF"
+		},
+		{
+			"content": " fprintf(stderr,",
+			"color": "#000000"
+		},
+		{
+			"content": "\"num_candidate_ret=%d:\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", num_candidate);",
+			"color": "#000000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i=",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";i<num_candidate;++i)",
+			"color": "#000000"
+		},
+		{
+			"content": " fprintf(stderr,",
+			"color": "#000000"
+		},
+		{
+			"content": "\"%d,\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",user_candidate[i]);",
+			"color": "#000000"
+		},
+		{
+			"content": " fprintf(stderr,",
+			"color": "#000000"
+		},
+		{
+			"content": "\";\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "#endif",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main(O obj) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    LOG_INFO(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"not hilighted as string\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    LOG_INFO(obj << ",
+			"color": "#000000"
+		},
+		{
+			"content": "\", even worse; \"",
+			"color": "#A31515"
+		},
+		{
+			"content": " << obj.x << ",
+			"color": "#000000"
+		},
+		{
+			"content": "\" check this out.\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// everything from this point on is interpeted as a string literal...",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    O x;",
+			"color": "#000000"
+		},
+		{
+			"content": "    std::unique_ptr<O> o(",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " O);",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// sadness.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    sprintf(options, ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"STYLE=Keramik;TITLE=%s;THEME=%s\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ...);",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main2() {",
+			"color": "#000000"
+		},
+		{
+			"content": "    printf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\";\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// the rest of",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    asm(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"movw $0x38, %ax; ltr %ax\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    fn(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"{};\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// the rest of",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

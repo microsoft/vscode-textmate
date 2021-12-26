@@ -7738,5 +7738,299 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "/* C Program to find roots of a quadratic equation when coefficients are entered by user. */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* Library function sqrt() computes the square root. */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#include ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "<stdio.h>",
+			"color": "#A31515"
+		},
+		{
+			"content": "#include ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "<math.h>",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/* This is needed to use sqrt() function.*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "int",
+			"color": "#0000FF"
+		},
+		{
+			"content": " main()",
+			"color": "#000000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "float",
+			"color": "#0000FF"
+		},
+		{
+			"content": " a, b, c, determinant, r1,r2, real, imag;",
+			"color": "#000000"
+		},
+		{
+			"content": "  printf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Enter coefficients a, b and c: \"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "  scanf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"%f%f%f\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",&a,&b,&c);",
+			"color": "#000000"
+		},
+		{
+			"content": "  determinant=b*b-",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a*c;",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (determinant>",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "  {",
+			"color": "#000000"
+		},
+		{
+			"content": "      r1= (-b+sqrt(determinant))/(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a);",
+			"color": "#000000"
+		},
+		{
+			"content": "      r2= (-b-sqrt(determinant))/(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a);",
+			"color": "#000000"
+		},
+		{
+			"content": "      printf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Roots are: %.2f and %.2f\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",r1 , r2);",
+			"color": "#000000"
+		},
+		{
+			"content": "  }",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (determinant==",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "  {",
+			"color": "#000000"
+		},
+		{
+			"content": "    r1 = r2 = -b/(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a);",
+			"color": "#000000"
+		},
+		{
+			"content": "    printf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Roots are: %.2f and %.2f\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", r1, r2);",
+			"color": "#000000"
+		},
+		{
+			"content": "  }",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  {",
+			"color": "#000000"
+		},
+		{
+			"content": "    real= -b/(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a);",
+			"color": "#000000"
+		},
+		{
+			"content": "    imag = sqrt(-determinant)/(",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "*a);",
+			"color": "#000000"
+		},
+		{
+			"content": "    printf(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Roots are: %.2f+%.2fi and %.2f-%.2fi\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", real, imag, real, imag);",
+			"color": "#000000"
+		},
+		{
+			"content": "  }",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

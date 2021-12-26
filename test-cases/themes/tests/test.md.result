@@ -8478,5 +8478,607 @@
 			"content": " tag)",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "# Header 1 #",
+			"color": "#800000"
+		},
+		{
+			"content": "## Header 2 ##",
+			"color": "#800000"
+		},
+		{
+			"content": "### Header 3 ###             (Hashes on right are optional)",
+			"color": "#800000"
+		},
+		{
+			"content": "## Markdown plus h2 with a custom ID ##   {#id-goes-here}",
+			"color": "#800000"
+		},
+		{
+			"content": "[",
+			"color": "#000000"
+		},
+		{
+			"content": "Link back to H2",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "#id-goes-here",
+			"color": "#000000"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "### Alternate heading styles:",
+			"color": "#800000"
+		},
+		{
+			"content": "Alternate Header 1",
+			"color": "#000000"
+		},
+		{
+			"content": "==================",
+			"color": "#800000"
+		},
+		{
+			"content": "Alternate Header 2",
+			"color": "#000000"
+		},
+		{
+			"content": "------------------",
+			"color": "#800000"
+		},
+		{
+			"content": "<!-- html madness -->",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"custom-class\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "markdown",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"1\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<div>",
+			"color": "#800000"
+		},
+		{
+			"content": "    nested div",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "'text/x-koka'",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "    function( x: int ) { return x*x; }",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</script>",
+			"color": "#800000"
+		},
+		{
+			"content": "  This is a div _with_ underscores",
+			"color": "#000000"
+		},
+		{
+			"content": "  and a ",
+			"color": "#000000"
+		},
+		{
+			"content": "&",
+			"color": "#CD3131"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "<b",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"bold\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "bold",
+			"color": "#000000"
+		},
+		{
+			"content": "</b>",
+			"color": "#800000"
+		},
+		{
+			"content": " element.",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<style>",
+			"color": "#800000"
+		},
+		{
+			"content": "    body ",
+			"color": "#800000"
+		},
+		{
+			"content": "{ ",
+			"color": "#000000"
+		},
+		{
+			"content": "font",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Consolas\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " }",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "</style>",
+			"color": "#800000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "*",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Bullet lists are easy too",
+			"color": "#000000"
+		},
+		{
+			"content": "-",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Another one",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Another one",
+			"color": "#000000"
+		},
+		{
+			"content": "This is a paragraph, which is text surrounded by",
+			"color": "#000000"
+		},
+		{
+			"content": "whitespace. Paragraphs can be on one",
+			"color": "#000000"
+		},
+		{
+			"content": "line (or many), and can drone on for hours.",
+			"color": "#000000"
+		},
+		{
+			"content": "Now some inline markup like ",
+			"color": "#000000"
+		},
+		{
+			"content": "_italics_",
+			"color": "#000000"
+		},
+		{
+			"content": ",  ",
+			"color": "#000000"
+		},
+		{
+			"content": "**bold**",
+			"color": "#000080"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "and ",
+			"color": "#000000"
+		},
+		{
+			"content": "`code()`",
+			"color": "#800000"
+		},
+		{
+			"content": ". Note that underscores",
+			"color": "#000000"
+		},
+		{
+			"content": "in",
+			"color": "#000000"
+		},
+		{
+			"content": "_words_",
+			"color": "#000000"
+		},
+		{
+			"content": "are ignored.",
+			"color": "#000000"
+		},
+		{
+			"content": "````application/json",
+			"color": "#000000"
+		},
+		{
+			"content": "  { value: [\"or with a mime type\"] }",
+			"color": "#000000"
+		},
+		{
+			"content": "````",
+			"color": "#000000"
+		},
+		{
+			"content": ">",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Blockquotes are like quoted text in email replies",
+			"color": "#000000"
+		},
+		{
+			"content": ">>",
+			"color": "#0451A5"
+		},
+		{
+			"content": " And, they can be nested",
+			"color": "#000000"
+		},
+		{
+			"content": "1.",
+			"color": "#0451A5"
+		},
+		{
+			"content": " A numbered list",
+			"color": "#000000"
+		},
+		{
+			"content": "2.",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Which is numbered",
+			"color": "#000000"
+		},
+		{
+			"content": "3.",
+			"color": "#0451A5"
+		},
+		{
+			"content": " With periods and a space",
+			"color": "#000000"
+		},
+		{
+			"content": "And now some code:",
+			"color": "#000000"
+		},
+		{
+			"content": "    // Code is just text indented a bit",
+			"color": "#000000"
+		},
+		{
+			"content": "    which(is_easy) to_remember();",
+			"color": "#000000"
+		},
+		{
+			"content": "And a block",
+			"color": "#000000"
+		},
+		{
+			"content": "~~~",
+			"color": "#000000"
+		},
+		{
+			"content": "// Markdown extra adds un-indented code blocks too",
+			"color": "#000000"
+		},
+		{
+			"content": "if (this",
+			"color": "#000000"
+		},
+		{
+			"content": "_is_",
+			"color": "#000000"
+		},
+		{
+			"content": "more_code == true && !indented) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    // tild wrapped code blocks, also not indented",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "~~~",
+			"color": "#000000"
+		},
+		{
+			"content": "Text with",
+			"color": "#000000"
+		},
+		{
+			"content": "two trailing spaces",
+			"color": "#000000"
+		},
+		{
+			"content": "(on the right)",
+			"color": "#000000"
+		},
+		{
+			"content": "can be used",
+			"color": "#000000"
+		},
+		{
+			"content": "for things like poems",
+			"color": "#000000"
+		},
+		{
+			"content": "### Horizontal rules",
+			"color": "#800000"
+		},
+		{
+			"content": "* * * *",
+			"color": "#000000"
+		},
+		{
+			"content": "****",
+			"color": "#000000"
+		},
+		{
+			"content": "--------------------------",
+			"color": "#000000"
+		},
+		{
+			"content": "![",
+			"color": "#000000"
+		},
+		{
+			"content": "picture alt",
+			"color": "#A31515"
+		},
+		{
+			"content": "]",
+			"color": "#000000"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "/images/photo.jpeg",
+			"color": "#000000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Title is optional\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "## Markdown plus tables ##",
+			"color": "#800000"
+		},
+		{
+			"content": "| Header | Header | Right  |",
+			"color": "#000000"
+		},
+		{
+			"content": "| ------ | ------ | -----: |",
+			"color": "#000000"
+		},
+		{
+			"content": "|  Cell  |  Cell  |   $10  |",
+			"color": "#000000"
+		},
+		{
+			"content": "|  Cell  |  Cell  |   $20  |",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Outer pipes on tables are optional",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Colon used for alignment (right versus left)",
+			"color": "#000000"
+		},
+		{
+			"content": "## Markdown plus definition lists ##",
+			"color": "#800000"
+		},
+		{
+			"content": "Bottled water",
+			"color": "#000000"
+		},
+		{
+			"content": ": $ 1.25",
+			"color": "#000000"
+		},
+		{
+			"content": ": $ 1.55 (Large)",
+			"color": "#000000"
+		},
+		{
+			"content": "Milk",
+			"color": "#000000"
+		},
+		{
+			"content": "Pop",
+			"color": "#000000"
+		},
+		{
+			"content": ": $ 1.75",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Multiple definitions and terms are possible",
+			"color": "#000000"
+		},
+		{
+			"content": "*",
+			"color": "#0451A5"
+		},
+		{
+			"content": " Definitions can include multiple paragraphs too",
+			"color": "#000000"
+		},
+		{
+			"content": "*[ABBR]: Markdown plus abbreviations (produces an ",
+			"color": "#000000"
+		},
+		{
+			"content": "<abbr>",
+			"color": "#800000"
+		},
+		{
+			"content": " tag)",
+			"color": "#000000"
+		}
 	]
 }

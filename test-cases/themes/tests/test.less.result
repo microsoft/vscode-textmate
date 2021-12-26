@@ -10538,5 +10538,611 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mystyle.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " url(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mystyle.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " url(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"bluish.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ") projection, tv;",
+			"color": "#000000"
+		},
+		{
+			"content": "@base: ",
+			"color": "#000000"
+		},
+		{
+			"content": "#f938ab",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": ".box-shadow",
+			"color": "#800000"
+		},
+		{
+			"content": "(@style, @c) ",
+			"color": "#000000"
+		},
+		{
+			"content": "when",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (iscolor(@c)) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "border-radius",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": @style @c;",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".box-shadow",
+			"color": "#800000"
+		},
+		{
+			"content": "(@style, @alpha: ",
+			"color": "#000000"
+		},
+		{
+			"content": "50%",
+			"color": "#09885A"
+		},
+		{
+			"content": ") ",
+			"color": "#000000"
+		},
+		{
+			"content": "when",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (isnumber(@alpha)) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": ".box-shadow",
+			"color": "#800000"
+		},
+		{
+			"content": "(@style, rgba(",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ", @alpha));",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".box",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "saturate",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(@base, ",
+			"color": "#000000"
+		},
+		{
+			"content": "5%",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "border-color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "lighten",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(@base, ",
+			"color": "#000000"
+		},
+		{
+			"content": "30%",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "div",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": ".box-shadow",
+			"color": "#800000"
+		},
+		{
+			"content": "((",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "5px",
+			"color": "#09885A"
+		},
+		{
+			"content": "), ",
+			"color": "#000000"
+		},
+		{
+			"content": "30%",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#header",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "h1",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "font-size",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "26px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "font-weight",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "bold",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "p",
+			"color": "#800000"
+		},
+		{
+			"content": " { ",
+			"color": "#000000"
+		},
+		{
+			"content": "font-size",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "12px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "a",
+			"color": "#800000"
+		},
+		{
+			"content": " { ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-decoration",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "none",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "&:hover",
+			"color": "#800000"
+		},
+		{
+			"content": " { ",
+			"color": "#000000"
+		},
+		{
+			"content": "border-width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "1px",
+			"color": "#09885A"
+		},
+		{
+			"content": " }",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "@the-border: ",
+			"color": "#000000"
+		},
+		{
+			"content": "1px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "@base-color: ",
+			"color": "#000000"
+		},
+		{
+			"content": "#111",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "@red:        ",
+			"color": "#000000"
+		},
+		{
+			"content": "#842210",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "#header",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": (@base-color * ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "border-left",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": @the-border;",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "border-right",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": (@the-border * ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#footer",
+			"color": "#800000"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": (@base-color + ",
+			"color": "#000000"
+		},
+		{
+			"content": "#003300",
+			"color": "#0451A5"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "border-color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "desaturate",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(@red, ",
+			"color": "#000000"
+		},
+		{
+			"content": "10%",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

@@ -5550,5 +5550,259 @@
 			"content": "///",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "\"\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "A CoffeeScript sample.",
+			"color": "#A31515"
+		},
+		{
+			"content": "\"\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Vehicle",
+			"color": "#000000"
+		},
+		{
+			"content": "  constructor: (@name) ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  drive: () ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    alert ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Drive ",
+			"color": "#A31515"
+		},
+		{
+			"content": "#{@name}",
+			"color": "#A31515"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Car ",
+			"color": "#000000"
+		},
+		{
+			"content": "extends",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Vehicle",
+			"color": "#000000"
+		},
+		{
+			"content": "  drive: () ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    alert ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Driving ",
+			"color": "#A31515"
+		},
+		{
+			"content": "#{@name}",
+			"color": "#A31515"
+		},
+		{
+			"content": "\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "c = ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Car ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Volvo\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "while",
+			"color": "#0000FF"
+		},
+		{
+			"content": " onTheRoad()",
+			"color": "#000000"
+		},
+		{
+			"content": "  c.drive()",
+			"color": "#000000"
+		},
+		{
+			"content": "vehicles = (",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Car ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i ",
+			"color": "#000000"
+		},
+		{
+			"content": "in",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "..",
+			"color": "#000000"
+		},
+		{
+			"content": "100",
+			"color": "#09885A"
+		},
+		{
+			"content": "])",
+			"color": "#000000"
+		},
+		{
+			"content": "startRace = (vehicles) ",
+			"color": "#000000"
+		},
+		{
+			"content": "->",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [vehicle.drive() ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " vehicle ",
+			"color": "#000000"
+		},
+		{
+			"content": "in",
+			"color": "#0000FF"
+		},
+		{
+			"content": " vehicles]",
+			"color": "#000000"
+		},
+		{
+			"content": "fancyRegExp = ",
+			"color": "#000000"
+		},
+		{
+			"content": "///",
+			"color": "#811F3F"
+		},
+		{
+			"content": "\t(\\d",
+			"color": "#811F3F"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": ")\t",
+			"color": "#811F3F"
+		},
+		{
+			"content": "# numbers",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t(\\w",
+			"color": "#811F3F"
+		},
+		{
+			"content": "*",
+			"color": "#000000"
+		},
+		{
+			"content": ")\t",
+			"color": "#811F3F"
+		},
+		{
+			"content": "# letters",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#811F3F"
+		},
+		{
+			"content": "$",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\t\t",
+			"color": "#811F3F"
+		},
+		{
+			"content": "# the end",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "///",
+			"color": "#811F3F"
+		}
 	]
 }
