@@ -22942,5 +22942,1135 @@
 			"content": "'''",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "from",
+			"color": "#0000FF"
+		},
+		{
+			"content": " banana ",
+			"color": "#000000"
+		},
+		{
+			"content": "import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " *",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Monkey:",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# Bananas the monkey can eat.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\tcapacity = ",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " eat(self, N):",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "'''Make the monkey eat N bananas!'''",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t\tcapacity = capacity - N*banana.size",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " feeding_frenzy(self):",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\teat(",
+			"color": "#000000"
+		},
+		{
+			"content": "9.25",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Yum yum\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " some_func(a:",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "lambda",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x=",
+			"color": "#000000"
+		},
+		{
+			"content": "None",
+			"color": "#0000FF"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\t\t{key: val",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " key, val in",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\t\t\t\t(x ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x is not ",
+			"color": "#000000"
+		},
+		{
+			"content": "None",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [])",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\t\t}=",
+			"color": "#000000"
+		},
+		{
+			"content": "42",
+			"color": "#09885A"
+		},
+		{
+			"content": "):",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "pass",
+			"color": "#0000FF"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1900",
+			"color": "#09885A"
+		},
+		{
+			"content": " < year < ",
+			"color": "#000000"
+		},
+		{
+			"content": "2100",
+			"color": "#09885A"
+		},
+		{
+			"content": " and ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " <= month <= ",
+			"color": "#000000"
+		},
+		{
+			"content": "12",
+			"color": "#09885A"
+		},
+		{
+			"content": " \\",
+			"color": "#000000"
+		},
+		{
+			"content": "   and ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " <= day <= ",
+			"color": "#000000"
+		},
+		{
+			"content": "31",
+			"color": "#09885A"
+		},
+		{
+			"content": " and ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " <= hour < ",
+			"color": "#000000"
+		},
+		{
+			"content": "24",
+			"color": "#09885A"
+		},
+		{
+			"content": " \\",
+			"color": "#000000"
+		},
+		{
+			"content": "   and ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " <= minute < ",
+			"color": "#000000"
+		},
+		{
+			"content": "60",
+			"color": "#09885A"
+		},
+		{
+			"content": " and ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " <= second < ",
+			"color": "#000000"
+		},
+		{
+			"content": "60",
+			"color": "#09885A"
+		},
+		{
+			"content": ":   ",
+			"color": "#000000"
+		},
+		{
+			"content": "# Looks like a valid date",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " firstn(g, n):",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i in range(n):",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "yield",
+			"color": "#0000FF"
+		},
+		{
+			"content": " g.next()",
+			"color": "#000000"
+		},
+		{
+			"content": "reduce(",
+			"color": "#000000"
+		},
+		{
+			"content": "lambda",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x,y: x+y, [",
+			"color": "#000000"
+		},
+		{
+			"content": "47",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "11",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "42",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "13",
+			"color": "#09885A"
+		},
+		{
+			"content": "])",
+			"color": "#000000"
+		},
+		{
+			"content": "woerter = {",
+			"color": "#000000"
+		},
+		{
+			"content": "\"house\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " : ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Haus\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"cat\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Katze\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"black\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "\"schwarz\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "mydictionary = {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "'foo'",
+			"color": "#A31515"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "23",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "#comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "'bar'",
+			"color": "#A31515"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"hello\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "#sqadsad",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " steuern(einkommen):",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"\"Berechnung der zu zahlenden Steuern fuer ein zu versteuerndes Einkommen von x\"\"\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " einkommen <= ",
+			"color": "#000000"
+		},
+		{
+			"content": "8004",
+			"color": "#09885A"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "        steuer = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "elif",
+			"color": "#0000FF"
+		},
+		{
+			"content": " einkommen <= ",
+			"color": "#000000"
+		},
+		{
+			"content": "13469",
+			"color": "#09885A"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "        y = (einkommen -",
+			"color": "#000000"
+		},
+		{
+			"content": "8004.0",
+			"color": "#09885A"
+		},
+		{
+			"content": ")/",
+			"color": "#000000"
+		},
+		{
+			"content": "10000.0",
+			"color": "#09885A"
+		},
+		{
+			"content": "        steuer = (",
+			"color": "#000000"
+		},
+		{
+			"content": "912.17",
+			"color": "#09885A"
+		},
+		{
+			"content": " * y + ",
+			"color": "#000000"
+		},
+		{
+			"content": "1400",
+			"color": "#09885A"
+		},
+		{
+			"content": ")*y",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "        steuer = einkommen * ",
+			"color": "#000000"
+		},
+		{
+			"content": "0.44",
+			"color": "#09885A"
+		},
+		{
+			"content": " - ",
+			"color": "#000000"
+		},
+		{
+			"content": "15694",
+			"color": "#09885A"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " steuer",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " beliebig(x, y, *mehr):",
+			"color": "#000000"
+		},
+		{
+			"content": "    print ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"x=\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", x, ",
+			"color": "#000000"
+		},
+		{
+			"content": "\", x=\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", y",
+			"color": "#000000"
+		},
+		{
+			"content": "    print ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mehr: \"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", mehr",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Memoize:",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " __init__(self, fn):",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".fn = fn",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".memo = {}",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "def",
+			"color": "#0000FF"
+		},
+		{
+			"content": " __call__(self, *args):",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " args not in ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".memo:",
+			"color": "#000000"
+		},
+		{
+			"content": "                ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".memo[args] = ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".fn(*args)",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "self",
+			"color": "#0000FF"
+		},
+		{
+			"content": ".memo[args]",
+			"color": "#000000"
+		},
+		{
+			"content": "res = re.search(",
+			"color": "#000000"
+		},
+		{
+			"content": "r",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\"([0-9-]",
+			"color": "#811F3F"
+		},
+		{
+			"content": "*",
+			"color": "#000000"
+		},
+		{
+			"content": ")\\s",
+			"color": "#811F3F"
+		},
+		{
+			"content": "*",
+			"color": "#000000"
+		},
+		{
+			"content": "([A-Za-z]",
+			"color": "#811F3F"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": "),\\s",
+			"color": "#811F3F"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": "(.",
+			"color": "#811F3F"
+		},
+		{
+			"content": "*",
+			"color": "#000000"
+		},
+		{
+			"content": ")\"",
+			"color": "#811F3F"
+		},
+		{
+			"content": ", i)",
+			"color": "#000000"
+		},
+		{
+			"content": "while",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "True",
+			"color": "#0000FF"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "try",
+			"color": "#0000FF"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "        n = raw_input(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Number: \"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "        n = int(n)",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "break",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "except",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ValueError:",
+			"color": "#000000"
+		},
+		{
+			"content": "        print(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Not a number\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "async",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "with",
+			"color": "#0000FF"
+		},
+		{
+			"content": " EXPR ",
+			"color": "#000000"
+		},
+		{
+			"content": "as",
+			"color": "#0000FF"
+		},
+		{
+			"content": " VAR:",
+			"color": "#000000"
+		},
+		{
+			"content": "    BLOCK",
+			"color": "#000000"
+		},
+		{
+			"content": "# Comments in dictionary items should be colorized accordingly",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "my_dictionary = {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "'foo'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "23",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "# this should be colorized as comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "'bar'",
+			"color": "#A31515"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "\"foobar\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "#this should be colorized as comment",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "# test raw strings",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "text = ",
+			"color": "#000000"
+		},
+		{
+			"content": "r",
+			"color": "#0000FF"
+		},
+		{
+			"content": "\"\"\"",
+			"color": "#811F3F"
+		},
+		{
+			"content": "interval ``[1,2)`` leads to",
+			"color": "#811F3F"
+		},
+		{
+			"content": "\"\"\"",
+			"color": "#811F3F"
+		},
+		{
+			"content": "highlight_error = ",
+			"color": "#000000"
+		},
+		{
+			"content": "True",
+			"color": "#0000FF"
+		},
+		{
+			"content": "# highlight doctests",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "r",
+			"color": "#0000FF"
+		},
+		{
+			"content": "'''Module docstring",
+			"color": "#A31515"
+		},
+		{
+			"content": "    Some text followed by code sample:",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#A31515"
+		},
+		{
+			"content": ">>> ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "for a in foo(2, b=1,",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#A31515"
+		},
+		{
+			"content": "... ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "                c=3):",
+			"color": "#A31515"
+		},
+		{
+			"content": "    ",
+			"color": "#A31515"
+		},
+		{
+			"content": "... ",
+			"color": "#0000FF"
+		},
+		{
+			"content": "  print(a)",
+			"color": "#A31515"
+		},
+		{
+			"content": "    0",
+			"color": "#A31515"
+		},
+		{
+			"content": "    1",
+			"color": "#A31515"
+		},
+		{
+			"content": "'''",
+			"color": "#A31515"
+		}
 	]
 }

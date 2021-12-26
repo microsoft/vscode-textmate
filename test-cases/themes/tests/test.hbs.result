@@ -6158,5 +6158,255 @@
 			"content": "</div>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "Comments",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "id",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"comments\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "  {{#each comments}}",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<h2><a",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"/posts/{{../permalink}}#{{id}}\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "{{title}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</a></h2>",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<div>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{body}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "  {{/each}}",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<p>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{./name}} or {{this/name}} or {{this.name}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</p>",
+			"color": "#800000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"entry\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "{{!-- only output author name if an author exists --}}",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "  {{#if author}}",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "{{firstName}} {{lastName}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "  {{/if}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"post\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "  {{> userMessage ",
+			"color": "#000000"
+		},
+		{
+			"content": "tagName=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"h1\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " }}",
+			"color": "#000000"
+		},
+		{
+			"content": "  ",
+			"color": "#000000"
+		},
+		{
+			"content": "<h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "Comments",
+			"color": "#000000"
+		},
+		{
+			"content": "</h1>",
+			"color": "#800000"
+		},
+		{
+			"content": "  {{#each comments}}",
+			"color": "#000000"
+		},
+		{
+			"content": "    {{> userMessage ",
+			"color": "#000000"
+		},
+		{
+			"content": "tagName=",
+			"color": "#FF0000"
+		},
+		{
+			"content": "\"h2\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " }}",
+			"color": "#000000"
+		},
+		{
+			"content": "  {{/each}}",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		}
 	]
 }

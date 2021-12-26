@@ -10474,5 +10474,611 @@
 			"content": "</html>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<html>",
+			"color": "#800000"
+		},
+		{
+			"content": "<head>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<meta",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "charset",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"utf-8\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<title>",
+			"color": "#800000"
+		},
+		{
+			"content": "VSCode Tests",
+			"color": "#000000"
+		},
+		{
+			"content": "</title>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<link",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.css\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "rel",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"stylesheet\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " />",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<style",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text/css\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\tbody ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "purple",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "background-color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#d8da3d",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "</style>",
+			"color": "#800000"
+		},
+		{
+			"content": "</head>",
+			"color": "#800000"
+		},
+		{
+			"content": "<body>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "id",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mocha\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "></div>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<!--<script src=\"https://cdn.rawgit.com/jquery/jquery/2.1.4/dist/jquery.min.js\"></script>",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t<script src=\"https://cdn.rawgit.com/Automattic/expect.js/0.3.1/index.js\"></script>-->",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "src",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"/out/vs/loader.js\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "></script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "src",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"https://cdn.rawgit.com/mochajs/mocha/2.2.5/mocha.js\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "></script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\tmocha.setup(",
+			"color": "#000000"
+		},
+		{
+			"content": "'tdd'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\trequire.config({",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\tbaseUrl: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'/out'",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\tpaths: {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\t\tassert: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'/test/assert.js'",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t\t\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t});",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\trequire({{ modules }}, ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " () {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t\tmocha.run();",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t});",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "</script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<div",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"js-stale-session-flash stale-session-flash flash flash-warn flash-banner hidden\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<span",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "octicon",
+			"color": "#0000FF"
+		},
+		{
+			"content": "></span>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<span",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"signed-in-tab-flash\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "You signed in with another tab or window. ",
+			"color": "#000000"
+		},
+		{
+			"content": "<a",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "Reload",
+			"color": "#000000"
+		},
+		{
+			"content": "</a>",
+			"color": "#800000"
+		},
+		{
+			"content": " to refresh your session.",
+			"color": "#000000"
+		},
+		{
+			"content": "</span>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "<span",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"signed-out-tab-flash\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "You signed out in another tab or window. ",
+			"color": "#000000"
+		},
+		{
+			"content": "<a",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "href",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "Reload",
+			"color": "#000000"
+		},
+		{
+			"content": "</a>",
+			"color": "#800000"
+		},
+		{
+			"content": " to refresh your session.",
+			"color": "#000000"
+		},
+		{
+			"content": "</span>",
+			"color": "#800000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "</div>",
+			"color": "#800000"
+		},
+		{
+			"content": "</body>",
+			"color": "#800000"
+		},
+		{
+			"content": "</html>",
+			"color": "#800000"
+		}
 	]
 }

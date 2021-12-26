@@ -7594,5 +7594,303 @@
 			"content": "; }",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "use",
+			"color": "#0000FF"
+		},
+		{
+			"content": " strict;",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $badfound = 0;",
+			"color": "#000000"
+		},
+		{
+			"content": "sub",
+			"color": "#0000FF"
+		},
+		{
+			"content": " check_line {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($fn, $line) = @_;",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "# Check for that =.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($line =~ ",
+			"color": "#000000"
+		},
+		{
+			"content": "/^\\s*if\\s*\\(.*[^!<>=]=([^=].*\\)|\\))/",
+			"color": "#811F3F"
+		},
+		{
+			"content": ") {",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(!$badfound) {",
+			"color": "#000000"
+		},
+		{
+			"content": "            print(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"The following suspicious lines were found:\\n\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "            $badfound = 1;",
+			"color": "#000000"
+		},
+		{
+			"content": "        }",
+			"color": "#000000"
+		},
+		{
+			"content": "        print ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"$fn:$.: $line\\n\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# This function opens and reads one file, and calls",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# check_line to analyze each line.  Call it with the",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# file name.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "sub",
+			"color": "#0000FF"
+		},
+		{
+			"content": " check_file {",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($fn) = @_;",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(!open(IN, $fn)) {",
+			"color": "#000000"
+		},
+		{
+			"content": "        print ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Cannot read $fn.\\n\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($line);",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "while",
+			"color": "#0000FF"
+		},
+		{
+			"content": "($line = <IN>)",
+			"color": "#000000"
+		},
+		{
+			"content": "    {",
+			"color": "#000000"
+		},
+		{
+			"content": "        chomp $line;",
+			"color": "#000000"
+		},
+		{
+			"content": "        check_line($fn,$line);",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    close IN;",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "# Go through the argument list and check each file",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "while",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "my",
+			"color": "#0000FF"
+		},
+		{
+			"content": " $fn = shift @ARGV) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    check_file($fn);",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(!$badfound) { print ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"No suspicious lines were found.\\n\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "; }",
+			"color": "#000000"
+		}
 	]
 }

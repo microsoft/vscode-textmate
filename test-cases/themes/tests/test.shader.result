@@ -2434,5 +2434,139 @@
 			"content": "  }",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "Shader ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Example/Diffuse Simple\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " {",
+			"color": "#000000"
+		},
+		{
+			"content": "    SubShader {",
+			"color": "#000000"
+		},
+		{
+			"content": "      Tags { ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"RenderType\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Opaque\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " }",
+			"color": "#000000"
+		},
+		{
+			"content": "      CGPROGRAM",
+			"color": "#000000"
+		},
+		{
+			"content": "      #pragma",
+			"color": "#0000FF"
+		},
+		{
+			"content": " surface surf Lambert",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "struct",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Input {",
+			"color": "#000000"
+		},
+		{
+			"content": "          ",
+			"color": "#000000"
+		},
+		{
+			"content": "float4",
+			"color": "#0000FF"
+		},
+		{
+			"content": " color : COLOR;",
+			"color": "#000000"
+		},
+		{
+			"content": "      };",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "void",
+			"color": "#0000FF"
+		},
+		{
+			"content": " surf (Input IN, ",
+			"color": "#000000"
+		},
+		{
+			"content": "inout",
+			"color": "#0000FF"
+		},
+		{
+			"content": " SurfaceOutput o) {",
+			"color": "#000000"
+		},
+		{
+			"content": "          o.Albedo = ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "      }",
+			"color": "#000000"
+		},
+		{
+			"content": "      ENDCG",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    Fallback ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Diffuse\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "  }",
+			"color": "#000000"
+		}
 	]
 }

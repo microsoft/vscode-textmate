@@ -3034,5 +3034,183 @@
 			"content": ")",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "# © Microsoft. All rights reserved.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' Add together two numbers.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#'",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' @param x A number.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' @param y A number.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' @return The sum of \\code{x} and \\code{y}.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' @examples",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' add(1, 1)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "#' add(10, 1)",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "add <- ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(x, y) {",
+			"color": "#000000"
+		},
+		{
+			"content": "  x + y",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "add(",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ", -",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "2.0",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "add(",
+			"color": "#000000"
+		},
+		{
+			"content": "1.0e10",
+			"color": "#09885A"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "2.0e10",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "paste(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"one\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "NULL",
+			"color": "#0000FF"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "paste(",
+			"color": "#000000"
+		},
+		{
+			"content": "NA",
+			"color": "#0000FF"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "'two'",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "paste(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"multi-",
+			"color": "#A31515"
+		},
+		{
+			"content": "      line\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "'multi-",
+			"color": "#A31515"
+		},
+		{
+			"content": "      line'",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		}
 	]
 }

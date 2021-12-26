@@ -754,5 +754,27 @@
 			"content": ")));",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "rowData.push(callback(",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Cell(row, col, ",
+			"color": "#000000"
+		},
+		{
+			"content": "false",
+			"color": "#0000FF"
+		},
+		{
+			"content": ")));",
+			"color": "#000000"
+		}
 	]
 }

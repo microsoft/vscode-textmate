@@ -914,5 +914,67 @@
 			"content": "\"payroll.dat\"",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "; last modified 1 April 2001 by John Doe",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "[owner]",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#0000FF"
+		},
+		{
+			"content": "=John Doe",
+			"color": "#000000"
+		},
+		{
+			"content": "organization",
+			"color": "#0000FF"
+		},
+		{
+			"content": "=Acme Widgets Inc.",
+			"color": "#000000"
+		},
+		{
+			"content": "[database]",
+			"color": "#000000"
+		},
+		{
+			"content": "; use IP address in case network name resolution is not working",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "server",
+			"color": "#0000FF"
+		},
+		{
+			"content": "=192.0.2.62",
+			"color": "#000000"
+		},
+		{
+			"content": "port",
+			"color": "#0000FF"
+		},
+		{
+			"content": "=143",
+			"color": "#000000"
+		},
+		{
+			"content": "file",
+			"color": "#0000FF"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"payroll.dat\"",
+			"color": "#A31515"
+		}
 	]
 }

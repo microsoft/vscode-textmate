@@ -1522,5 +1522,79 @@
 			"content": ">",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "type",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"text/javascript\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\twindow.alert(",
+			"color": "#000000"
+		},
+		{
+			"content": "'hello'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "</script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "<script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "\twindow.alert(",
+			"color": "#000000"
+		},
+		{
+			"content": "'hello'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "</script",
+			"color": "#800000"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		}
 	]
 }

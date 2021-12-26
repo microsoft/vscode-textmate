@@ -1650,5 +1650,123 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": ":root ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "--spacing-unit",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "6px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "--cell-padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": (",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": " * ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "--spacing-unit",
+			"color": "#FF0000"
+		},
+		{
+			"content": "));",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "body ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding-left",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": calc(",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": " * ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(",
+			"color": "#000000"
+		},
+		{
+			"content": "--spacing-unit",
+			"color": "#FF0000"
+		},
+		{
+			"content": ", 5px));",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

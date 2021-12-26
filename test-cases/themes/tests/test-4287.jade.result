@@ -138,5 +138,15 @@
 			"content": "    // asdsdas",
 			"color": "#D1F1A9"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": ".ssdsd",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    // asdsdas",
+			"color": "#0000FF"
+		}
 	]
 }

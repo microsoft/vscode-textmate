@@ -2050,5 +2050,111 @@
 			"content": "///",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "regex = ",
+			"color": "#000000"
+		},
+		{
+			"content": "/Hello (\\d",
+			"color": "#811F3F"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": ") #{user}/g",
+			"color": "#811F3F"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": " / ",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": "/3",
+			"color": "#811F3F"
+		},
+		{
+			"content": "a = b/c ",
+			"color": "#811F3F"
+		},
+		{
+			"content": "+",
+			"color": "#000000"
+		},
+		{
+			"content": " d/g",
+			"color": "#811F3F"
+		},
+		{
+			"content": "someOtherStuff",
+			"color": "#000000"
+		},
+		{
+			"content": "name=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"hello\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "test=",
+			"color": "#000000"
+		},
+		{
+			"content": "/// ",
+			"color": "#811F3F"
+		},
+		{
+			"content": "#{name}",
+			"color": "#811F3F"
+		},
+		{
+			"content": "fancyRegExp = ///",
+			"color": "#811F3F"
+		},
+		{
+			"content": "\t(\\d+)\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# numbers",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t(\\w*)\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# letters",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "\t$\t\t",
+			"color": "#000000"
+		},
+		{
+			"content": "# the end",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "///",
+			"color": "#811F3F"
+		}
 	]
 }

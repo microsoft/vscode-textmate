@@ -6346,5 +6346,387 @@
 			"content": "</project>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<project>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<target",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"jar\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<mkdir",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "dir",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"build/jar\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<jar",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "destfile",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"build/jar/HelloWorld.jar\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "basedir",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"build/classes\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "            ",
+			"color": "#000000"
+		},
+		{
+			"content": "<manifest>",
+			"color": "#800000"
+		},
+		{
+			"content": "                ",
+			"color": "#000000"
+		},
+		{
+			"content": "<attribute",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "name",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Main-Class\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "value",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"oata.HelloWorld\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/>",
+			"color": "#800000"
+		},
+		{
+			"content": "            ",
+			"color": "#000000"
+		},
+		{
+			"content": "</manifest>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "</jar>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "</target>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<!-- The stuff below was added for extra tokenizer testing -->",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "<character",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "id",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Lucy\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": ">",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<hr:name>",
+			"color": "#800000"
+		},
+		{
+			"content": "Lucy",
+			"color": "#000000"
+		},
+		{
+			"content": "</hr:name>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<hr:born>",
+			"color": "#800000"
+		},
+		{
+			"content": "1952-03-03",
+			"color": "#000000"
+		},
+		{
+			"content": "</hr:born>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<qualification>",
+			"color": "#800000"
+		},
+		{
+			"content": "bossy, crabby and selfish",
+			"color": "#000000"
+		},
+		{
+			"content": "</qualification>",
+			"color": "#800000"
+		},
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "</character>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "<VisualState.Setters>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<Setter",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Target",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"inputPanel.Orientation\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Value",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Vertical\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/>",
+			"color": "#800000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "<Setter",
+			"color": "#800000"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Target",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"inputButton.Margin\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "Value",
+			"color": "#FF0000"
+		},
+		{
+			"content": "=",
+			"color": "#000000"
+		},
+		{
+			"content": "\"0,4,0,0\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "/>",
+			"color": "#800000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "</VisualState.Setters>",
+			"color": "#800000"
+		},
+		{
+			"content": "</project>",
+			"color": "#800000"
+		}
 	]
 }

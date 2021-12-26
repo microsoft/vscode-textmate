@@ -2810,5 +2810,143 @@
 			"content": "(a))",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "   ",
+			"color": "#000000"
+		},
+		{
+			"content": "-- defines a factorial function",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " fact (n)",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": " n == ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "then",
+			"color": "#0000FF"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "else",
+			"color": "#0000FF"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " n * fact(n-",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "      ",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    print(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"enter a number:\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "    a = io.read(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"*number\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ")        ",
+			"color": "#000000"
+		},
+		{
+			"content": "-- read a number",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    print(fact(a))",
+			"color": "#000000"
+		}
 	]
 }

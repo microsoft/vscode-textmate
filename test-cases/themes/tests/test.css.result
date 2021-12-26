@@ -31554,5 +31554,2315 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "/* css Zen Garden default style v1.02 */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* css released under Creative Commons License - http://creativecommons.org/licenses/by-nc-sa/1.0/  */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* This file based on 'Tranquille' by Dave Shea */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* You may use this file as a foundation for any new work, but you may find it easier to start from scratch. */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* Not all elements are defined in this file, so you'll most likely want to refer to the xhtml as well. */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* Your images should be linked as if the CSS file sits in the same folder as the images. ie. no paths. */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "/* basic elements */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mystyle.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " url(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"mystyle.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "@import",
+			"color": "#0000FF"
+		},
+		{
+			"content": " url(",
+			"color": "#000000"
+		},
+		{
+			"content": "\"bluish.css\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ") projection, tv;",
+			"color": "#000000"
+		},
+		{
+			"content": ".html ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font-style",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "body ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "75%",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "georgia",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "sans-serif",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "line-height",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "1.88889",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#555753",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#fff",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "url",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(blossoms.jpg) ",
+			"color": "#000000"
+		},
+		{
+			"content": "no-repeat",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "bottom",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "right",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background-image",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": -webkit-linear-gradient(",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "start",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background-image",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": -webkit-gradient(linear, ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "bottom",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", from(",
+			"color": "#000000"
+		},
+		{
+			"content": "start",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": "), to(",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": "));",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background-image",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": -moz-linear-gradient(",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "start",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background-image",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": linear-gradient(to ",
+			"color": "#000000"
+		},
+		{
+			"content": "bottom",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "start",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "end",
+			"color": "#0451A5"
+		},
+		{
+			"content": "-",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#0451A5"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "p ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-align",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "justify",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "h3 ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "italic",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "normal",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1.4em",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "georgia",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "sans-serif",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "letter-spacing",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "1px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-bottom",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#7D775C",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "a:link ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font-weight",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "bold",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-decoration",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "none",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#B7A5DF",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "a:visited ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font-weight",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "bold",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-decoration",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "none",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#D4CDDC",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "cursor",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "pointer",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "a:hover,",
+			"color": "#800000"
+		},
+		{
+			"content": "a:focus,",
+			"color": "#800000"
+		},
+		{
+			"content": "a:active ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-decoration",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "underline",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#9685BA",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "abbr ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "border-bottom",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "none",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "/* specific divs */",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": ".page-wrapper ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "url",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(zen-bg.jpg) ",
+			"color": "#000000"
+		},
+		{
+			"content": "no-repeat",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "175px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "110px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "position",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "relative",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".intro ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "min-width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "470px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "100%",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "header h1 ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "transparent",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "url",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(h1.gif) ",
+			"color": "#000000"
+		},
+		{
+			"content": "no-repeat",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "display",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "block",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "219px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "height",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "87px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "float",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-indent",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "100%",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "white-space",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "nowrap",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "overflow",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "hidden",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "header ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding-top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "20px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "height",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "87px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".summary ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "clear",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "both",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "20px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "20px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "20px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "160px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "float",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".summary p ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "italic",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1.1em",
+			"color": "#09885A"
+		},
+		{
+			"content": "/",
+			"color": "#000000"
+		},
+		{
+			"content": "2.2",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "georgia",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-align",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "center",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".preamble ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "clear",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "right",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".supporting ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding-left",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-bottom",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "40px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "#footer ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "text-align",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "center",
+			"color": "#0451A5"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "footer a:link,",
+			"color": "#800000"
+		},
+		{
+			"content": "footer a:visited ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-right",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "20px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".sidebar ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-left",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "600px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "position",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "absolute",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "right",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".sidebar .wrapper ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "font",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "verdana",
+			"color": "#0451A5"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "sans-serif",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "transparent",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "url",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(paper-bg.jpg) ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "repeat-y",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "padding",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "10px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "margin-top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "150px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "130px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".sidebar li a:link ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "#988F5E",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".sidebar li a:visited ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "color",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "'#B3AE94'",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": ".extra1 ",
+			"color": "#800000"
+		},
+		{
+			"content": "{",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "background",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "transparent",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "url",
+			"color": "#0451A5"
+		},
+		{
+			"content": "(cr2.gif) ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "left",
+			"color": "#0451A5"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "no-repeat",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "position",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "absolute",
+			"color": "#0451A5"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "top",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "40px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "right",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "width",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "148px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "height",
+			"color": "#FF0000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "110px",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

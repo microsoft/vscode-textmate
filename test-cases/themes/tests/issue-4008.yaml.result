@@ -938,5 +938,71 @@
 			"content": "1",
 			"color": "#FFC58F"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "blue",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "a=\"brown,not_brown\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "not_blue",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "foo",
+			"color": "#0000FF"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "blue",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "foo=\"}\"",
+			"color": "#0000FF"
+		},
+		{
+			"content": "- ",
+			"color": "#000000"
+		},
+		{
+			"content": "not_blue",
+			"color": "#800000"
+		},
+		{
+			"content": ": ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		}
 	]
 }

@@ -494,5 +494,19 @@
 			"content": "<ion-view><button-view/><font-face></font-face></ion-view>",
 			"color": "#FF9DA4"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "<ion-view><button-view",
+			"color": "#800000"
+		},
+		{
+			"content": "/",
+			"color": "#000000"
+		},
+		{
+			"content": "><font-face></font-face></ion-view>",
+			"color": "#800000"
+		}
 	]
 }

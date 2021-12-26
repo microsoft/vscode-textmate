@@ -1542,5 +1542,91 @@
 			"content": " STATS;",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "CREATE",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "VIEW",
+			"color": "#0000FF"
+		},
+		{
+			"content": " METRIC_STATS (ID, MONTH, TEMP_C, RAIN_C) ",
+			"color": "#000000"
+		},
+		{
+			"content": "AS",
+			"color": "#0000FF"
+		},
+		{
+			"content": "SELECT",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ID,",
+			"color": "#000000"
+		},
+		{
+			"content": "MONTH,",
+			"color": "#000000"
+		},
+		{
+			"content": "(TEMP_F - ",
+			"color": "#000000"
+		},
+		{
+			"content": "32",
+			"color": "#09885A"
+		},
+		{
+			"content": ") * ",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": " /",
+			"color": "#000000"
+		},
+		{
+			"content": "9",
+			"color": "#09885A"
+		},
+		{
+			"content": ",",
+			"color": "#000000"
+		},
+		{
+			"content": "RAIN_I * ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ".",
+			"color": "#000000"
+		},
+		{
+			"content": "3937",
+			"color": "#09885A"
+		},
+		{
+			"content": "FROM",
+			"color": "#0000FF"
+		},
+		{
+			"content": " STATS;",
+			"color": "#000000"
+		}
 	]
 }

@@ -1538,5 +1538,115 @@
 			"content": "] ",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "FROM",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ubuntu",
+			"color": "#000000"
+		},
+		{
+			"content": "MAINTAINER",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Kimbro Staken",
+			"color": "#000000"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " apt-get install -y software-properties-common python",
+			"color": "#000000"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " add-apt-repository ppa:chris-lea/node.js",
+			"color": "#000000"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " echo ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"deb http://us.archive.ubuntu.com/ubuntu/ precise universe\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " >> /etc/apt/sources.list",
+			"color": "#000000"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " apt-get update",
+			"color": "#000000"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " apt-get install -y nodejs",
+			"color": "#000000"
+		},
+		{
+			"content": "#RUN apt-get install -y nodejs=0.6.12~dfsg1-1ubuntu1",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "RUN",
+			"color": "#0000FF"
+		},
+		{
+			"content": " mkdir /var/www",
+			"color": "#000000"
+		},
+		{
+			"content": "ADD",
+			"color": "#0000FF"
+		},
+		{
+			"content": " app.js /var/www/app.js",
+			"color": "#000000"
+		},
+		{
+			"content": "CMD",
+			"color": "#0000FF"
+		},
+		{
+			"content": " [",
+			"color": "#000000"
+		},
+		{
+			"content": "\"/usr/bin/node\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"/var/www/app.js\"",
+			"color": "#A31515"
+		},
+		{
+			"content": "] ",
+			"color": "#000000"
+		}
 	]
 }

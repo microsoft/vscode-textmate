@@ -2946,5 +2946,143 @@
 			"content": "endif",
 			"color": "#EBBBFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "all: hello",
+			"color": "#000000"
+		},
+		{
+			"content": "hello: main.o factorial.o hello.o",
+			"color": "#000000"
+		},
+		{
+			"content": "    g++ main.o factorial.o hello.o -o hello",
+			"color": "#000000"
+		},
+		{
+			"content": "main.o: main.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "    g++ -c main.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "factorial.o: factorial.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "    g++ -c factorial.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "hello.o: hello.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "    g++ -c hello.cpp",
+			"color": "#000000"
+		},
+		{
+			"content": "clean:",
+			"color": "#000000"
+		},
+		{
+			"content": "    rm *o hello",
+			"color": "#000000"
+		},
+		{
+			"content": "define",
+			"color": "#0000FF"
+		},
+		{
+			"content": " defined",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "$(info Checkng existance of $(1))",
+			"color": "#A31515"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "$(if ifeq \"$(flavor $(1))\" \"undefined\",0,1)",
+			"color": "#A31515"
+		},
+		{
+			"content": "endef",
+			"color": "#0000FF"
+		},
+		{
+			"content": "ifeq",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "$(call defined,TOP_DIR)",
+			"color": "#A31515"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000"
+		},
+		{
+			"content": "TOP_DIR must be set before including paths.mk",
+			"color": "#000000"
+		},
+		{
+			"content": "endif",
+			"color": "#0000FF"
+		},
+		{
+			"content": "include",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "$(TOP_DIR)",
+			"color": "#A31515"
+		},
+		{
+			"content": "3rdparty.mk",
+			"color": "#000000"
+		},
+		{
+			"content": "ifeq",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "$(call defined,CODIT_DIR)",
+			"color": "#A31515"
+		},
+		{
+			"content": ",0)",
+			"color": "#000000"
+		},
+		{
+			"content": "CODIT_DIR must be set in $(TOP_DIR)3rdparty.mk",
+			"color": "#000000"
+		},
+		{
+			"content": "endif",
+			"color": "#0000FF"
+		}
 	]
 }

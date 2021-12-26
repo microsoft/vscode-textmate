@@ -1938,5 +1938,139 @@
 			"content": "endlocal",
 			"color": "#EBBBFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "@",
+			"color": "#000000"
+		},
+		{
+			"content": "echo",
+			"color": "#0000FF"
+		},
+		{
+			"content": " off",
+			"color": "#000000"
+		},
+		{
+			"content": "setlocal",
+			"color": "#0000FF"
+		},
+		{
+			"content": "title",
+			"color": "#0000FF"
+		},
+		{
+			"content": " VSCode Dev",
+			"color": "#000000"
+		},
+		{
+			"content": "pushd",
+			"color": "#0000FF"
+		},
+		{
+			"content": " %~dp0\\..",
+			"color": "#000000"
+		},
+		{
+			"content": ":: Node modules",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "if not exist",
+			"color": "#0000FF"
+		},
+		{
+			"content": " node_modules ",
+			"color": "#000000"
+		},
+		{
+			"content": "call",
+			"color": "#0000FF"
+		},
+		{
+			"content": " .\\scripts\\npm.bat install",
+			"color": "#000000"
+		},
+		{
+			"content": ":: Get electron",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "node .\\node_modules\\gulp\\bin\\gulp.js electron",
+			"color": "#000000"
+		},
+		{
+			"content": ":: Build",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "if not exist",
+			"color": "#0000FF"
+		},
+		{
+			"content": " out node .\\node_modules\\gulp\\bin\\gulp.js compile",
+			"color": "#000000"
+		},
+		{
+			"content": ":: Configuration",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "set",
+			"color": "#0000FF"
+		},
+		{
+			"content": " NODE_ENV=development",
+			"color": "#000000"
+		},
+		{
+			"content": "set",
+			"color": "#0000FF"
+		},
+		{
+			"content": " VSCODE_DEV=1",
+			"color": "#000000"
+		},
+		{
+			"content": "set",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ELECTRON_DEFAULT_ERROR_MODE=1",
+			"color": "#000000"
+		},
+		{
+			"content": "set",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ELECTRON_ENABLE_LOGGING=1",
+			"color": "#000000"
+		},
+		{
+			"content": "set",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ELECTRON_ENABLE_STACK_DUMPING=1",
+			"color": "#000000"
+		},
+		{
+			"content": ":: Launch Code",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": ".\\.build\\electron\\electron.exe . %*",
+			"color": "#000000"
+		},
+		{
+			"content": "popd",
+			"color": "#0000FF"
+		},
+		{
+			"content": "endlocal",
+			"color": "#0000FF"
+		}
 	]
 }

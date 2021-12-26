@@ -11290,5 +11290,387 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "/*---------------------------------------------------------------------------------------------",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": " *  Copyright (c) Microsoft Corporation. All rights reserved.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": " *  Licensed under the MIT License. See License.txt in the project root for license information.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": " *--------------------------------------------------------------------------------------------*/",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " gulp = require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'gulp'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " tsb = require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'gulp-tsb'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " util = require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'./lib/util'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " watcher = require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'./lib/watch'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " assign = require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'object-assign'",
+			"color": "#A31515"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " compilation = tsb.create(assign({ verbose: ",
+			"color": "#000000"
+		},
+		{
+			"content": "true",
+			"color": "#0000FF"
+		},
+		{
+			"content": " }, require(",
+			"color": "#000000"
+		},
+		{
+			"content": "'./tsconfig.json'",
+			"color": "#A31515"
+		},
+		{
+			"content": ").compilerOptions));",
+			"color": "#000000"
+		},
+		{
+			"content": "gulp.task(",
+			"color": "#000000"
+		},
+		{
+			"content": "'compile'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": "() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " gulp.src(",
+			"color": "#000000"
+		},
+		{
+			"content": "'**/*.ts'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", { base: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'.'",
+			"color": "#A31515"
+		},
+		{
+			"content": " })",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t.pipe(compilation())",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t.pipe(gulp.dest(",
+			"color": "#000000"
+		},
+		{
+			"content": "''",
+			"color": "#A31515"
+		},
+		{
+			"content": "));",
+			"color": "#000000"
+		},
+		{
+			"content": "});",
+			"color": "#000000"
+		},
+		{
+			"content": "gulp.task(",
+			"color": "#000000"
+		},
+		{
+			"content": "'watch'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", ",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": "() {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " src = gulp.src(",
+			"color": "#000000"
+		},
+		{
+			"content": "'**/*.ts'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", { base: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'.'",
+			"color": "#A31515"
+		},
+		{
+			"content": " });",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " watcher(",
+			"color": "#000000"
+		},
+		{
+			"content": "'**/*.ts'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", { base: ",
+			"color": "#000000"
+		},
+		{
+			"content": "'.'",
+			"color": "#A31515"
+		},
+		{
+			"content": " })",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t.pipe(util.incremental(compilation, src))",
+			"color": "#000000"
+		},
+		{
+			"content": "\t\t.pipe(gulp.dest(",
+			"color": "#000000"
+		},
+		{
+			"content": "''",
+			"color": "#A31515"
+		},
+		{
+			"content": "));",
+			"color": "#000000"
+		},
+		{
+			"content": "});",
+			"color": "#000000"
+		},
+		{
+			"content": "gulp.task(",
+			"color": "#000000"
+		},
+		{
+			"content": "'default'",
+			"color": "#A31515"
+		},
+		{
+			"content": ", [",
+			"color": "#000000"
+		},
+		{
+			"content": "'compile'",
+			"color": "#A31515"
+		},
+		{
+			"content": "]);",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " cloneArray(arr) {",
+			"color": "#000000"
+		},
+		{
+			"content": "    _.foo();",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " r = [];",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ", len = arr.length; i < len; i++) {",
+			"color": "#000000"
+		},
+		{
+			"content": "        r[i] = doClone(arr[i]);",
+			"color": "#000000"
+		},
+		{
+			"content": "    }",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " r;",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

@@ -5414,5 +5414,351 @@
 			"content": " (string)internalAge",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "// from https://msdn.microsoft.com/en-us/library/dd233160.aspx",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "// The declaration creates a constructor that takes two values, name and age.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "type Person(name",
+			"color": "#000000"
+		},
+		{
+			"content": ":",
+			"color": "#0000FF"
+		},
+		{
+			"content": "string, age",
+			"color": "#000000"
+		},
+		{
+			"content": ":",
+			"color": "#0000FF"
+		},
+		{
+			"content": "int) ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "let mutable",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " age",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "new",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(name",
+			"color": "#000000"
+		},
+		{
+			"content": ":",
+			"color": "#0000FF"
+		},
+		{
+			"content": "string) ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " Person(name, ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ")",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "member",
+			"color": "#0000FF"
+		},
+		{
+			"content": " this.Name ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " name",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "// A read/write property.",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "member",
+			"color": "#0000FF"
+		},
+		{
+			"content": " this.Age",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "with",
+			"color": "#0000FF"
+		},
+		{
+			"content": " get",
+			"color": "#000000"
+		},
+		{
+			"content": "()",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge",
+			"color": "#000000"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "and",
+			"color": "#0000FF"
+		},
+		{
+			"content": " set(value) ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge ",
+			"color": "#000000"
+		},
+		{
+			"content": "<-",
+			"color": "#0000FF"
+		},
+		{
+			"content": " value",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "member",
+			"color": "#0000FF"
+		},
+		{
+			"content": " this.HasABirthday ",
+			"color": "#000000"
+		},
+		{
+			"content": "()",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge ",
+			"color": "#000000"
+		},
+		{
+			"content": "<-",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge ",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "member",
+			"color": "#0000FF"
+		},
+		{
+			"content": " this.IsOfAge targetAge ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " internalAge ",
+			"color": "#000000"
+		},
+		{
+			"content": ">=",
+			"color": "#0000FF"
+		},
+		{
+			"content": " targetAge",
+			"color": "#000000"
+		},
+		{
+			"content": "    ",
+			"color": "#000000"
+		},
+		{
+			"content": "override",
+			"color": "#0000FF"
+		},
+		{
+			"content": " this.ToString ",
+			"color": "#000000"
+		},
+		{
+			"content": "()",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "=",
+			"color": "#0000FF"
+		},
+		{
+			"content": "        ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Name:  \"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0000FF"
+		},
+		{
+			"content": " name ",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"\\n\"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"Age:   \"",
+			"color": "#A31515"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "+",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (string)internalAge",
+			"color": "#000000"
+		}
 	]
 }

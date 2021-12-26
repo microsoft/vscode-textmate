@@ -1382,5 +1382,55 @@
 			"content": "}",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A2 {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "public",
+			"color": "#0000FF"
+		},
+		{
+			"content": " count: number = ",
+			"color": "#000000"
+		},
+		{
+			"content": "9",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "\t",
+			"color": "#000000"
+		},
+		{
+			"content": "public",
+			"color": "#0000FF"
+		},
+		{
+			"content": " resolveNextGeneration(cell : A2) {",
+			"color": "#000000"
+		},
+		{
+			"content": "\t}",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		}
 	]
 }

@@ -11438,5 +11438,431 @@
 			"content": ">();",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " keyCode = ",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		},
+		{
+			"content": "if",
+			"color": "#0000FF"
+		},
+		{
+			"content": "(!(keyCode === ",
+			"color": "#000000"
+		},
+		{
+			"content": "8",
+			"color": "#09885A"
+		},
+		{
+			"content": " || (keyCode>=",
+			"color": "#000000"
+		},
+		{
+			"content": "48",
+			"color": "#09885A"
+		},
+		{
+			"content": " && keyCode<=",
+			"color": "#000000"
+		},
+		{
+			"content": "57",
+			"color": "#09885A"
+		},
+		{
+			"content": "))) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i=",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i<",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i++) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i=",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i<",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i++) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i=",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i<",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": "; i++) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (; i<",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": ";) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "for",
+			"color": "#0000FF"
+		},
+		{
+			"content": " (",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " i=",
+			"color": "#000000"
+		},
+		{
+			"content": "0",
+			"color": "#09885A"
+		},
+		{
+			"content": "; ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "+( i<<",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": " ) < ",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": ";i++) {}",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " p = ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": "?",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ":(",
+			"color": "#000000"
+		},
+		{
+			"content": "3",
+			"color": "#09885A"
+		},
+		{
+			"content": "<",
+			"color": "#000000"
+		},
+		{
+			"content": "4",
+			"color": "#09885A"
+		},
+		{
+			"content": "?",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": ":",
+			"color": "#000000"
+		},
+		{
+			"content": "6",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A<X, Y> { }",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " A1<T ",
+			"color": "#000000"
+		},
+		{
+			"content": "extends",
+			"color": "#0000FF"
+		},
+		{
+			"content": " { a: () ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": " string }> { }",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " B { }",
+			"color": "#000000"
+		},
+		{
+			"content": "class",
+			"color": "#0000FF"
+		},
+		{
+			"content": " C { }",
+			"color": "#000000"
+		},
+		{
+			"content": "function",
+			"color": "#0000FF"
+		},
+		{
+			"content": " foo<T>() { ",
+			"color": "#000000"
+		},
+		{
+			"content": "return",
+			"color": "#0000FF"
+		},
+		{
+			"content": " ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": ";}",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x1: A<(param?: number) ",
+			"color": "#000000"
+		},
+		{
+			"content": "=>",
+			"color": "#0000FF"
+		},
+		{
+			"content": " void, B>;",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " x2: A<C | B, C & B>;",
+			"color": "#000000"
+		},
+		{
+			"content": "const",
+			"color": "#0000FF"
+		},
+		{
+			"content": " t = ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " < (",
+			"color": "#000000"
+		},
+		{
+			"content": "5",
+			"color": "#09885A"
+		},
+		{
+			"content": " > ",
+			"color": "#000000"
+		},
+		{
+			"content": "10",
+			"color": "#09885A"
+		},
+		{
+			"content": " ? ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " : ",
+			"color": "#000000"
+		},
+		{
+			"content": "2",
+			"color": "#09885A"
+		},
+		{
+			"content": ");",
+			"color": "#000000"
+		},
+		{
+			"content": "var",
+			"color": "#0000FF"
+		},
+		{
+			"content": " f6 = ",
+			"color": "#000000"
+		},
+		{
+			"content": "1",
+			"color": "#09885A"
+		},
+		{
+			"content": " < foo<string>();",
+			"color": "#000000"
+		}
 	]
 }

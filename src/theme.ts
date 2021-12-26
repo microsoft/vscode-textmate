@@ -67,6 +67,24 @@ function isValidHexColor(hex: string): boolean {
 	return false;
 }
 
+function isValidCssVarWithHexColorDefault(potentialCssVar: string): boolean {
+	let match = /var\(--(.*),\s?(#[0-9]+)\)/i.exec(potentialCssVar);
+	if (match !== null) {
+		let hex = match[2];
+		return isValidHexColor(hex);
+	}
+
+	return false;
+}
+
+function colorValueToId(cssValue: string): string {
+	let match = /(var\(--.*),\s?(#[0-9]+)\)/i.exec(cssValue);
+	if (match !== null) {
+		return match[1] + ', ' + match[2].toUpperCase() + ')'
+	}
+	return cssValue.toUpperCase();
+}
+
 /**
  * Parse a raw theme into rules.
  */
@@ -128,12 +146,23 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 		}
 
 		let foreground: string | null = null;
-		if (typeof entry.settings.foreground === 'string' && isValidHexColor(entry.settings.foreground)) {
+		if (
+			typeof entry.settings.foreground === 'string' &&
+			(
+				isValidHexColor(entry.settings.foreground) ||
+				isValidCssVarWithHexColorDefault(entry.settings.foreground)
+			)
+		) {
 			foreground = entry.settings.foreground;
 		}
 
 		let background: string | null = null;
-		if (typeof entry.settings.background === 'string' && isValidHexColor(entry.settings.background)) {
+		if (typeof entry.settings.background === 'string'  &&
+			(
+				isValidHexColor(entry.settings.background) ||
+				isValidCssVarWithHexColorDefault(entry.settings.background)
+			)
+		) {
 			background = entry.settings.background;
 		}
 
@@ -236,7 +265,7 @@ export class ColorMap {
 		if (color === null) {
 			return 0;
 		}
-		color = color.toUpperCase();
+		color = colorValueToId(color);
 		let value = this._color2id[color];
 		if (value) {
 			return value;

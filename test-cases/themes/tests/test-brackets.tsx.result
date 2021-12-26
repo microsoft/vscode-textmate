@@ -1494,5 +1494,51 @@
 			"content": ";",
 			"color": "#FFFFFF"
 		}
+	],
+	"light_css_vars": [
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " a = Array<number>();   ",
+			"color": "#000000"
+		},
+		{
+			"content": "// Highlight ok here",
+			"color": "var(--text-comment-color, #008000)"
+		},
+		{
+			"content": "interface",
+			"color": "#0000FF"
+		},
+		{
+			"content": " egGenericsInArray {",
+			"color": "#000000"
+		},
+		{
+			"content": "   a: Array<number>;",
+			"color": "#000000"
+		},
+		{
+			"content": "}",
+			"color": "#000000"
+		},
+		{
+			"content": "let",
+			"color": "#0000FF"
+		},
+		{
+			"content": " s = ",
+			"color": "#000000"
+		},
+		{
+			"content": "\"nothing should fail here...\"",
+			"color": "#A31515"
+		},
+		{
+			"content": ";",
+			"color": "#000000"
+		}
 	]
 }
