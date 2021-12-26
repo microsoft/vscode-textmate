@@ -77,6 +77,14 @@ function isValidCssVarWithHexColorDefault(potentialCssVar: string): boolean {
 	return false;
 }
 
+function colorValueToId(cssValue: string): string {
+	let match = /(var\(--.*),\s?(#[0-9]+)\)/i.exec(cssValue);
+	if (match !== null) {
+		return match[1] + ', ' + match[2].toUpperCase() + ')'
+	}
+	return cssValue.toUpperCase();
+}
+
 /**
  * Parse a raw theme into rules.
  */
@@ -257,7 +265,7 @@ export class ColorMap {
 		if (color === null) {
 			return 0;
 		}
-		color = color.toUpperCase();
+		color = colorValueToId(color);
 		let value = this._color2id[color];
 		if (value) {
 			return value;
