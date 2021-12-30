@@ -4,6 +4,6 @@
 
 import './grammar.test';
 import './json.test';
-import './matcher.test';
+import './scope.test';
 import './themes.test';
 import './tokenization.test';

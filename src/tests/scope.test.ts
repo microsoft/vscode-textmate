@@ -3,14 +3,14 @@
  *--------------------------------------------------------*/
 
 import * as tape from 'tape';
-import { createMatchers } from '../matcher';
+import { ScopeSelector } from '../scope';
 
 let tests = [
 	{ "expression": "foo", "input": ["foo"], "result": true },
 	{ "expression": "foo", "input": ["bar"], "result": false },
 	{ "expression": "- foo", "input": ["foo"], "result": false },
 	{ "expression": "- foo", "input": ["bar"], "result": true },
-	{ "expression": "- - foo", "input": ["bar"], "result": false },
+	{ "expression": "- (- foo)", "input": ["bar"], "result": false },
 	{ "expression": "bar foo", "input": ["foo"], "result": false },
 	{ "expression": "bar foo", "input": ["bar"], "result": false },
 	{ "expression": "bar foo", "input": ["bar", "foo"], "result": true },
@@ -35,23 +35,10 @@ let tests = [
 	{ "expression": "text.html.php - (meta.embedded | meta.tag), L:text.html.php meta.tag, L:source.js.embedded.html", "input": ["text.html.php", "bar", "source.js"], "result": true }
 ];
 
-let nameMatcher = (identifers: string[], stackElements: string[]) => {
-	let lastIndex = 0;
-	return identifers.every(identifier => {
-		for (let i = lastIndex; i < stackElements.length; i++) {
-			if (stackElements[i] === identifier) {
-				lastIndex = i + 1;
-				return true;
-			}
-		}
-		return false;
-	});
-};
-
 tests.forEach((test, index) => {
 	tape('Matcher Test #' + index, (t: tape.Test) => {
-		let matchers = createMatchers(test.expression, nameMatcher);
-		let result = matchers.some(m => m.matcher(test.input));
+		let selector = new ScopeSelector(test.expression);
+		let result = selector.matches(test.input);
 		t.equal(result, test.result);
 		t.end();
 	});

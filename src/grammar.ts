@@ -5,7 +5,7 @@
 import { clone, mergeObjects } from './utils';
 import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner, FindOption } from './types';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, CompiledRule } from './rule';
-import { createMatchers, Matcher } from './matcher';
+import { ScopeSelector } from './scope';
 import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
@@ -244,8 +244,7 @@ function collectDependencies(result: ScopeDependencyCollector, baseGrammar: IRaw
 
 export interface Injection {
 	readonly debugSelector: string;
-	readonly matcher: Matcher<string[]>;
-	readonly priority: -1 | 0 | 1; // 0 is the default. -1 for 'L' and 1 for 'R'
+	readonly scopeSelector: ScopeSelector;
 	readonly ruleId: number;
 	readonly grammar: IRawGrammar;
 }
@@ -261,34 +260,15 @@ function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
 	return thisScopeName.length > len && thisScopeName.substr(0, len) === scopeName && thisScopeName[len] === '.';
 }
 
-function nameMatcher(identifers: string[], scopes: string[]) {
-	if (scopes.length < identifers.length) {
-		return false;
-	}
-	let lastIndex = 0;
-	return identifers.every(identifier => {
-		for (let i = lastIndex; i < scopes.length; i++) {
-			if (scopesAreMatching(scopes[i], identifier)) {
-				lastIndex = i + 1;
-				return true;
-			}
-		}
-		return false;
-	});
-}
-
 function collectInjections(result: Injection[], selector: string, rule: IRawRule, ruleFactoryHelper: IRuleFactoryHelper, grammar: IRawGrammar): void {
-	const matchers = createMatchers(selector, nameMatcher);
+	const scopeSelector = new ScopeSelector(selector);
 	const ruleId = RuleFactory.getCompiledRuleId(rule, ruleFactoryHelper, grammar.repository);
-	for (const matcher of matchers) {
-		result.push({
-			debugSelector: selector,
-			matcher: matcher.matcher,
-			ruleId: ruleId,
-			grammar: grammar,
-			priority: matcher.priority
-		});
-	}
+	result.push({
+		debugSelector: selector,
+		scopeSelector: scopeSelector,
+		ruleId: ruleId,
+		grammar: grammar
+	});
 }
 
 export class ScopeMetadata {
@@ -474,13 +454,11 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		this._tokenTypeMatchers = [];
 		if (tokenTypes) {
 			for (const selector of Object.keys(tokenTypes)) {
-				const matchers = createMatchers(selector, nameMatcher);
-				for (const matcher of matchers) {
-					this._tokenTypeMatchers.push({
-						matcher: matcher.matcher,
-						type: tokenTypes[selector]
-					});
-				}
+				const scopeSelector = new ScopeSelector(selector);
+				this._tokenTypeMatchers.push({
+					scopeSelector: scopeSelector,
+					type: tokenTypes[selector]
+				});
 			}
 		}
 	}
@@ -561,7 +539,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			}
 		});
 
-		result.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
+		result.sort((i1, i2) => i1.scopeSelector.getPriority(this._scopeName) - i2.scopeSelector.getPriority(this._scopeName)); // sort by priority
 
 		return result;
 	}
@@ -812,7 +790,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 
 	for (let i = 0, len = injections.length; i < len; i++) {
 		const injection = injections[i];
-		if (!injection.matcher(scopes)) {
+		if (!injection.scopeSelector.matches(scopes)) {
 			// injection selector doesn't match stack
 			continue;
 		}
@@ -837,7 +815,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		bestMatchRating = matchRating;
 		bestMatchCaptureIndices = matchResult.captureIndices;
 		bestMatchRuleId = ruleScanner.rules[matchResult.index];
-		bestMatchResultPriority = injection.priority;
+		bestMatchResultPriority = injection.scopeSelector.getPriority(scopes);
 
 		if (bestMatchRating === linePos) {
 			// No more need to look at the rest of the injections.
@@ -1616,7 +1594,7 @@ export class LocalStackElement {
 }
 
 interface TokenTypeMatcher {
-	readonly matcher: Matcher<string[]>;
+	readonly scopeSelector: ScopeSelector;
 	readonly type: StandardTokenType;
 }
 
@@ -1668,7 +1646,7 @@ class LineTokens {
 			if (this._tokenTypeOverrides.length > 0) {
 				const scopes = scopesList.generateScopes();
 				for (const tokenType of this._tokenTypeOverrides) {
-					if (tokenType.matcher(scopes)) {
+					if (tokenType.scopeSelector.matches(scopes)) {
 						metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), FontStyle.NotSet, 0, 0);
 					}
 				}
