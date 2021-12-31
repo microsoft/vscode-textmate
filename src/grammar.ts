@@ -815,7 +815,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		bestMatchRating = matchRating;
 		bestMatchCaptureIndices = matchResult.captureIndices;
 		bestMatchRuleId = ruleScanner.rules[matchResult.index];
-		bestMatchResultPriority = injection.scopeSelector.getPriority(scopes);
+		bestMatchResultPriority = injection.scopeSelector.getPriority(injection.grammar.scopeName);
 
 		if (bestMatchRating === linePos) {
 			// No more need to look at the rest of the injections.

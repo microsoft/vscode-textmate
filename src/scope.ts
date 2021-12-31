@@ -9,7 +9,7 @@ import type { ParsedMatcher, GroupPrefix } from './matchers';
 
 import ScopeSelectorParser = require('./matcherParser');
 
-const selectorCache: Record<string, any> = {};
+const matcherCache: Record<string, ParsedMatcher> = {};
 
 export class ScopeSelector {
 	private _matchCache: Record<string, boolean | void> = {};
@@ -22,11 +22,11 @@ export class ScopeSelector {
 	 *  @return A newly constructed ScopeSelector.
 	 */
 	constructor(source: string) {
-		if (selectorCache[source]) {
-			this.matcher = selectorCache[source];
+		if (matcherCache[source]) {
+			this.matcher = matcherCache[source];
 		} else {
 			this.matcher = ScopeSelectorParser.parse(source);
-			selectorCache[source] = this.matcher;
+			matcherCache[source] = this.matcher;
 		}
 	}
 
