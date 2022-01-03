@@ -80,9 +80,9 @@ export class ScopeSelector {
 	getPriority(scopes: string | string[]): number {
 		switch (this.getPrefix(scopes)) {
 			case 'L': // left - before non-prefixed rules
-				return 1;
-			case 'R': // right - after non-prefixed rules
 				return -1;
+			case 'R': // right - after non-prefixed rules
+				return 1;
 			default:
 				return 0;
 		}
