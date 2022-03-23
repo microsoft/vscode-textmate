@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import * as tape from 'tape';
+import * as assert from 'assert';
 import { createMatchers } from '../matcher';
 
 let tests = [
@@ -48,11 +48,10 @@ let nameMatcher = (identifers: string[], stackElements: string[]) => {
 	});
 };
 
-tests.forEach((test, index) => {
-	tape('Matcher Test #' + index, (t: tape.Test) => {
-		let matchers = createMatchers(test.expression, nameMatcher);
-		let result = matchers.some(m => m.matcher(test.input));
-		t.equal(result, test.result);
-		t.end();
+tests.forEach((tst, index) => {
+	test('Matcher Test #' + index, () => {
+		let matchers = createMatchers(tst.expression, nameMatcher);
+		let result = matchers.some(m => m.matcher(tst.input));
+		assert.strictEqual(result, tst.result);
 	});
 });
