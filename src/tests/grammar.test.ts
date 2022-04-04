@@ -4,7 +4,7 @@
 
 import * as assert from 'assert';
 import { StandardTokenType } from '../main';
-import { StackElementMetadata, TemporaryStandardTokenType } from '../grammar';
+import { StackElementMetadata, OptionalStandardTokenType } from '../grammar';
 import { FontStyle } from '../theme';
 
 function assertEquals(metadata: number, languageId: number, tokenType: StandardTokenType, fontStyle: FontStyle, foreground: number, background: number): void {
@@ -28,55 +28,55 @@ function assertEquals(metadata: number, languageId: number, tokenType: StandardT
 }
 
 test('StackElementMetadata works', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 });
 
 test('StackElementMetadata can overwrite languageId', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-	value = StackElementMetadata.set(value, 2, TemporaryStandardTokenType.Other, FontStyle.NotSet, 0, 0);
+	value = StackElementMetadata.set(value, 2, OptionalStandardTokenType.NotSet, FontStyle.NotSet, 0, 0);
 	assertEquals(value, 2, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 });
 
 test('StackElementMetadata can overwrite tokenType', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Comment, FontStyle.NotSet, 0, 0);
+	value = StackElementMetadata.set(value, 0, OptionalStandardTokenType.Comment, FontStyle.NotSet, 0, 0);
 	assertEquals(value, 1, StandardTokenType.Comment, FontStyle.Underline | FontStyle.Bold, 101, 102);
 });
 
 test('StackElementMetadata can overwrite font style', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.None, 0, 0);
+	value = StackElementMetadata.set(value, 0, OptionalStandardTokenType.NotSet, FontStyle.None, 0, 0);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.None, 101, 102);
 });
 
 test('StackElementMetadata can overwrite font style with strikethrough', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Strikethrough, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Strikethrough, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Strikethrough, 101, 102);
 
-	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.None, 0, 0);
+	value = StackElementMetadata.set(value, 0, OptionalStandardTokenType.NotSet, FontStyle.None, 0, 0);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.None, 101, 102);
 });
 
 test('StackElementMetadata can overwrite foreground', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.NotSet, 5, 0);
+	value = StackElementMetadata.set(value, 0, OptionalStandardTokenType.NotSet, FontStyle.NotSet, 5, 0);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 5, 102);
 });
 
 test('StackElementMetadata can overwrite background', () => {
-	let value = StackElementMetadata.set(0, 1, TemporaryStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
+	let value = StackElementMetadata.set(0, 1, OptionalStandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 102);
 
-	value = StackElementMetadata.set(value, 0, TemporaryStandardTokenType.Other, FontStyle.NotSet, 0, 7);
+	value = StackElementMetadata.set(value, 0, OptionalStandardTokenType.NotSet, FontStyle.NotSet, 0, 7);
 	assertEquals(value, 1, StandardTokenType.RegEx, FontStyle.Underline | FontStyle.Bold, 101, 7);
 });
 
