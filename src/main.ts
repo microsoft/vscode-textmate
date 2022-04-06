@@ -5,7 +5,7 @@
 import { SyncRegistry } from './registry';
 import * as grammarReader from './grammarReader';
 import { Theme } from './theme';
-import { StackElement as StackElementImpl, ScopeDependencyProcessor } from './grammar';
+import { StackElement as StackElementImpl, ScopeDependencyProcessor, BalancedBracketSelectors } from './grammar';
 import { IRawGrammar, IOnigLib } from './types';
 
 export * from './types';
@@ -66,6 +66,8 @@ export const enum StandardTokenType {
 export interface IGrammarConfiguration {
 	embeddedLanguages?: IEmbeddedLanguagesMap;
 	tokenTypes?: ITokenTypeMap;
+	balancedBracketSelectors?: string[];
+	unbalancedBracketSelectors?: string[];
 }
 
 /**
@@ -114,14 +116,23 @@ export class Registry {
 	 * Please do not use language id 0.
 	 */
 	public loadGrammarWithConfiguration(initialScopeName: string, initialLanguage: number, configuration: IGrammarConfiguration): Promise<IGrammar | null> {
-		return this._loadGrammar(initialScopeName, initialLanguage, configuration.embeddedLanguages, configuration.tokenTypes);
+		return this._loadGrammar(
+			initialScopeName,
+			initialLanguage,
+			configuration.embeddedLanguages,
+			configuration.tokenTypes,
+			new BalancedBracketSelectors(
+				configuration.balancedBracketSelectors || [],
+				configuration.unbalancedBracketSelectors || []
+			)
+		);
 	}
 
 	/**
 	 * Load the grammar for `scopeName` and all referenced included grammars asynchronously.
 	 */
 	public loadGrammar(initialScopeName: string): Promise<IGrammar | null> {
-		return this._loadGrammar(initialScopeName, 0, null, null);
+		return this._loadGrammar(initialScopeName, 0, null, null, null);
 	}
 
 	private async _doLoadSingleGrammar(scopeName: string): Promise<void> {
@@ -139,7 +150,7 @@ export class Registry {
 		return this._ensureGrammarCache.get(scopeName);
 	}
 
-	private async _loadGrammar(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null | undefined, tokenTypes: ITokenTypeMap | null | undefined): Promise<IGrammar | null> {
+	private async _loadGrammar(initialScopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null | undefined, tokenTypes: ITokenTypeMap | null | undefined, balancedBracketSelectors: BalancedBracketSelectors | null): Promise<IGrammar | null> {
 
 		const dependencyProcessor = new ScopeDependencyProcessor(this._syncRegistry, initialScopeName);
 		while (dependencyProcessor.Q.length > 0) {
@@ -147,7 +158,7 @@ export class Registry {
 			dependencyProcessor.processQueue();
 		}
 
-		return this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes);
+		return this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors);
 	}
 
 	/**
@@ -161,8 +172,8 @@ export class Registry {
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
 	 */
-	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap | null = null, tokenTypes: ITokenTypeMap | null = null): Promise<IGrammar | null> {
-		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes);
+	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap | null = null, tokenTypes: ITokenTypeMap | null = null, balancedBracketSelectors: BalancedBracketSelectors | null = null): Promise<IGrammar | null> {
+		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors);
 	}
 }
 
@@ -214,26 +225,30 @@ export interface ITokenizeLineResult {
  *     1098 7654 3210 9876 5432 1098 7654 3210
  * - -------------------------------------------
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *     bbbb bbbb bfff ffff ffFF FFTT LLLL LLLL
+ *     mbbb bbbb bfff ffff ffFF FFTT LLLL LLLL
  * - -------------------------------------------
  *  - L = LanguageId (8 bits)
  *  - T = StandardTokenType (2 bits)
  *  - F = FontStyle (4 bits)
  *  - f = foreground color (9 bits)
  *  - b = background color (9 bits)
+ *  - m = is balanced bracket (1 bit)
  */
 export const enum MetadataConsts {
 	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
 	TOKEN_TYPE_MASK = 0b00000000000000000000001100000000,
 	FONT_STYLE_MASK = 0b00000000000000000011110000000000,
 	FOREGROUND_MASK = 0b00000000011111111100000000000000,
-	BACKGROUND_MASK = 0b11111111100000000000000000000000,
+	BACKGROUND_MASK = 0b01111111100000000000000000000000,
+	BALANCED_BRACKETS_MASK = 0b10000000000000000000000000000000,
 
 	LANGUAGEID_OFFSET = 0,
 	TOKEN_TYPE_OFFSET = 8,
 	FONT_STYLE_OFFSET = 10,
 	FOREGROUND_OFFSET = 14,
-	BACKGROUND_OFFSET = 23
+	BACKGROUND_OFFSET = 23,
+	// Indicates that this token contains balanced brackets
+	BALANCED_BRACKETS = 31,
 }
 
 export interface ITokenizeLineResult2 {

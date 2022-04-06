@@ -30,8 +30,8 @@ export const enum OptionalStandardTokenType {
 	NotSet = 8
 }
 
-export function createGrammar(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
-	return new Grammar(scopeName, grammar, initialLanguage, embeddedLanguages, tokenTypes, grammarRepository, onigLib);//TODO
+export function createGrammar(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, balancedBracketSelectors: BalancedBracketSelectors | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
+	return new Grammar(scopeName, grammar, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors, grammarRepository, onigLib);//TODO
 }
 
 export interface IThemeProvider {
@@ -460,7 +460,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
 	private readonly _onigLib: IOnigLib;
 
-	constructor(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
+	constructor(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, private readonly balancedBracketSelectors: BalancedBracketSelectors | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
 		this._scopeName = scopeName;
 		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
 
@@ -635,7 +635,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			isFirstLine = true;
 			const rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
 			const defaultTheme = rawDefaultMetadata.themeData![0];
-			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
+			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background, null);
 
 			const rootScopeName = this.getRule(this._rootId).getName(null, null);
 			const rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
@@ -652,7 +652,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineText = lineText + '\n';
 		const onigLineText = this.createOnigString(lineText);
 		const lineLength = onigLineText.content.length;
-		const lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers);
+		const lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers, this.balancedBracketSelectors);
 		const r = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true, timeLimit);
 
 		disposeOnigString(onigLineText);
@@ -1243,16 +1243,21 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
 	}
 
+	public static containsBalancedBrackets(metadata: number): boolean {
+		return (metadata & MetadataConsts.BALANCED_BRACKETS_MASK) !== 0;
+	}
+
 	/**
 	 * Updates the fields in `metadata`.
 	 * A value of `0` or `NotSet` indicates that the corresponding field should be left as is.
 	*/
-	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, fontStyle: FontStyle, foreground: number, background: number): number {
+	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, fontStyle: FontStyle, foreground: number, background: number, containsBalancedBrackets: boolean | null): number {
 		let _languageId = StackElementMetadata.getLanguageId(metadata);
 		let _tokenType = StackElementMetadata.getTokenType(metadata);
 		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
 		let _foreground = StackElementMetadata.getForeground(metadata);
 		let _background = StackElementMetadata.getBackground(metadata);
+		let _containsBalancedBrackets = StackElementMetadata.containsBalancedBrackets(metadata);
 
 		if (languageId !== 0) {
 			_languageId = languageId;
@@ -1269,6 +1274,9 @@ export class StackElementMetadata {
 		if (background !== 0) {
 			_background = background;
 		}
+		if (containsBalancedBrackets !== null) {
+			_containsBalancedBrackets = containsBalancedBrackets;
+		}
 
 		return (
 			(_languageId << MetadataConsts.LANGUAGEID_OFFSET)
@@ -1276,6 +1284,7 @@ export class StackElementMetadata {
 			| (_fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
 			| (_foreground << MetadataConsts.FOREGROUND_OFFSET)
 			| (_background << MetadataConsts.BACKGROUND_OFFSET)
+			| (_containsBalancedBrackets ? MetadataConsts.BALANCED_BRACKETS_MASK : 0)
 		) >>> 0;
 	}
 }
@@ -1374,7 +1383,7 @@ export class ScopeListElement {
 			}
 		}
 
-		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background);
+		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background, null);
 	}
 
 	private static _push(target: ScopeListElement, grammar: Grammar, scopes: string[]): ScopeListElement {
@@ -1626,8 +1635,54 @@ interface TokenTypeMatcher {
 	readonly type: StandardTokenType;
 }
 
-class LineTokens {
+export class BalancedBracketSelectors {
+	private readonly balancedBracketScopes: Matcher<string[]>[];
+	private readonly unbalancedBracketScopes: Matcher<string[]>[];
 
+	private allowAny = false;
+
+	constructor(
+		balancedBracketScopes: string[],
+		unbalancedBracketScopes: string[],
+	) {
+		this.balancedBracketScopes = balancedBracketScopes.flatMap((selector) => {
+				if (selector === '*') {
+					this.allowAny = true;
+					return [];
+				}
+				return createMatchers(selector, nameMatcher).map((m) => m.matcher);
+			}
+		);
+		this.unbalancedBracketScopes = unbalancedBracketScopes.flatMap((selector) =>
+			createMatchers(selector, nameMatcher).map((m) => m.matcher)
+		);
+	}
+
+	public get matchesAlways(): boolean {
+		return this.allowAny && this.unbalancedBracketScopes.length === 0;
+	}
+
+	public get matchesNever(): boolean {
+		return this.balancedBracketScopes.length === 0 && !this.allowAny;
+	}
+
+	public match(scopes: string[]): boolean {
+		for (const excluder of this.unbalancedBracketScopes) {
+			if (excluder(scopes)) {
+				return false;
+			}
+		}
+
+		for (const includer of this.balancedBracketScopes) {
+			if (includer(scopes)) {
+				return true;
+			}
+		}
+		return this.allowAny;
+	}
+}
+
+class LineTokens {
 	private readonly _emitBinaryTokens: boolean;
 	/**
 	 * defined only if `DebugFlags.InDebugMode`.
@@ -1646,7 +1701,12 @@ class LineTokens {
 
 	private readonly _tokenTypeOverrides: TokenTypeMatcher[];
 
-	constructor(emitBinaryTokens: boolean, lineText: string, tokenTypeOverrides: TokenTypeMatcher[]) {
+	constructor(
+		emitBinaryTokens: boolean,
+		lineText: string,
+		tokenTypeOverrides: TokenTypeMatcher[],
+		private readonly balancedBracketSelectors: BalancedBracketSelectors | null,
+	) {
 		this._emitBinaryTokens = emitBinaryTokens;
 		this._tokenTypeOverrides = tokenTypeOverrides;
 		if (DebugFlags.InDebugMode) {
@@ -1663,21 +1723,52 @@ class LineTokens {
 		this.produceFromScopes(stack.contentNameScopesList, endIndex);
 	}
 
-	public produceFromScopes(scopesList: ScopeListElement, endIndex: number): void {
+	public produceFromScopes(
+		scopesList: ScopeListElement,
+		endIndex: number
+	): void {
 		if (this._lastTokenEndIndex >= endIndex) {
 			return;
 		}
 
 		if (this._emitBinaryTokens) {
 			let metadata = scopesList.metadata;
+			let containsBalancedBrackets = false;
+			if (this.balancedBracketSelectors?.matchesAlways) {
+				containsBalancedBrackets = true;
+			}
 
-			if (this._tokenTypeOverrides.length > 0) {
+			if (this._tokenTypeOverrides.length > 0 || (this.balancedBracketSelectors && !this.balancedBracketSelectors.matchesAlways && !this.balancedBracketSelectors.matchesNever)) {
+				// Only generate scope array when required to improve performance
 				const scopes = scopesList.generateScopes();
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.matcher(scopes)) {
-						metadata = StackElementMetadata.set(metadata, 0, toOptionalTokenType(tokenType.type), FontStyle.NotSet, 0, 0);
+						metadata = StackElementMetadata.set(
+							metadata,
+							0,
+							toOptionalTokenType(tokenType.type),
+							FontStyle.NotSet,
+							0,
+							0,
+							null
+						);
 					}
 				}
+				if (this.balancedBracketSelectors) {
+					containsBalancedBrackets = this.balancedBracketSelectors.match(scopes);
+				}
+			}
+
+			if (containsBalancedBrackets) {
+				metadata = StackElementMetadata.set(
+					metadata,
+					0,
+					OptionalStandardTokenType.NotSet,
+					FontStyle.NotSet,
+					0,
+					0,
+					containsBalancedBrackets
+				);
 			}
 
 			if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
