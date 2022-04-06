@@ -1,9 +1,8 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) GitHub Inc. All rights reserved.
- *  Licensed under the MIT License. See LICENSE.md in the project root for license information.
+ *  Adapted from https://github.com/atom/first-mate/blob/master/src/scope-selector-matchers.coffee
+ *
+ *  Copyright (c) 2013 GitHub Inc. Licensed under the MIT License.
  *--------------------------------------------------------------------------------------------*/
-
-'use strict';
 
 export type AtomMatcher = SegmentMatcher | TrueMatcher;
 

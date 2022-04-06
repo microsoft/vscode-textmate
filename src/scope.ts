@@ -1,13 +1,11 @@
 /*---------------------------------------------------------------------------------------------
- *  Copyright (c) Github Inc. All rights reserved.
- *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *  Adapted from https://github.com/atom/first-mate/blob/master/src/scope-selector.coffee
+ *
+ *  Copyright (c) 2013 GitHub Inc. Licensed under the MIT License.
  *--------------------------------------------------------------------------------------------*/
 
-'use strict';
-
 import type { ParsedMatcher, GroupPrefix } from './matchers';
-
-import ScopeSelectorParser = require('./matcherParser');
+import { parse } from './matcherParser';
 
 const matcherCache: Record<string, ParsedMatcher> = {};
 
@@ -25,7 +23,7 @@ export class ScopeSelector {
 		if (matcherCache[source]) {
 			this.matcher = matcherCache[source];
 		} else {
-			this.matcher = ScopeSelectorParser.parse(source);
+			this.matcher = parse(source);
 			matcherCache[source] = this.matcher;
 		}
 	}
