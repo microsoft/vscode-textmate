@@ -20,12 +20,14 @@ const performanceNow = (function () {
 	}
 })();
 
-export const enum TemporaryStandardTokenType {
+// Must have the same values as `StandardTokenType`!
+export const enum OptionalStandardTokenType {
 	Other = 0,
 	Comment = 1,
 	String = 2,
 	RegEx = 3,
-	MetaEmbedded = 8
+	// Indicates that no token type is set.
+	NotSet = 8
 }
 
 export function createGrammar(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
@@ -274,10 +276,10 @@ function collectInjections(result: Injection[], selector: string, rule: IRawRule
 export class ScopeMetadata {
 	public readonly scopeName: string;
 	public readonly languageId: number;
-	public readonly tokenType: TemporaryStandardTokenType;
+	public readonly tokenType: OptionalStandardTokenType;
 	public readonly themeData: ThemeTrieElementRule[] | null;
 
-	constructor(scopeName: string, languageId: number, tokenType: TemporaryStandardTokenType, themeData: ThemeTrieElementRule[] | null) {
+	constructor(scopeName: string, languageId: number, tokenType: OptionalStandardTokenType, themeData: ThemeTrieElementRule[] | null) {
 		this.scopeName = scopeName;
 		this.languageId = languageId;
 		this.tokenType = tokenType;
@@ -301,7 +303,7 @@ class ScopeMetadataProvider {
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
-			TemporaryStandardTokenType.Other,
+			OptionalStandardTokenType.NotSet,
 			[this._themeProvider.getDefaults()]
 		);
 
@@ -340,7 +342,7 @@ class ScopeMetadataProvider {
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
-			TemporaryStandardTokenType.Other,
+			OptionalStandardTokenType.NotSet,
 			[this._themeProvider.getDefaults()]
 		);
 	}
@@ -405,20 +407,20 @@ class ScopeMetadataProvider {
 	}
 
 	private static STANDARD_TOKEN_TYPE_REGEXP = /\b(comment|string|regex|meta\.embedded)\b/;
-	private _toStandardTokenType(tokenType: string): TemporaryStandardTokenType {
+	private _toStandardTokenType(tokenType: string): OptionalStandardTokenType {
 		const m = tokenType.match(ScopeMetadataProvider.STANDARD_TOKEN_TYPE_REGEXP);
 		if (!m) {
-			return TemporaryStandardTokenType.Other;
+			return OptionalStandardTokenType.NotSet;
 		}
 		switch (m[1]) {
 			case 'comment':
-				return TemporaryStandardTokenType.Comment;
+				return OptionalStandardTokenType.Comment;
 			case 'string':
-				return TemporaryStandardTokenType.String;
+				return OptionalStandardTokenType.String;
 			case 'regex':
-				return TemporaryStandardTokenType.RegEx;
+				return OptionalStandardTokenType.RegEx;
 			case 'meta.embedded':
-				return TemporaryStandardTokenType.MetaEmbedded;
+				return OptionalStandardTokenType.Other;
 		}
 		throw new Error('Unexpected match for standard token type!');
 	}
@@ -1203,7 +1205,7 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
 	}
 
-	public static getTokenType(metadata: number): number {
+	public static getTokenType(metadata: number): StandardTokenType {
 		return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
 	}
 
@@ -1219,7 +1221,11 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
 	}
 
-	public static set(metadata: number, languageId: number, tokenType: TemporaryStandardTokenType, fontStyle: FontStyle, foreground: number, background: number): number {
+	/**
+	 * Updates the fields in `metadata`.
+	 * A value of `0` or `NotSet` indicates that the corresponding field should be left as is.
+	*/
+	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, fontStyle: FontStyle, foreground: number, background: number): number {
 		let _languageId = StackElementMetadata.getLanguageId(metadata);
 		let _tokenType = StackElementMetadata.getTokenType(metadata);
 		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
@@ -1229,8 +1235,8 @@ export class StackElementMetadata {
 		if (languageId !== 0) {
 			_languageId = languageId;
 		}
-		if (tokenType !== TemporaryStandardTokenType.Other) {
-			_tokenType = tokenType === TemporaryStandardTokenType.MetaEmbedded ? StandardTokenType.Other : tokenType;
+		if (tokenType !== OptionalStandardTokenType.NotSet) {
+			_tokenType = fromOptionalTokenType(tokenType);
 		}
 		if (fontStyle !== FontStyle.NotSet) {
 			_fontStyle = fontStyle;
@@ -1647,7 +1653,7 @@ class LineTokens {
 				const scopes = scopesList.generateScopes();
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.scopeSelector.matches(scopes)) {
-						metadata = StackElementMetadata.set(metadata, 0, toTemporaryType(tokenType.type), FontStyle.NotSet, 0, 0);
+						metadata = StackElementMetadata.set(metadata, 0, toOptionalTokenType(tokenType.type), FontStyle.NotSet, 0, 0);
 					}
 				}
 			}
@@ -1729,18 +1735,16 @@ class LineTokens {
 	}
 }
 
-function toTemporaryType(standardType: StandardTokenType): TemporaryStandardTokenType {
-	switch (standardType) {
-		case StandardTokenType.RegEx:
-			return TemporaryStandardTokenType.RegEx;
-		case StandardTokenType.String:
-			return TemporaryStandardTokenType.String;
-		case StandardTokenType.Comment:
-			return TemporaryStandardTokenType.Comment;
-		case StandardTokenType.Other:
-		default:
-			// `MetaEmbedded` is the same scope as `Other`
-			// but it overwrites existing token types in the stack.
-			return TemporaryStandardTokenType.MetaEmbedded;
-	}
+function toOptionalTokenType(standardType: StandardTokenType): OptionalStandardTokenType {
+	return standardType as any as OptionalStandardTokenType;
+}
+
+function fromOptionalTokenType(
+	standardType:
+		| OptionalStandardTokenType.Other
+		| OptionalStandardTokenType.Comment
+		| OptionalStandardTokenType.String
+		| OptionalStandardTokenType.RegEx
+): StandardTokenType {
+	return standardType as any as StandardTokenType;
 }

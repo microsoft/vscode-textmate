@@ -18,7 +18,7 @@
   "scripts": {
     "watch": "tsc --watch",
     "compile": "tsc",
-    "test": "tape -r ./out/tests/all.test.js",
+    "test": "mocha --ui=tdd ./out/tests/all.test.js",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "pegjs": "pegjs --plugin ts-pegjs -o src/matcherParser.ts src/matcherParser.pegjs",
@@ -28,10 +28,10 @@
     "prepublishOnly": "tsc && webpack --progress && node scripts/release.js"
   },
   "devDependencies": {
+    "@types/mocha": "^9.1.0",
     "@types/node": "^16.6.1",
-    "@types/tape": "^4.13.2",
+    "mocha": "^9.2.2",
     "pegjs": "^0.10.0",
-    "tape": "^5.3.1",
     "ts-pegjs": "^0.3.1",
     "typescript": "^4.4.3",
     "vscode-oniguruma": "^1.5.1",

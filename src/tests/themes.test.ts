@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import * as tape from 'tape';
+import * as assert from 'assert';
 import { Registry, IRawTheme } from '../main';
 import { ScopeListElement, ScopeMetadata, StackElementMetadata } from '../grammar';
 import {
@@ -103,13 +103,14 @@ class ThemeInfo {
 	testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
 
 	for (let testFile of testFiles) {
-		let test = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
-		tape(test.testName, { timeout: 20000 }, async (t: tape.Test) => {
+		let tst = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
+		test(tst.testName, async function () {
+			this.timeout(20000);
 			try {
-				await test.evaluate();
-				t.deepEqual(test.actual, test.expected);
+				await tst.evaluate();
+				assert.deepStrictEqual(tst.actual, tst.expected);
 			} catch(err) {
-				test.writeExpected();
+				tst.writeExpected();
 				throw err;
 			}
 		});
@@ -117,7 +118,7 @@ class ThemeInfo {
 
 })();
 
-tape('Theme matching gives higher priority to deeper matches', (t: tape.Test) => {
+test('Theme matching gives higher priority to deeper matches', () => {
 	let theme = Theme.createFromRawTheme({
 		settings: [
 			{ settings: { foreground: '#100000', background: '#200000' } },
@@ -137,14 +138,13 @@ tape('Theme matching gives higher priority to deeper matches', (t: tape.Test) =>
 	let actual = theme.match('punctuation.definition.string.begin.html');
 	// console.log(actual); process.exit(0);
 
-	t.deepEqual(actual, [
+	assert.deepStrictEqual(actual, [
 		new ThemeTrieElementRule(5, null, FontStyle.NotSet, _D, _NOT_SET),
 		new ThemeTrieElementRule(3, ['meta.tag'], FontStyle.NotSet, _C, _NOT_SET),
 	]);
-	t.end();
 });
 
-tape('Theme matching gives higher priority to parent matches 1', (t: tape.Test) => {
+test('Theme matching gives higher priority to parent matches 1', () => {
 	let theme = Theme.createFromRawTheme({
 		settings: [
 			{ settings: { foreground: '#100000', background: '#200000' } },
@@ -164,15 +164,14 @@ tape('Theme matching gives higher priority to parent matches 1', (t: tape.Test) 
 
 	let actual = theme.match('a.b');
 
-	t.deepEqual(actual, [
+	assert.deepStrictEqual(actual, [
 		new ThemeTrieElementRule(2, ['d'], FontStyle.NotSet, _E, _NOT_SET),
 		new ThemeTrieElementRule(1, ['c'], FontStyle.NotSet, _D, _NOT_SET),
 		new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET),
 	]);
-	t.end();
 });
 
-tape('Theme matching gives higher priority to parent matches 2', (t: tape.Test) => {
+test('Theme matching gives higher priority to parent matches 2', () => {
 	let theme = Theme.createFromRawTheme({
 		settings: [
 			{ settings: { foreground: '#100000', background: '#200000' } },
@@ -186,11 +185,10 @@ tape('Theme matching gives higher priority to parent matches 2', (t: tape.Test) 
 	let parent = new ScopeListElement(root, 'meta.tag.structure.any.html', 0);
 	let r = ScopeListElement.mergeMetadata(0, parent, new ScopeMetadata('entity.name.tag.structure.any.html', 0, 0, theme.match('entity.name.tag.structure.any.html')));
 	let colorMap = theme.getColorMap();
-	t.equal(colorMap[StackElementMetadata.getForeground(r)], '#300000');
-	t.end();
+	assert.strictEqual(colorMap[StackElementMetadata.getForeground(r)], '#300000');
 });
 
-tape('Theme matching can match', (t: tape.Test) => {
+test('Theme matching can match', () => {
 	let theme = Theme.createFromRawTheme({
 		settings: [
 			{ settings: { foreground: '#F8F8F2', background: '#272822' } },
@@ -219,7 +217,7 @@ tape('Theme matching can match', (t: tape.Test) => {
 
 	function assertMatch(scopeName: string, expected: ThemeTrieElementRule[]): void {
 		let actual = theme.match(scopeName);
-		t.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
+		assert.deepStrictEqual(actual, expected, 'when matching <<' + scopeName + '>>');
 	}
 
 	function assertSimpleMatch(scopeName: string, scopeDepth: number, fontStyle: FontStyle, foreground: number, background: number): void {
@@ -289,10 +287,9 @@ tape('Theme matching can match', (t: tape.Test) => {
 		new ThemeTrieElementRule(1, ['selector', 'source.css'], FontStyle.Bold, _NOT_SET, _C),
 		new ThemeTrieElementRule(1, null, FontStyle.NotSet, _NOT_SET, _C),
 	]);
-	t.end();
 });
 
-tape('Theme matching Microsoft/vscode#23460', (t: tape.Test) => {
+test('Theme matching Microsoft/vscode#23460', () => {
 	let theme = Theme.createFromRawTheme({
 		settings: [
 			{
@@ -330,7 +327,7 @@ tape('Theme matching Microsoft/vscode#23460', (t: tape.Test) => {
 
 	function assertMatch(scopeName: string, expected: ThemeTrieElementRule[]): void {
 		let actual = theme.match(scopeName);
-		t.deepEqual(actual, expected, 'when matching <<' + scopeName + '>>');
+		assert.deepStrictEqual(actual, expected, 'when matching <<' + scopeName + '>>');
 	}
 
 	// string.quoted.double.json
@@ -353,11 +350,10 @@ tape('Theme matching Microsoft/vscode#23460', (t: tape.Test) => {
 		new ScopeMetadata('string.quoted.double.json', 0, 0, theme.match('string.quoted.double.json'))
 	);
 	let colorMap2 = theme.getColorMap();
-	t.equal(colorMap2[StackElementMetadata.getForeground(r)], '#FF410D');
-	t.end();
+	assert.strictEqual(colorMap2[StackElementMetadata.getForeground(r)], '#FF410D');
 });
 
-tape('Theme parsing can parse', (t: tape.Test) => {
+test('Theme parsing can parse', () => {
 
 	let actual = parseTheme({
 		settings: [
@@ -391,21 +387,19 @@ tape('Theme parsing can parse', (t: tape.Test) => {
 		new ParsedThemeRule('foo', null, 10, FontStyle.None, '#CFA', null),
 	];
 
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving strcmp works', (t: tape.Test) => {
+test('Theme resolving strcmp works', () => {
 	let actual = ['bar', 'z', 'zu', 'a', 'ab', ''].sort(strcmp);
 
 	let expected = ['', 'a', 'ab', 'bar', 'z', 'zu'];
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving strArrCmp works', (t: tape.Test) => {
+test('Theme resolving strArrCmp works', () => {
 	function assertStrArrCmp(testCase: string, a: string[] | null, b: string[] | null, expected: number): void {
-		t.equal(strArrCmp(a, b), expected, testCase);
+		assert.strictEqual(strArrCmp(a, b), expected, testCase);
 
 	}
 	assertStrArrCmp('001', null, null, 0);
@@ -422,10 +416,9 @@ tape('Theme resolving strArrCmp works', (t: tape.Test) => {
 	assertStrArrCmp('012', ['a', 'b'], ['a', 'b'], 0);
 	assertStrArrCmp('013', ['a', 'b'], ['a', 'c'], -1);
 	assertStrArrCmp('014', ['a', 'c'], ['a', 'b'], 1);
-	t.end();
 });
 
-tape('Theme resolving always has defaults', (t: tape.Test) => {
+test('Theme resolving always has defaults', () => {
 	let actual = Theme.createFromParsedTheme([]);
 	let colorMap = new ColorMap();
 	const _NOT_SET = 0;
@@ -436,11 +429,10 @@ tape('Theme resolving always has defaults', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving respects incoming defaults 1', (t: tape.Test) => {
+test('Theme resolving respects incoming defaults 1', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, null)
 	]);
@@ -453,11 +445,10 @@ tape('Theme resolving respects incoming defaults 1', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving respects incoming defaults 2', (t: tape.Test) => {
+test('Theme resolving respects incoming defaults 2', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.None, null, null)
 	]);
@@ -470,11 +461,10 @@ tape('Theme resolving respects incoming defaults 2', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving respects incoming defaults 3', (t: tape.Test) => {
+test('Theme resolving respects incoming defaults 3', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null)
 	]);
@@ -487,11 +477,10 @@ tape('Theme resolving respects incoming defaults 3', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving respects incoming defaults 4', (t: tape.Test) => {
+test('Theme resolving respects incoming defaults 4', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#ff0000', null)
 	]);
@@ -504,11 +493,10 @@ tape('Theme resolving respects incoming defaults 4', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving respects incoming defaults 5', (t: tape.Test) => {
+test('Theme resolving respects incoming defaults 5', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000')
 	]);
@@ -521,11 +509,10 @@ tape('Theme resolving respects incoming defaults 5', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving can merge incoming defaults', (t: tape.Test) => {
+test('Theme resolving can merge incoming defaults', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000'),
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#00ff00', null),
@@ -540,11 +527,10 @@ tape('Theme resolving can merge incoming defaults', (t: tape.Test) => {
 		new ThemeTrieElementRule(0, null, FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving defaults are inherited', (t: tape.Test) => {
+test('Theme resolving defaults are inherited', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 		new ParsedThemeRule('var', null, -1, FontStyle.NotSet, '#ff0000', null)
@@ -561,11 +547,10 @@ tape('Theme resolving defaults are inherited', (t: tape.Test) => {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET))
 		})
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving same rules get merged', (t: tape.Test) => {
+test('Theme resolving same rules get merged', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 		new ParsedThemeRule('var', null, 1, FontStyle.Bold, null, null),
@@ -583,11 +568,10 @@ tape('Theme resolving same rules get merged', (t: tape.Test) => {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET))
 		})
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving rules are inherited 1', (t: tape.Test) => {
+test('Theme resolving rules are inherited 1', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
@@ -608,11 +592,10 @@ tape('Theme resolving rules are inherited 1', (t: tape.Test) => {
 			})
 		})
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving rules are inherited 2', (t: tape.Test) => {
+test('Theme resolving rules are inherited 2', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
@@ -648,11 +631,10 @@ tape('Theme resolving rules are inherited 2', (t: tape.Test) => {
 			})
 		})
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving rules with parent scopes', (t: tape.Test) => {
+test('Theme resolving rules with parent scopes', () => {
 	let actual = Theme.createFromParsedTheme([
 		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
 		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#100000', null),
@@ -683,11 +665,10 @@ tape('Theme resolving rules with parent scopes', (t: tape.Test) => {
 			)
 		})
 	);
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving issue #38: ignores rules with invalid colors', (t: tape.Test) => {
+test('Theme resolving issue #38: ignores rules with invalid colors', () => {
 	let actual = parseTheme({
 		settings: [{
 			settings: {
@@ -739,11 +720,10 @@ tape('Theme resolving issue #38: ignores rules with invalid colors', (t: tape.Te
 		new ParsedThemeRule('variable.parameter.function.coffee', null, 5, FontStyle.Italic, '#F9D423', null),
 	];
 
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });
 
-tape('Theme resolving issue #35: Trailing comma in a tmTheme scope selector', (t: tape.Test) => {
+test('Theme resolving issue #35: Trailing comma in a tmTheme scope selector', () => {
 	let actual = parseTheme({
 		settings: [{
 			settings: {
@@ -776,6 +756,5 @@ tape('Theme resolving issue #35: Trailing comma in a tmTheme scope selector', (t
 		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.if.scss'], 1, FontStyle.NotSet, '#CC7832', null),
 	];
 
-	t.deepEqual(actual, expected);
-	t.end();
+	assert.deepStrictEqual(actual, expected);
 });

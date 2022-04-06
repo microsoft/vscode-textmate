@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import * as tape from 'tape';
+import * as assert from 'assert';
 import { ScopeSelector } from '../scope';
 
 let tests = [
@@ -35,11 +35,10 @@ let tests = [
 	{ "expression": "text.html.php - (meta.embedded | meta.tag), L:text.html.php meta.tag, L:source.js.embedded.html", "input": ["text.html.php", "bar", "source.js"], "result": true }
 ];
 
-tests.forEach((test, index) => {
-	tape('Matcher Test #' + index, (t: tape.Test) => {
-		let selector = new ScopeSelector(test.expression);
-		let result = selector.matches(test.input);
-		t.equal(result, test.result);
-		t.end();
+tests.forEach((tst, index) => {
+	test('Matcher Test #' + index, () => {
+		let selector = new ScopeSelector(tst.expression);
+		let result = selector.matches(tst.input);
+		assert.strictEqual(result, tst.result);
 	});
 });

@@ -6,9 +6,9 @@
 			"name": "Launch tests",
 			"type": "node",
 			"request": "launch",
-			"program": "${workspaceRoot}/node_modules/tape/bin/tape",
+			"program": "${workspaceRoot}/node_modules/mocha/bin/mocha",
 			"stopOnEntry": false,
-			"args": [ "-r", "out/tests/*.test.js", "-g" , "OnigLib"],
+			"args": [ "--ui=tdd", "./out/tests/all.test.js"],
 			"cwd": "${workspaceRoot}",
 			"runtimeExecutable": null,
 			"runtimeArgs": ["--nolazy"],
@@ -17,8 +17,7 @@
 			},
 			"console": "internalConsole",
 			"sourceMaps": true,
-			"outFiles": [ "out/**" ],
-			"preLaunchTask": "compile"
+			"outFiles": [ "out/**" ]
 		},
 		{
 			"type": "node",
