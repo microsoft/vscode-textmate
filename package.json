@@ -21,7 +21,7 @@
     "test": "mocha --ui=tdd ./out/tests/all.test.js",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
-    "pegjs": "pegjs --plugin ts-pegjs -o src/matcherParser.ts src/matcherParser.pegjs",
+    "pegjs": "pegjs --plugin ts-pegjs -o src/matcherParser.ts --extra-options \"{\\\"tspegjs\\\":{\\\"customHeader\\\":\\\"import * as matchers from './matchers';\\\"}}\" src/matcherParser.pegjs",
     "tmconvert": "node scripts/tmconvert.js",
     "version": "npm run compile && npm run test && node scripts/release.js",
     "postversion": "git push && git push --tags",

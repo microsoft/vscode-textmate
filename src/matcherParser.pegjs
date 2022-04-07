@@ -4,8 +4,6 @@
  *  Copyright (c) 2013 GitHub Inc. Licensed under the MIT License.
  *--------------------------------------------------------------------------------------------*/
 
-{ var matchers = require('./scope-selector-matchers'); }
-
 start = _ selector:(selector) _ {
 	return selector;
 }
