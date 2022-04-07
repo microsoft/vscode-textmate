@@ -158,7 +158,7 @@ export class Registry {
 			dependencyProcessor.processQueue();
 		}
 
-		return this.grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors);
+		return this._grammarForScopeName(initialScopeName, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors);
 	}
 
 	/**
@@ -166,13 +166,13 @@ export class Registry {
 	 */
 	public async addGrammar(rawGrammar: IRawGrammar, injections: string[] = [], initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap | null = null): Promise<IGrammar> {
 		this._syncRegistry.addGrammar(rawGrammar, injections);
-		return (await this.grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages))!;
+		return (await this._grammarForScopeName(rawGrammar.scopeName, initialLanguage, embeddedLanguages))!;
 	}
 
 	/**
 	 * Get the grammar for `scopeName`. The grammar must first be created via `loadGrammar` or `addGrammar`.
 	 */
-	public grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap | null = null, tokenTypes: ITokenTypeMap | null = null, balancedBracketSelectors: BalancedBracketSelectors | null = null): Promise<IGrammar | null> {
+	private _grammarForScopeName(scopeName: string, initialLanguage: number = 0, embeddedLanguages: IEmbeddedLanguagesMap | null = null, tokenTypes: ITokenTypeMap | null = null, balancedBracketSelectors: BalancedBracketSelectors | null = null): Promise<IGrammar | null> {
 		return this._syncRegistry.grammarForScopeName(scopeName, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors);
 	}
 }
