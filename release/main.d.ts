@@ -140,28 +140,28 @@ export interface ITokenizeLineResult {
  *     1098 7654 3210 9876 5432 1098 7654 3210
  * - -------------------------------------------
  *     xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
- *     mbbb bbbb bfff ffff ffFF FFTT LLLL LLLL
+ *     bbbb bbbb ffff ffff fFFF FBTT LLLL LLLL
  * - -------------------------------------------
  *  - L = LanguageId (8 bits)
  *  - T = StandardTokenType (2 bits)
+ *  - B = Balanced bracket (1 bit)
  *  - F = FontStyle (4 bits)
  *  - f = foreground color (9 bits)
  *  - b = background color (9 bits)
- *  - m = is balanced bracket (1 bit)
  */
 export declare const enum MetadataConsts {
     LANGUAGEID_MASK = 255,
     TOKEN_TYPE_MASK = 768,
-    FONT_STYLE_MASK = 15360,
-    FOREGROUND_MASK = 8372224,
-    BACKGROUND_MASK = 2139095040,
-    BALANCED_BRACKETS_MASK = 2147483648,
+    BALANCED_BRACKETS_MASK = 1024,
+    FONT_STYLE_MASK = 30720,
+    FOREGROUND_MASK = 16744448,
+    BACKGROUND_MASK = 4278190080,
     LANGUAGEID_OFFSET = 0,
     TOKEN_TYPE_OFFSET = 8,
-    FONT_STYLE_OFFSET = 10,
-    FOREGROUND_OFFSET = 14,
-    BACKGROUND_OFFSET = 23,
-    BALANCED_BRACKETS = 31
+    BALANCED_BRACKETS_OFFSET = 10,
+    FONT_STYLE_OFFSET = 11,
+    FOREGROUND_OFFSET = 15,
+    BACKGROUND_OFFSET = 24
 }
 export interface ITokenizeLineResult2 {
     /**
