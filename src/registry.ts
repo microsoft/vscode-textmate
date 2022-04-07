@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { createGrammar, Grammar, IGrammarRepository } from './grammar';
+import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository } from './grammar';
 import { IRawGrammar } from './types';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
@@ -86,13 +86,13 @@ export class SyncRegistry implements IGrammarRepository {
 	/**
 	 * Lookup a grammar.
 	 */
-	public async grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null): Promise<IGrammar | null> {
+	public async grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, balancedBracketSelectors: BalancedBracketSelectors | null): Promise<IGrammar | null> {
 		if (!this._grammars[scopeName]) {
 			let rawGrammar = this._rawGrammars[scopeName];
 			if (!rawGrammar) {
 				return null;
 			}
-			this._grammars[scopeName] = createGrammar(scopeName, rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, this, await this._onigLibPromise);
+			this._grammars[scopeName] = createGrammar(scopeName, rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors, this, await this._onigLibPromise);
 		}
 		return this._grammars[scopeName];
 	}
