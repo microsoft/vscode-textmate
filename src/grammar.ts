@@ -1231,6 +1231,10 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
 	}
 
+	public static containsBalancedBrackets(metadata: number): boolean {
+		return (metadata & MetadataConsts.BALANCED_BRACKETS_MASK) !== 0;
+	}
+
 	public static getFontStyle(metadata: number): number {
 		return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
 	}
@@ -1243,10 +1247,6 @@ export class StackElementMetadata {
 		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
 	}
 
-	public static containsBalancedBrackets(metadata: number): boolean {
-		return (metadata & MetadataConsts.BALANCED_BRACKETS_MASK) !== 0;
-	}
-
 	/**
 	 * Updates the fields in `metadata`.
 	 * A value of `0` or `NotSet` indicates that the corresponding field should be left as is.
@@ -1254,16 +1254,19 @@ export class StackElementMetadata {
 	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, fontStyle: FontStyle, foreground: number, background: number, containsBalancedBrackets: boolean | null): number {
 		let _languageId = StackElementMetadata.getLanguageId(metadata);
 		let _tokenType = StackElementMetadata.getTokenType(metadata);
+		let _containsBalancedBracketsBit: 0 | 1 = StackElementMetadata.containsBalancedBrackets(metadata) ? 1 : 0;
 		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
 		let _foreground = StackElementMetadata.getForeground(metadata);
 		let _background = StackElementMetadata.getBackground(metadata);
-		let _containsBalancedBrackets = StackElementMetadata.containsBalancedBrackets(metadata);
 
 		if (languageId !== 0) {
 			_languageId = languageId;
 		}
 		if (tokenType !== OptionalStandardTokenType.NotSet) {
 			_tokenType = fromOptionalTokenType(tokenType);
+		}
+		if (containsBalancedBrackets !== null) {
+			_containsBalancedBracketsBit = containsBalancedBrackets ? 1 : 0;
 		}
 		if (fontStyle !== FontStyle.NotSet) {
 			_fontStyle = fontStyle;
@@ -1274,17 +1277,14 @@ export class StackElementMetadata {
 		if (background !== 0) {
 			_background = background;
 		}
-		if (containsBalancedBrackets !== null) {
-			_containsBalancedBrackets = containsBalancedBrackets;
-		}
 
 		return (
 			(_languageId << MetadataConsts.LANGUAGEID_OFFSET)
 			| (_tokenType << MetadataConsts.TOKEN_TYPE_OFFSET)
+			| (_containsBalancedBracketsBit << MetadataConsts.BALANCED_BRACKETS_OFFSET)
 			| (_fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
 			| (_foreground << MetadataConsts.FOREGROUND_OFFSET)
 			| (_background << MetadataConsts.BACKGROUND_OFFSET)
-			| (_containsBalancedBrackets ? MetadataConsts.BALANCED_BRACKETS_MASK : 0)
 		) >>> 0;
 	}
 }
