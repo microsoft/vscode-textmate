@@ -635,7 +635,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			isFirstLine = true;
 			const rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
 			const defaultTheme = rawDefaultMetadata.themeData![0];
-			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background, null);
+			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, null, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
 
 			const rootScopeName = this.getRule(this._rootId).getName(null, null);
 			const rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
@@ -1249,9 +1249,9 @@ export class StackElementMetadata {
 
 	/**
 	 * Updates the fields in `metadata`.
-	 * A value of `0` or `NotSet` indicates that the corresponding field should be left as is.
+	 * A value of `0`, `NotSet` or `null` indicates that the corresponding field should be left as is.
 	*/
-	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, fontStyle: FontStyle, foreground: number, background: number, containsBalancedBrackets: boolean | null): number {
+	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, containsBalancedBrackets: boolean | null, fontStyle: FontStyle, foreground: number, background: number): number {
 		let _languageId = StackElementMetadata.getLanguageId(metadata);
 		let _tokenType = StackElementMetadata.getTokenType(metadata);
 		let _containsBalancedBracketsBit: 0 | 1 = StackElementMetadata.containsBalancedBrackets(metadata) ? 1 : 0;
@@ -1383,7 +1383,7 @@ export class ScopeListElement {
 			}
 		}
 
-		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, fontStyle, foreground, background, null);
+		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, null, fontStyle, foreground, background);
 	}
 
 	private static _push(target: ScopeListElement, grammar: Grammar, scopes: string[]): ScopeListElement {
@@ -1747,10 +1747,10 @@ class LineTokens {
 							metadata,
 							0,
 							toOptionalTokenType(tokenType.type),
+							null,
 							FontStyle.NotSet,
 							0,
-							0,
-							null
+							0
 						);
 					}
 				}
@@ -1764,10 +1764,10 @@ class LineTokens {
 					metadata,
 					0,
 					OptionalStandardTokenType.NotSet,
+					containsBalancedBrackets,
 					FontStyle.NotSet,
 					0,
-					0,
-					containsBalancedBrackets
+					0
 				);
 			}
 
