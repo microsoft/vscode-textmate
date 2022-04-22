@@ -30,7 +30,7 @@ export function parseWithLocation(content: string, filename: string | null, loca
 /**
  * A very fast plist parser
  */
-export function parse(content: string): any {
+export function parsePLIST(content: string): any {
 	return _parse(content, null, null);
 }
 

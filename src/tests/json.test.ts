@@ -3,11 +3,11 @@
  *--------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { parse as JSONparse } from '../json';
+import { parseJSON } from '../json';
 
 function isValid(json: string): void {
 	let expected = JSON.parse(json);
-	let actual = JSONparse(json, null, false);
+	let actual = parseJSON(json, null, false);
 	assert.deepStrictEqual(actual, expected);
 
 	// let actual2 = JSONparse(json, true);
@@ -17,7 +17,7 @@ function isValid(json: string): void {
 function isInvalid(json: string): void {
 	let hadErr = false;
 	try {
-		JSONparse(json, null, false);
+		parseJSON(json, null, false);
 	} catch (err) {
 		hadErr = true;
 	}

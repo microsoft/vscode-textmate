@@ -11,12 +11,12 @@ import {
 	Theme, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule, FontStyle, ColorMap
 } from '../theme';
-import * as plist from '../plist';
 import { ThemeTest } from './themeTest';
 import { getOniguruma } from './onigLibs';
 import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
 import { StackElementMetadata } from '../metadata';
 import { strArrCmp, strcmp } from '../utils';
+import { parsePLIST } from '../plist';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
@@ -45,7 +45,7 @@ class ThemeInfo {
 		if (/\.json$/.test(filename)) {
 			return JSON.parse(fileContents);
 		}
-		return plist.parse(fileContents);
+		return parsePLIST(fileContents);
 	}
 
 	public create(resolver: Resolver): ThemeData {
