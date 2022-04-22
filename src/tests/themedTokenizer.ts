@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { IGrammar, StackElement } from '../main';
-import { StackElementMetadata } from '../grammar';
+import { StackElementMetadata } from '../metadata';
 
 export interface IThemedToken {
 	content: string;

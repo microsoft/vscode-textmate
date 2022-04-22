@@ -3,7 +3,8 @@
  *--------------------------------------------------------*/
 
 import { RegexSource, mergeObjects, basename } from './utils';
-import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures, IOnigLib, OnigScanner, IOnigCaptureIndex } from './types';
+import { IOnigLib, OnigScanner, IOnigCaptureIndex } from './onigLib';
+import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './rawGrammar';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
 const BACK_REFERENCING_END = /\\(\d+)/g;

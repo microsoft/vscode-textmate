@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IOnigLib } from '../types';
+import { IOnigLib } from '../onigLib';
 
 let onigurumaLib: Promise<IOnigLib> | null = null;
 

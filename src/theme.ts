@@ -3,68 +3,43 @@
  *--------------------------------------------------------*/
 
 import { IRawTheme } from './main';
+import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 
-export const enum FontStyle {
-	NotSet = -1,
-	None = 0,
-	Italic = 1,
-	Bold = 2,
-	Underline = 4,
-	Strikethrough = 8
-}
-
-export class ParsedThemeRule {
-
-	readonly scope: string;
-	readonly parentScopes: string[] | null;
-	readonly index: number;
-
-	/**
-	 * -1 if not set. An or mask of `FontStyle` otherwise.
-	 */
-	readonly fontStyle: number;
-	readonly foreground: string | null;
-	readonly background: string | null;
-
-	constructor(
-		scope: string,
-		parentScopes: string[] | null,
-		index: number,
-		fontStyle: number,
-		foreground: string | null,
-		background: string | null,
-	) {
-		this.scope = scope;
-		this.parentScopes = parentScopes;
-		this.index = index;
-		this.fontStyle = fontStyle;
-		this.foreground = foreground;
-		this.background = background;
-	}
-}
-
-function isValidHexColor(hex: string): boolean {
-	if (/^#[0-9a-f]{6}$/i.test(hex)) {
-		// #rrggbb
-		return true;
+export class Theme {
+	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
+		return this.createFromParsedTheme(parseTheme(source), colorMap);
 	}
 
-	if (/^#[0-9a-f]{8}$/i.test(hex)) {
-		// #rrggbbaa
-		return true;
+	public static createFromParsedTheme(source: ParsedThemeRule[], colorMap?: string[]): Theme {
+		return resolveParsedThemeRules(source, colorMap);
 	}
 
-	if (/^#[0-9a-f]{3}$/i.test(hex)) {
-		// #rgb
-		return true;
+	private readonly _colorMap: ColorMap;
+	private readonly _root: ThemeTrieElement;
+	private readonly _defaults: ThemeTrieElementRule;
+	private readonly _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
+
+	constructor(colorMap: ColorMap, defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
+		this._colorMap = colorMap;
+		this._root = root;
+		this._defaults = defaults;
+		this._cache = {};
 	}
 
-	if (/^#[0-9a-f]{4}$/i.test(hex)) {
-		// #rgba
-		return true;
+	public getColorMap(): string[] {
+		return this._colorMap.getColorMap();
 	}
 
-	return false;
+	public getDefaults(): ThemeTrieElementRule {
+		return this._defaults;
+	}
+
+	public match(scopeName: string): ThemeTrieElementRule[] {
+		if (!this._cache.hasOwnProperty(scopeName)) {
+			this._cache[scopeName] = this._root.match(scopeName);
+		}
+		return this._cache[scopeName];
+	}
 }
 
 /**
@@ -163,6 +138,27 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 	return result;
 }
 
+export class ParsedThemeRule {
+	constructor(
+		public readonly scope: string,
+		public readonly parentScopes: string[] | null,
+		public readonly index: number,
+		public readonly fontStyle: OrMask<FontStyle>,
+		public readonly foreground: string | null,
+		public readonly background: string | null,
+	) {
+	}
+}
+
+export const enum FontStyle {
+	NotSet = -1,
+	None = 0,
+	Italic = 1,
+	Bold = 2,
+	Underline = 4,
+	Strikethrough = 8
+}
+
 /**
  * Resolve rules (i.e. inheritance).
  */
@@ -210,7 +206,6 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 }
 
 export class ColorMap {
-
 	private readonly _isFrozen: boolean;
 	private _lastColorId: number;
 	private _id2color: string[];
@@ -253,79 +248,6 @@ export class ColorMap {
 	public getColorMap(): string[] {
 		return this._id2color.slice(0);
 	}
-
-}
-
-export class Theme {
-
-	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
-		return this.createFromParsedTheme(parseTheme(source), colorMap);
-	}
-
-	public static createFromParsedTheme(source: ParsedThemeRule[], colorMap?: string[]): Theme {
-		return resolveParsedThemeRules(source, colorMap);
-	}
-
-	private readonly _colorMap: ColorMap;
-	private readonly _root: ThemeTrieElement;
-	private readonly _defaults: ThemeTrieElementRule;
-	private readonly _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
-
-	constructor(colorMap: ColorMap, defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
-		this._colorMap = colorMap;
-		this._root = root;
-		this._defaults = defaults;
-		this._cache = {};
-	}
-
-	public getColorMap(): string[] {
-		return this._colorMap.getColorMap();
-	}
-
-	public getDefaults(): ThemeTrieElementRule {
-		return this._defaults;
-	}
-
-	public match(scopeName: string): ThemeTrieElementRule[] {
-		if (!this._cache.hasOwnProperty(scopeName)) {
-			this._cache[scopeName] = this._root.match(scopeName);
-		}
-		return this._cache[scopeName];
-	}
-}
-
-export function strcmp(a: string, b: string): number {
-	if (a < b) {
-		return -1;
-	}
-	if (a > b) {
-		return 1;
-	}
-	return 0;
-}
-
-export function strArrCmp(a: string[] | null, b: string[] | null): number {
-	if (a === null && b === null) {
-		return 0;
-	}
-	if (!a) {
-		return -1;
-	}
-	if (!b) {
-		return 1;
-	}
-	let len1 = a.length;
-	let len2 = b.length;
-	if (len1 === len2) {
-		for (let i = 0; i < len1; i++) {
-			let res = strcmp(a[i], b[i]);
-			if (res !== 0) {
-				return res;
-			}
-		}
-		return 0;
-	}
-	return len1 - len2;
 }
 
 export class ThemeTrieElementRule {

@@ -6,8 +6,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
 import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
-import { IOnigLib, IRawGrammar } from '../types';
+import { IOnigLib } from '../onigLib';
 import { getOniguruma } from './onigLibs';
+import { IRawGrammar } from '../rawGrammar';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 

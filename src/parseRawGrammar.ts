@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IRawGrammar } from './types';
+import { IRawGrammar } from './rawGrammar';
 import * as plist from './plist';
 import { DebugFlags } from './debug';
 import { parse as manualParseJSON } from './json';

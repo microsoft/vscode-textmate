@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IOnigCaptureIndex } from './types';
+import { IOnigCaptureIndex } from './onigLib';
 
 export function clone<T>(something: T): T {
 	return doClone(something);
@@ -88,4 +88,67 @@ export class RegexSource {
 			}
 		});
 	}
+}
+
+/**
+ * A union of given const enum values.
+*/
+export type OrMask<T extends number> = number;
+
+export function strcmp(a: string, b: string): number {
+	if (a < b) {
+		return -1;
+	}
+	if (a > b) {
+		return 1;
+	}
+	return 0;
+}
+
+export function strArrCmp(a: string[] | null, b: string[] | null): number {
+	if (a === null && b === null) {
+		return 0;
+	}
+	if (!a) {
+		return -1;
+	}
+	if (!b) {
+		return 1;
+	}
+	let len1 = a.length;
+	let len2 = b.length;
+	if (len1 === len2) {
+		for (let i = 0; i < len1; i++) {
+			let res = strcmp(a[i], b[i]);
+			if (res !== 0) {
+				return res;
+			}
+		}
+		return 0;
+	}
+	return len1 - len2;
+}
+
+export function isValidHexColor(hex: string): boolean {
+	if (/^#[0-9a-f]{6}$/i.test(hex)) {
+		// #rrggbb
+		return true;
+	}
+
+	if (/^#[0-9a-f]{8}$/i.test(hex)) {
+		// #rrggbbaa
+		return true;
+	}
+
+	if (/^#[0-9a-f]{3}$/i.test(hex)) {
+		// #rgb
+		return true;
+	}
+
+	if (/^#[0-9a-f]{4}$/i.test(hex)) {
+		// #rgba
+		return true;
+	}
+
+	return false;
 }

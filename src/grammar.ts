@@ -3,12 +3,14 @@
  *--------------------------------------------------------*/
 
 import { clone, mergeObjects } from './utils';
-import { IRawGrammar, IRawRepository, IRawRule, IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner, FindOption } from './types';
+import { IOnigLib, IOnigCaptureIndex, OnigString, OnigScanner, FindOption } from './onigLib';
 import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, BeginEndRule, BeginWhileRule, MatchRule, CompiledRule } from './rule';
 import { createMatchers, Matcher } from './matcher';
-import { MetadataConsts, IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
+import { IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
 import { FontStyle, ThemeTrieElementRule } from './theme';
+import { OptionalStandardTokenType, StackElementMetadata, toOptionalTokenType } from './metadata';
+import { IRawGrammar, IRawRule, IRawRepository } from './rawGrammar';
 
 declare let performance: { now: () => number } | undefined;
 const performanceNow = (function () {
@@ -20,18 +22,26 @@ const performanceNow = (function () {
 	}
 })();
 
-// Must have the same values as `StandardTokenType`!
-export const enum OptionalStandardTokenType {
-	Other = 0,
-	Comment = 1,
-	String = 2,
-	RegEx = 3,
-	// Indicates that no token type is set.
-	NotSet = 8
-}
-
-export function createGrammar(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, balancedBracketSelectors: BalancedBracketSelectors | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib): Grammar {
-	return new Grammar(scopeName, grammar, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors, grammarRepository, onigLib);//TODO
+export function createGrammar(
+	scopeName: string,
+	grammar: IRawGrammar,
+	initialLanguage: number,
+	embeddedLanguages: IEmbeddedLanguagesMap | null,
+	tokenTypes: ITokenTypeMap | null,
+	balancedBracketSelectors: BalancedBracketSelectors | null,
+	grammarRepository: IGrammarRepository & IThemeProvider,
+	onigLib: IOnigLib
+): Grammar {
+	return new Grammar(
+		scopeName,
+		grammar,
+		initialLanguage,
+		embeddedLanguages,
+		tokenTypes,
+		balancedBracketSelectors,
+		grammarRepository,
+		onigLib
+	); //TODO
 }
 
 export interface IThemeProvider {
@@ -1196,99 +1206,6 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	}
 }
 
-
-export class StackElementMetadata {
-
-	public static toBinaryStr(metadata: number): string {
-		let r = metadata.toString(2);
-		while (r.length < 32) {
-			r = '0' + r;
-		}
-		return r;
-	}
-
-	public static printMetadata(metadata: number): void {
-		const languageId = StackElementMetadata.getLanguageId(metadata);
-		const tokenType = StackElementMetadata.getTokenType(metadata);
-		const fontStyle = StackElementMetadata.getFontStyle(metadata);
-		const foreground = StackElementMetadata.getForeground(metadata);
-		const background = StackElementMetadata.getBackground(metadata);
-
-		console.log({
-			languageId: languageId,
-			tokenType: tokenType,
-			fontStyle: fontStyle,
-			foreground: foreground,
-			background: background,
-		});
-	}
-
-	public static getLanguageId(metadata: number): number {
-		return (metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET;
-	}
-
-	public static getTokenType(metadata: number): StandardTokenType {
-		return (metadata & MetadataConsts.TOKEN_TYPE_MASK) >>> MetadataConsts.TOKEN_TYPE_OFFSET;
-	}
-
-	public static containsBalancedBrackets(metadata: number): boolean {
-		return (metadata & MetadataConsts.BALANCED_BRACKETS_MASK) !== 0;
-	}
-
-	public static getFontStyle(metadata: number): number {
-		return (metadata & MetadataConsts.FONT_STYLE_MASK) >>> MetadataConsts.FONT_STYLE_OFFSET;
-	}
-
-	public static getForeground(metadata: number): number {
-		return (metadata & MetadataConsts.FOREGROUND_MASK) >>> MetadataConsts.FOREGROUND_OFFSET;
-	}
-
-	public static getBackground(metadata: number): number {
-		return (metadata & MetadataConsts.BACKGROUND_MASK) >>> MetadataConsts.BACKGROUND_OFFSET;
-	}
-
-	/**
-	 * Updates the fields in `metadata`.
-	 * A value of `0`, `NotSet` or `null` indicates that the corresponding field should be left as is.
-	*/
-	public static set(metadata: number, languageId: number, tokenType: OptionalStandardTokenType, containsBalancedBrackets: boolean | null, fontStyle: FontStyle, foreground: number, background: number): number {
-		let _languageId = StackElementMetadata.getLanguageId(metadata);
-		let _tokenType = StackElementMetadata.getTokenType(metadata);
-		let _containsBalancedBracketsBit: 0 | 1 = StackElementMetadata.containsBalancedBrackets(metadata) ? 1 : 0;
-		let _fontStyle = StackElementMetadata.getFontStyle(metadata);
-		let _foreground = StackElementMetadata.getForeground(metadata);
-		let _background = StackElementMetadata.getBackground(metadata);
-
-		if (languageId !== 0) {
-			_languageId = languageId;
-		}
-		if (tokenType !== OptionalStandardTokenType.NotSet) {
-			_tokenType = fromOptionalTokenType(tokenType);
-		}
-		if (containsBalancedBrackets !== null) {
-			_containsBalancedBracketsBit = containsBalancedBrackets ? 1 : 0;
-		}
-		if (fontStyle !== FontStyle.NotSet) {
-			_fontStyle = fontStyle;
-		}
-		if (foreground !== 0) {
-			_foreground = foreground;
-		}
-		if (background !== 0) {
-			_background = background;
-		}
-
-		return (
-			(_languageId << MetadataConsts.LANGUAGEID_OFFSET)
-			| (_tokenType << MetadataConsts.TOKEN_TYPE_OFFSET)
-			| (_containsBalancedBracketsBit << MetadataConsts.BALANCED_BRACKETS_OFFSET)
-			| (_fontStyle << MetadataConsts.FONT_STYLE_OFFSET)
-			| (_foreground << MetadataConsts.FOREGROUND_OFFSET)
-			| (_background << MetadataConsts.BACKGROUND_OFFSET)
-		) >>> 0;
-	}
-}
-
 export class ScopeListElement {
 
 	public readonly parent: ScopeListElement | null;
@@ -1848,16 +1765,3 @@ class LineTokens {
 	}
 }
 
-function toOptionalTokenType(standardType: StandardTokenType): OptionalStandardTokenType {
-	return standardType as any as OptionalStandardTokenType;
-}
-
-function fromOptionalTokenType(
-	standardType:
-		| OptionalStandardTokenType.Other
-		| OptionalStandardTokenType.Comment
-		| OptionalStandardTokenType.String
-		| OptionalStandardTokenType.RegEx
-): StandardTokenType {
-	return standardType as any as StandardTokenType;
-}

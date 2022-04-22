@@ -2,12 +2,13 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IRawGrammar, IOnigLib } from '../types';
-import { parseRawGrammar } from '../grammarReader';
+import { IOnigLib } from '../onigLib';
+import { parseRawGrammar } from '../parseRawGrammar';
 import { RegistryOptions } from '../main';
 
 import * as path from 'path';
 import * as fs from 'fs';
+import { IRawGrammar } from '../rawGrammar';
 
 export interface ILanguageRegistration {
 	id: string;

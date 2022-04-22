@@ -3,10 +3,10 @@
  *--------------------------------------------------------*/
 
 import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository } from './grammar';
-import { IRawGrammar } from './types';
+import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
-import { IOnigLib } from './types';
+import { IOnigLib } from './onigLib';
 
 export class SyncRegistry implements IGrammarRepository {
 

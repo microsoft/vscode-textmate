@@ -4,7 +4,7 @@
 
 import * as assert from 'assert';
 import { StandardTokenType } from '../main';
-import { StackElementMetadata, OptionalStandardTokenType } from '../grammar';
+import { StackElementMetadata, OptionalStandardTokenType } from '../metadata';
 import { FontStyle } from '../theme';
 
 function assertEquals(metadata: number, languageId: number, tokenType: StandardTokenType, containsBalancedBrackets: boolean, fontStyle: FontStyle, foreground: number, background: number): void {
