@@ -5,11 +5,12 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IRawTheme } from '../main';
+import { Registry } from '../main';
 import { ScopeListElement, ScopeMetadata } from '../grammar';
 import {
 	Theme, ThemeTrieElement, ThemeTrieElementRule,
-	parseTheme, ParsedThemeRule, FontStyle, ColorMap
+	parseTheme, ParsedThemeRule, FontStyle, ColorMap,
+	IRawTheme
 } from '../theme';
 import { ThemeTest } from './themeTest';
 import { getOniguruma } from './onigLibs';
@@ -185,7 +186,16 @@ test('Theme matching gives higher priority to parent matches 2', () => {
 
 	let root = new ScopeListElement(null, 'text.html.cshtml', 0);
 	let parent = new ScopeListElement(root, 'meta.tag.structure.any.html', 0);
-	let r = ScopeListElement.mergeMetadata(0, parent, new ScopeMetadata('entity.name.tag.structure.any.html', 0, 0, theme.match('entity.name.tag.structure.any.html')));
+	let r = ScopeListElement.mergeMetadata(
+		0,
+		parent,
+		new ScopeMetadata(
+			"entity.name.tag.structure.any.html",
+			0,
+			0,
+			theme.match("entity.name.tag.structure.any.html")
+		)
+	);
 	let colorMap = theme.getColorMap();
 	assert.strictEqual(colorMap[StackElementMetadata.getForeground(r)], '#300000');
 });

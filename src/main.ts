@@ -7,30 +7,10 @@ import * as grammarReader from './parseRawGrammar';
 import { IOnigLib } from './onigLib';
 import { IRawGrammar } from './rawGrammar';
 import { SyncRegistry } from './registry';
-import { Theme } from './theme';
+import { IRawTheme, Theme } from './theme';
 
 export * from './onigLib';
 
-/**
- * A single theme setting.
- */
-export interface IRawThemeSetting {
-	readonly name?: string;
-	readonly scope?: string | string[];
-	readonly settings: {
-		readonly fontStyle?: string;
-		readonly foreground?: string;
-		readonly background?: string;
-	};
-}
-
-/**
- * A TextMate theme.
- */
-export interface IRawTheme {
-	readonly name?: string;
-	readonly settings: IRawThemeSetting[];
-}
 
 /**
  * A registry helper that can locate grammar file paths given scope names.

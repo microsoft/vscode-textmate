@@ -2,8 +2,29 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IRawTheme } from './main';
 import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
+
+
+/**
+ * A TextMate theme.
+ */
+ export interface IRawTheme {
+	readonly name?: string;
+	readonly settings: IRawThemeSetting[];
+}
+
+/**
+ * A single theme setting.
+ */
+ export interface IRawThemeSetting {
+	readonly name?: string;
+	readonly scope?: string | string[];
+	readonly settings: {
+		readonly fontStyle?: string;
+		readonly foreground?: string;
+		readonly background?: string;
+	};
+}
 
 export class Theme {
 	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
@@ -78,7 +99,7 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			scopes = [''];
 		}
 
-		let fontStyle: number = FontStyle.NotSet;
+		let fontStyle: OrMask<FontStyle> = FontStyle.NotSet;
 		if (typeof entry.settings.fontStyle === 'string') {
 			fontStyle = FontStyle.None;
 
@@ -302,28 +323,21 @@ export interface ITrieChildrenMap {
 }
 
 export class ThemeTrieElement {
-
-	private readonly _mainRule: ThemeTrieElementRule;
 	private readonly _rulesWithParentScopes: ThemeTrieElementRule[];
-	private readonly _children: ITrieChildrenMap;
 
 	constructor(
-		mainRule: ThemeTrieElementRule,
+		private readonly _mainRule: ThemeTrieElementRule,
 		rulesWithParentScopes: ThemeTrieElementRule[] = [],
-		children: ITrieChildrenMap = {}
+		private readonly _children: ITrieChildrenMap = {}
 	) {
-		this._mainRule = mainRule;
 		this._rulesWithParentScopes = rulesWithParentScopes;
-		this._children = children;
 	}
 
 	private static _sortBySpecificity(arr: ThemeTrieElementRule[]): ThemeTrieElementRule[] {
 		if (arr.length === 1) {
 			return arr;
 		}
-
 		arr.sort(this._cmpBySpecificity);
-
 		return arr;
 	}
 

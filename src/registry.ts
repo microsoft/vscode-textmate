@@ -2,13 +2,13 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository } from './grammar';
+import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider } from './grammar';
 import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { Theme, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './onigLib';
 
-export class SyncRegistry implements IGrammarRepository {
+export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 
 	private readonly _grammars: { [scopeName: string]: Grammar; };
 	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };

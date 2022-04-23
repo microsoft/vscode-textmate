@@ -1287,16 +1287,11 @@ export class ScopeListElement {
 		let background = 0;
 
 		if (source.themeData !== null) {
-			// Find the first themeData that matches
-			for (let i = 0, len = source.themeData.length; i < len; i++) {
-				const themeData = source.themeData[i];
-
-				if (this._matches(scopesList, themeData.parentScopes)) {
-					fontStyle = themeData.fontStyle;
-					foreground = themeData.foreground;
-					background = themeData.background;
-					break;
-				}
+			const matchingThemeData = source.themeData.find(themeData => this._matches(scopesList, themeData.parentScopes));
+			if (matchingThemeData) {
+				fontStyle = matchingThemeData.fontStyle;
+				foreground = matchingThemeData.foreground;
+				background = matchingThemeData.background;
 			}
 		}
 
