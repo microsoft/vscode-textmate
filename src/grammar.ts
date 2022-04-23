@@ -887,7 +887,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	if (DebugFlags.InDebugMode) {
 		const elapsedMillis = performanceNow() - perfStart;
 		if (elapsedMillis > 5) {
-			console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${elapsedMillis} against '${lineText}'`);
+			console.warn(`Rule: ${rule.debugName} (${rule.id}) matching took ${elapsedMillis} ms against |${lineText.content.replace(/\n$/, '\\n')}|`);
 		}
 		console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
 		console.log(debugCompiledRuleToString(ruleScanner));
