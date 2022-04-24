@@ -14,11 +14,23 @@ import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 }
 
 /**
+ * Identifiers with a binary dot operator.
+ * Examples: `baz` or `foo.bar`
+*/
+export type ScopeName = string;
+
+/**
+ * An expression language of ScopeNames with a binary comma (to indicate alternatives) and space (to indicate nesting) operator.
+ * Examples: `foo.bar boo.baz,quick quack`
+*/
+export type ScopePattern = string;
+
+/**
  * A single theme setting.
  */
  export interface IRawThemeSetting {
 	readonly name?: string;
-	readonly scope?: string | string[];
+	readonly scope?: ScopePattern | ScopePattern[];
 	readonly settings: {
 		readonly fontStyle?: string;
 		readonly foreground?: string;
@@ -55,7 +67,7 @@ export class Theme {
 		return this._defaults;
 	}
 
-	public match(scopeName: string): ThemeTrieElementRule[] {
+	public match(scopeName: ScopeName): ThemeTrieElementRule[] {
 		if (!this._cache.hasOwnProperty(scopeName)) {
 			this._cache[scopeName] = this._root.match(scopeName);
 		}
@@ -274,12 +286,12 @@ export class ColorMap {
 export class ThemeTrieElementRule {
 
 	scopeDepth: number;
-	parentScopes: string[] | null;
+	parentScopes: ScopeName[] | null;
 	fontStyle: number;
 	foreground: number;
 	background: number;
 
-	constructor(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number) {
+	constructor(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes;
 		this.fontStyle = fontStyle;
@@ -361,7 +373,7 @@ export class ThemeTrieElement {
 		return b.scopeDepth - a.scopeDepth;
 	}
 
-	public match(scope: string): ThemeTrieElementRule[] {
+	public match(scope: ScopeName): ThemeTrieElementRule[] {
 		if (scope === '') {
 			return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 		}
@@ -384,7 +396,7 @@ export class ThemeTrieElement {
 		return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 	}
 
-	public insert(scopeDepth: number, scope: string, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
+	public insert(scopeDepth: number, scope: ScopeName, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
 		if (scope === '') {
 			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
 			return;
@@ -412,7 +424,7 @@ export class ThemeTrieElement {
 		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background);
 	}
 
-	private _doInsertHere(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
+	private _doInsertHere(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule
