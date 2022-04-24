@@ -39,25 +39,27 @@ export type ScopePattern = string;
 }
 
 export class Theme {
-	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
+	public static createFromRawTheme(
+		source: IRawTheme | undefined,
+		colorMap?: string[]
+	): Theme {
 		return this.createFromParsedTheme(parseTheme(source), colorMap);
 	}
 
-	public static createFromParsedTheme(source: ParsedThemeRule[], colorMap?: string[]): Theme {
+	public static createFromParsedTheme(
+		source: ParsedThemeRule[],
+		colorMap?: string[]
+	): Theme {
 		return resolveParsedThemeRules(source, colorMap);
 	}
 
-	private readonly _colorMap: ColorMap;
-	private readonly _root: ThemeTrieElement;
-	private readonly _defaults: ThemeTrieElementRule;
-	private readonly _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
+	private readonly _cache = new Map<ScopeName, ThemeTrieElementRule[]>();
 
-	constructor(colorMap: ColorMap, defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
-		this._colorMap = colorMap;
-		this._root = root;
-		this._defaults = defaults;
-		this._cache = {};
-	}
+	constructor(
+		private readonly _colorMap: ColorMap,
+		private readonly _defaults: ThemeTrieElementRule,
+		private readonly _root: ThemeTrieElement
+	) {}
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
@@ -67,11 +69,13 @@ export class Theme {
 		return this._defaults;
 	}
 
+	// TODO@hediet: Why do we return an array here?
+	// Guess: Because of parent scopes. Can we fix this?
 	public match(scopeName: ScopeName): ThemeTrieElementRule[] {
-		if (!this._cache.hasOwnProperty(scopeName)) {
-			this._cache[scopeName] = this._root.match(scopeName);
+		if (!this._cache.has(scopeName)) {
+			this._cache.set(scopeName, this._root.match(scopeName));
 		}
-		return this._cache[scopeName];
+		return this._cache.get(scopeName)!;
 	}
 }
 
