@@ -321,7 +321,7 @@ class ScopeMetadataProvider {
 
 	private readonly _initialLanguage: number;
 	private readonly _themeProvider: IThemeProvider;
-	private _cache: Map<string, ScopeMetadata>;
+	private readonly _cache = new Map<string, ScopeMetadata>();
 	private _defaultMetaData: ScopeMetadata;
 	private readonly _embeddedLanguages: IEmbeddedLanguagesMap;
 	private readonly _embeddedLanguagesRegex: RegExp | null;
@@ -329,7 +329,6 @@ class ScopeMetadataProvider {
 	constructor(initialLanguage: number, themeProvider: IThemeProvider, embeddedLanguages: IEmbeddedLanguagesMap | null) {
 		this._initialLanguage = initialLanguage;
 		this._themeProvider = themeProvider;
-		this._cache = new Map();
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
@@ -368,7 +367,7 @@ class ScopeMetadataProvider {
 	}
 
 	public onDidChangeTheme(): void {
-		this._cache = new Map();
+		this._cache.clear();
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
