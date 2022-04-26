@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { IGrammar, StackElement } from '../main';
-import { StackElementMetadata } from '../metadata';
+import { EncodedScopeMetadata } from '../metadata';
 
 export interface IThemedToken {
 	content: string;
@@ -29,7 +29,7 @@ export function tokenizeWithTheme(colorMap: string[], fileContents: string, gram
 				continue;
 			}
 			const metadata = result.tokens[2 * j + 1];
-			const foreground = StackElementMetadata.getForeground(metadata);
+			const foreground = EncodedScopeMetadata.getForeground(metadata);
 			const foregroundColor = colorMap[foreground];
 
 			actual[actualLen++] = {

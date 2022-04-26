@@ -9,7 +9,7 @@ import { createMatchers, Matcher } from './matcher';
 import { IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
 import { FontStyle, ScopeName, ScopePath, ScopePathStr, StyleInfo, ThemeTrieElementRule } from './theme';
-import { OptionalStandardTokenType, StackElementMetadata, toOptionalTokenType } from './metadata';
+import { OptionalStandardTokenType, EncodedScopeMetadata, toOptionalTokenType } from './metadata';
 import { IRawGrammar, IRawRule, IRawRepository } from './rawGrammar';
 
 declare let performance: { now: () => number } | undefined;
@@ -706,7 +706,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			const rawDefaultMetadata =
 				this._scopeMetadataProvider.getDefaultMetadata();
 			const defaultStyle = this.themeProvider.getDefaults();
-			const defaultMetadata = StackElementMetadata.set(
+			const defaultMetadata = EncodedScopeMetadata.set(
 				0,
 				rawDefaultMetadata.languageId,
 				rawDefaultMetadata.tokenType,
@@ -1387,7 +1387,7 @@ export class ThemedScopeStack {
 			background = styleInfo.background;
 		}
 
-		return StackElementMetadata.set(
+		return EncodedScopeMetadata.set(
 			metadata,
 			source.languageId,
 			source.tokenType,
@@ -1760,7 +1760,7 @@ class LineTokens {
 				const scopes = scopesList.getScopeNames();
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.matcher(scopes)) {
-						metadata = StackElementMetadata.set(
+						metadata = EncodedScopeMetadata.set(
 							metadata,
 							0,
 							toOptionalTokenType(tokenType.type),
@@ -1777,7 +1777,7 @@ class LineTokens {
 			}
 
 			if (containsBalancedBrackets) {
-				metadata = StackElementMetadata.set(
+				metadata = EncodedScopeMetadata.set(
 					metadata,
 					0,
 					OptionalStandardTokenType.NotSet,
