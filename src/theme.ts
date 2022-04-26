@@ -57,7 +57,7 @@ export class Theme {
 
 	constructor(
 		private readonly _colorMap: ColorMap,
-		private readonly _defaults: ThemeTrieElementRule,
+		private readonly _defaults: StyleInfo,
 		private readonly _root: ThemeTrieElement
 	) {}
 
@@ -65,18 +65,105 @@ export class Theme {
 		return this._colorMap.getColorMap();
 	}
 
-	public getDefaults(): ThemeTrieElementRule {
+	public getDefaults(): StyleInfo {
 		return this._defaults;
 	}
 
-	// TODO@hediet: Why do we return an array here?
-	// Guess: Because of parent scopes. Can we fix this?
-	public match(scopeName: ScopeName): ThemeTrieElementRule[] {
+	public match(scopePath: ScopePath | null): StyleInfo | null {
+		if (scopePath === null) {
+			return this._defaults;
+		}
+		const scopeName = scopePath.scopeName;
+
 		if (!this._cache.has(scopeName)) {
 			this._cache.set(scopeName, this._root.match(scopeName));
 		}
-		return this._cache.get(scopeName)!;
+		const cachedValue = this._cache.get(scopeName)!;
+
+		const effectiveRule = cachedValue.find(v => _matches(scopePath.parent, v.parentScopes));
+		if (!effectiveRule) {
+			return null;
+		}
+
+		return new StyleInfo(
+			effectiveRule.fontStyle,
+			effectiveRule.foreground,
+			effectiveRule.background
+		);
 	}
+}
+
+export class ScopePath {
+	public static from(first: ScopeName, ...segments: ScopeName[]): ScopePath;
+	public static from(...segments: ScopeName[]): ScopePath | null;
+	public static from(...segments: ScopeName[]): ScopePath | null {
+		let result: ScopePath | null = null;
+		for (let i = 0; i < segments.length; i++) {
+			result = new ScopePath(result, segments[i]);
+		}
+		return result;
+	}
+
+	constructor(
+		public readonly parent: ScopePath | null,
+		public readonly scopeName: ScopeName
+	) {}
+
+	public childPath(scopeName: ScopeName): ScopePath {
+		return new ScopePath(this, scopeName);
+	}
+
+	public getSegments(): ScopeName[] {
+		let item: ScopePath | null = this;
+		const result: ScopeName[] = [];
+		while (item) {
+			result.push(item.scopeName);
+			item = item.parent;
+		}
+		result.reverse();
+		return result;
+	}
+
+	public toString() {
+		return this.getSegments().join(' ');
+	}
+}
+
+function _matchesScope(scope: string, selector: string, selectorWithDot: string): boolean {
+	return (selector === scope || scope.substring(0, selectorWithDot.length) === selectorWithDot);
+}
+
+function _matches(target: ScopePath | null, parentScopes: string[] | null): boolean {
+	if (parentScopes === null) {
+		return true;
+	}
+
+	const len = parentScopes.length;
+	let index = 0;
+	let selector = parentScopes[index];
+	let selectorWithDot = selector + '.';
+
+	while (target) {
+		if (_matchesScope(target.scopeName, selector, selectorWithDot)) {
+			index++;
+			if (index === len) {
+				return true;
+			}
+			selector = parentScopes[index];
+			selectorWithDot = selector + '.';
+		}
+		target = target.parent;
+	}
+
+	return false;
+}
+
+export class StyleInfo {
+	constructor(
+		public readonly fontStyle: OrMask<FontStyle>,
+		public readonly foreground: number,
+		public readonly background: number
+	) {}
 }
 
 /**
@@ -196,6 +283,30 @@ export const enum FontStyle {
 	Strikethrough = 8
 }
 
+export function fontStyleToString(fontStyle: OrMask<FontStyle>) {
+	if (fontStyle === FontStyle.NotSet) {
+		return 'not set';
+	}
+
+	let style = '';
+	if (fontStyle & FontStyle.Italic) {
+		style += 'italic ';
+	}
+	if (fontStyle & FontStyle.Bold) {
+		style += 'bold ';
+	}
+	if (fontStyle & FontStyle.Underline) {
+		style += 'underline ';
+	}
+	if (fontStyle & FontStyle.Strikethrough) {
+		style += 'strikethrough ';
+	}
+	if (style === '') {
+		style = 'none';
+	}
+	return style.trim();
+}
+
 /**
  * Resolve rules (i.e. inheritance).
  */
@@ -231,7 +342,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		}
 	}
 	let colorMap = new ColorMap(_colorMap);
-	let defaults = new ThemeTrieElementRule(0, null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
+	let defaults = new StyleInfo(defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
 
 	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {

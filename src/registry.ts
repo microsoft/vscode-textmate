@@ -2,10 +2,10 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider } from './grammar';
+import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider, ScopeListElement } from './grammar';
 import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
-import { Theme, ThemeTrieElementRule } from './theme';
+import { ScopePath, Theme, StyleInfo, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './onigLib';
 
 export class SyncRegistry implements IGrammarRepository, IThemeProvider {
@@ -72,15 +72,15 @@ export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 	/**
 	 * Get the default theme settings
 	 */
-	public getDefaults(): ThemeTrieElementRule {
+	public getDefaults(): StyleInfo {
 		return this._theme.getDefaults();
 	}
 
 	/**
 	 * Match a scope in the theme.
 	 */
-	public themeMatch(scopeName: string): ThemeTrieElementRule[] {
-		return this._theme.match(scopeName);
+	public themeMatch(scopePath: ScopePath): StyleInfo | null {
+		return this._theme.match(scopePath);
 	}
 
 	/**

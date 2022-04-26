@@ -8,7 +8,7 @@ import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, Begi
 import { createMatchers, Matcher } from './matcher';
 import { IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
-import { FontStyle, ThemeTrieElementRule } from './theme';
+import { FontStyle, ScopeName, ScopePath, StyleInfo, ThemeTrieElementRule } from './theme';
 import { OptionalStandardTokenType, StackElementMetadata, toOptionalTokenType } from './metadata';
 import { IRawGrammar, IRawRule, IRawRepository } from './rawGrammar';
 
@@ -45,8 +45,8 @@ export function createGrammar(
 }
 
 export interface IThemeProvider {
-	themeMatch(scopeName: string): ThemeTrieElementRule[];
-	getDefaults(): ThemeTrieElementRule;
+	themeMatch(scopePath: ScopePath): StyleInfo | null;
+	getDefaults(): StyleInfo;
 }
 
 export interface IGrammarRepository {
@@ -307,13 +307,15 @@ export class ScopeMetadata {
 	public readonly scopeName: string;
 	public readonly languageId: number;
 	public readonly tokenType: OptionalStandardTokenType;
-	public readonly themeData: ThemeTrieElementRule[] | null;
 
-	constructor(scopeName: string, languageId: number, tokenType: OptionalStandardTokenType, themeData: ThemeTrieElementRule[] | null) {
+	constructor(
+		scopeName: string,
+		languageId: number,
+		tokenType: OptionalStandardTokenType
+	) {
 		this.scopeName = scopeName;
 		this.languageId = languageId;
 		this.tokenType = tokenType;
-		this.themeData = themeData;
 	}
 }
 
@@ -332,8 +334,7 @@ class ScopeMetadataProvider {
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
-			OptionalStandardTokenType.NotSet,
-			[this._themeProvider.getDefaults()]
+			OptionalStandardTokenType.NotSet
 		);
 
 		// embeddedLanguages handling
@@ -371,8 +372,7 @@ class ScopeMetadataProvider {
 		this._defaultMetaData = new ScopeMetadata(
 			'',
 			this._initialLanguage,
-			OptionalStandardTokenType.NotSet,
-			[this._themeProvider.getDefaults()]
+			OptionalStandardTokenType.NotSet
 		);
 	}
 
@@ -387,7 +387,7 @@ class ScopeMetadataProvider {
 		return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 	}
 
-	private static _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0, null);
+	private static _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0);
 	public getMetadataForScope(scopeName: string | null): ScopeMetadata {
 		if (scopeName === null) {
 			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
@@ -404,9 +404,8 @@ class ScopeMetadataProvider {
 	private _doGetMetadataForScope(scopeName: string): ScopeMetadata {
 		const languageId = this._scopeToLanguage(scopeName);
 		const standardTokenType = this._toStandardTokenType(scopeName);
-		const themeData = this._themeProvider.themeMatch(scopeName);
 
-		return new ScopeMetadata(scopeName, languageId, standardTokenType, themeData);
+		return new ScopeMetadata(scopeName, languageId, standardTokenType);
 	}
 
 	/**
@@ -456,22 +455,36 @@ class ScopeMetadataProvider {
 }
 
 export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
-
 	private readonly _scopeName: string;
 	private _rootId: number;
 	private _lastRuleId: number;
 	private readonly _ruleId2desc: Rule[];
-	private readonly _includedGrammars: { [scopeName: string]: IRawGrammar; };
-	private readonly _grammarRepository: IGrammarRepository;
+	private readonly _includedGrammars: { [scopeName: string]: IRawGrammar };
+	private readonly _grammarRepository: IGrammarRepository & IThemeProvider;
 	private readonly _grammar: IRawGrammar;
 	private _injections: Injection[] | null;
 	private readonly _scopeMetadataProvider: ScopeMetadataProvider;
 	private readonly _tokenTypeMatchers: TokenTypeMatcher[];
 	private readonly _onigLib: IOnigLib;
 
-	constructor(scopeName: string, grammar: IRawGrammar, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, private readonly balancedBracketSelectors: BalancedBracketSelectors | null, grammarRepository: IGrammarRepository & IThemeProvider, onigLib: IOnigLib) {
+	public get themeProvider(): IThemeProvider { return this._grammarRepository; }
+
+	constructor(
+		scopeName: string,
+		grammar: IRawGrammar,
+		initialLanguage: number,
+		embeddedLanguages: IEmbeddedLanguagesMap | null,
+		tokenTypes: ITokenTypeMap | null,
+		private readonly balancedBracketSelectors: BalancedBracketSelectors | null,
+		grammarRepository: IGrammarRepository & IThemeProvider,
+		onigLib: IOnigLib
+	) {
 		this._scopeName = scopeName;
-		this._scopeMetadataProvider = new ScopeMetadataProvider(initialLanguage, grammarRepository, embeddedLanguages);
+		this._scopeMetadataProvider = new ScopeMetadataProvider(
+			initialLanguage,
+			grammarRepository,
+			embeddedLanguages
+		);
 
 		this._onigLib = onigLib;
 		this._rootId = -1;
@@ -489,7 +502,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				for (const matcher of matchers) {
 					this._tokenTypeMatchers.push({
 						matcher: matcher.matcher,
-						type: tokenTypes[selector]
+						type: tokenTypes[selector],
 					});
 				}
 			}
@@ -530,10 +543,13 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			},
 			injections: (scopeName: string): string[] => {
 				return this._grammarRepository.injections(scopeName);
-			}
+			},
 		};
 
-		const dependencyProcessor = new ScopeDependencyProcessor(grammarRepository, this._scopeName);
+		const dependencyProcessor = new ScopeDependencyProcessor(
+			grammarRepository,
+			this._scopeName
+		);
 		// TODO: uncomment below to visit all scopes
 		// while (dependencyProcessor.Q.length > 0) {
 		// 	dependencyProcessor.processQueue();
@@ -551,20 +567,34 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			const rawInjections = grammar.injections;
 			if (rawInjections) {
 				for (let expression in rawInjections) {
-					collectInjections(result, expression, rawInjections[expression], this, grammar);
+					collectInjections(
+						result,
+						expression,
+						rawInjections[expression],
+						this,
+						grammar
+					);
 				}
 			}
 
 			// add injection grammars contributed for the current scope
 			if (this._grammarRepository) {
-				const injectionScopeNames = this._grammarRepository.injections(scopeName);
+				const injectionScopeNames =
+					this._grammarRepository.injections(scopeName);
 				if (injectionScopeNames) {
-					injectionScopeNames.forEach(injectionScopeName => {
-						const injectionGrammar = this.getExternalGrammar(injectionScopeName);
+					injectionScopeNames.forEach((injectionScopeName) => {
+						const injectionGrammar =
+							this.getExternalGrammar(injectionScopeName);
 						if (injectionGrammar) {
 							const selector = injectionGrammar.injectionSelector;
 							if (selector) {
-								collectInjections(result, selector, injectionGrammar, this, injectionGrammar);
+								collectInjections(
+									result,
+									selector,
+									injectionGrammar,
+									this,
+									injectionGrammar
+								);
 							}
 						}
 					});
@@ -582,7 +612,9 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			this._injections = this._collectInjections();
 
 			if (DebugFlags.InDebugMode && this._injections.length > 0) {
-				console.log(`Grammar ${this._scopeName} contains the following injections:`);
+				console.log(
+					`Grammar ${this._scopeName} contains the following injections:`
+				);
 				for (const injection of this._injections) {
 					console.log(`  - ${injection.debugSelector}`);
 				}
@@ -592,7 +624,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	}
 
 	public registerRule<T extends Rule>(factory: (id: number) => T): T {
-		const id = (++this._lastRuleId);
+		const id = ++this._lastRuleId;
 		const result = factory(id);
 		this._ruleId2desc[id] = result;
 		return result;
@@ -602,67 +634,140 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return this._ruleId2desc[patternId];
 	}
 
-	public getExternalGrammar(scopeName: string, repository?: IRawRepository): IRawGrammar | undefined {
+	public getExternalGrammar(
+		scopeName: string,
+		repository?: IRawRepository
+	): IRawGrammar | undefined {
 		if (this._includedGrammars[scopeName]) {
 			return this._includedGrammars[scopeName];
 		} else if (this._grammarRepository) {
-			const rawIncludedGrammar = this._grammarRepository.lookup(scopeName);
+			const rawIncludedGrammar =
+				this._grammarRepository.lookup(scopeName);
 			if (rawIncludedGrammar) {
 				// console.log('LOADED GRAMMAR ' + pattern.include);
-				this._includedGrammars[scopeName] = initGrammar(rawIncludedGrammar, repository && repository.$base);
+				this._includedGrammars[scopeName] = initGrammar(
+					rawIncludedGrammar,
+					repository && repository.$base
+				);
 				return this._includedGrammars[scopeName];
 			}
 		}
 		return undefined;
 	}
 
-	public tokenizeLine(lineText: string, prevState: StackElement | null, timeLimit: number = 0): ITokenizeLineResult {
+	public tokenizeLine(
+		lineText: string,
+		prevState: StackElement | null,
+		timeLimit: number = 0
+	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
 		return {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
-			stoppedEarly: r.stoppedEarly
+			stoppedEarly: r.stoppedEarly,
 		};
 	}
 
-	public tokenizeLine2(lineText: string, prevState: StackElement | null, timeLimit: number = 0): ITokenizeLineResult2 {
+	public tokenizeLine2(
+		lineText: string,
+		prevState: StackElement | null,
+		timeLimit: number = 0
+	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
-			stoppedEarly: r.stoppedEarly
+			stoppedEarly: r.stoppedEarly,
 		};
 	}
 
-	private _tokenize(lineText: string, prevState: StackElement | null, emitBinaryTokens: boolean, timeLimit: number): { lineLength: number; lineTokens: LineTokens; ruleStack: StackElement; stoppedEarly: boolean; } {
+	private _tokenize(
+		lineText: string,
+		prevState: StackElement | null,
+		emitBinaryTokens: boolean,
+		timeLimit: number
+	): {
+		lineLength: number;
+		lineTokens: LineTokens;
+		ruleStack: StackElement;
+		stoppedEarly: boolean;
+	} {
 		if (this._rootId === -1) {
-			this._rootId = RuleFactory.getCompiledRuleId(this._grammar.repository.$self, this, this._grammar.repository);
+			this._rootId = RuleFactory.getCompiledRuleId(
+				this._grammar.repository.$self,
+				this,
+				this._grammar.repository
+			);
 		}
 
 		let isFirstLine: boolean;
 		if (!prevState || prevState === StackElement.NULL) {
 			isFirstLine = true;
-			const rawDefaultMetadata = this._scopeMetadataProvider.getDefaultMetadata();
-			const defaultTheme = rawDefaultMetadata.themeData![0];
-			const defaultMetadata = StackElementMetadata.set(0, rawDefaultMetadata.languageId, rawDefaultMetadata.tokenType, null, defaultTheme.fontStyle, defaultTheme.foreground, defaultTheme.background);
+			const rawDefaultMetadata =
+				this._scopeMetadataProvider.getDefaultMetadata();
+			const defaultTheme = this.themeProvider.getDefaults();
+			const defaultMetadata = StackElementMetadata.set(
+				0,
+				rawDefaultMetadata.languageId,
+				rawDefaultMetadata.tokenType,
+				null,
+				defaultTheme.fontStyle,
+				defaultTheme.foreground,
+				defaultTheme.background
+			);
 
-			const rootScopeName = this.getRule(this._rootId).getName(null, null);
-			const rawRootMetadata = this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
-			const rootMetadata = ScopeListElement.mergeMetadata(defaultMetadata, null, rawRootMetadata);
+			const rootScopeName = this.getRule(this._rootId).getName(
+				null,
+				null
+			);
+			const rawRootMetadata =
+				this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
+			const rootMetadata = ScopeListElement.mergeMetadata(
+				defaultMetadata,
+				rawRootMetadata,
+				defaultTheme
+			);
 
-			const scopeList = new ScopeListElement(null, rootScopeName === null ? 'unknown' : rootScopeName, rootMetadata);
+			const scopeList = new ScopeListElement(
+				null,
+				new ScopePath(null, rootScopeName ?? "unknown"),
+				rootMetadata
+			);
 
-			prevState = new StackElement(null, this._rootId, -1, -1, false, null, scopeList, scopeList);
+			prevState = new StackElement(
+				null,
+				this._rootId,
+				-1,
+				-1,
+				false,
+				null,
+				scopeList,
+				scopeList
+			);
 		} else {
 			isFirstLine = false;
 			prevState.reset();
 		}
 
-		lineText = lineText + '\n';
+		lineText = lineText + "\n";
 		const onigLineText = this.createOnigString(lineText);
 		const lineLength = onigLineText.content.length;
-		const lineTokens = new LineTokens(emitBinaryTokens, lineText, this._tokenTypeMatchers, this.balancedBracketSelectors);
-		const r = _tokenizeString(this, onigLineText, isFirstLine, 0, prevState, lineTokens, true, timeLimit);
+		const lineTokens = new LineTokens(
+			emitBinaryTokens,
+			lineText,
+			this._tokenTypeMatchers,
+			this.balancedBracketSelectors
+		);
+		const r = _tokenizeString(
+			this,
+			onigLineText,
+			isFirstLine,
+			0,
+			prevState,
+			lineTokens,
+			true,
+			timeLimit
+		);
 
 		disposeOnigString(onigLineText);
 
@@ -670,7 +775,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			lineLength: lineLength,
 			lineTokens: lineTokens,
 			ruleStack: r.stack,
-			stoppedEarly: r.stoppedEarly
+			stoppedEarly: r.stoppedEarly,
 		};
 	}
 }
@@ -1208,12 +1313,12 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 export class ScopeListElement {
 
 	public readonly parent: ScopeListElement | null;
-	public readonly scope: string;
+	public readonly scope: ScopeName;
 	public readonly metadata: number;
 
-	constructor(parent: ScopeListElement | null, scope: string, metadata: number) {
+	constructor(parent: ScopeListElement | null, public readonly scopePath: ScopePath, metadata: number) {
 		this.parent = parent;
-		this.scope = scope;
+		this.scope = scopePath.scopeName;
 		this.metadata = metadata;
 	}
 
@@ -1247,51 +1352,15 @@ export class ScopeListElement {
 		return ScopeListElement._equals(this, other);
 	}
 
-	private static _matchesScope(scope: string, selector: string, selectorWithDot: string): boolean {
-		return (selector === scope || scope.substring(0, selectorWithDot.length) === selectorWithDot);
-	}
-
-	private static _matches(target: ScopeListElement | null, parentScopes: string[] | null): boolean {
-		if (parentScopes === null) {
-			return true;
-		}
-
-		const len = parentScopes.length;
-		let index = 0;
-		let selector = parentScopes[index];
-		let selectorWithDot = selector + '.';
-
-		while (target) {
-			if (this._matchesScope(target.scope, selector, selectorWithDot)) {
-				index++;
-				if (index === len) {
-					return true;
-				}
-				selector = parentScopes[index];
-				selectorWithDot = selector + '.';
-			}
-			target = target.parent;
-		}
-
-		return false;
-	}
-
-	public static mergeMetadata(metadata: number, scopesList: ScopeListElement | null, source: ScopeMetadata): number {
-		if (source === null) {
-			return metadata;
-		}
-
+	public static mergeMetadata(metadata: number, source: ScopeMetadata, scopeThemeMatchResult: StyleInfo | null): number {
 		let fontStyle = FontStyle.NotSet;
 		let foreground = 0;
 		let background = 0;
 
-		if (source.themeData !== null) {
-			const matchingThemeData = source.themeData.find(themeData => this._matches(scopesList, themeData.parentScopes));
-			if (matchingThemeData) {
-				fontStyle = matchingThemeData.fontStyle;
-				foreground = matchingThemeData.foreground;
-				background = matchingThemeData.background;
-			}
+		if (scopeThemeMatchResult !== null) {
+			fontStyle = scopeThemeMatchResult.fontStyle;
+			foreground = scopeThemeMatchResult.foreground;
+			background = scopeThemeMatchResult.background;
 		}
 
 		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, null, fontStyle, foreground, background);
@@ -1301,8 +1370,12 @@ export class ScopeListElement {
 		for (let i = 0, len = scopes.length; i < len; i++) {
 			const scope = scopes[i];
 			const rawMetadata = grammar.getMetadataForScope(scope);
-			const metadata = ScopeListElement.mergeMetadata(target.metadata, target, rawMetadata);
-			target = new ScopeListElement(target, scope, metadata);
+
+			const newPath = target.scopePath.childPath(scope);
+			const scopeThemeMatchResult = grammar.themeProvider.themeMatch(newPath);
+			const metadata = ScopeListElement.mergeMetadata(target.metadata, rawMetadata, scopeThemeMatchResult);
+			const newTarget = new ScopeListElement(target, newPath, metadata);
+			target = newTarget;
 		}
 		return target;
 	}
