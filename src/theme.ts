@@ -4,47 +4,6 @@
 
 import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 
-
-/**
- * A TextMate theme.
- */
- export interface IRawTheme {
-	readonly name?: string;
-	readonly settings: IRawThemeSetting[];
-}
-
-/**
- * Identifiers with a binary dot operator.
- * Examples: `baz` or `foo.bar`
-*/
-export type ScopeName = string;
-
-/**
- * An expression language of ScopeNames with a binary space (to indicate nesting) operator.
- * Examples: `foo.bar boo.baz`
-*/
-export type ScopePathStr = string;
-
-/**
- * An expression language of ScopePathStr with a binary comma (to indicate alternatives) operator.
- * Examples: `foo.bar boo.baz,quick quack`
-*/
-export type ScopePattern = string;
-
-
-/**
- * A single theme setting.
- */
- export interface IRawThemeSetting {
-	readonly name?: string;
-	readonly scope?: ScopePattern | ScopePattern[];
-	readonly settings: {
-		readonly fontStyle?: string;
-		readonly foreground?: string;
-		readonly background?: string;
-	};
-}
-
 export class Theme {
 	public static createFromRawTheme(
 		source: IRawTheme | undefined,
@@ -87,7 +46,7 @@ export class Theme {
 		}
 		const cachedValue = this._cache.get(scopeName)!;
 
-		const effectiveRule = cachedValue.find(v => _matches(scopePath.parent, v.parentScopes));
+		const effectiveRule = cachedValue.find(v => _scopePathMatchesParentScopes(scopePath.parent, v.parentScopes));
 		if (!effectiveRule) {
 			return null;
 		}
@@ -98,6 +57,45 @@ export class Theme {
 			effectiveRule.background
 		);
 	}
+}
+
+/**
+ * Identifiers with a binary dot operator.
+ * Examples: `baz` or `foo.bar`
+*/
+export type ScopeName = string;
+
+/**
+ * An expression language of ScopeNames with a binary space (to indicate nesting) operator.
+ * Examples: `foo.bar boo.baz`
+*/
+export type ScopePathStr = string;
+
+/**
+ * An expression language of ScopePathStr with a binary comma (to indicate alternatives) operator.
+ * Examples: `foo.bar boo.baz,quick quack`
+*/
+export type ScopePattern = string;
+
+/**
+ * A TextMate theme.
+ */
+ export interface IRawTheme {
+	readonly name?: string;
+	readonly settings: IRawThemeSetting[];
+}
+
+/**
+ * A single theme setting.
+ */
+ export interface IRawThemeSetting {
+	readonly name?: string;
+	readonly scope?: ScopePattern | ScopePattern[];
+	readonly settings: {
+		readonly fontStyle?: string;
+		readonly foreground?: string;
+		readonly background?: string;
+	};
 }
 
 export class ScopePath {
@@ -136,33 +134,30 @@ export class ScopePath {
 	}
 }
 
-function _matchesScope(scope: string, selector: string, selectorWithDot: string): boolean {
-	return (selector === scope || scope.substring(0, selectorWithDot.length) === selectorWithDot);
-}
-
-function _matches(target: ScopePath | null, parentScopes: string[] | null): boolean {
+function _scopePathMatchesParentScopes(scopePath: ScopePath | null, parentScopes: string[] | null): boolean {
 	if (parentScopes === null) {
 		return true;
 	}
 
-	const len = parentScopes.length;
 	let index = 0;
-	let selector = parentScopes[index];
-	let selectorWithDot = selector + '.';
+	let scopePattern = parentScopes[index];
 
-	while (target) {
-		if (_matchesScope(target.scopeName, selector, selectorWithDot)) {
+	while (scopePath) {
+		if (_matchesScope(scopePath.scopeName, scopePattern)) {
 			index++;
-			if (index === len) {
+			if (index === parentScopes.length) {
 				return true;
 			}
-			selector = parentScopes[index];
-			selectorWithDot = selector + '.';
+			scopePattern = parentScopes[index];
 		}
-		target = target.parent;
+		scopePath = scopePath.parent;
 	}
 
 	return false;
+}
+
+function _matchesScope(scopeName: ScopeName, scopePattern: ScopeName): boolean {
+	return scopePattern === scopeName || (scopeName.startsWith(scopePattern) && scopeName[scopePattern.length] === '.');
 }
 
 export class StyleInfo {
@@ -271,8 +266,8 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 
 export class ParsedThemeRule {
 	constructor(
-		public readonly scope: string,
-		public readonly parentScopes: string[] | null,
+		public readonly scope: ScopeName,
+		public readonly parentScopes: ScopeName[] | null,
 		public readonly index: number,
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foreground: string | null,
