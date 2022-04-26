@@ -70,7 +70,7 @@ Promise.all(grammarPromises).then(_grammars => {
 			if (!ruleDesc) {
 				list.push('  * no rule description found for rule id: ' + stackElement.ruleId);
 			} else {
-				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.generateScopes() + '", "' + stackElement.contentNameScopesList.generateScopes() + '"');
+				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.getScopeNames() + '", "' + stackElement.contentNameScopesList.getScopeNames() + '"');
 			}
 			stackElement = stackElement.parent;
 		}

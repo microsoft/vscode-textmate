@@ -8,7 +8,7 @@ import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, Begi
 import { createMatchers, Matcher } from './matcher';
 import { IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StackElement as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
-import { FontStyle, ScopeName, ScopePath, StyleInfo, ThemeTrieElementRule } from './theme';
+import { FontStyle, ScopeName, ScopePath, ScopePathStr, StyleInfo, ThemeTrieElementRule } from './theme';
 import { OptionalStandardTokenType, StackElementMetadata, toOptionalTokenType } from './metadata';
 import { IRawGrammar, IRawRule, IRawRepository } from './rawGrammar';
 
@@ -387,7 +387,7 @@ class ScopeMetadataProvider {
 		return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 	}
 
-	private static _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0);
+	private static readonly _NULL_SCOPE_METADATA = new ScopeMetadata('', 0, 0);
 	public getMetadataForScope(scopeName: string | null): ScopeMetadata {
 		if (scopeName === null) {
 			return ScopeMetadataProvider._NULL_SCOPE_METADATA;
@@ -705,34 +705,35 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			isFirstLine = true;
 			const rawDefaultMetadata =
 				this._scopeMetadataProvider.getDefaultMetadata();
-			const defaultTheme = this.themeProvider.getDefaults();
+			const defaultStyle = this.themeProvider.getDefaults();
 			const defaultMetadata = StackElementMetadata.set(
 				0,
 				rawDefaultMetadata.languageId,
 				rawDefaultMetadata.tokenType,
 				null,
-				defaultTheme.fontStyle,
-				defaultTheme.foreground,
-				defaultTheme.background
+				defaultStyle.fontStyle,
+				defaultStyle.foreground,
+				defaultStyle.background
 			);
 
 			const rootScopeName = this.getRule(this._rootId).getName(
 				null,
 				null
 			);
-			const rawRootMetadata =
-				this._scopeMetadataProvider.getMetadataForScope(rootScopeName);
-			const rootMetadata = ScopeListElement.mergeMetadata(
-				defaultMetadata,
-				rawRootMetadata,
-				defaultTheme
-			);
 
-			const scopeList = new ScopeListElement(
-				null,
-				new ScopePath(null, rootScopeName ?? "unknown"),
-				rootMetadata
-			);
+			let scopeList: ThemedScopeStack;
+			if (rootScopeName) {
+				scopeList = ThemedScopeStack.createRootAndLookUpScopeName(
+					rootScopeName,
+					defaultMetadata,
+					this
+				);
+			} else {
+				scopeList = ThemedScopeStack.createRoot(
+					 "unknown",
+					 defaultMetadata
+				);
+			}
 
 			prevState = new StackElement(
 				null,
@@ -845,9 +846,9 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
 			const scopeName = captureRule.getName(lineTextContent, captureIndices);
-			const nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+			const nameScopesList = stack.contentNameScopesList.pushAndTheme(scopeName, grammar);
 			const contentName = captureRule.getContentName(lineTextContent, captureIndices);
-			const contentNameScopesList = nameScopesList.push(grammar, contentName);
+			const contentNameScopesList = nameScopesList.pushAndTheme(contentName, grammar);
 
 			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
 			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
@@ -860,7 +861,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRuleScopeName !== null) {
 			// push
 			const base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
-			const captureRuleScopesList = base.push(grammar, captureRuleScopeName);
+			const captureRuleScopesList = base.pushAndTheme(captureRuleScopeName, grammar);
 			localStack.push(new LocalStackElement(captureRuleScopesList, captureIndex.end));
 		}
 	}
@@ -924,7 +925,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 	let bestMatchRuleId: number;
 	let bestMatchResultPriority: number = 0;
 
-	const scopes = stack.contentNameScopesList.generateScopes();
+	const scopes = stack.contentNameScopesList.getScopeNames();
 
 	for (let i = 0, len = injections.length; i < len; i++) {
 		const injection = injections[i];
@@ -1219,7 +1220,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 			const beforePush = stack;
 			// push it on the stack rule
 			const scopeName = _rule.getName(lineText.content, captureIndices);
-			const nameScopesList = stack.contentNameScopesList.push(grammar, scopeName);
+			const nameScopesList = stack.contentNameScopesList.pushAndTheme(scopeName, grammar);
 			stack = stack.push(matchedRuleId, linePos, anchorPosition, captureIndices[0].end === lineLength, null, nameScopesList, nameScopesList);
 
 			if (_rule instanceof BeginEndRule) {
@@ -1233,7 +1234,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				anchorPosition = captureIndices[0].end;
 
 				const contentName = pushedRule.getContentName(lineText.content, captureIndices);
-				const contentNameScopesList = nameScopesList.push(grammar, contentName);
+				const contentNameScopesList = nameScopesList.pushAndTheme(contentName, grammar);
 				stack = stack.setContentNameScopesList(contentNameScopesList);
 
 				if (pushedRule.endHasBackReferences) {
@@ -1260,7 +1261,7 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 				lineTokens.produce(stack, captureIndices[0].end);
 				anchorPosition = captureIndices[0].end;
 				const contentName = pushedRule.getContentName(lineText.content, captureIndices);
-				const contentNameScopesList = nameScopesList.push(grammar, contentName);
+				const contentNameScopesList = nameScopesList.pushAndTheme(contentName, grammar);
 				stack = stack.setContentNameScopesList(contentNameScopesList);
 
 				if (pushedRule.whileHasBackReferences) {
@@ -1310,19 +1311,42 @@ function _tokenizeString(grammar: Grammar, lineText: OnigString, isFirstLine: bo
 	}
 }
 
-export class ScopeListElement {
-
-	public readonly parent: ScopeListElement | null;
-	public readonly scope: ScopeName;
-	public readonly metadata: number;
-
-	constructor(parent: ScopeListElement | null, public readonly scopePath: ScopePath, metadata: number) {
-		this.parent = parent;
-		this.scope = scopePath.scopeName;
-		this.metadata = metadata;
+export class ThemedScopeStack {
+	public static createRoot(scopeName: ScopeName, metadata: number): ThemedScopeStack {
+		return new ThemedScopeStack(null, new ScopePath(null, scopeName), metadata);
 	}
 
-	private static _equals(a: ScopeListElement | null, b: ScopeListElement | null): boolean {
+	public static createRootAndLookUpScopeName(scopeName: ScopeName, metadata: number, grammar: Grammar): ThemedScopeStack {
+		const rawRootMetadata = grammar.getMetadataForScope(scopeName);
+		const scopePath = new ScopePath(null, scopeName);
+		const rootStyle = grammar.themeProvider.themeMatch(scopePath);
+
+		const rootMetadata = ThemedScopeStack.mergeMetadata(
+			metadata,
+			rawRootMetadata,
+			rootStyle
+		);
+
+		return new ThemedScopeStack(null, scopePath, rootMetadata);
+	}
+
+	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
+
+	private constructor(
+		public readonly parent: ThemedScopeStack | null,
+		public readonly scopePath: ScopePath,
+		public readonly metadata: number
+	) {
+	}
+
+	public equals(other: ThemedScopeStack): boolean {
+		return ThemedScopeStack._equals(this, other);
+	}
+
+	private static _equals(
+		a: ThemedScopeStack | null,
+		b: ThemedScopeStack | null
+	): boolean {
 		do {
 			if (a === b) {
 				return true;
@@ -1338,7 +1362,7 @@ export class ScopeListElement {
 				return false;
 			}
 
-			if (a.scope !== b.scope || a.metadata !== b.metadata) {
+			if (a.scopeName !== b.scopeName || a.metadata !== b.metadata) {
 				return false;
 			}
 
@@ -1348,63 +1372,72 @@ export class ScopeListElement {
 		} while (true);
 	}
 
-	public equals(other: ScopeListElement): boolean {
-		return ScopeListElement._equals(this, other);
-	}
-
-	public static mergeMetadata(metadata: number, source: ScopeMetadata, scopeThemeMatchResult: StyleInfo | null): number {
+	private static mergeMetadata(
+		metadata: number,
+		source: ScopeMetadata,
+		styleInfo: StyleInfo | null
+	): number {
 		let fontStyle = FontStyle.NotSet;
 		let foreground = 0;
 		let background = 0;
 
-		if (scopeThemeMatchResult !== null) {
-			fontStyle = scopeThemeMatchResult.fontStyle;
-			foreground = scopeThemeMatchResult.foreground;
-			background = scopeThemeMatchResult.background;
+		if (styleInfo !== null) {
+			fontStyle = styleInfo.fontStyle;
+			foreground = styleInfo.foreground;
+			background = styleInfo.background;
 		}
 
-		return StackElementMetadata.set(metadata, source.languageId, source.tokenType, null, fontStyle, foreground, background);
+		return StackElementMetadata.set(
+			metadata,
+			source.languageId,
+			source.tokenType,
+			null,
+			fontStyle,
+			foreground,
+			background
+		);
 	}
 
-	private static _push(target: ScopeListElement, grammar: Grammar, scopes: string[]): ScopeListElement {
-		for (let i = 0, len = scopes.length; i < len; i++) {
-			const scope = scopes[i];
-			const rawMetadata = grammar.getMetadataForScope(scope);
-
-			const newPath = target.scopePath.childPath(scope);
-			const scopeThemeMatchResult = grammar.themeProvider.themeMatch(newPath);
-			const metadata = ScopeListElement.mergeMetadata(target.metadata, rawMetadata, scopeThemeMatchResult);
-			const newTarget = new ScopeListElement(target, newPath, metadata);
-			target = newTarget;
-		}
-		return target;
-	}
-
-	public push(grammar: Grammar, scope: string | null): ScopeListElement {
-		if (scope === null) {
+	public pushAndTheme(scopeName: ScopePathStr | null, grammar: Grammar): ThemedScopeStack {
+		if (scopeName === null) {
 			return this;
 		}
-		if (scope.indexOf(' ') >= 0) {
-			// there are multiple scopes to push
-			return ScopeListElement._push(this, grammar, scope.split(/ /g));
-		}
-		// there is a single scope to push
-		return ScopeListElement._push(this, grammar, [scope]);
-	}
 
-	private static _generateScopes(scopesList: ScopeListElement | null): string[] {
-		const result: string[] = [];
-		let resultLen = 0;
-		while (scopesList) {
-			result[resultLen++] = scopesList.scope;
-			scopesList = scopesList.parent;
+		if (scopeName.indexOf(' ') === -1) {
+			// This is the common case and much faster
+
+			return ThemedScopeStack._pushAndTheme(this, scopeName, grammar);
 		}
-		result.reverse();
+
+		const scopes = scopeName.split(/ /g);
+		let result: ThemedScopeStack = this;
+		for (const scope of scopes) {
+			result = ThemedScopeStack._pushAndTheme(result, scope, grammar);
+		}
 		return result;
+
 	}
 
-	public generateScopes(): string[] {
-		return ScopeListElement._generateScopes(this);
+	private static _pushAndTheme(
+		target: ThemedScopeStack,
+		scopeName: ScopeName,
+		grammar: Grammar,
+	): ThemedScopeStack {
+		const rawMetadata = grammar.getMetadataForScope(scopeName);
+
+		const newPath = target.scopePath.push(scopeName);
+		const scopeThemeMatchResult =
+			grammar.themeProvider.themeMatch(newPath);
+		const metadata = ThemedScopeStack.mergeMetadata(
+			target.metadata,
+			rawMetadata,
+			scopeThemeMatchResult
+		);
+		return new ThemedScopeStack(target, newPath, metadata);
+	}
+
+	public getScopeNames(): string[] {
+		return this.scopePath.getSegments();
 	}
 }
 
@@ -1454,14 +1487,14 @@ export class StackElement implements StackElementDef {
 	/**
 	 * The list of scopes containing the "name" for this state.
 	 */
-	public readonly nameScopesList: ScopeListElement;
+	public readonly nameScopesList: ThemedScopeStack;
 	/**
 	 * The list of scopes containing the "contentName" (besides "name") for this state.
 	 * This list **must** contain as an element `scopeName`.
 	 */
-	public readonly contentNameScopesList: ScopeListElement;
+	public readonly contentNameScopesList: ThemedScopeStack;
 
-	constructor(parent: StackElement | null, ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement) {
+	constructor(parent: StackElement | null, ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ThemedScopeStack, contentNameScopesList: ThemedScopeStack) {
 		this.parent = parent;
 		this.depth = (this.parent ? this.parent.depth + 1 : 1);
 		this.ruleId = ruleId;
@@ -1546,7 +1579,7 @@ export class StackElement implements StackElementDef {
 		return this;
 	}
 
-	public push(ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ScopeListElement, contentNameScopesList: ScopeListElement): StackElement {
+	public push(ruleId: number, enterPos: number, anchorPos: number, beginRuleCapturedEOL: boolean, endRule: string | null, nameScopesList: ThemedScopeStack, contentNameScopesList: ThemedScopeStack): StackElement {
 		return new StackElement(this, ruleId, enterPos, anchorPos, beginRuleCapturedEOL, endRule, nameScopesList, contentNameScopesList);
 	}
 
@@ -1578,7 +1611,7 @@ export class StackElement implements StackElementDef {
 		return '[' + r.join(',') + ']';
 	}
 
-	public setContentNameScopesList(contentNameScopesList: ScopeListElement): StackElement {
+	public setContentNameScopesList(contentNameScopesList: ThemedScopeStack): StackElement {
 		if (this.contentNameScopesList === contentNameScopesList) {
 			return this;
 		}
@@ -1605,10 +1638,10 @@ export class StackElement implements StackElementDef {
 }
 
 export class LocalStackElement {
-	public readonly scopes: ScopeListElement;
+	public readonly scopes: ThemedScopeStack;
 	public readonly endPos: number;
 
-	constructor(scopes: ScopeListElement, endPos: number) {
+	constructor(scopes: ThemedScopeStack, endPos: number) {
 		this.scopes = scopes;
 		this.endPos = endPos;
 	}
@@ -1708,7 +1741,7 @@ class LineTokens {
 	}
 
 	public produceFromScopes(
-		scopesList: ScopeListElement,
+		scopesList: ThemedScopeStack,
 		endIndex: number
 	): void {
 		if (this._lastTokenEndIndex >= endIndex) {
@@ -1724,7 +1757,7 @@ class LineTokens {
 
 			if (this._tokenTypeOverrides.length > 0 || (this.balancedBracketSelectors && !this.balancedBracketSelectors.matchesAlways && !this.balancedBracketSelectors.matchesNever)) {
 				// Only generate scope array when required to improve performance
-				const scopes = scopesList.generateScopes();
+				const scopes = scopesList.getScopeNames();
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.matcher(scopes)) {
 						metadata = StackElementMetadata.set(
@@ -1762,7 +1795,7 @@ class LineTokens {
 			}
 
 			if (DebugFlags.InDebugMode) {
-				const scopes = scopesList.generateScopes();
+				const scopes = scopesList.getScopeNames();
 				console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
 				for (let k = 0; k < scopes.length; k++) {
 					console.log('      * ' + scopes[k]);
@@ -1776,7 +1809,7 @@ class LineTokens {
 			return;
 		}
 
-		const scopes = scopesList.generateScopes();
+		const scopes = scopesList.getScopeNames();
 
 		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');

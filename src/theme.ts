@@ -20,10 +20,17 @@ import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 export type ScopeName = string;
 
 /**
- * An expression language of ScopeNames with a binary comma (to indicate alternatives) and space (to indicate nesting) operator.
+ * An expression language of ScopeNames with a binary space (to indicate nesting) operator.
+ * Examples: `foo.bar boo.baz`
+*/
+export type ScopePathStr = string;
+
+/**
+ * An expression language of ScopePathStr with a binary comma (to indicate alternatives) operator.
  * Examples: `foo.bar boo.baz,quick quack`
 */
 export type ScopePattern = string;
+
 
 /**
  * A single theme setting.
@@ -109,7 +116,7 @@ export class ScopePath {
 		public readonly scopeName: ScopeName
 	) {}
 
-	public childPath(scopeName: ScopeName): ScopePath {
+	public push(scopeName: ScopeName): ScopePath {
 		return new ScopePath(this, scopeName);
 	}
 
