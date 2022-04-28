@@ -23,7 +23,7 @@ export class Theme {
 
 	constructor(
 		private readonly _colorMap: ColorMap,
-		private readonly _defaults: StyleInfo,
+		private readonly _defaults: StyleAttributes,
 		private readonly _root: ThemeTrieElement
 	) {}
 
@@ -31,11 +31,11 @@ export class Theme {
 		return this._colorMap.getColorMap();
 	}
 
-	public getDefaults(): StyleInfo {
+	public getDefaults(): StyleAttributes {
 		return this._defaults;
 	}
 
-	public match(scopePath: ScopeStack | null): StyleInfo | null {
+	public match(scopePath: ScopeStack | null): StyleAttributes | null {
 		if (scopePath === null) {
 			return this._defaults;
 		}
@@ -51,7 +51,7 @@ export class Theme {
 			return null;
 		}
 
-		return new StyleInfo(
+		return new StyleAttributes(
 			effectiveRule.fontStyle,
 			effectiveRule.foreground,
 			effectiveRule.background
@@ -134,7 +134,7 @@ export class ScopeStack {
 	}
 }
 
-function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: string[] | null): boolean {
+function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: ScopeName[] | null): boolean {
 	if (parentScopes === null) {
 		return true;
 	}
@@ -160,11 +160,11 @@ function _matchesScope(scopeName: ScopeName, scopePattern: ScopeName): boolean {
 	return scopePattern === scopeName || (scopeName.startsWith(scopePattern) && scopeName[scopePattern.length] === '.');
 }
 
-export class StyleInfo {
+export class StyleAttributes {
 	constructor(
 		public readonly fontStyle: OrMask<FontStyle>,
-		public readonly foreground: number,
-		public readonly background: number
+		public readonly foregroundId: number,
+		public readonly backgroundId: number
 	) {}
 }
 
@@ -344,7 +344,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		}
 	}
 	let colorMap = new ColorMap(_colorMap);
-	let defaults = new StyleInfo(defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
+	let defaults = new StyleAttributes(defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
 
 	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {

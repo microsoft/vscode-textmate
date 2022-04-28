@@ -5,7 +5,7 @@
 import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider, AttributedScopeStack } from './grammar';
 import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
-import { ScopeStack, Theme, StyleInfo, ThemeTrieElementRule } from './theme';
+import { ScopeStack, Theme, StyleAttributes, ThemeTrieElementRule } from './theme';
 import { IOnigLib } from './onigLib';
 
 export class SyncRegistry implements IGrammarRepository, IThemeProvider {
@@ -72,14 +72,14 @@ export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 	/**
 	 * Get the default theme settings
 	 */
-	public getDefaults(): StyleInfo {
+	public getDefaults(): StyleAttributes {
 		return this._theme.getDefaults();
 	}
 
 	/**
 	 * Match a scope in the theme.
 	 */
-	public themeMatch(scopePath: ScopeStack): StyleInfo | null {
+	public themeMatch(scopePath: ScopeStack): StyleAttributes | null {
 		return this._theme.match(scopePath);
 	}
 

@@ -12,7 +12,7 @@ import {
 	IRawTheme,
 	ScopeStack,
 	fontStyleToString,
-	StyleInfo
+	StyleAttributes
 } from '../theme';
 import { ThemeTest } from './themeTest';
 import { getOniguruma } from './onigLibs';
@@ -132,7 +132,7 @@ test('Theme matching gives higher priority to deeper matches', () => {
 		]
 	});
 	const actual = theme.match(ScopeStack.from('punctuation.definition.string.begin.html'));
-	assert.deepStrictEqual(theme.getColorMap()[actual!.foreground], '#300000');
+	assert.deepStrictEqual(theme.getColorMap()[actual!.foregroundId], '#300000');
 });
 
 test('Theme matching gives higher priority to parent matches 1', () => {
@@ -148,7 +148,7 @@ test('Theme matching gives higher priority to parent matches 1', () => {
 	const map = theme.getColorMap();
 
 	assert.deepStrictEqual(
-		map[theme.match(ScopeStack.from('d', 'a.b'))!.foreground],
+		map[theme.match(ScopeStack.from('d', 'a.b'))!.foregroundId],
 		'#400000',
 	);
 });
@@ -172,7 +172,7 @@ test('Theme matching gives higher priority to parent matches 2', () => {
 	);
 
 	const colorMap = theme.getColorMap();
-	assert.strictEqual(colorMap[result!.foreground], '#300000');
+	assert.strictEqual(colorMap[result!.foregroundId], '#300000');
 });
 
 suite('Theme matching can match', () => {
@@ -201,11 +201,11 @@ suite('Theme matching can match', () => {
 		let obj: any = {
 			fontStyle: fontStyleToString(result.fontStyle)
 		};
-		if (result.foreground !== 0) {
-			obj.foreground = map[result.foreground];
+		if (result.foregroundId !== 0) {
+			obj.foreground = map[result.foregroundId];
 		}
-		if (result.background !== 0) {
-			obj.background = map[result.background];
+		if (result.backgroundId !== 0) {
+			obj.background = map[result.backgroundId];
 		}
 		return obj;
 	}
@@ -280,7 +280,7 @@ test('Theme matching Microsoft/vscode#23460', () => {
 		"string.quoted.double.json"
 	);
 	const result = theme.match(path);
-	assert.strictEqual(theme.getColorMap()[result!.foreground], '#FF410D');
+	assert.strictEqual(theme.getColorMap()[result!.foregroundId], '#FF410D');
 });
 
 test('Theme parsing can parse', () => {
@@ -356,7 +356,7 @@ test('Theme resolving always has defaults', () => {
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -372,7 +372,7 @@ test('Theme resolving respects incoming defaults 1', () => {
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -388,7 +388,7 @@ test('Theme resolving respects incoming defaults 2', () => {
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -404,7 +404,7 @@ test('Theme resolving respects incoming defaults 3', () => {
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.Bold, _A, _B),
+		new StyleAttributes(FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -420,7 +420,7 @@ test('Theme resolving respects incoming defaults 4', () => {
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -436,7 +436,7 @@ test('Theme resolving respects incoming defaults 5', () => {
 	const _B = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -454,7 +454,7 @@ test('Theme resolving can merge incoming defaults', () => {
 	const _B = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.Bold, _A, _B),
+		new StyleAttributes(FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
 	assert.deepStrictEqual(actual, expected);
@@ -472,7 +472,7 @@ test('Theme resolving defaults are inherited', () => {
 	const _C = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET))
 		})
@@ -493,7 +493,7 @@ test('Theme resolving same rules get merged', () => {
 	const _C = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET))
 		})
@@ -515,7 +515,7 @@ test('Theme resolving rules are inherited 1', () => {
 	const _D = colorMap.getId('#00ff00');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET), [], {
 				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _D, _NOT_SET))
@@ -547,7 +547,7 @@ test('Theme resolving rules are inherited 2', () => {
 	const _G = colorMap.getId('#00ff00');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _F, _NOT_SET), [], {
 				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _G, _NOT_SET))
@@ -581,7 +581,7 @@ test('Theme resolving rules with parent scopes', () => {
 	const _E = colorMap.getId('#200000');
 	let expected = new Theme(
 		colorMap,
-		new StyleInfo(FontStyle.None, _A, _B),
+		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
 			'var': new ThemeTrieElement(
 				new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, 0),
