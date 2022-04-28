@@ -10,7 +10,7 @@ import {
 	Theme, ThemeTrieElement, ThemeTrieElementRule,
 	parseTheme, ParsedThemeRule, FontStyle, ColorMap,
 	IRawTheme,
-	ScopePath,
+	ScopeStack,
 	fontStyleToString,
 	StyleInfo
 } from '../theme';
@@ -131,7 +131,7 @@ test('Theme matching gives higher priority to deeper matches', () => {
 			{ scope: 'meta.tag punctuation.definition.string', settings: { foreground: '#400000' } },
 		]
 	});
-	const actual = theme.match(ScopePath.from('punctuation.definition.string.begin.html'));
+	const actual = theme.match(ScopeStack.from('punctuation.definition.string.begin.html'));
 	assert.deepStrictEqual(theme.getColorMap()[actual!.foreground], '#300000');
 });
 
@@ -148,7 +148,7 @@ test('Theme matching gives higher priority to parent matches 1', () => {
 	const map = theme.getColorMap();
 
 	assert.deepStrictEqual(
-		map[theme.match(ScopePath.from('d', 'a.b'))!.foreground],
+		map[theme.match(ScopeStack.from('d', 'a.b'))!.foreground],
 		'#400000',
 	);
 });
@@ -164,7 +164,7 @@ test('Theme matching gives higher priority to parent matches 2', () => {
 	});
 
 	const result = theme.match(
-		ScopePath.from(
+		ScopeStack.from(
 			"text.html.cshtml",
 			"meta.tag.structure.any.html",
 			"entity.name.tag.structure.any.html",
@@ -194,7 +194,7 @@ suite('Theme matching can match', () => {
 	const map = theme.getColorMap();
 
 	function match(...path: string[]) {
-		const result = theme.match(ScopePath.from(...path));
+		const result = theme.match(ScopeStack.from(...path));
 		if (!result) {
 			return null;
 		}
@@ -273,7 +273,7 @@ test('Theme matching Microsoft/vscode#23460', () => {
 		]
 	});
 
-	const path = ScopePath.from(
+	const path = ScopeStack.from(
 		"source.json",
 		"meta.structure.dictionary.json",
 		"meta.structure.dictionary.value.json",

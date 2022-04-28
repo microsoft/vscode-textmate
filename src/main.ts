@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, ScopeDependencyProcessor, StackElement as StackElementImpl } from './grammar';
+import { BalancedBracketSelectors, ScopeDependencyProcessor, StateStack as StackElementImpl } from './grammar';
 import * as grammarReader from './parseRawGrammar';
 import { IOnigLib } from './onigLib';
 import { IRawGrammar } from './rawGrammar';
@@ -10,7 +10,6 @@ import { SyncRegistry } from './registry';
 import { IRawTheme, Theme } from './theme';
 
 export * from './onigLib';
-
 
 /**
  * A registry helper that can locate grammar file paths given scope names.
@@ -158,8 +157,6 @@ export class Registry {
 	}
 }
 
-
-
 /**
  * A grammar
  */
@@ -167,7 +164,7 @@ export interface IGrammar {
 	/**
 	 * Tokenize `lineText` using previous line state `prevState`.
 	 */
-	tokenizeLine(lineText: string, prevState: StackElement | null, timeLimit?: number): ITokenizeLineResult;
+	tokenizeLine(lineText: string, prevState: StateStack | null, timeLimit?: number): ITokenizeLineResult;
 
 	/**
 	 * Tokenize `lineText` using previous line state `prevState`.
@@ -179,7 +176,7 @@ export interface IGrammar {
 	 *  - background color
 	 * e.g. for getting the languageId: `(metadata & MetadataConsts.LANGUAGEID_MASK) >>> MetadataConsts.LANGUAGEID_OFFSET`
 	 */
-	tokenizeLine2(lineText: string, prevState: StackElement | null, timeLimit?: number): ITokenizeLineResult2;
+	tokenizeLine2(lineText: string, prevState: StateStack | null, timeLimit?: number): ITokenizeLineResult2;
 }
 
 export interface ITokenizeLineResult {
@@ -187,7 +184,7 @@ export interface ITokenizeLineResult {
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
-	readonly ruleStack: StackElement;
+	readonly ruleStack: StateStack;
 	/**
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
@@ -205,7 +202,7 @@ export interface ITokenizeLineResult2 {
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
-	readonly ruleStack: StackElement;
+	readonly ruleStack: StateStack;
 	/**
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
@@ -221,14 +218,14 @@ export interface IToken {
 /**
  * **IMPORTANT** - Immutable!
  */
-export interface StackElement {
+export interface StateStack {
 	_stackElementBrand: void;
 	readonly depth: number;
 
-	clone(): StackElement;
-	equals(other: StackElement): boolean;
+	clone(): StateStack;
+	equals(other: StateStack): boolean;
 }
 
-export const INITIAL: StackElement = StackElementImpl.NULL;
+export const INITIAL: StateStack = StackElementImpl.NULL;
 
 export const parseRawGrammar: (content: string, filePath?: string) => IRawGrammar = grammarReader.parseRawGrammar;

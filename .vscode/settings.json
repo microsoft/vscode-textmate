@@ -12,5 +12,9 @@
 	},
 	"lcov.sourceMaps": true,
 	"typescript.tsdk": "./node_modules/typescript/lib",
-	"tslint.enable": true
+	"tslint.enable": true,
+
+	"mochaExplorer.ui": "tdd",
+	"testExplorer.useNativeTesting": true,
+	"mochaExplorer.files": "out/tests/all.test.js"
 }

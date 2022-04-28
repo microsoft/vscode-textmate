@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IGrammar, StackElement } from '../main';
+import { IGrammar, StateStack } from '../main';
 import { EncodedScopeMetadata } from '../metadata';
 
 export interface IThemedToken {
@@ -14,7 +14,7 @@ export function tokenizeWithTheme(colorMap: string[], fileContents: string, gram
 
 	const lines = fileContents.split(/\r\n|\r|\n/);
 
-	let ruleStack: StackElement | null = null;
+	let ruleStack: StateStack | null = null;
 	let actual: IThemedToken[] = [], actualLen = 0;
 
 	for (let i = 0, len = lines.length; i < len; i++) {

@@ -5,7 +5,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
-import { Registry, IGrammar, RegistryOptions, StackElement, parseRawGrammar } from '../main';
+import { Registry, IGrammar, RegistryOptions, StateStack, parseRawGrammar } from '../main';
 import { IOnigLib } from '../onigLib';
 import { getOniguruma } from './onigLibs';
 import { IRawGrammar } from '../rawGrammar';
@@ -71,13 +71,13 @@ function assertTokenizationSuite(testLocation: string): void {
 		if (!grammar) {
 			throw new Error('I HAVE NO GRAMMAR FOR TEST');
 		}
-		let prevState: StackElement | null = null;
+		let prevState: StateStack | null = null;
 		for (let i = 0; i < test.lines.length; i++) {
 			prevState = assertLineTokenization(grammar, test.lines[i], prevState);
 		}
 	}
 
-	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StackElement | null): StackElement {
+	function assertLineTokenization(grammar: IGrammar, testCase: IRawTestLine, prevState: StateStack | null): StateStack {
 		let actual = grammar.tokenizeLine(testCase.line, prevState);
 
 		let actualTokens: IRawToken[] = actual.tokens.map((token) => {

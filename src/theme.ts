@@ -35,7 +35,7 @@ export class Theme {
 		return this._defaults;
 	}
 
-	public match(scopePath: ScopePath | null): StyleInfo | null {
+	public match(scopePath: ScopeStack | null): StyleInfo | null {
 		if (scopePath === null) {
 			return this._defaults;
 		}
@@ -98,28 +98,28 @@ export type ScopePattern = string;
 	};
 }
 
-export class ScopePath {
-	public static from(first: ScopeName, ...segments: ScopeName[]): ScopePath;
-	public static from(...segments: ScopeName[]): ScopePath | null;
-	public static from(...segments: ScopeName[]): ScopePath | null {
-		let result: ScopePath | null = null;
+export class ScopeStack {
+	public static from(first: ScopeName, ...segments: ScopeName[]): ScopeStack;
+	public static from(...segments: ScopeName[]): ScopeStack | null;
+	public static from(...segments: ScopeName[]): ScopeStack | null {
+		let result: ScopeStack | null = null;
 		for (let i = 0; i < segments.length; i++) {
-			result = new ScopePath(result, segments[i]);
+			result = new ScopeStack(result, segments[i]);
 		}
 		return result;
 	}
 
 	constructor(
-		public readonly parent: ScopePath | null,
+		public readonly parent: ScopeStack | null,
 		public readonly scopeName: ScopeName
 	) {}
 
-	public push(scopeName: ScopeName): ScopePath {
-		return new ScopePath(this, scopeName);
+	public push(scopeName: ScopeName): ScopeStack {
+		return new ScopeStack(this, scopeName);
 	}
 
 	public getSegments(): ScopeName[] {
-		let item: ScopePath | null = this;
+		let item: ScopeStack | null = this;
 		const result: ScopeName[] = [];
 		while (item) {
 			result.push(item.scopeName);
@@ -134,7 +134,7 @@ export class ScopePath {
 	}
 }
 
-function _scopePathMatchesParentScopes(scopePath: ScopePath | null, parentScopes: string[] | null): boolean {
+function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: string[] | null): boolean {
 	if (parentScopes === null) {
 		return true;
 	}
