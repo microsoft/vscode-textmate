@@ -5,21 +5,23 @@
 import { StandardTokenType } from "./main";
 import { FontStyle } from "./theme";
 
-export abstract class EncodedScopeMetadata {
-	public static toBinaryStr(metadata: number): string {
-		let r = metadata.toString(2);
+export type EncodedTokenAttributes = number;
+
+export namespace EncodedTokenAttributes {
+	export function toBinaryStr(encodedTokenAttributes: EncodedTokenAttributes): string {
+		let r = encodedTokenAttributes.toString(2);
 		while (r.length < 32) {
 			r = "0" + r;
 		}
 		return r;
 	}
 
-	public static printMetadata(metadata: number): void {
-		const languageId = EncodedScopeMetadata.getLanguageId(metadata);
-		const tokenType = EncodedScopeMetadata.getTokenType(metadata);
-		const fontStyle = EncodedScopeMetadata.getFontStyle(metadata);
-		const foreground = EncodedScopeMetadata.getForeground(metadata);
-		const background = EncodedScopeMetadata.getBackground(metadata);
+	export function print(encodedTokenAttributes: EncodedTokenAttributes): void {
+		const languageId = EncodedTokenAttributes.getLanguageId(encodedTokenAttributes);
+		const tokenType = EncodedTokenAttributes.getTokenType(encodedTokenAttributes);
+		const fontStyle = EncodedTokenAttributes.getFontStyle(encodedTokenAttributes);
+		const foreground = EncodedTokenAttributes.getForeground(encodedTokenAttributes);
+		const background = EncodedTokenAttributes.getBackground(encodedTokenAttributes);
 
 		console.log({
 			languageId: languageId,
@@ -30,42 +32,42 @@ export abstract class EncodedScopeMetadata {
 		});
 	}
 
-	public static getLanguageId(metadata: number): number {
+	export function getLanguageId(encodedTokenAttributes: EncodedTokenAttributes): number {
 		return (
-			(metadata & EncodedScopeMetadataConsts.LANGUAGEID_MASK) >>>
-			EncodedScopeMetadataConsts.LANGUAGEID_OFFSET
+			(encodedTokenAttributes & EncodedTokenDataConsts.LANGUAGEID_MASK) >>>
+			EncodedTokenDataConsts.LANGUAGEID_OFFSET
 		);
 	}
 
-	public static getTokenType(metadata: number): StandardTokenType {
+	export function getTokenType(encodedTokenAttributes: EncodedTokenAttributes): StandardTokenType {
 		return (
-			(metadata & EncodedScopeMetadataConsts.TOKEN_TYPE_MASK) >>>
-			EncodedScopeMetadataConsts.TOKEN_TYPE_OFFSET
+			(encodedTokenAttributes & EncodedTokenDataConsts.TOKEN_TYPE_MASK) >>>
+			EncodedTokenDataConsts.TOKEN_TYPE_OFFSET
 		);
 	}
 
-	public static containsBalancedBrackets(metadata: number): boolean {
-		return (metadata & EncodedScopeMetadataConsts.BALANCED_BRACKETS_MASK) !== 0;
+	export function containsBalancedBrackets(encodedTokenAttributes: EncodedTokenAttributes): boolean {
+		return (encodedTokenAttributes & EncodedTokenDataConsts.BALANCED_BRACKETS_MASK) !== 0;
 	}
 
-	public static getFontStyle(metadata: number): number {
+	export function getFontStyle(encodedTokenAttributes: EncodedTokenAttributes): number {
 		return (
-			(metadata & EncodedScopeMetadataConsts.FONT_STYLE_MASK) >>>
-			EncodedScopeMetadataConsts.FONT_STYLE_OFFSET
+			(encodedTokenAttributes & EncodedTokenDataConsts.FONT_STYLE_MASK) >>>
+			EncodedTokenDataConsts.FONT_STYLE_OFFSET
 		);
 	}
 
-	public static getForeground(metadata: number): number {
+	export function getForeground(encodedTokenAttributes: EncodedTokenAttributes): number {
 		return (
-			(metadata & EncodedScopeMetadataConsts.FOREGROUND_MASK) >>>
-			EncodedScopeMetadataConsts.FOREGROUND_OFFSET
+			(encodedTokenAttributes & EncodedTokenDataConsts.FOREGROUND_MASK) >>>
+			EncodedTokenDataConsts.FOREGROUND_OFFSET
 		);
 	}
 
-	public static getBackground(metadata: number): number {
+	export function getBackground(encodedTokenAttributes: EncodedTokenAttributes): number {
 		return (
-			(metadata & EncodedScopeMetadataConsts.BACKGROUND_MASK) >>>
-			EncodedScopeMetadataConsts.BACKGROUND_OFFSET
+			(encodedTokenAttributes & EncodedTokenDataConsts.BACKGROUND_MASK) >>>
+			EncodedTokenDataConsts.BACKGROUND_OFFSET
 		);
 	}
 
@@ -73,8 +75,8 @@ export abstract class EncodedScopeMetadata {
 	 * Updates the fields in `metadata`.
 	 * A value of `0`, `NotSet` or `null` indicates that the corresponding field should be left as is.
 	 */
-	public static set(
-		metadata: number,
+	export function set(
+		encodedTokenAttributes: EncodedTokenAttributes,
 		languageId: number,
 		tokenType: OptionalStandardTokenType,
 		containsBalancedBrackets: boolean | null,
@@ -82,13 +84,13 @@ export abstract class EncodedScopeMetadata {
 		foreground: number,
 		background: number
 	): number {
-		let _languageId = EncodedScopeMetadata.getLanguageId(metadata);
-		let _tokenType = EncodedScopeMetadata.getTokenType(metadata);
+		let _languageId = EncodedTokenAttributes.getLanguageId(encodedTokenAttributes);
+		let _tokenType = EncodedTokenAttributes.getTokenType(encodedTokenAttributes);
 		let _containsBalancedBracketsBit: 0 | 1 =
-			EncodedScopeMetadata.containsBalancedBrackets(metadata) ? 1 : 0;
-		let _fontStyle = EncodedScopeMetadata.getFontStyle(metadata);
-		let _foreground = EncodedScopeMetadata.getForeground(metadata);
-		let _background = EncodedScopeMetadata.getBackground(metadata);
+			EncodedTokenAttributes.containsBalancedBrackets(encodedTokenAttributes) ? 1 : 0;
+		let _fontStyle = EncodedTokenAttributes.getFontStyle(encodedTokenAttributes);
+		let _foreground = EncodedTokenAttributes.getForeground(encodedTokenAttributes);
+		let _background = EncodedTokenAttributes.getBackground(encodedTokenAttributes);
 
 		if (languageId !== 0) {
 			_languageId = languageId;
@@ -110,13 +112,13 @@ export abstract class EncodedScopeMetadata {
 		}
 
 		return (
-			((_languageId << EncodedScopeMetadataConsts.LANGUAGEID_OFFSET) |
-				(_tokenType << EncodedScopeMetadataConsts.TOKEN_TYPE_OFFSET) |
+			((_languageId << EncodedTokenDataConsts.LANGUAGEID_OFFSET) |
+				(_tokenType << EncodedTokenDataConsts.TOKEN_TYPE_OFFSET) |
 				(_containsBalancedBracketsBit <<
-					EncodedScopeMetadataConsts.BALANCED_BRACKETS_OFFSET) |
-				(_fontStyle << EncodedScopeMetadataConsts.FONT_STYLE_OFFSET) |
-				(_foreground << EncodedScopeMetadataConsts.FOREGROUND_OFFSET) |
-				(_background << EncodedScopeMetadataConsts.BACKGROUND_OFFSET)) >>>
+					EncodedTokenDataConsts.BALANCED_BRACKETS_OFFSET) |
+				(_fontStyle << EncodedTokenDataConsts.FONT_STYLE_OFFSET) |
+				(_foreground << EncodedTokenDataConsts.FOREGROUND_OFFSET) |
+				(_background << EncodedTokenDataConsts.BACKGROUND_OFFSET)) >>>
 			0
 		);
 	}
@@ -143,7 +145,7 @@ export abstract class EncodedScopeMetadata {
  *  - f = foreground color (9 bits)
  *  - b = background color (9 bits)
  */
- export const enum EncodedScopeMetadataConsts {
+const enum EncodedTokenDataConsts {
 	LANGUAGEID_MASK = 0b00000000000000000000000011111111,
 	TOKEN_TYPE_MASK = 0b00000000000000000000001100000000,
 	BALANCED_BRACKETS_MASK = 0b00000000000000000000010000000000,

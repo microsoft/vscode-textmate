@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider, ThemedScopeStack } from './grammar';
+import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider, AttributedScopeStack } from './grammar';
 import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
 import { ScopeStack, Theme, StyleInfo, ThemeTrieElementRule } from './theme';

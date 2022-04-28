@@ -8,8 +8,8 @@ import { IRuleRegistry, IRuleFactoryHelper, RuleFactory, Rule, CaptureRule, Begi
 import { createMatchers, Matcher } from './matcher';
 import { IGrammar, ITokenizeLineResult, ITokenizeLineResult2, IToken, IEmbeddedLanguagesMap, StandardTokenType, StateStack as StackElementDef, ITokenTypeMap } from './main';
 import { DebugFlags, UseOnigurumaFindOptions } from './debug';
-import { FontStyle, ScopeName, ScopeStack, ScopePathStr, StyleInfo, ThemeTrieElementRule } from './theme';
-import { OptionalStandardTokenType, EncodedScopeMetadata, toOptionalTokenType } from './metadata';
+import { FontStyle, ScopeName, ScopeStack, ScopePath, StyleInfo, ThemeTrieElementRule } from './theme';
+import { OptionalStandardTokenType, EncodedTokenAttributes, toOptionalTokenType } from './encodedTokenAttributes';
 import { IRawGrammar, IRawRule, IRawRepository } from './rawGrammar';
 
 declare let performance: { now: () => number } | undefined;
@@ -706,7 +706,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			const rawDefaultMetadata =
 				this._scopeMetadataProvider.getDefaultMetadata();
 			const defaultStyle = this.themeProvider.getDefaults();
-			const defaultMetadata = EncodedScopeMetadata.set(
+			const defaultMetadata = EncodedTokenAttributes.set(
 				0,
 				rawDefaultMetadata.languageId,
 				rawDefaultMetadata.tokenType,
@@ -721,15 +721,15 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				null
 			);
 
-			let scopeList: ThemedScopeStack;
+			let scopeList: AttributedScopeStack;
 			if (rootScopeName) {
-				scopeList = ThemedScopeStack.createRootAndLookUpScopeName(
+				scopeList = AttributedScopeStack.createRootAndLookUpScopeName(
 					rootScopeName,
 					defaultMetadata,
 					this
 				);
 			} else {
-				scopeList = ThemedScopeStack.createRoot(
+				scopeList = AttributedScopeStack.createRoot(
 					 "unknown",
 					 defaultMetadata
 				);
@@ -1429,41 +1429,41 @@ function _tokenizeString(
 	}
 }
 
-export class ThemedScopeStack {
-	public static createRoot(scopeName: ScopeName, metadata: number): ThemedScopeStack {
-		return new ThemedScopeStack(null, new ScopeStack(null, scopeName), metadata);
+export class AttributedScopeStack {
+	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
+		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes);
 	}
 
-	public static createRootAndLookUpScopeName(scopeName: ScopeName, metadata: number, grammar: Grammar): ThemedScopeStack {
+	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, grammar: Grammar): AttributedScopeStack {
 		const rawRootMetadata = grammar.getMetadataForScope(scopeName);
 		const scopePath = new ScopeStack(null, scopeName);
 		const rootStyle = grammar.themeProvider.themeMatch(scopePath);
 
-		const rootMetadata = ThemedScopeStack.mergeMetadata(
-			metadata,
+		const resolvedTokenAttributes = AttributedScopeStack.mergeAttributes(
+			tokenAttributes,
 			rawRootMetadata,
 			rootStyle
 		);
 
-		return new ThemedScopeStack(null, scopePath, rootMetadata);
+		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes);
 	}
 
 	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
 
 	private constructor(
-		public readonly parent: ThemedScopeStack | null,
+		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
-		public readonly metadata: number
+		public readonly tokenAttributes: EncodedTokenAttributes
 	) {
 	}
 
-	public equals(other: ThemedScopeStack): boolean {
-		return ThemedScopeStack._equals(this, other);
+	public equals(other: AttributedScopeStack): boolean {
+		return AttributedScopeStack._equals(this, other);
 	}
 
 	private static _equals(
-		a: ThemedScopeStack | null,
-		b: ThemedScopeStack | null
+		a: AttributedScopeStack | null,
+		b: AttributedScopeStack | null
 	): boolean {
 		do {
 			if (a === b) {
@@ -1480,7 +1480,7 @@ export class ThemedScopeStack {
 				return false;
 			}
 
-			if (a.scopeName !== b.scopeName || a.metadata !== b.metadata) {
+			if (a.scopeName !== b.scopeName || a.tokenAttributes !== b.tokenAttributes) {
 				return false;
 			}
 
@@ -1490,7 +1490,7 @@ export class ThemedScopeStack {
 		} while (true);
 	}
 
-	private static mergeMetadata(
+	private static mergeAttributes(
 		metadata: number,
 		source: ScopeMetadata,
 		styleInfo: StyleInfo | null
@@ -1505,7 +1505,7 @@ export class ThemedScopeStack {
 			background = styleInfo.background;
 		}
 
-		return EncodedScopeMetadata.set(
+		return EncodedTokenAttributes.set(
 			metadata,
 			source.languageId,
 			source.tokenType,
@@ -1516,42 +1516,42 @@ export class ThemedScopeStack {
 		);
 	}
 
-	public pushAndTheme(scopeName: ScopePathStr | null, grammar: Grammar): ThemedScopeStack {
-		if (scopeName === null) {
+	public pushAndTheme(scopePath: ScopePath | null, grammar: Grammar): AttributedScopeStack {
+		if (scopePath === null) {
 			return this;
 		}
 
-		if (scopeName.indexOf(' ') === -1) {
+		if (scopePath.indexOf(' ') === -1) {
 			// This is the common case and much faster
 
-			return ThemedScopeStack._pushAndTheme(this, scopeName, grammar);
+			return AttributedScopeStack._pushAndTheme(this, scopePath, grammar);
 		}
 
-		const scopes = scopeName.split(/ /g);
-		let result: ThemedScopeStack = this;
+		const scopes = scopePath.split(/ /g);
+		let result: AttributedScopeStack = this;
 		for (const scope of scopes) {
-			result = ThemedScopeStack._pushAndTheme(result, scope, grammar);
+			result = AttributedScopeStack._pushAndTheme(result, scope, grammar);
 		}
 		return result;
 
 	}
 
 	private static _pushAndTheme(
-		target: ThemedScopeStack,
+		target: AttributedScopeStack,
 		scopeName: ScopeName,
 		grammar: Grammar,
-	): ThemedScopeStack {
+	): AttributedScopeStack {
 		const rawMetadata = grammar.getMetadataForScope(scopeName);
 
 		const newPath = target.scopePath.push(scopeName);
 		const scopeThemeMatchResult =
 			grammar.themeProvider.themeMatch(newPath);
-		const metadata = ThemedScopeStack.mergeMetadata(
-			target.metadata,
+		const metadata = AttributedScopeStack.mergeAttributes(
+			target.tokenAttributes,
 			rawMetadata,
 			scopeThemeMatchResult
 		);
-		return new ThemedScopeStack(target, newPath, metadata);
+		return new AttributedScopeStack(target, newPath, metadata);
 	}
 
 	public getScopeNames(): string[] {
@@ -1623,13 +1623,13 @@ export class StateStack implements StackElementDef {
 		/**
 		 * The list of scopes containing the "name" for this state.
 		 */
-		public readonly nameScopesList: ThemedScopeStack,
+		public readonly nameScopesList: AttributedScopeStack,
 
 		/**
 		 * The list of scopes containing the "contentName" (besides "name") for this state.
 		 * This list **must** contain as an element `scopeName`.
 		 */
-		public readonly contentNameScopesList: ThemedScopeStack
+		public readonly contentNameScopesList: AttributedScopeStack
 	) {
 		this.depth = this.parent ? this.parent.depth + 1 : 1;
 		this._enterPos = enterPos;
@@ -1722,8 +1722,8 @@ export class StateStack implements StackElementDef {
 		anchorPos: number,
 		beginRuleCapturedEOL: boolean,
 		endRule: string | null,
-		nameScopesList: ThemedScopeStack,
-		contentNameScopesList: ThemedScopeStack
+		nameScopesList: AttributedScopeStack,
+		contentNameScopesList: AttributedScopeStack
 	): StateStack {
 		return new StateStack(
 			this,
@@ -1768,7 +1768,7 @@ export class StateStack implements StackElementDef {
 	}
 
 	public withContentNameScopesList(
-		contentNameScopeStack: ThemedScopeStack
+		contentNameScopeStack: AttributedScopeStack
 	): StateStack {
 		if (this.contentNameScopesList === contentNameScopeStack) {
 			return this;
@@ -1814,10 +1814,10 @@ export class StateStack implements StackElementDef {
 }
 
 export class LocalStackElement {
-	public readonly scopes: ThemedScopeStack;
+	public readonly scopes: AttributedScopeStack;
 	public readonly endPos: number;
 
-	constructor(scopes: ThemedScopeStack, endPos: number) {
+	constructor(scopes: AttributedScopeStack, endPos: number) {
 		this.scopes = scopes;
 		this.endPos = endPos;
 	}
@@ -1917,7 +1917,7 @@ class LineTokens {
 	}
 
 	public produceFromScopes(
-		scopesList: ThemedScopeStack,
+		scopesList: AttributedScopeStack,
 		endIndex: number
 	): void {
 		if (this._lastTokenEndIndex >= endIndex) {
@@ -1925,7 +1925,7 @@ class LineTokens {
 		}
 
 		if (this._emitBinaryTokens) {
-			let metadata = scopesList.metadata;
+			let metadata = scopesList.tokenAttributes;
 			let containsBalancedBrackets = false;
 			if (this.balancedBracketSelectors?.matchesAlways) {
 				containsBalancedBrackets = true;
@@ -1936,7 +1936,7 @@ class LineTokens {
 				const scopes = scopesList.getScopeNames();
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.matcher(scopes)) {
-						metadata = EncodedScopeMetadata.set(
+						metadata = EncodedTokenAttributes.set(
 							metadata,
 							0,
 							toOptionalTokenType(tokenType.type),
@@ -1953,7 +1953,7 @@ class LineTokens {
 			}
 
 			if (containsBalancedBrackets) {
-				metadata = EncodedScopeMetadata.set(
+				metadata = EncodedTokenAttributes.set(
 					metadata,
 					0,
 					OptionalStandardTokenType.NotSet,

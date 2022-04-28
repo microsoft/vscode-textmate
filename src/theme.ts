@@ -69,7 +69,7 @@ export type ScopeName = string;
  * An expression language of ScopeNames with a binary space (to indicate nesting) operator.
  * Examples: `foo.bar boo.baz`
 */
-export type ScopePathStr = string;
+export type ScopePath = string;
 
 /**
  * An expression language of ScopePathStr with a binary comma (to indicate alternatives) operator.
