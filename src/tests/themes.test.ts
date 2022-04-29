@@ -348,6 +348,14 @@ test('Theme resolving strArrCmp works', () => {
 	assertStrArrCmp('014', ['a', 'c'], ['a', 'b'], 1);
 });
 
+function assertThemeEqual(actual: Theme, expected: Theme): void {
+	// Don't compare cache objects
+	assert.deepStrictEqual(
+		[actual["_colorMap"], actual["_defaults"], actual["_root"]],
+		[expected["_colorMap"], actual["_defaults"], actual["_root"]]
+	);
+}
+
 test('Theme resolving always has defaults', () => {
 	let actual = Theme.createFromParsedTheme([]);
 	let colorMap = new ColorMap();
@@ -359,7 +367,7 @@ test('Theme resolving always has defaults', () => {
 		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 1', () => {
@@ -375,7 +383,7 @@ test('Theme resolving respects incoming defaults 1', () => {
 		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 2', () => {
@@ -391,7 +399,7 @@ test('Theme resolving respects incoming defaults 2', () => {
 		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 3', () => {
@@ -407,7 +415,7 @@ test('Theme resolving respects incoming defaults 3', () => {
 		new StyleAttributes(FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 4', () => {
@@ -423,7 +431,7 @@ test('Theme resolving respects incoming defaults 4', () => {
 		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 5', () => {
@@ -439,7 +447,7 @@ test('Theme resolving respects incoming defaults 5', () => {
 		new StyleAttributes(FontStyle.None, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving can merge incoming defaults', () => {
@@ -457,7 +465,7 @@ test('Theme resolving can merge incoming defaults', () => {
 		new StyleAttributes(FontStyle.Bold, _A, _B),
 		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving defaults are inherited', () => {
@@ -477,7 +485,7 @@ test('Theme resolving defaults are inherited', () => {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET))
 		})
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving same rules get merged', () => {
@@ -498,7 +506,7 @@ test('Theme resolving same rules get merged', () => {
 			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET))
 		})
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving rules are inherited 1', () => {
@@ -522,7 +530,7 @@ test('Theme resolving rules are inherited 1', () => {
 			})
 		})
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving rules are inherited 2', () => {
@@ -561,7 +569,7 @@ test('Theme resolving rules are inherited 2', () => {
 			})
 		})
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving rules with parent scopes', () => {
@@ -595,7 +603,7 @@ test('Theme resolving rules with parent scopes', () => {
 			)
 		})
 	);
-	assert.deepStrictEqual(actual, expected);
+	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving issue #38: ignores rules with invalid colors', () => {

@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
+import { CachedFn, isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 
 export class Theme {
 	public static createFromRawTheme(
@@ -19,7 +19,9 @@ export class Theme {
 		return resolveParsedThemeRules(source, colorMap);
 	}
 
-	private readonly _cache = new Map<ScopeName, ThemeTrieElementRule[]>();
+	private readonly _cachedMatchRoot = new CachedFn<ScopeName, ThemeTrieElementRule[]>(
+		(scopeName) => this._root.match(scopeName)
+	);
 
 	constructor(
 		private readonly _colorMap: ColorMap,
@@ -40,13 +42,11 @@ export class Theme {
 			return this._defaults;
 		}
 		const scopeName = scopePath.scopeName;
+		const matchingTrieElements = this._cachedMatchRoot.get(scopeName);
 
-		if (!this._cache.has(scopeName)) {
-			this._cache.set(scopeName, this._root.match(scopeName));
-		}
-		const cachedValue = this._cache.get(scopeName)!;
-
-		const effectiveRule = cachedValue.find(v => _scopePathMatchesParentScopes(scopePath.parent, v.parentScopes));
+		const effectiveRule = matchingTrieElements.find((v) =>
+			_scopePathMatchesParentScopes(scopePath.parent, v.parentScopes)
+		);
 		if (!effectiveRule) {
 			return null;
 		}

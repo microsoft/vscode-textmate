@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { RegexSource, mergeObjects, basename } from './utils';
+import { RegexSource, mergeObjects, basename, escapeRegExpCharacters } from './utils';
 import { IOnigLib, OnigScanner, IOnigCaptureIndex } from './onigLib';
 import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './rawGrammar';
 
@@ -495,10 +495,6 @@ export class IncludeOnlyRule extends Rule {
 		}
 		return this._cachedCompiledPatterns;
 	}
-}
-
-function escapeRegExpCharacters(value: string): string {
-	return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
 }
 
 export class BeginEndRule extends Rule {

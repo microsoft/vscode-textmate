@@ -152,3 +152,36 @@ export function isValidHexColor(hex: string): boolean {
 
 	return false;
 }
+
+/**
+ * Escapes regular expression characters in a given string
+ */
+export function escapeRegExpCharacters(value: string): string {
+	return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+}
+
+export class CachedFn<TKey, TValue> {
+	private readonly cache = new Map<TKey, TValue>();
+	constructor(private readonly fn: (key: TKey) => TValue) {
+	}
+
+	public get(key: TKey): TValue {
+		if (this.cache.has(key)) {
+			return this.cache.get(key)!;
+		}
+		const value = this.fn(key);
+		this.cache.set(key, value);
+		return value;
+	}
+}
+
+declare let performance: { now: () => number } | undefined;
+export const performanceNow =
+	typeof performance === "undefined"
+		// performance.now() is not available in this environment, so use Date.now()
+		? function () {
+				return Date.now();
+		  }
+		: function () {
+				return performance!.now();
+		  };

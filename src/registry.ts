@@ -34,10 +34,6 @@ export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 
 	public setTheme(theme: Theme): void {
 		this._theme = theme;
-		Object.keys(this._grammars).forEach((scopeName) => {
-			let grammar = this._grammars[scopeName];
-			grammar.onDidChangeTheme();
-		});
 	}
 
 	public getColorMap(): string[] {
