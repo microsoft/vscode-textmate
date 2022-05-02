@@ -2,7 +2,6 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { StandardTokenType } from "./main";
 import { FontStyle } from "./theme";
 
 export type EncodedTokenAttributes = number;
@@ -159,6 +158,13 @@ const enum EncodedTokenDataConsts {
 	FONT_STYLE_OFFSET = 11,
 	FOREGROUND_OFFSET = 15,
 	BACKGROUND_OFFSET = 24
+}
+
+export const enum StandardTokenType {
+	Other = 0,
+	Comment = 1,
+	String = 2,
+	RegEx = 3
 }
 
 export function toOptionalTokenType(standardType: StandardTokenType): OptionalStandardTokenType {

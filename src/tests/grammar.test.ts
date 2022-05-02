@@ -3,8 +3,7 @@
  *--------------------------------------------------------*/
 
 import * as assert from 'assert';
-import { StandardTokenType } from '../main';
-import { EncodedTokenAttributes, OptionalStandardTokenType } from '../encodedTokenAttributes';
+import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType } from '../encodedTokenAttributes';
 import { FontStyle } from '../theme';
 
 function assertEquals(metadata: number, languageId: number, tokenType: StandardTokenType, containsBalancedBrackets: boolean, fontStyle: FontStyle, foreground: number, background: number): void {

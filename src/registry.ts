@@ -5,30 +5,22 @@
 import { BalancedBracketSelectors, createGrammar, Grammar, IGrammarRepository, IThemeProvider, AttributedScopeStack } from './grammar';
 import { IRawGrammar } from './rawGrammar';
 import { IGrammar, IEmbeddedLanguagesMap, ITokenTypeMap } from './main';
-import { ScopeStack, Theme, StyleAttributes, ThemeTrieElementRule } from './theme';
+import { ScopeStack, Theme, StyleAttributes, ThemeTrieElementRule, ScopeName } from './theme';
 import { IOnigLib } from './onigLib';
 
 export class SyncRegistry implements IGrammarRepository, IThemeProvider {
-
-	private readonly _grammars: { [scopeName: string]: Grammar; };
-	private readonly _rawGrammars: { [scopeName: string]: IRawGrammar; };
-	private readonly _injectionGrammars: { [scopeName: string]: string[]; };
+	private readonly _grammars = new Map<ScopeName, Grammar>();
+	private readonly _rawGrammars = new Map<ScopeName, IRawGrammar>();
+	private readonly _injectionGrammars = new Map<ScopeName, ScopeName[]>();
 	private _theme: Theme;
-	private readonly _onigLibPromise: Promise<IOnigLib>;
 
-	constructor(theme: Theme, onigLibPromise: Promise<IOnigLib>) {
+	constructor(theme: Theme, private readonly _onigLibPromise: Promise<IOnigLib>) {
 		this._theme = theme;
-		this._grammars = {};
-		this._rawGrammars = {};
-		this._injectionGrammars = {};
-		this._onigLibPromise = onigLibPromise;
 	}
 
 	public dispose(): void {
-		for (const scopeName in this._grammars) {
-			if (this._grammars.hasOwnProperty(scopeName)) {
-				this._grammars[scopeName].dispose();
-			}
+		for (const grammar of this._grammars.values()) {
+			grammar.dispose();
 		}
 	}
 
@@ -43,26 +35,26 @@ export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 	/**
 	 * Add `grammar` to registry and return a list of referenced scope names
 	 */
-	public addGrammar(grammar: IRawGrammar, injectionScopeNames?: string[]): void {
-		this._rawGrammars[grammar.scopeName] = grammar;
+	public addGrammar(grammar: IRawGrammar, injectionScopeNames?: ScopeName[]): void {
+		this._rawGrammars.set(grammar.scopeName, grammar);
 
 		if (injectionScopeNames) {
-			this._injectionGrammars[grammar.scopeName] = injectionScopeNames;
+			this._injectionGrammars.set(grammar.scopeName, injectionScopeNames);
 		}
 	}
 
 	/**
 	 * Lookup a raw grammar.
 	 */
-	public lookup(scopeName: string): IRawGrammar | undefined {
-		return this._rawGrammars[scopeName];
+	public lookup(scopeName: ScopeName): IRawGrammar | undefined {
+		return this._rawGrammars.get(scopeName)!;
 	}
 
 	/**
 	 * Returns the injections for the given grammar
 	 */
-	public injections(targetScope: string): string[] {
-		return this._injectionGrammars[targetScope];
+	public injections(targetScope: ScopeName): ScopeName[] {
+		return this._injectionGrammars.get(targetScope)!;
 	}
 
 	/**
@@ -82,14 +74,29 @@ export class SyncRegistry implements IGrammarRepository, IThemeProvider {
 	/**
 	 * Lookup a grammar.
 	 */
-	public async grammarForScopeName(scopeName: string, initialLanguage: number, embeddedLanguages: IEmbeddedLanguagesMap | null, tokenTypes: ITokenTypeMap | null, balancedBracketSelectors: BalancedBracketSelectors | null): Promise<IGrammar | null> {
-		if (!this._grammars[scopeName]) {
-			let rawGrammar = this._rawGrammars[scopeName];
+	public async grammarForScopeName(
+		scopeName: ScopeName,
+		initialLanguage: number,
+		embeddedLanguages: IEmbeddedLanguagesMap | null,
+		tokenTypes: ITokenTypeMap | null,
+		balancedBracketSelectors: BalancedBracketSelectors | null
+	): Promise<IGrammar | null> {
+		if (!this._grammars.has(scopeName)) {
+			let rawGrammar = this._rawGrammars.get(scopeName)!;
 			if (!rawGrammar) {
 				return null;
 			}
-			this._grammars[scopeName] = createGrammar(scopeName, rawGrammar, initialLanguage, embeddedLanguages, tokenTypes, balancedBracketSelectors, this, await this._onigLibPromise);
+			this._grammars.set(scopeName, createGrammar(
+				scopeName,
+				rawGrammar,
+				initialLanguage,
+				embeddedLanguages,
+				tokenTypes,
+				balancedBracketSelectors,
+				this,
+				await this._onigLibPromise
+			));
 		}
-		return this._grammars[scopeName];
+		return this._grammars.get(scopeName)!;
 	}
 }
