@@ -44,7 +44,7 @@ export interface IThemeProvider {
 
 export interface IGrammarRepository {
 	lookup(scopeName: ScopeName): IRawGrammar | undefined;
-	injections(scopeName: ScopeName): string[];
+	injections(scopeName: ScopeName): ScopeName[];
 }
 
 export interface Injection {
@@ -179,23 +179,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			},
 		};
 
-		const dependencyProcessor = new ScopeDependencyProcessor(
-			grammarRepository,
-			this._rootScopeName
-		);
-		// TODO: uncomment below to visit all scopes
-		// while (dependencyProcessor.Q.length > 0) {
-		// 	dependencyProcessor.processQueue();
-		// }
-
 		const result: Injection[] = [];
 
-		dependencyProcessor.seenFullScopeRequests.forEach((scopeName) => {
-			const grammar = grammarRepository.lookup(scopeName);
-			if (!grammar) {
-				return;
-			}
+		const scopeName = this._rootScopeName;
 
+		const grammar = grammarRepository.lookup(scopeName);
+		if (grammar) {
 			// add injections from the current grammar
 			const rawInjections = grammar.injections;
 			if (rawInjections) {
@@ -211,29 +200,27 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			}
 
 			// add injection grammars contributed for the current scope
-			if (this._grammarRepository) {
-				const injectionScopeNames =
-					this._grammarRepository.injections(scopeName);
-				if (injectionScopeNames) {
-					injectionScopeNames.forEach((injectionScopeName) => {
-						const injectionGrammar =
-							this.getExternalGrammar(injectionScopeName);
-						if (injectionGrammar) {
-							const selector = injectionGrammar.injectionSelector;
-							if (selector) {
-								collectInjections(
-									result,
-									selector,
-									injectionGrammar,
-									this,
-									injectionGrammar
-								);
-							}
+
+			const injectionScopeNames = this._grammarRepository.injections(scopeName);
+			if (injectionScopeNames) {
+				injectionScopeNames.forEach((injectionScopeName) => {
+					const injectionGrammar =
+						this.getExternalGrammar(injectionScopeName);
+					if (injectionGrammar) {
+						const selector = injectionGrammar.injectionSelector;
+						if (selector) {
+							collectInjections(
+								result,
+								selector,
+								injectionGrammar,
+								this,
+								injectionGrammar
+							);
 						}
-					});
-				}
+					}
+				});
 			}
-		});
+		}
 
 		result.sort((i1, i2) => i1.priority - i2.priority); // sort by priority
 
