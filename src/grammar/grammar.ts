@@ -8,7 +8,7 @@ import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenize
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
-import { IRuleFactoryHelper, IRuleRegistry, Rule, RuleFactory } from '../rule';
+import { ruleIdFromNumber, IRuleFactoryHelper, IRuleRegistry, Rule, RuleFactory, RuleId, ruleIdToNumber } from '../rule';
 import { FontStyle, ScopeName, ScopePath, ScopeStack, StyleAttributes } from '../theme';
 import { clone } from '../utils';
 import { BasicScopeAttributes, BasicScopeAttributesProvider } from './basicScopesAttributeProvider';
@@ -51,7 +51,7 @@ export interface Injection {
 	readonly debugSelector: string;
 	readonly matcher: Matcher<string[]>;
 	readonly priority: -1 | 0 | 1; // 0 is the default. -1 for 'L' and 1 for 'R'
-	readonly ruleId: number;
+	readonly ruleId: RuleId;
 	readonly grammar: IRawGrammar;
 }
 
@@ -97,7 +97,7 @@ function scopesAreMatching(thisScopeName: string, scopeName: string): boolean {
 }
 
 export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
-	private _rootId: number;
+	private _rootId: RuleId | -1;
 	private _lastRuleId: number;
 	private readonly _ruleId2desc: Rule[];
 	private readonly _includedGrammars: { [scopeName: string]: IRawGrammar };
@@ -243,15 +243,15 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		return this._injections;
 	}
 
-	public registerRule<T extends Rule>(factory: (id: number) => T): T {
+	public registerRule<T extends Rule>(factory: (id: RuleId) => T): T {
 		const id = ++this._lastRuleId;
-		const result = factory(id);
+		const result = factory(ruleIdFromNumber(id));
 		this._ruleId2desc[id] = result;
 		return result;
 	}
 
-	public getRule(patternId: number): Rule {
-		return this._ruleId2desc[patternId];
+	public getRule(ruleId: RuleId): Rule {
+		return this._ruleId2desc[ruleIdToNumber(ruleId)];
 	}
 
 	public getExternalGrammar(
@@ -550,9 +550,10 @@ export class AttributedScopeStack {
 export class StateStack implements StackElementDef {
 	_stackElementBrand: void = undefined;
 
+	// TODO remove me
 	public static NULL = new StateStack(
 		null,
-		0,
+		0 as any,
 		0,
 		0,
 		false,
@@ -590,7 +591,7 @@ export class StateStack implements StackElementDef {
 		/**
 		 * The state (rule) that this element represents.
 		 */
-		private readonly ruleId: number,
+		private readonly ruleId: RuleId,
 
 		enterPos: number,
 		anchorPos: number,
@@ -702,7 +703,7 @@ export class StateStack implements StackElementDef {
 	}
 
 	public push(
-		ruleId: number,
+		ruleId: RuleId,
 		enterPos: number,
 		anchorPos: number,
 		beginRuleCapturedEOL: boolean,

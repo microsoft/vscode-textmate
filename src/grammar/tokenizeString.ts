@@ -5,7 +5,7 @@
 import { DebugFlags, UseOnigurumaFindOptions } from '../debug';
 import type { LineTokens, StateStack } from './grammar';
 import { disposeOnigString, FindOption, IOnigCaptureIndex, OnigString } from '../onigLib';
-import { BeginEndRule, BeginWhileRule, CaptureRule, CompiledRule, MatchRule, Rule } from '../rule';
+import { BeginEndRule, BeginWhileRule, CaptureRule, CompiledRule, endRuleId, MatchRule, Rule, RuleId, whileRuleId } from '../rule';
 import { performanceNow } from '../utils';
 import type { AttributedScopeStack, Grammar, Injection } from './grammar';
 
@@ -100,14 +100,14 @@ class TokenizeStringResult {
 		}
 
 		const captureIndices: IOnigCaptureIndex[] = r.captureIndices;
-		const matchedRuleId: number = r.matchedRuleId;
+		const matchedRuleId = r.matchedRuleId;
 
 		const hasAdvanced =
 			captureIndices && captureIndices.length > 0
 				? captureIndices[0].end > linePos
 				: false;
 
-		if (matchedRuleId === -1) {
+		if (matchedRuleId === endRuleId) {
 			// We matched the `end` for this rule => pop it
 			const poppedRule = <BeginEndRule>stack.getRule(grammar);
 
@@ -361,7 +361,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 
 		if (r) {
 			const matchedRuleId = ruleScanner.rules[r.index];
-			if (matchedRuleId !== -2) {
+			if (matchedRuleId !== whileRuleId) {
 				// we shouldn't end up here
 				stack = whileRule.stack.pop()!;
 				break;
@@ -431,7 +431,7 @@ function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLi
 
 interface IMatchResult {
 	readonly captureIndices: IOnigCaptureIndex[];
-	readonly matchedRuleId: number;
+	readonly matchedRuleId: RuleId | typeof endRuleId;
 }
 
 function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStack, anchorPosition: number): IMatchResult | null {
@@ -470,7 +470,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
 	let bestMatchCaptureIndices: IOnigCaptureIndex[] | null = null;
-	let bestMatchRuleId: number;
+	let bestMatchRuleId: RuleId | typeof endRuleId;
 	let bestMatchResultPriority: number = 0;
 
 	const scopes = stack.contentNameScopesList.getScopeNames();
@@ -524,7 +524,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 interface IMatchInjectionsResult {
 	readonly priorityMatch: boolean;
 	readonly captureIndices: IOnigCaptureIndex[];
-	readonly matchedRuleId: number;
+	readonly matchedRuleId: RuleId | typeof endRuleId;
 }
 
 function prepareRuleSearch(rule: Rule, grammar: Grammar, endRegexSource: string | null, allowA: boolean, allowG: boolean): { ruleScanner: CompiledRule; findOptions: number; } {
@@ -537,7 +537,7 @@ function prepareRuleSearch(rule: Rule, grammar: Grammar, endRegexSource: string 
 	return { ruleScanner, findOptions: FindOption.None };
 }
 
-function prepareRuleWhileSearch(rule: BeginWhileRule, grammar: Grammar, endRegexSource: string | null, allowA: boolean, allowG: boolean): { ruleScanner: CompiledRule; findOptions: number; } {
+function prepareRuleWhileSearch(rule: BeginWhileRule, grammar: Grammar, endRegexSource: string | null, allowA: boolean, allowG: boolean): { ruleScanner: CompiledRule<RuleId | typeof whileRuleId>; findOptions: number; } {
 	if (UseOnigurumaFindOptions) {
 		const ruleScanner = rule.compileWhile(grammar, endRegexSource);
 		const findOptions = getFindOptions(allowA, allowG);
@@ -547,7 +547,7 @@ function prepareRuleWhileSearch(rule: BeginWhileRule, grammar: Grammar, endRegex
 	return { ruleScanner, findOptions: FindOption.None };
 }
 
-function debugCompiledRuleToString(ruleScanner: CompiledRule): string {
+function debugCompiledRuleToString(ruleScanner: CompiledRule<any>): string {
 	const r: string[] = [];
 	for (let i = 0, len = ruleScanner.rules.length; i < len; i++) {
 		r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);

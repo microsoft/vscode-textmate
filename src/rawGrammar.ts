@@ -2,6 +2,8 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import { RuleId } from "./rule";
+
 export interface ILocation {
 	readonly filename: string;
 	readonly line: number;
@@ -33,7 +35,7 @@ export interface IRawRepositoryMap {
 export type IRawRepository = IRawRepositoryMap & ILocatable;
 
 export interface IRawRule extends ILocatable {
-	id?: number;
+	id?: RuleId;
 
 	readonly include?: string;
 
