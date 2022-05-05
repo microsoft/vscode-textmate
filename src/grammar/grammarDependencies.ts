@@ -144,7 +144,7 @@ interface Context {
 interface ContextWithRepository {
 	baseGrammar: IRawGrammar;
 	selfGrammar: IRawGrammar;
-	repository: IRawRepository | undefined;
+	repository: Record<string, IRawRule> | undefined;
 }
 
 function collectExternalReferencesInTopLevelRepositoryRule(
@@ -237,14 +237,14 @@ function collectExternalReferencesInRules(
 	}
 }
 
-type IncludeReference =
+export type IncludeReference =
 	| BaseReference
 	| SelfReference
 	| RelativeReference
 	| TopLevelReference
 	| TopLevelRepositoryReference;
 
-const enum IncludeReferenceKind {
+export const enum IncludeReferenceKind {
 	Base,
 	Self,
 	RelativeReference,
@@ -252,30 +252,30 @@ const enum IncludeReferenceKind {
 	TopLevelRepositoryReference,
 }
 
-class BaseReference {
+export class BaseReference {
 	public readonly kind = IncludeReferenceKind.Base;
 }
 
-class SelfReference {
+export class SelfReference {
 	public readonly kind = IncludeReferenceKind.Self;
 }
 
-class RelativeReference {
+export class RelativeReference {
 	public readonly kind = IncludeReferenceKind.RelativeReference;
 	constructor(public readonly ruleName: string) {}
 }
 
-class TopLevelReference {
+export class TopLevelReference {
 	public readonly kind = IncludeReferenceKind.TopLevelReference;
 	constructor(public readonly scopeName: ScopeName) {}
 }
 
-class TopLevelRepositoryReference {
+export class TopLevelRepositoryReference {
 	public readonly kind = IncludeReferenceKind.TopLevelRepositoryReference;
 	constructor(public readonly scopeName: ScopeName, public readonly ruleName: string) {}
 }
 
-function parseInclude(include: string): IncludeReference {
+export function parseInclude(include: string): IncludeReference {
 	if (include === '$base') {
 		return new BaseReference();
 	} else if (include === '$self') {

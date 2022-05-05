@@ -5,6 +5,7 @@
 import { RegexSource, mergeObjects, basename, escapeRegExpCharacters } from './utils';
 import { IOnigLib, OnigScanner, IOnigCaptureIndex } from './onigLib';
 import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './rawGrammar';
+import { IncludeReferenceKind, parseInclude } from './grammar/grammarDependencies';
 
 const HAS_BACK_REFERENCES = /\\(\d+)/;
 const BACK_REFERENCING_END = /\\(\d+)/g;
@@ -814,56 +815,62 @@ export class RuleFactory {
 		if (patterns) {
 			for (let i = 0, len = patterns.length; i < len; i++) {
 				const pattern = patterns[i];
-				let patternId: RuleId | -1 = -1;
+				let ruleId: RuleId | -1 = -1;
 
 				if (pattern.include) {
-					if (pattern.include.charAt(0) === '#') {
-						// Local include found in `repository`
-						let localIncludedRule = repository[pattern.include.substr(1)];
-						if (localIncludedRule) {
-							patternId = RuleFactory.getCompiledRuleId(localIncludedRule, helper, repository);
-						} else {
-							// console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
-						}
-					} else if (pattern.include === '$base' || pattern.include === '$self') {
-						// Special include also found in `repository`
-						patternId = RuleFactory.getCompiledRuleId(repository[pattern.include], helper, repository);
-					} else {
-						let externalGrammarName: string | null = null;
-						let externalGrammarInclude: string | null = null;
-						let sharpIndex = pattern.include.indexOf('#');
 
-						if (sharpIndex >= 0) {
-							externalGrammarName = pattern.include.substring(0, sharpIndex);
-							externalGrammarInclude = pattern.include.substring(sharpIndex + 1);
-						} else {
-							externalGrammarName = pattern.include;
-						}
-						// External include
-						const externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
+					const reference = parseInclude(pattern.include);
 
-						if (externalGrammar) {
-							if (externalGrammarInclude) {
-								let externalIncludedRule = externalGrammar.repository[externalGrammarInclude];
-								if (externalIncludedRule) {
-									patternId = RuleFactory.getCompiledRuleId(externalIncludedRule, helper, externalGrammar.repository);
+					switch (reference.kind) {
+						case IncludeReferenceKind.Base:
+						case IncludeReferenceKind.Self:
+							ruleId = RuleFactory.getCompiledRuleId(repository[pattern.include], helper, repository);
+							break;
+
+						case IncludeReferenceKind.RelativeReference:
+							// Local include found in `repository`
+							let localIncludedRule = repository[pattern.include.substr(1)];
+							if (localIncludedRule) {
+								ruleId = RuleFactory.getCompiledRuleId(localIncludedRule, helper, repository);
+							} else {
+								// console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
+							}
+							break;
+
+						case IncludeReferenceKind.TopLevelReference:
+						case IncludeReferenceKind.TopLevelRepositoryReference:
+
+							const externalGrammarName = reference.scopeName;
+							const externalGrammarInclude =
+								reference.kind === IncludeReferenceKind.TopLevelRepositoryReference
+									? reference.ruleName
+									: null;
+
+							// External include
+							const externalGrammar = helper.getExternalGrammar(externalGrammarName, repository);
+
+							if (externalGrammar) {
+								if (externalGrammarInclude) {
+									let externalIncludedRule = externalGrammar.repository[externalGrammarInclude];
+									if (externalIncludedRule) {
+										ruleId = RuleFactory.getCompiledRuleId(externalIncludedRule, helper, externalGrammar.repository);
+									} else {
+										// console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
+									}
 								} else {
-									// console.warn('CANNOT find rule for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
+									ruleId = RuleFactory.getCompiledRuleId(externalGrammar.repository.$self, helper, externalGrammar.repository);
 								}
 							} else {
-								patternId = RuleFactory.getCompiledRuleId(externalGrammar.repository.$self, helper, externalGrammar.repository);
+								// console.warn('CANNOT find grammar for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
 							}
-						} else {
-							// console.warn('CANNOT find grammar for scopeName: ' + pattern.include + ', I am: ', repository['$base'].name);
-						}
-
+							break;
 					}
 				} else {
-					patternId = RuleFactory.getCompiledRuleId(pattern, helper, repository);
+					ruleId = RuleFactory.getCompiledRuleId(pattern, helper, repository);
 				}
 
-				if (patternId !== -1) {
-					const rule = helper.getRule(patternId);
+				if (ruleId !== -1) {
+					const rule = helper.getRule(ruleId);
 
 					let skipRule = false;
 
@@ -878,7 +885,7 @@ export class RuleFactory {
 						continue;
 					}
 
-					r.push(patternId);
+					r.push(ruleId);
 				}
 			}
 		}
