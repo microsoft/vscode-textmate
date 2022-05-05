@@ -153,48 +153,44 @@ export class RegExpSource<TRuleId = RuleId | typeof endRuleId> {
 	public readonly hasBackReferences: boolean;
 	private _anchorCache: IRegExpSourceAnchorCache | null;
 
-	constructor(regExpSource: string, ruleId: TRuleId, handleAnchors: boolean = true) {
-		if (handleAnchors) {
-			if (regExpSource) {
-				const len = regExpSource.length;
-				let lastPushedPos = 0;
-				let output: string[] = [];
+	constructor(regExpSource: string, ruleId: TRuleId) {
+		if (regExpSource) {
+			const len = regExpSource.length;
+			let lastPushedPos = 0;
+			let output: string[] = [];
 
-				let hasAnchor = false;
-				for (let pos = 0; pos < len; pos++) {
-					const ch = regExpSource.charAt(pos);
+			let hasAnchor = false;
+			for (let pos = 0; pos < len; pos++) {
+				const ch = regExpSource.charAt(pos);
 
-					if (ch === '\\') {
-						if (pos + 1 < len) {
-							const nextCh = regExpSource.charAt(pos + 1);
-							if (nextCh === 'z') {
-								output.push(regExpSource.substring(lastPushedPos, pos));
-								output.push('$(?!\\n)(?<!\\n)');
-								lastPushedPos = pos + 2;
-							} else if (nextCh === 'A' || nextCh === 'G') {
-								hasAnchor = true;
-							}
-							pos++;
+				if (ch === '\\') {
+					if (pos + 1 < len) {
+						const nextCh = regExpSource.charAt(pos + 1);
+						if (nextCh === 'z') {
+							output.push(regExpSource.substring(lastPushedPos, pos));
+							output.push('$(?!\\n)(?<!\\n)');
+							lastPushedPos = pos + 2;
+						} else if (nextCh === 'A' || nextCh === 'G') {
+							hasAnchor = true;
 						}
+						pos++;
 					}
 				}
+			}
 
-				this.hasAnchor = hasAnchor;
-				if (lastPushedPos === 0) {
-					// No \z hit
-					this.source = regExpSource;
-				} else {
-					output.push(regExpSource.substring(lastPushedPos, len));
-					this.source = output.join('');
-				}
-			} else {
-				this.hasAnchor = false;
+			this.hasAnchor = hasAnchor;
+			if (lastPushedPos === 0) {
+				// No \z hit
 				this.source = regExpSource;
+			} else {
+				output.push(regExpSource.substring(lastPushedPos, len));
+				this.source = output.join('');
 			}
 		} else {
 			this.hasAnchor = false;
 			this.source = regExpSource;
 		}
+
 
 		if (this.hasAnchor) {
 			this._anchorCache = this._buildAnchorCache();
@@ -209,7 +205,7 @@ export class RegExpSource<TRuleId = RuleId | typeof endRuleId> {
 	}
 
 	public clone(): RegExpSource<TRuleId> {
-		return new RegExpSource(this.source, this.ruleId, true);
+		return new RegExpSource(this.source, this.ruleId);
 	}
 
 	public setSource(newSource: string): void {
@@ -829,7 +825,7 @@ export class RuleFactory {
 
 						case IncludeReferenceKind.RelativeReference:
 							// Local include found in `repository`
-							let localIncludedRule = repository[pattern.include.substr(1)];
+							let localIncludedRule = repository[reference.ruleName];
 							if (localIncludedRule) {
 								ruleId = RuleFactory.getCompiledRuleId(localIncludedRule, helper, repository);
 							} else {
