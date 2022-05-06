@@ -2,8 +2,8 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { RegexSource, mergeObjects, basename, escapeRegExpCharacters } from './utils';
-import { IOnigLib, OnigScanner, IOnigCaptureIndex } from './onigLib';
+import { RegexSource, mergeObjects, basename, escapeRegExpCharacters, OrMask } from './utils';
+import { IOnigLib, OnigScanner, IOnigCaptureIndex, FindOption, IOnigMatch, OnigString } from './onigLib';
 import { ILocation, IRawGrammar, IRawRepository, IRawRule, IRawCaptures } from './rawGrammar';
 import { IncludeReferenceKind, parseInclude } from './grammar/grammarDependencies';
 
@@ -856,20 +856,44 @@ export class RegExpSourceList<TRuleId = RuleId | typeof endRuleId> {
 }
 
 export class CompiledRule<TRuleId = RuleId | typeof endRuleId> {
+	private readonly scanner: OnigScanner;
 
-	public readonly debugRegExps: string[];
-	public readonly rules: TRuleId[];
-	public readonly scanner: OnigScanner;
-
-	constructor(onigLib: IOnigLib, regExps: string[], rules: TRuleId[]) {
-		this.debugRegExps = regExps;
-		this.rules = rules;
+	constructor(onigLib: IOnigLib, private readonly regExps: string[], private readonly rules: TRuleId[]) {
 		this.scanner = onigLib.createOnigScanner(regExps);
 	}
 
 	public dispose(): void {
-		if (typeof this.scanner.dispose === 'function') {
+		if (typeof this.scanner.dispose === "function") {
 			this.scanner.dispose();
 		}
 	}
+
+	toString(): string {
+		const r: string[] = [];
+		for (let i = 0, len = this.rules.length; i < len; i++) {
+			r.push("   - " + this.rules[i] + ": " + this.regExps[i]);
+		}
+		return r.join("\n");
+	}
+
+	findNextMatchSync(
+		string: string | OnigString,
+		startPosition: number,
+		options: OrMask<FindOption>
+	): IFindNextMatchResult<TRuleId> | null {
+		const result = this.scanner.findNextMatchSync(string, startPosition, options);
+		if (!result) {
+			return null;
+		}
+
+		return {
+			ruleId: this.rules[result.index],
+			captureIndices: result.captureIndices,
+		};
+	}
+}
+
+export interface IFindNextMatchResult<TRuleId = RuleId | typeof endRuleId> {
+	ruleId: TRuleId;
+	captureIndices: IOnigCaptureIndex[];
 }

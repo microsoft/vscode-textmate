@@ -353,14 +353,14 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 
 	for (let whileRule = whileRules.pop(); whileRule; whileRule = whileRules.pop()) {
 		const { ruleScanner, findOptions } = prepareRuleWhileSearch(whileRule.rule, grammar, whileRule.stack.endRule, isFirstLine, linePos === anchorPosition);
-		const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
+		const r = ruleScanner.findNextMatchSync(lineText, linePos, findOptions);
 		if (DebugFlags.InDebugMode) {
 			console.log('  scanning for while rule');
-			console.log(debugCompiledRuleToString(ruleScanner));
+			console.log(ruleScanner.toString());
 		}
 
 		if (r) {
-			const matchedRuleId = ruleScanner.rules[r.index];
+			const matchedRuleId = r.ruleId;
 			if (matchedRuleId !== whileRuleId) {
 				// we shouldn't end up here
 				stack = whileRule.stack.pop()!;
@@ -443,7 +443,7 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 		perfStart = performanceNow();
 	}
 
-	const r = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
+	const r = ruleScanner.findNextMatchSync(lineText, linePos, findOptions);
 
 	if (DebugFlags.InDebugMode) {
 		const elapsedMillis = performanceNow() - perfStart;
@@ -451,16 +451,16 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 			console.warn(`Rule ${rule.debugName} (${rule.id}) matching took ${elapsedMillis} against '${lineText}'`);
 		}
 		console.log(`  scanning for (linePos: ${linePos}, anchorPosition: ${anchorPosition})`);
-		console.log(debugCompiledRuleToString(ruleScanner));
+		console.log(ruleScanner.toString());
 		if (r) {
-			console.log(`matched rule id: ${ruleScanner.rules[r.index]} from ${r.captureIndices[0].start} to ${r.captureIndices[0].end}`);
+			console.log(`matched rule id: ${r.ruleId} from ${r.captureIndices[0].start} to ${r.captureIndices[0].end}`);
 		}
 	}
 
 	if (r) {
 		return {
 			captureIndices: r.captureIndices,
-			matchedRuleId: ruleScanner.rules[r.index]
+			matchedRuleId: r.ruleId
 		};
 	}
 	return null;
@@ -483,14 +483,14 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 		}
 		const rule = grammar.getRule(injection.ruleId);
 		const { ruleScanner, findOptions } = prepareRuleSearch(rule, grammar, null, isFirstLine, linePos === anchorPosition);
-		const matchResult = ruleScanner.scanner.findNextMatchSync(lineText, linePos, findOptions);
+		const matchResult = ruleScanner.findNextMatchSync(lineText, linePos, findOptions);
 		if (!matchResult) {
 			continue;
 		}
 
 		if (DebugFlags.InDebugMode) {
 			console.log(`  matched injection: ${injection.debugSelector}`);
-			console.log(debugCompiledRuleToString(ruleScanner));
+			console.log(ruleScanner.toString());
 		}
 
 		const matchRating = matchResult.captureIndices[0].start;
@@ -501,7 +501,7 @@ function matchInjections(injections: Injection[], grammar: Grammar, lineText: On
 
 		bestMatchRating = matchRating;
 		bestMatchCaptureIndices = matchResult.captureIndices;
-		bestMatchRuleId = ruleScanner.rules[matchResult.index];
+		bestMatchRuleId = matchResult.ruleId;
 		bestMatchResultPriority = injection.priority;
 
 		if (bestMatchRating === linePos) {
@@ -545,14 +545,6 @@ function prepareRuleWhileSearch(rule: BeginWhileRule, grammar: Grammar, endRegex
 	}
 	const ruleScanner = rule.compileWhileAG(grammar, endRegexSource, allowA, allowG);
 	return { ruleScanner, findOptions: FindOption.None };
-}
-
-function debugCompiledRuleToString(ruleScanner: CompiledRule<any>): string {
-	const r: string[] = [];
-	for (let i = 0, len = ruleScanner.rules.length; i < len; i++) {
-		r.push('   - ' + ruleScanner.rules[i] + ': ' + ruleScanner.debugRegExps[i]);
-	}
-	return r.join('\n');
 }
 
 function getFindOptions(allowA: boolean, allowG: boolean): number {
