@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import { Registry, IGrammar, parseRawGrammar } from '../main';
-import { StackElement as StackElementImpl, Grammar as GrammarImpl } from '../grammar';
+import { StateStack as StackElementImpl, Grammar as GrammarImpl } from '../grammar';
 import * as debug from '../debug';
 import { getOniguruma } from './onigLibs';
 
@@ -66,11 +66,11 @@ Promise.all(grammarPromises).then(_grammars => {
 			if (!stackElement._instanceId) {
 				stackElement._instanceId = (++lastElementId);
 			}
-			let ruleDesc = (<GrammarImpl>grammar).getRule(stackElement.ruleId);
+			let ruleDesc = stackElement.getRule(grammar as GrammarImpl);
 			if (!ruleDesc) {
-				list.push('  * no rule description found for rule id: ' + stackElement.ruleId);
+				list.push('  * no rule description found');
 			} else {
-				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.generateScopes() + '", "' + stackElement.contentNameScopesList.generateScopes() + '"');
+				list.push('  * ' + ruleDesc.debugName + '  -- [' + ruleDesc.id + ',' + stackElement._instanceId + '] "' + stackElement.nameScopesList.getScopeNames() + '", "' + stackElement.contentNameScopesList.getScopeNames() + '"');
 			}
 			stackElement = stackElement.parent;
 		}

@@ -2,44 +2,170 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IRawTheme } from './main';
-import { isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
+import { CachedFn, isValidHexColor, OrMask, strArrCmp, strcmp } from './utils';
 
 export class Theme {
-	public static createFromRawTheme(source: IRawTheme | undefined, colorMap?: string[]): Theme {
+	public static createFromRawTheme(
+		source: IRawTheme | undefined,
+		colorMap?: string[]
+	): Theme {
 		return this.createFromParsedTheme(parseTheme(source), colorMap);
 	}
 
-	public static createFromParsedTheme(source: ParsedThemeRule[], colorMap?: string[]): Theme {
+	public static createFromParsedTheme(
+		source: ParsedThemeRule[],
+		colorMap?: string[]
+	): Theme {
 		return resolveParsedThemeRules(source, colorMap);
 	}
 
-	private readonly _colorMap: ColorMap;
-	private readonly _root: ThemeTrieElement;
-	private readonly _defaults: ThemeTrieElementRule;
-	private readonly _cache: { [scopeName: string]: ThemeTrieElementRule[]; };
+	private readonly _cachedMatchRoot = new CachedFn<ScopeName, ThemeTrieElementRule[]>(
+		(scopeName) => this._root.match(scopeName)
+	);
 
-	constructor(colorMap: ColorMap, defaults: ThemeTrieElementRule, root: ThemeTrieElement) {
-		this._colorMap = colorMap;
-		this._root = root;
-		this._defaults = defaults;
-		this._cache = {};
-	}
+	constructor(
+		private readonly _colorMap: ColorMap,
+		private readonly _defaults: StyleAttributes,
+		private readonly _root: ThemeTrieElement
+	) {}
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
 	}
 
-	public getDefaults(): ThemeTrieElementRule {
+	public getDefaults(): StyleAttributes {
 		return this._defaults;
 	}
 
-	public match(scopeName: string): ThemeTrieElementRule[] {
-		if (!this._cache.hasOwnProperty(scopeName)) {
-			this._cache[scopeName] = this._root.match(scopeName);
+	public match(scopePath: ScopeStack | null): StyleAttributes | null {
+		if (scopePath === null) {
+			return this._defaults;
 		}
-		return this._cache[scopeName];
+		const scopeName = scopePath.scopeName;
+		const matchingTrieElements = this._cachedMatchRoot.get(scopeName);
+
+		const effectiveRule = matchingTrieElements.find((v) =>
+			_scopePathMatchesParentScopes(scopePath.parent, v.parentScopes)
+		);
+		if (!effectiveRule) {
+			return null;
+		}
+
+		return new StyleAttributes(
+			effectiveRule.fontStyle,
+			effectiveRule.foreground,
+			effectiveRule.background
+		);
 	}
+}
+
+/**
+ * Identifiers with a binary dot operator.
+ * Examples: `baz` or `foo.bar`
+*/
+export type ScopeName = string;
+
+/**
+ * An expression language of ScopeNames with a binary space (to indicate nesting) operator.
+ * Examples: `foo.bar boo.baz`
+*/
+export type ScopePath = string;
+
+/**
+ * An expression language of ScopePathStr with a binary comma (to indicate alternatives) operator.
+ * Examples: `foo.bar boo.baz,quick quack`
+*/
+export type ScopePattern = string;
+
+/**
+ * A TextMate theme.
+ */
+ export interface IRawTheme {
+	readonly name?: string;
+	readonly settings: IRawThemeSetting[];
+}
+
+/**
+ * A single theme setting.
+ */
+ export interface IRawThemeSetting {
+	readonly name?: string;
+	readonly scope?: ScopePattern | ScopePattern[];
+	readonly settings: {
+		readonly fontStyle?: string;
+		readonly foreground?: string;
+		readonly background?: string;
+	};
+}
+
+export class ScopeStack {
+	public static from(first: ScopeName, ...segments: ScopeName[]): ScopeStack;
+	public static from(...segments: ScopeName[]): ScopeStack | null;
+	public static from(...segments: ScopeName[]): ScopeStack | null {
+		let result: ScopeStack | null = null;
+		for (let i = 0; i < segments.length; i++) {
+			result = new ScopeStack(result, segments[i]);
+		}
+		return result;
+	}
+
+	constructor(
+		public readonly parent: ScopeStack | null,
+		public readonly scopeName: ScopeName
+	) {}
+
+	public push(scopeName: ScopeName): ScopeStack {
+		return new ScopeStack(this, scopeName);
+	}
+
+	public getSegments(): ScopeName[] {
+		let item: ScopeStack | null = this;
+		const result: ScopeName[] = [];
+		while (item) {
+			result.push(item.scopeName);
+			item = item.parent;
+		}
+		result.reverse();
+		return result;
+	}
+
+	public toString() {
+		return this.getSegments().join(' ');
+	}
+}
+
+function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: ScopeName[] | null): boolean {
+	if (parentScopes === null) {
+		return true;
+	}
+
+	let index = 0;
+	let scopePattern = parentScopes[index];
+
+	while (scopePath) {
+		if (_matchesScope(scopePath.scopeName, scopePattern)) {
+			index++;
+			if (index === parentScopes.length) {
+				return true;
+			}
+			scopePattern = parentScopes[index];
+		}
+		scopePath = scopePath.parent;
+	}
+
+	return false;
+}
+
+function _matchesScope(scopeName: ScopeName, scopePattern: ScopeName): boolean {
+	return scopePattern === scopeName || (scopeName.startsWith(scopePattern) && scopeName[scopePattern.length] === '.');
+}
+
+export class StyleAttributes {
+	constructor(
+		public readonly fontStyle: OrMask<FontStyle>,
+		public readonly foregroundId: number,
+		public readonly backgroundId: number
+	) {}
 }
 
 /**
@@ -78,7 +204,7 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			scopes = [''];
 		}
 
-		let fontStyle: number = FontStyle.NotSet;
+		let fontStyle: OrMask<FontStyle> = FontStyle.NotSet;
 		if (typeof entry.settings.fontStyle === 'string') {
 			fontStyle = FontStyle.None;
 
@@ -140,8 +266,8 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 
 export class ParsedThemeRule {
 	constructor(
-		public readonly scope: string,
-		public readonly parentScopes: string[] | null,
+		public readonly scope: ScopeName,
+		public readonly parentScopes: ScopeName[] | null,
 		public readonly index: number,
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foreground: string | null,
@@ -157,6 +283,30 @@ export const enum FontStyle {
 	Bold = 2,
 	Underline = 4,
 	Strikethrough = 8
+}
+
+export function fontStyleToString(fontStyle: OrMask<FontStyle>) {
+	if (fontStyle === FontStyle.NotSet) {
+		return 'not set';
+	}
+
+	let style = '';
+	if (fontStyle & FontStyle.Italic) {
+		style += 'italic ';
+	}
+	if (fontStyle & FontStyle.Bold) {
+		style += 'bold ';
+	}
+	if (fontStyle & FontStyle.Underline) {
+		style += 'underline ';
+	}
+	if (fontStyle & FontStyle.Strikethrough) {
+		style += 'strikethrough ';
+	}
+	if (style === '') {
+		style = 'none';
+	}
+	return style.trim();
 }
 
 /**
@@ -194,7 +344,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		}
 	}
 	let colorMap = new ColorMap(_colorMap);
-	let defaults = new ThemeTrieElementRule(0, null, defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
+	let defaults = new StyleAttributes(defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
 
 	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
@@ -253,12 +403,12 @@ export class ColorMap {
 export class ThemeTrieElementRule {
 
 	scopeDepth: number;
-	parentScopes: string[] | null;
+	parentScopes: ScopeName[] | null;
 	fontStyle: number;
 	foreground: number;
 	background: number;
 
-	constructor(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number) {
+	constructor(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes;
 		this.fontStyle = fontStyle;
@@ -302,28 +452,21 @@ export interface ITrieChildrenMap {
 }
 
 export class ThemeTrieElement {
-
-	private readonly _mainRule: ThemeTrieElementRule;
 	private readonly _rulesWithParentScopes: ThemeTrieElementRule[];
-	private readonly _children: ITrieChildrenMap;
 
 	constructor(
-		mainRule: ThemeTrieElementRule,
+		private readonly _mainRule: ThemeTrieElementRule,
 		rulesWithParentScopes: ThemeTrieElementRule[] = [],
-		children: ITrieChildrenMap = {}
+		private readonly _children: ITrieChildrenMap = {}
 	) {
-		this._mainRule = mainRule;
 		this._rulesWithParentScopes = rulesWithParentScopes;
-		this._children = children;
 	}
 
 	private static _sortBySpecificity(arr: ThemeTrieElementRule[]): ThemeTrieElementRule[] {
 		if (arr.length === 1) {
 			return arr;
 		}
-
 		arr.sort(this._cmpBySpecificity);
-
 		return arr;
 	}
 
@@ -347,7 +490,7 @@ export class ThemeTrieElement {
 		return b.scopeDepth - a.scopeDepth;
 	}
 
-	public match(scope: string): ThemeTrieElementRule[] {
+	public match(scope: ScopeName): ThemeTrieElementRule[] {
 		if (scope === '') {
 			return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 		}
@@ -370,7 +513,7 @@ export class ThemeTrieElement {
 		return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
 	}
 
-	public insert(scopeDepth: number, scope: string, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
+	public insert(scopeDepth: number, scope: ScopeName, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
 		if (scope === '') {
 			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
 			return;
@@ -398,7 +541,7 @@ export class ThemeTrieElement {
 		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background);
 	}
 
-	private _doInsertHere(scopeDepth: number, parentScopes: string[] | null, fontStyle: number, foreground: number, background: number): void {
+	private _doInsertHere(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule

@@ -3,6 +3,7 @@
  *--------------------------------------------------------*/
 
 const path = require('path');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
 	entry: './out/main.js',
@@ -17,5 +18,12 @@ module.exports = {
 	devtool: 'source-map',
 	resolve: {
 		extensions: ['.js']
-	}
+	},
+	plugins: [
+		new CopyPlugin({
+			patterns: [
+				{ context: './out', from: '**/*.d.ts', to: '.' },
+			],
+		}),
+	],
 };

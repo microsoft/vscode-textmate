@@ -2,8 +2,8 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { IGrammar, StackElement } from '../main';
-import { StackElementMetadata } from '../metadata';
+import { IGrammar, StateStack } from '../main';
+import { EncodedTokenAttributes } from '../encodedTokenAttributes';
 
 export interface IThemedToken {
 	content: string;
@@ -14,7 +14,7 @@ export function tokenizeWithTheme(colorMap: string[], fileContents: string, gram
 
 	const lines = fileContents.split(/\r\n|\r|\n/);
 
-	let ruleStack: StackElement | null = null;
+	let ruleStack: StateStack | null = null;
 	let actual: IThemedToken[] = [], actualLen = 0;
 
 	for (let i = 0, len = lines.length; i < len; i++) {
@@ -29,7 +29,7 @@ export function tokenizeWithTheme(colorMap: string[], fileContents: string, gram
 				continue;
 			}
 			const metadata = result.tokens[2 * j + 1];
-			const foreground = StackElementMetadata.getForeground(metadata);
+			const foreground = EncodedTokenAttributes.getForeground(metadata);
 			const foregroundColor = colorMap[foreground];
 
 			actual[actualLen++] = {

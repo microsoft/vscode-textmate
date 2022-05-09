@@ -49,3 +49,9 @@ export interface OnigString {
 	readonly content: string;
 	dispose?(): void;
 }
+
+export function disposeOnigString(str: OnigString) {
+	if (typeof str.dispose === 'function') {
+		str.dispose();
+	}
+}
