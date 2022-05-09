@@ -4,7 +4,9 @@
 
 import * as assert from 'assert';
 import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType } from '../encodedTokenAttributes';
+import { Registry } from '../main';
 import { FontStyle } from '../theme';
+import { getOniguruma } from './onigLibs';
 
 function assertEquals(metadata: number, languageId: number, tokenType: StandardTokenType, containsBalancedBrackets: boolean, fontStyle: FontStyle, foreground: number, background: number): void {
 	const actual = {
@@ -101,4 +103,40 @@ test('StackElementMetadata can work at max values', () => {
 
 	let value = EncodedTokenAttributes.set(0, maxLangId, maxTokenType, true, maxFontStyle, maxForeground, maxBackground);
 	assertEquals(value, maxLangId, maxTokenType, true, maxFontStyle, maxForeground, maxBackground);
+});
+
+test.skip('Shadowed rules are resolved correctly', async function () {
+	const registry = new Registry({ loadGrammar: async () => undefined, onigLib: getOniguruma() });
+	try {
+		const grammar = await registry.addGrammar({
+			scopeName: 'source.test',
+			repository: {
+				$base: undefined!,
+				$self: undefined!,
+				foo: { include: '#bar', },
+				bar: { match: 'bar1', name: 'outer' }
+			},
+			patterns: [
+				{
+					patterns: [{ include: '#foo' }],
+					repository: {
+						$base: undefined!,
+						$self: undefined!,
+						bar: { match: 'bar1', name: 'inner' }
+					}
+				},
+				// When you move this up, the test passes
+				{
+					begin: 'begin',
+					patterns: [{ include: '#foo' }],
+					end: 'end'
+				},
+			]
+		});
+		const result = grammar.tokenizeLine('bar1', null, undefined);
+		// TODO this should be inner!
+		assert.deepStrictEqual(result.tokens, [{ startIndex: 0, endIndex: 4, scopes: ["source.test", "outer"] }]);
+	} finally {
+		registry.dispose();
+	}
 });
