@@ -27,8 +27,9 @@
     "prepublishOnly": "tsc && webpack --progress && node scripts/release.js"
   },
   "devDependencies": {
-    "@types/node": "^16.6.1",
     "@types/mocha": "^9.1.0",
+    "@types/node": "^16.6.1",
+    "copy-webpack-plugin": "^9.1.0",
     "mocha": "^9.2.2",
     "typescript": "^4.3.5",
     "vscode-oniguruma": "^1.5.1",
