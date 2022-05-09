@@ -81,7 +81,7 @@ export abstract class Rule {
 		return RegexSource.replaceCaptures(this._contentName, lineText, captureIndices);
 	}
 
-	public abstract collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList): void;
+	public abstract collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList): void;
 
 	public abstract compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null): CompiledRule;
 
@@ -106,7 +106,7 @@ export class CaptureRule extends Rule {
 		// nothing to dispose
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList) {
+	public collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList) {
 		throw new Error('Not supported!');
 	}
 
@@ -142,7 +142,7 @@ export class MatchRule extends Rule {
 		return `${this._match.source}`;
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList) {
+	public collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList) {
 		out.push(this._match);
 	}
 
@@ -157,7 +157,7 @@ export class MatchRule extends Rule {
 	private _getCachedCompiledPatterns(grammar: IRuleRegistry & IOnigLib): RegExpSourceList {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
-			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns);
+			this.collectPatterns(grammar, this._cachedCompiledPatterns);
 		}
 		return this._cachedCompiledPatterns;
 	}
@@ -182,10 +182,10 @@ export class IncludeOnlyRule extends Rule {
 		}
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList) {
+	public collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList) {
 		for (const pattern of this.patterns) {
 			const rule = grammar.getRule(pattern);
-			rule.collectPatternsRecursive(grammar, out);
+			rule.collectPatterns(grammar, out);
 		}
 	}
 
@@ -200,7 +200,7 @@ export class IncludeOnlyRule extends Rule {
 	private _getCachedCompiledPatterns(grammar: IRuleRegistry & IOnigLib): RegExpSourceList {
 		if (!this._cachedCompiledPatterns) {
 			this._cachedCompiledPatterns = new RegExpSourceList();
-			this.collectPatternsRecursive(grammar, this._cachedCompiledPatterns);
+			this.collectPatterns(grammar, this._cachedCompiledPatterns);
 		}
 		return this._cachedCompiledPatterns;
 	}
@@ -249,7 +249,7 @@ export class BeginEndRule extends Rule {
 		return this._end.resolveBackReferences(lineText, captureIndices);
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList) {
+	public collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList) {
 		out.push(this._begin);
 	}
 
@@ -267,7 +267,7 @@ export class BeginEndRule extends Rule {
 
 			for (const pattern of this.patterns) {
 				const rule = grammar.getRule(pattern);
-				rule.collectPatternsRecursive(grammar, this._cachedCompiledPatterns);
+				rule.collectPatterns(grammar, this._cachedCompiledPatterns);
 			}
 
 			if (this.applyEndPatternLast) {
@@ -334,7 +334,7 @@ export class BeginWhileRule extends Rule {
 		return this._while.resolveBackReferences(lineText, captureIndices);
 	}
 
-	public collectPatternsRecursive(grammar: IRuleRegistry, out: RegExpSourceList) {
+	public collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList) {
 		out.push(this._begin);
 	}
 
@@ -352,7 +352,7 @@ export class BeginWhileRule extends Rule {
 
 			for (const pattern of this.patterns) {
 				const rule = grammar.getRule(pattern);
-				rule.collectPatternsRecursive(grammar, this._cachedCompiledPatterns);
+				rule.collectPatterns(grammar, this._cachedCompiledPatterns);
 			}
 		}
 		return this._cachedCompiledPatterns;
