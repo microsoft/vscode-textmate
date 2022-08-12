@@ -8,11 +8,7 @@ export type EncodedTokenAttributes = number;
 
 export namespace EncodedTokenAttributes {
 	export function toBinaryStr(encodedTokenAttributes: EncodedTokenAttributes): string {
-		let r = encodedTokenAttributes.toString(2);
-		while (r.length < 32) {
-			r = "0" + r;
-		}
-		return r;
+		return encodedTokenAttributes.toString(2).padStart(32, "0");
 	}
 
 	export function print(encodedTokenAttributes: EncodedTokenAttributes): void {
