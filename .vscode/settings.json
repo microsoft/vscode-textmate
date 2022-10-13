@@ -10,6 +10,7 @@
 		"release/**": true,
 		"coverage/**": true
 	},
+	"git.branchProtection": ["main"],
 	"lcov.sourceMaps": true,
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"tslint.enable": true,
