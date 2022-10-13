@@ -1,5 +1,6 @@
 /.vscode/
 /benchmark/
+/build/
 /coverage/
 /out/
 /scripts/
