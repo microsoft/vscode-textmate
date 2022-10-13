@@ -36,10 +36,13 @@ extends:
             displayName: Install dependencies
 
           - script: npm run compile
-            displayName: Compile npm package
+            displayName: Compile
+
+          - script: npm run bundle
+            displayName: Bundle
 
         testSteps:
           - script: npm test
-            displayName: Test npm package
+            displayName: Test
 
         publishPackage: ${{ parameters.publishPackage }}
