@@ -26,11 +26,6 @@ extends:
     npmPackages:
       - name: vscode-textmate
 
-        buildPlatforms:
-          - name: Linux
-            nodeVersions:
-              - 16.x
-
         buildSteps:
           - script: npm ci
             displayName: Install dependencies
@@ -41,7 +36,18 @@ extends:
           - script: npm run bundle
             displayName: Bundle
 
+        testPlatforms:
+          - name: Linux
+            nodeVersions:
+              - 16.x
+
         testSteps:
+          - script: npm ci
+            displayName: Install dependencies
+
+          - script: npm run compile
+            displayName: Compile
+
           - script: npm test
             displayName: Test
 
