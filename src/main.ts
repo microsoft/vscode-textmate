@@ -13,6 +13,8 @@ import { ScopeDependencyProcessor } from './grammar/grammarDependencies'
 
 export * from './onigLib';
 
+export { IRawTheme } from './theme'
+
 /**
  * A registry helper that can locate grammar file paths given scope names.
  */
