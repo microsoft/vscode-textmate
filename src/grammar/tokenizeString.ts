@@ -604,7 +604,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
 			const scopeName = captureRule.getName(lineTextContent, captureIndices);
-			const nameScopesList = stack.contentNameScopesList.pushAttributed(scopeName, grammar);
+			const nameScopesList = stack.contentNameScopesList!.pushAttributed(scopeName, grammar);
 			const contentName = captureRule.getContentName(lineTextContent, captureIndices);
 			const contentNameScopesList = nameScopesList.pushAttributed(contentName, grammar);
 
@@ -619,7 +619,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRuleScopeName !== null) {
 			// push
 			const base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
-			const captureRuleScopesList = base.pushAttributed(captureRuleScopeName, grammar);
+			const captureRuleScopesList = base!.pushAttributed(captureRuleScopeName, grammar);
 			localStack.push(new LocalStackElement(captureRuleScopesList, captureIndex.end));
 		}
 	}
