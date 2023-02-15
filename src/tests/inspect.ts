@@ -4,7 +4,7 @@
 
 import * as fs from 'fs';
 import { Registry, IGrammar, parseRawGrammar } from '../main';
-import { StateStack as StackElementImpl, Grammar as GrammarImpl } from '../grammar';
+import { StateStackImpl as StackElementImpl, Grammar as GrammarImpl } from '../grammar';
 import * as debug from '../debug';
 import { getOniguruma } from './onigLibs';
 

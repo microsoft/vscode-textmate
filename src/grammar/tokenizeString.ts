@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { DebugFlags, UseOnigurumaFindOptions } from '../debug';
-import type { LineTokens, StateStack } from './grammar';
+import type { LineTokens, StateStackImpl } from './grammar';
 import { disposeOnigString, FindOption, IOnigCaptureIndex, OnigString } from '../onigLib';
 import { BeginEndRule, BeginWhileRule, CaptureRule, CompiledRule, endRuleId, MatchRule, Rule, RuleId, whileRuleId } from '../rule';
 import { performanceNow } from '../utils';
@@ -11,7 +11,7 @@ import type { AttributedScopeStack, Grammar, Injection } from './grammar';
 
 class TokenizeStringResult {
 	constructor(
-		public readonly stack: StateStack,
+		public readonly stack: StateStackImpl,
 		public readonly stoppedEarly: boolean
 	) { }
 }
@@ -33,7 +33,7 @@ class TokenizeStringResult {
 	lineText: OnigString,
 	isFirstLine: boolean,
 	linePos: number,
-	stack: StateStack,
+	stack: StateStackImpl,
 	lineTokens: LineTokens,
 	checkWhileConditions: boolean,
 	timeLimit: number
@@ -121,7 +121,7 @@ class TokenizeStringResult {
 			}
 
 			lineTokens.produce(stack, captureIndices[0].start);
-			stack = stack.withContentNameScopesList(stack.nameScopesList);
+			stack = stack.withContentNameScopesList(stack.nameScopesList!);
 			handleCaptures(
 				grammar,
 				lineText,
@@ -163,7 +163,7 @@ class TokenizeStringResult {
 			const beforePush = stack;
 			// push it on the stack rule
 			const scopeName = _rule.getName(lineText.content, captureIndices);
-			const nameScopesList = stack.contentNameScopesList.pushAttributed(
+			const nameScopesList = stack.contentNameScopesList!.pushAttributed(
 				scopeName,
 				grammar
 			);
@@ -332,16 +332,16 @@ class TokenizeStringResult {
  * If any fails, cut off the entire stack above the failed while condition. While conditions
  * may also advance the linePosition.
  */
-function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStack, lineTokens: LineTokens): IWhileCheckResult {
+function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, lineTokens: LineTokens): IWhileCheckResult {
 	let anchorPosition = (stack.beginRuleCapturedEOL ? 0 : -1);
 
 	interface IWhileStack {
-		readonly stack: StateStack;
+		readonly stack: StateStackImpl;
 		readonly rule: BeginWhileRule;
 	}
 
 	const whileRules: IWhileStack[] = [];
-	for (let node: StateStack | null = stack; node; node = node.pop()) {
+	for (let node: StateStackImpl | null = stack; node; node = node.pop()) {
 		const nodeRule = node.getRule(grammar);
 		if (nodeRule instanceof BeginWhileRule) {
 			whileRules.push({
@@ -390,13 +390,13 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 }
 
 interface IWhileCheckResult {
-	readonly stack: StateStack;
+	readonly stack: StateStackImpl;
 	readonly linePos: number;
 	readonly anchorPosition: number;
 	readonly isFirstLine: boolean;
 }
 
-function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStack, anchorPosition: number): IMatchResult | null {
+function matchRuleOrInjections(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, anchorPosition: number): IMatchResult | null {
 	// Look for normal grammar rule
 	const matchResult = matchRule(grammar, lineText, isFirstLine, linePos, stack, anchorPosition);
 
@@ -434,7 +434,7 @@ interface IMatchResult {
 	readonly matchedRuleId: RuleId | typeof endRuleId;
 }
 
-function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStack, anchorPosition: number): IMatchResult | null {
+function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, anchorPosition: number): IMatchResult | null {
 	const rule = stack.getRule(grammar);
 	const { ruleScanner, findOptions } = prepareRuleSearch(rule, grammar, stack.endRule, isFirstLine, linePos === anchorPosition);
 
@@ -466,14 +466,14 @@ function matchRule(grammar: Grammar, lineText: OnigString, isFirstLine: boolean,
 	return null;
 }
 
-function matchInjections(injections: Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStack, anchorPosition: number): IMatchInjectionsResult | null {
+function matchInjections(injections: Injection[], grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, anchorPosition: number): IMatchInjectionsResult | null {
 	// The lower the better
 	let bestMatchRating = Number.MAX_VALUE;
 	let bestMatchCaptureIndices: IOnigCaptureIndex[] | null = null;
 	let bestMatchRuleId: RuleId | typeof endRuleId;
 	let bestMatchResultPriority: number = 0;
 
-	const scopes = stack.contentNameScopesList.getScopeNames();
+	const scopes = stack.contentNameScopesList!.getScopeNames();
 
 	for (let i = 0, len = injections.length; i < len; i++) {
 		const injection = injections[i];
@@ -558,7 +558,7 @@ function getFindOptions(allowA: boolean, allowG: boolean): number {
 	return options;
 }
 
-function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStack, lineTokens: LineTokens, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
+function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
 	if (captures.length === 0) {
 		return;
 	}

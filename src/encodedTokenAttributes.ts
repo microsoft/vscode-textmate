@@ -76,12 +76,12 @@ export namespace EncodedTokenAttributes {
 	 */
 	export function set(
 		encodedTokenAttributes: EncodedTokenAttributes,
-		languageId: number,
-		tokenType: OptionalStandardTokenType,
+		languageId: number | 0,
+		tokenType: OptionalStandardTokenType | OptionalStandardTokenType.NotSet,
 		containsBalancedBrackets: boolean | null,
-		fontStyle: FontStyle,
-		foreground: number,
-		background: number
+		fontStyle: FontStyle | FontStyle.NotSet,
+		foreground: number | 0,
+		background: number | 0
 	): number {
 		let _languageId = EncodedTokenAttributes.getLanguageId(encodedTokenAttributes);
 		let _tokenType = EncodedTokenAttributes.getTokenType(encodedTokenAttributes);
