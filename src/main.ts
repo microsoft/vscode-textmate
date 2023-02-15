@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, StateStackFrame, StateStackImpl as StackElementImpl } from './grammar';
+import { BalancedBracketSelectors, StateStackImpl as StackElementImpl } from './grammar';
 import * as grammarReader from './parseRawGrammar';
 import { IOnigLib } from './onigLib';
 import { IRawGrammar } from './rawGrammar';

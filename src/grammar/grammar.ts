@@ -317,6 +317,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				this,
 				this._grammar.repository
 			);
+			// This ensures ids are deterministic, and thus equal in renderer and webworker.
 			this.getInjections();
 		}
 
@@ -461,7 +462,7 @@ export class AttributedScopeStack {
 	}
 
 	public toString() {
-		return this.getScopeNames().join('.');
+		return this.getScopeNames().join(' ');
 	}
 
 	public equals(other: AttributedScopeStack): boolean {
@@ -599,8 +600,8 @@ export class StateStackImpl implements StateStack {
 		0,
 		false,
 		null,
-		null!,
-		null!
+		null,
+		null
 	);
 
 	/**
@@ -799,10 +800,9 @@ export class StateStackImpl implements StateStack {
 			outIndex = this.parent._writeString(res, outIndex);
 		}
 
-		// TODO@alexdima why is this "TODO-"?
 		res[
 			outIndex++
-		] = `(${this.ruleId}, TODO-${this.nameScopesList?.toString()}, TODO-${this.contentNameScopesList?.toString()})`;
+		] = `(${this.ruleId}, ${this.nameScopesList?.toString()}, ${this.contentNameScopesList?.toString()})`;
 
 		return outIndex;
 	}
@@ -855,8 +855,6 @@ export class StateStackImpl implements StateStack {
 	public toStateStackFrame(): StateStackFrame {
 		return {
 			ruleId: ruleIdToNumber(this.ruleId),
-			enterPos: this._enterPos,
-			anchorPos: this._anchorPos,
 			beginRuleCapturedEOL: this.beginRuleCapturedEOL,
 			endRule: this.endRule,
 			nameScopesList: this.nameScopesList?.getExtensionIfDefined(this.parent?.nameScopesList ?? null)! ?? [],
@@ -869,8 +867,8 @@ export class StateStackImpl implements StateStack {
 		return new StateStackImpl(
 			self,
 			ruleIdFromNumber(frame.ruleId),
-			frame.enterPos,
-			frame.anchorPos,
+			frame.enterPos ?? -1,
+			frame.anchorPos ?? -1,
 			frame.beginRuleCapturedEOL,
 			frame.endRule,
 			namesScopeList,
@@ -881,8 +879,8 @@ export class StateStackImpl implements StateStack {
 
 export interface StateStackFrame {
 	ruleId: number;
-	enterPos: number;
-	anchorPos: number;
+	enterPos?: number;
+	anchorPos?: number;
 	beginRuleCapturedEOL: boolean;
 	endRule: string | null;
 	nameScopesList: AttributedScopeStackFrame[];
