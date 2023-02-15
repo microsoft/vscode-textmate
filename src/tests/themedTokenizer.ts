@@ -4,6 +4,7 @@
 
 import { IGrammar, StateStack } from '../main';
 import { EncodedTokenAttributes } from '../encodedTokenAttributes';
+import { applyStateStackDiff, diffStateStacksRefEq } from '../diffStateStacks';
 
 export interface IThemedToken {
 	content: string;
@@ -37,7 +38,13 @@ export function tokenizeWithTheme(colorMap: string[], fileContents: string, gram
 				color: foregroundColor
 			};
 		}
-		ruleStack = result.ruleStack;
+
+		if (ruleStack) {
+			const diff = diffStateStacksRefEq(ruleStack, result.ruleStack);
+			ruleStack = applyStateStackDiff(ruleStack, diff);
+		} else {
+			ruleStack = result.ruleStack;
+		}
 	}
 
 	return actual;

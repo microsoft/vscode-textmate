@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { BalancedBracketSelectors, StateStack as StackElementImpl } from './grammar';
+import { BalancedBracketSelectors, StateStackFrame, StateStackImpl as StackElementImpl } from './grammar';
 import * as grammarReader from './parseRawGrammar';
 import { IOnigLib } from './onigLib';
 import { IRawGrammar } from './rawGrammar';
@@ -10,6 +10,7 @@ import { SyncRegistry } from './registry';
 import { IRawTheme, ScopeName, Theme } from './theme';
 import { StandardTokenType } from './encodedTokenAttributes';
 import { ScopeDependencyProcessor } from './grammar/grammarDependencies'
+import { applyStateStackDiff, diffStateStacksRefEq, StackDiff } from './diffStateStacks';
 
 export * from './onigLib';
 
@@ -265,3 +266,5 @@ export interface StateStack {
 export const INITIAL: StateStack = StackElementImpl.NULL;
 
 export const parseRawGrammar: (content: string, filePath?: string) => IRawGrammar = grammarReader.parseRawGrammar;
+
+export { diffStateStacksRefEq, applyStateStackDiff, StackDiff, };

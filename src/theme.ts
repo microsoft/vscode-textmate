@@ -99,6 +99,13 @@ export type ScopePattern = string;
 }
 
 export class ScopeStack {
+	static push(path: ScopeStack | null, scopeNames: ScopeName[]): ScopeStack | null {
+		for (const name of scopeNames) {
+			path = new ScopeStack(path, name);
+		}
+		return path;
+	}
+
 	public static from(first: ScopeName, ...segments: ScopeName[]): ScopeStack;
 	public static from(...segments: ScopeName[]): ScopeStack | null;
 	public static from(...segments: ScopeName[]): ScopeStack | null {
@@ -131,6 +138,26 @@ export class ScopeStack {
 
 	public toString() {
 		return this.getSegments().join(' ');
+	}
+
+	public extends(other: ScopeStack): boolean {
+		if (this === other) {
+			return true;
+		}
+		if (this.parent === null) {
+			return false;
+		}
+		return this.parent.extends(other);
+	}
+
+	public getExtensionIfDefined(base: ScopeStack | null): string[] | undefined {
+		const result: string[] = [];
+		let item: ScopeStack | null = this;
+		while (item && item !== base) {
+			result.push(item.scopeName);
+			item = item.parent;
+		}
+		return item === base ? result.reverse() : undefined;
 	}
 }
 

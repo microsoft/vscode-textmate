@@ -9,6 +9,7 @@ import { Registry, IGrammar, RegistryOptions, StateStack, parseRawGrammar } from
 import { IOnigLib } from '../onigLib';
 import { getOniguruma } from './onigLibs';
 import { IRawGrammar } from '../rawGrammar';
+import { applyStateStackDiff, diffStateStacksRefEq } from '../diffStateStacks';
 
 const REPO_ROOT = path.join(__dirname, '../../');
 
@@ -96,6 +97,11 @@ function assertTokenizationSuite(testLocation: string): void {
 		}
 
 		assert.deepStrictEqual(actualTokens, testCase.tokens, 'Tokenizing line ' + testCase.line);
+
+		if (prevState) {
+			const diff = diffStateStacksRefEq(prevState, actual.ruleStack);
+			actual = { ...actual, ruleStack: applyStateStackDiff(prevState, diff)! }
+		}
 
 		return actual.ruleStack;
 	}
