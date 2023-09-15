@@ -3,20 +3,11 @@
  *--------------------------------------------------------*/
 
 import { RuleId } from "./rule";
-
-export interface ILocation {
-	readonly filename: string;
-	readonly line: number;
-	readonly char: number;
-}
-
-export interface ILocatable {
-	readonly $vscodeTextmateLocation?: ILocation;
-}
+import { ScopeName } from "./theme";
 
 export interface IRawGrammar extends ILocatable {
 	repository: IRawRepository;
-	readonly scopeName: string;
+	readonly scopeName: ScopeName;
 	readonly patterns: IRawRule[];
 	readonly injections?: { [expression: string]: IRawRule };
 	readonly injectionSelector?: string;
@@ -25,6 +16,17 @@ export interface IRawGrammar extends ILocatable {
 	readonly name?: string;
 	readonly firstLineMatch?: string;
 }
+
+/**
+ * Allowed values:
+ * * Scope Name, e.g. `source.ts`
+ * * Top level scope reference, e.g. `source.ts#entity.name.class`
+ * * Relative scope reference, e.g. `#entity.name.class`
+ * * self, e.g. `$self`
+ * * base, e.g. `$base`
+ */
+export type IncludeString = string;
+export type RegExpString = string;
 
 export interface IRawRepositoryMap {
 	[name: string]: IRawRule;
@@ -35,20 +37,20 @@ export interface IRawRepositoryMap {
 export type IRawRepository = IRawRepositoryMap & ILocatable;
 
 export interface IRawRule extends ILocatable {
-	id?: RuleId;
+	id?: RuleId; // This is not part of the spec only used internally
 
-	readonly include?: string;
+	readonly include?: IncludeString;
 
-	readonly name?: string;
-	readonly contentName?: string;
+	readonly name?: ScopeName;
+	readonly contentName?: ScopeName;
 
-	readonly match?: string;
+	readonly match?: RegExpString;
 	readonly captures?: IRawCaptures;
-	readonly begin?: string;
+	readonly begin?: RegExpString;
 	readonly beginCaptures?: IRawCaptures;
-	readonly end?: string;
+	readonly end?: RegExpString;
 	readonly endCaptures?: IRawCaptures;
-	readonly while?: string;
+	readonly while?: RegExpString;
 	readonly whileCaptures?: IRawCaptures;
 	readonly patterns?: IRawRule[];
 
@@ -57,8 +59,18 @@ export interface IRawRule extends ILocatable {
 	readonly applyEndPatternLast?: boolean;
 }
 
+export type IRawCaptures = IRawCapturesMap & ILocatable;
+
 export interface IRawCapturesMap {
 	[captureId: string]: IRawRule;
 }
 
-export type IRawCaptures = IRawCapturesMap & ILocatable;
+export interface ILocation {
+	readonly filename: string;
+	readonly line: number;
+	readonly char: number;
+}
+
+export interface ILocatable {
+	readonly $vscodeTextmateLocation?: ILocation;
+}

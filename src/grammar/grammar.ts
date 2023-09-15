@@ -4,7 +4,7 @@
 
 import { DebugFlags } from '../debug';
 import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
-import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack as StackElementDef } from '../main';
+import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
@@ -12,7 +12,6 @@ import { ruleIdFromNumber, IRuleFactoryHelper, IRuleRegistry, Rule, RuleFactory,
 import { FontStyle, ScopeName, ScopePath, ScopeStack, StyleAttributes } from '../theme';
 import { clone } from '../utils';
 import { BasicScopeAttributes, BasicScopeAttributesProvider } from './basicScopesAttributeProvider';
-import { ScopeDependencyProcessor } from './grammarDependencies';
 import { _tokenizeString } from './tokenizeString';
 
 export function createGrammar(
@@ -277,7 +276,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 	public tokenizeLine(
 		lineText: string,
-		prevState: StateStack | null,
+		prevState: StateStackImpl | null,
 		timeLimit: number = 0
 	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
@@ -290,7 +289,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 	public tokenizeLine2(
 		lineText: string,
-		prevState: StateStack | null,
+		prevState: StateStackImpl | null,
 		timeLimit: number = 0
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
@@ -303,13 +302,13 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 	private _tokenize(
 		lineText: string,
-		prevState: StateStack | null,
+		prevState: StateStackImpl | null,
 		emitBinaryTokens: boolean,
 		timeLimit: number
 	): {
 		lineLength: number;
 		lineTokens: LineTokens;
-		ruleStack: StateStack;
+		ruleStack: StateStackImpl;
 		stoppedEarly: boolean;
 	} {
 		if (this._rootId === -1) {
@@ -318,10 +317,12 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				this,
 				this._grammar.repository
 			);
+			// This ensures ids are deterministic, and thus equal in renderer and webworker.
+			this.getInjections();
 		}
 
 		let isFirstLine: boolean;
-		if (!prevState || prevState === StateStack.NULL) {
+		if (!prevState || prevState === StateStackImpl.NULL) {
 			isFirstLine = true;
 			const rawDefaultMetadata =
 				this._basicScopeAttributesProvider.getDefaultAttributes();
@@ -355,7 +356,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				);
 			}
 
-			prevState = new StateStack(
+			prevState = new StateStackImpl(
 				null,
 				this._rootId,
 				-1,
@@ -415,6 +416,16 @@ function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): I
 }
 
 export class AttributedScopeStack {
+	static fromExtension(namesScopeList: AttributedScopeStack | null, contentNameScopesList: AttributedScopeStackFrame[]): AttributedScopeStack | null {
+		let current = namesScopeList;
+		let scopeNames = namesScopeList?.scopePath ?? null;
+		for (const frame of contentNameScopesList) {
+			scopeNames = ScopeStack.push(scopeNames, frame.scopeNames);
+			current = new AttributedScopeStack(current, scopeNames!, frame.encodedTokenAttributes);
+		}
+		return current;
+	}
+
 	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
 		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes);
 	}
@@ -435,6 +446,14 @@ export class AttributedScopeStack {
 
 	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
 
+	/**
+	 * Invariant:
+	 * ```
+	 * if (parent && !scopePath.extends(parent.scopePath)) {
+	 * 	throw new Error();
+	 * }
+	 * ```
+	 */
 	private constructor(
 		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
@@ -442,11 +461,15 @@ export class AttributedScopeStack {
 	) {
 	}
 
-	public equals(other: AttributedScopeStack): boolean {
-		return AttributedScopeStack._equals(this, other);
+	public toString() {
+		return this.getScopeNames().join(' ');
 	}
 
-	private static _equals(
+	public equals(other: AttributedScopeStack): boolean {
+		return AttributedScopeStack.equals(this, other);
+	}
+
+	public static equals(
 		a: AttributedScopeStack | null,
 		b: AttributedScopeStack | null
 	): boolean {
@@ -542,24 +565,43 @@ export class AttributedScopeStack {
 	public getScopeNames(): string[] {
 		return this.scopePath.getSegments();
 	}
+
+	public getExtensionIfDefined(base: AttributedScopeStack | null): AttributedScopeStackFrame[] | undefined {
+		const result: AttributedScopeStackFrame[] = [];
+		let self: AttributedScopeStack | null = this;
+
+		while (self && self !== base) {
+			result.push({
+				encodedTokenAttributes: self.tokenAttributes,
+				scopeNames: self.scopePath.getExtensionIfDefined(self.parent?.scopePath ?? null)!,
+			});
+			self = self.parent;
+		}
+		return self === base ? result.reverse() : undefined;
+	}
+}
+
+interface AttributedScopeStackFrame {
+	encodedTokenAttributes: number;
+	scopeNames: string[];
 }
 
 /**
  * Represents a "pushed" state on the stack (as a linked list element).
  */
-export class StateStack implements StackElementDef {
+export class StateStackImpl implements StateStack {
 	_stackElementBrand: void = undefined;
 
 	// TODO remove me
-	public static NULL = new StateStack(
+	public static NULL = new StateStackImpl(
 		null,
 		0 as any,
 		0,
 		0,
 		false,
 		null,
-		null!,
-		null!
+		null,
+		null
 	);
 
 	/**
@@ -582,11 +624,23 @@ export class StateStack implements StackElementDef {
 	 */
 	public readonly depth: number;
 
+
+	/**
+	 * Invariant:
+	 * ```
+	 * if (contentNameScopesList !== nameScopesList && contentNameScopesList?.parent !== nameScopesList) {
+	 * 	throw new Error();
+	 * }
+	 * if (this.parent && !nameScopesList.extends(this.parent.contentNameScopesList)) {
+	 * 	throw new Error();
+	 * }
+	 * ```
+	 */
 	constructor(
 		/**
 		 * The previous state on the stack (or null for the root state).
 		 */
-		public readonly parent: StateStack | null,
+		public readonly parent: StateStackImpl | null,
 
 		/**
 		 * The state (rule) that this element represents.
@@ -609,42 +663,42 @@ export class StateStack implements StackElementDef {
 		/**
 		 * The list of scopes containing the "name" for this state.
 		 */
-		public readonly nameScopesList: AttributedScopeStack,
+		public readonly nameScopesList: AttributedScopeStack | null,
 
 		/**
 		 * The list of scopes containing the "contentName" (besides "name") for this state.
 		 * This list **must** contain as an element `scopeName`.
 		 */
-		public readonly contentNameScopesList: AttributedScopeStack
+		public readonly contentNameScopesList: AttributedScopeStack | null,
 	) {
 		this.depth = this.parent ? this.parent.depth + 1 : 1;
 		this._enterPos = enterPos;
 		this._anchorPos = anchorPos;
 	}
 
-	public equals(other: StateStack): boolean {
+	public equals(other: StateStackImpl): boolean {
 		if (other === null) {
 			return false;
 		}
-		return StateStack._equals(this, other);
+		return StateStackImpl._equals(this, other);
 	}
 
-	private static _equals(a: StateStack, b: StateStack): boolean {
+	private static _equals(a: StateStackImpl, b: StateStackImpl): boolean {
 		if (a === b) {
 			return true;
 		}
 		if (!this._structuralEquals(a, b)) {
 			return false;
 		}
-		return a.contentNameScopesList.equals(b.contentNameScopesList);
+		return AttributedScopeStack.equals(a.contentNameScopesList, b.contentNameScopesList);
 	}
 
 	/**
 	 * A structural equals check. Does not take into account `scopes`.
 	 */
 	private static _structuralEquals(
-		a: StateStack | null,
-		b: StateStack | null
+		a: StateStackImpl | null,
+		b: StateStackImpl | null
 	): boolean {
 		do {
 			if (a === b) {
@@ -675,11 +729,11 @@ export class StateStack implements StackElementDef {
 		} while (true);
 	}
 
-	public clone(): StateStack {
+	public clone(): StateStackImpl {
 		return this;
 	}
 
-	private static _reset(el: StateStack | null): void {
+	private static _reset(el: StateStackImpl | null): void {
 		while (el) {
 			el._enterPos = -1;
 			el._anchorPos = -1;
@@ -688,14 +742,14 @@ export class StateStack implements StackElementDef {
 	}
 
 	public reset(): void {
-		StateStack._reset(this);
+		StateStackImpl._reset(this);
 	}
 
-	public pop(): StateStack | null {
+	public pop(): StateStackImpl | null {
 		return this.parent;
 	}
 
-	public safePop(): StateStack {
+	public safePop(): StateStackImpl {
 		if (this.parent) {
 			return this.parent;
 		}
@@ -708,10 +762,10 @@ export class StateStack implements StackElementDef {
 		anchorPos: number,
 		beginRuleCapturedEOL: boolean,
 		endRule: string | null,
-		nameScopesList: AttributedScopeStack,
-		contentNameScopesList: AttributedScopeStack
-	): StateStack {
-		return new StateStack(
+		nameScopesList: AttributedScopeStack | null,
+		contentNameScopesList: AttributedScopeStack | null,
+	): StateStackImpl {
+		return new StateStackImpl(
 			this,
 			ruleId,
 			enterPos,
@@ -748,14 +802,14 @@ export class StateStack implements StackElementDef {
 
 		res[
 			outIndex++
-		] = `(${this.ruleId}, TODO-${this.nameScopesList}, TODO-${this.contentNameScopesList})`;
+		] = `(${this.ruleId}, ${this.nameScopesList?.toString()}, ${this.contentNameScopesList?.toString()})`;
 
 		return outIndex;
 	}
 
 	public withContentNameScopesList(
 		contentNameScopeStack: AttributedScopeStack
-	): StateStack {
+	): StateStackImpl {
 		if (this.contentNameScopesList === contentNameScopeStack) {
 			return this;
 		}
@@ -770,11 +824,11 @@ export class StateStack implements StackElementDef {
 		);
 	}
 
-	public withEndRule(endRule: string): StateStack {
+	public withEndRule(endRule: string): StateStackImpl {
 		if (this.endRule === endRule) {
 			return this;
 		}
-		return new StateStack(
+		return new StateStackImpl(
 			this.parent,
 			this.ruleId,
 			this._enterPos,
@@ -787,8 +841,8 @@ export class StateStack implements StackElementDef {
 	}
 
 	// Used to warn of endless loops
-	public hasSameRuleAs(other: StateStack): boolean {
-		let el: StateStack | null = this;
+	public hasSameRuleAs(other: StateStackImpl): boolean {
+		let el: StateStackImpl | null = this;
 		while (el && el._enterPos === other._enterPos) {
 			if (el.ruleId === other.ruleId) {
 				return true;
@@ -797,8 +851,44 @@ export class StateStack implements StackElementDef {
 		}
 		return false;
 	}
+
+	public toStateStackFrame(): StateStackFrame {
+		return {
+			ruleId: ruleIdToNumber(this.ruleId),
+			beginRuleCapturedEOL: this.beginRuleCapturedEOL,
+			endRule: this.endRule,
+			nameScopesList: this.nameScopesList?.getExtensionIfDefined(this.parent?.nameScopesList ?? null)! ?? [],
+			contentNameScopesList: this.contentNameScopesList?.getExtensionIfDefined(this.nameScopesList)! ?? [],
+		};
+	}
+
+	public static pushFrame(self: StateStackImpl | null, frame: StateStackFrame): StateStackImpl {
+		const namesScopeList = AttributedScopeStack.fromExtension(self?.nameScopesList ?? null, frame.nameScopesList)!;
+		return new StateStackImpl(
+			self,
+			ruleIdFromNumber(frame.ruleId),
+			frame.enterPos ?? -1,
+			frame.anchorPos ?? -1,
+			frame.beginRuleCapturedEOL,
+			frame.endRule,
+			namesScopeList,
+			AttributedScopeStack.fromExtension(namesScopeList, frame.contentNameScopesList)!
+		);
+	}
 }
 
+export interface StateStackFrame {
+	ruleId: number;
+	enterPos?: number;
+	anchorPos?: number;
+	beginRuleCapturedEOL: boolean;
+	endRule: string | null;
+	nameScopesList: AttributedScopeStackFrame[];
+	/**
+	 * on top of nameScopesList
+	 */
+	contentNameScopesList: AttributedScopeStackFrame[];
+}
 
 interface TokenTypeMatcher {
 	readonly matcher: Matcher<string[]>;
@@ -889,12 +979,12 @@ export class LineTokens {
 		this._lastTokenEndIndex = 0;
 	}
 
-	public produce(stack: StateStack, endIndex: number): void {
+	public produce(stack: StateStackImpl, endIndex: number): void {
 		this.produceFromScopes(stack.contentNameScopesList, endIndex);
 	}
 
 	public produceFromScopes(
-		scopesList: AttributedScopeStack,
+		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
 		if (this._lastTokenEndIndex >= endIndex) {
@@ -902,7 +992,7 @@ export class LineTokens {
 		}
 
 		if (this._emitBinaryTokens) {
-			let metadata = scopesList.tokenAttributes;
+			let metadata = scopesList?.tokenAttributes ?? 0;
 			let containsBalancedBrackets = false;
 			if (this.balancedBracketSelectors?.matchesAlways) {
 				containsBalancedBrackets = true;
@@ -910,7 +1000,7 @@ export class LineTokens {
 
 			if (this._tokenTypeOverrides.length > 0 || (this.balancedBracketSelectors && !this.balancedBracketSelectors.matchesAlways && !this.balancedBracketSelectors.matchesNever)) {
 				// Only generate scope array when required to improve performance
-				const scopes = scopesList.getScopeNames();
+				const scopes = scopesList?.getScopeNames() ?? [];
 				for (const tokenType of this._tokenTypeOverrides) {
 					if (tokenType.matcher(scopes)) {
 						metadata = EncodedTokenAttributes.set(
@@ -948,7 +1038,7 @@ export class LineTokens {
 			}
 
 			if (DebugFlags.InDebugMode) {
-				const scopes = scopesList.getScopeNames();
+				const scopes = scopesList?.getScopeNames() ?? [];
 				console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
 				for (let k = 0; k < scopes.length; k++) {
 					console.log('      * ' + scopes[k]);
@@ -962,7 +1052,7 @@ export class LineTokens {
 			return;
 		}
 
-		const scopes = scopesList.getScopeNames();
+		const scopes = scopesList?.getScopeNames() ?? [];
 
 		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
@@ -981,7 +1071,7 @@ export class LineTokens {
 		this._lastTokenEndIndex = endIndex;
 	}
 
-	public getResult(stack: StateStack, lineLength: number): IToken[] {
+	public getResult(stack: StateStackImpl, lineLength: number): IToken[] {
 		if (this._tokens.length > 0 && this._tokens[this._tokens.length - 1].startIndex === lineLength - 1) {
 			// pop produced token for newline
 			this._tokens.pop();
@@ -996,7 +1086,7 @@ export class LineTokens {
 		return this._tokens;
 	}
 
-	public getBinaryResult(stack: StateStack, lineLength: number): Uint32Array {
+	public getBinaryResult(stack: StateStackImpl, lineLength: number): Uint32Array {
 		if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === lineLength - 1) {
 			// pop produced token for newline
 			this._binaryTokens.pop();

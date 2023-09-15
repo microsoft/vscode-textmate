@@ -1,6 +1,6 @@
 {
   "name": "vscode-textmate",
-  "version": "7.0.1",
+  "version": "9.0.0",
   "description": "VSCode TextMate grammar helpers",
   "author": {
     "name": "Microsoft Corporation"
@@ -22,9 +22,10 @@
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "tmconvert": "node scripts/tmconvert.js",
-    "version": "npm run compile && npm run test && node scripts/release.js",
+    "version": "npm run compile && npm run test",
     "postversion": "git push && git push --tags",
-    "prepublishOnly": "tsc && webpack --progress && node scripts/release.js"
+    "prepublishOnly": "tsc && webpack --progress",
+    "bundle": "webpack"
   },
   "devDependencies": {
     "@types/mocha": "^9.1.0",

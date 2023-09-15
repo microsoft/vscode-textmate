@@ -10,6 +10,9 @@
 		"release/**": true,
 		"coverage/**": true
 	},
+	"git.branchProtection": ["main", "release/*"],
+	"git.branchProtectionPrompt": "alwaysCommitToNewBranch",
+	"git.branchRandomName.enable": true,
 	"lcov.sourceMaps": true,
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"tslint.enable": true,
