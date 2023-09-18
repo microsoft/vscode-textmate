@@ -1230,7 +1230,7 @@
 		"grammarScopeName": "source.ruby",
 		"lines": [
 			{
-				"line": "%Q+matz had some #{%Q-crazy ideas-} for ruby syntax+ # damn.",
+				"line": "%Q+matz had some #{%Q-incredible ideas-} for ruby syntax+ # wow.",
 				"tokens": [
 					{
 						"value": "%Q+",
@@ -1268,7 +1268,7 @@
 						]
 					},
 					{
-						"value": "crazy ideas",
+						"value": "incredible ideas",
 						"scopes": [
 							"source.ruby",
 							"string.quoted.other.literal.upper.ruby",
@@ -1328,7 +1328,7 @@
 						]
 					},
 					{
-						"value": " damn.",
+						"value": " wow.",
 						"scopes": [
 							"source.ruby",
 							"comment.line.number-sign.ruby"
