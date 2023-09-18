@@ -19,5 +19,6 @@
 
 	"mochaExplorer.ui": "tdd",
 	"testExplorer.useNativeTesting": true,
-	"mochaExplorer.files": "out/tests/all.test.js"
+	"mochaExplorer.files": "out/tests/all.test.js",
+	"sarif-viewer.connectToGithubCodeScanning": "off"
 }
