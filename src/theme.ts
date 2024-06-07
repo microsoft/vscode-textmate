@@ -166,6 +166,7 @@ function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScope
 		return true;
 	}
 
+	// Starting with the deepest parent scope, look for a match in the scope path.
 	for (let index = 0; index < parentScopes.length; index++) {
 		let scopePattern = parentScopes[index];
 		let scopeMustMatch = false;
@@ -173,6 +174,7 @@ function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScope
 		// Check for a child combinator (a parent-child relationship)
 		if (scopePattern === '>') {
 			if (index === parentScopes.length - 1) {
+				// Invalid use of child combinator
 				return false;
 			}
 			scopePattern = parentScopes[++index];
@@ -184,12 +186,14 @@ function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScope
 				break;
 			}
 			if (scopeMustMatch) {
+				// If a child combinator was used, the parent scope must match.
 				return false;
 			}
-			scopePath = scopePath.parent
+			scopePath = scopePath.parent;
 		}
 
 		if (!scopePath) {
+			// No more potential matches
 			return false;
 		}
 		scopePath = scopePath.parent;
@@ -541,11 +545,11 @@ export class ThemeTrieElement {
 			// When sorting by scope name specificity, it's safe to treat a longer parent
 			// scope as more specific. If both rules' parent scopes match a given scope
 			// path, the longer parent scope will always be more specific.
-			const parentScopeLengthDelta =
+			const parentScopeLengthDiff =
 				b.parentScopes[bParentIndex].length - a.parentScopes[aParentIndex].length;
 
-			if (parentScopeLengthDelta !== 0) {
-				return parentScopeLengthDelta;
+			if (parentScopeLengthDiff !== 0) {
+				return parentScopeLengthDiff;
 			}
 
 			aParentIndex++;
