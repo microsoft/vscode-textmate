@@ -161,26 +161,41 @@ export class ScopeStack {
 	}
 }
 
-function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: ScopeName[] | null): boolean {
-	if (parentScopes === null) {
+function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScopes: readonly ScopeName[]): boolean {
+	if (parentScopes.length === 0) {
 		return true;
 	}
 
-	let index = 0;
-	let scopePattern = parentScopes[index];
+	for (let index = 0; index < parentScopes.length; index++) {
+		let scopePattern = parentScopes[index];
+		let scopeMustMatch = false;
 
-	while (scopePath) {
-		if (_matchesScope(scopePath.scopeName, scopePattern)) {
-			index++;
-			if (index === parentScopes.length) {
-				return true;
+		// Check for a child combinator (a parent-child relationship)
+		if (scopePattern === '>') {
+			if (index === parentScopes.length - 1) {
+				return false;
 			}
-			scopePattern = parentScopes[index];
+			scopePattern = parentScopes[++index];
+			scopeMustMatch = true;
 		}
-		scopePath = scopePath.parent;
+
+		while (scopePath) {
+			if (_matchesScope(scopePath.scopeName, scopePattern)) {
+				break;
+			}
+			if (scopeMustMatch) {
+				return false;
+			}
+			scopePath = scopePath.parent
+		}
+
+		if (!scopePath) {
+			return false;
+		}
 	}
 
-	return false;
+	// All parent scopes were matched.
+	return true;
 }
 
 function _matchesScope(scopeName: ScopeName, scopePattern: ScopeName): boolean {
@@ -427,17 +442,19 @@ export class ColorMap {
 	}
 }
 
+const emptyParentScopes= Object.freeze(<ScopeName[]>[]);
+
 export class ThemeTrieElementRule {
 
 	scopeDepth: number;
-	parentScopes: ScopeName[] | null;
+	parentScopes: readonly ScopeName[];
 	fontStyle: number;
 	foreground: number;
 	background: number;
 
-	constructor(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number) {
+	constructor(scopeDepth: number, parentScopes: readonly ScopeName[] | null, fontStyle: number, foreground: number, background: number) {
 		this.scopeDepth = scopeDepth;
-		this.parentScopes = parentScopes;
+		this.parentScopes = parentScopes || emptyParentScopes;
 		this.fontStyle = fontStyle;
 		this.foreground = foreground;
 		this.background = background;
@@ -489,55 +506,79 @@ export class ThemeTrieElement {
 		this._rulesWithParentScopes = rulesWithParentScopes;
 	}
 
-	private static _sortBySpecificity(arr: ThemeTrieElementRule[]): ThemeTrieElementRule[] {
-		if (arr.length === 1) {
-			return arr;
-		}
-		arr.sort(this._cmpBySpecificity);
-		return arr;
-	}
-
 	private static _cmpBySpecificity(a: ThemeTrieElementRule, b: ThemeTrieElementRule): number {
-		if (a.scopeDepth === b.scopeDepth) {
-			const aParentScopes = a.parentScopes;
-			const bParentScopes = b.parentScopes;
-			let aParentScopesLen = aParentScopes === null ? 0 : aParentScopes.length;
-			let bParentScopesLen = bParentScopes === null ? 0 : bParentScopes.length;
-			if (aParentScopesLen === bParentScopesLen) {
-				for (let i = 0; i < aParentScopesLen; i++) {
-					const aLen = aParentScopes![i].length;
-					const bLen = bParentScopes![i].length;
-					if (aLen !== bLen) {
-						return bLen - aLen;
-					}
-				}
-			}
-			return bParentScopesLen - aParentScopesLen;
+		// First, compare the scope depths of both rules. The “scope depth” of a rule is
+		// the number of segments (delimited by dots) in the rule's deepest scope name
+		// (i.e. the final scope name in the scope path delimited by spaces).
+		if (a.scopeDepth !== b.scopeDepth) {
+			return b.scopeDepth - a.scopeDepth;
 		}
-		return b.scopeDepth - a.scopeDepth;
+
+		// Traverse the parent scopes depth-first, comparing the specificity of both
+		// rules' parent scopes, which matches the behavior described by ”Ranking Matches”
+		// in TextMate 1.5's manual: https://macromates.com/manual/en/scope_selectors
+		// Start at index 0 for both rules, since the parent scopes were reversed
+		// beforehand (i.e. index 0 is the deepest parent scope).
+		let aParentIndex = 0;
+		let bParentIndex = 0;
+
+		while (true) {
+			// Child combinators don't affect specificity.
+			if (a.parentScopes[aParentIndex] === '>') {
+				aParentIndex++;
+			}
+			if (b.parentScopes[bParentIndex] === '>') {
+				bParentIndex++;
+			}
+
+			// This is a scope-by-scope comparison, so we need to stop once a rule runs
+			// out of parent scopes.
+			if (aParentIndex >= a.parentScopes.length || bParentIndex >= b.parentScopes.length) {
+				break;
+			}
+
+			// When sorting by scope name specificity, it's safe to treat a longer parent
+			// scope as more specific. If both rules' parent scopes match a given scope
+			// path, the longer parent scope will always be more specific.
+			const parentScopeLengthDelta =
+				b.parentScopes[bParentIndex].length - a.parentScopes[aParentIndex].length;
+
+			if (parentScopeLengthDelta !== 0) {
+				return parentScopeLengthDelta;
+			}
+		}
+
+		// If a depth-first, scope-by-scope comparison resulted in a tie, the rule with
+		// more parent scopes is considered more specific.
+		return b.parentScopes.length - a.parentScopes.length;
 	}
 
 	public match(scope: ScopeName): ThemeTrieElementRule[] {
-		if (scope === '') {
-			return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
+		let childRules: ThemeTrieElementRule[] | undefined;
+		if (scope !== '') {
+			let dotIndex = scope.indexOf('.')
+			let head: string
+			let tail: string
+			if (dotIndex === -1) {
+				head = scope
+				tail = ''
+			} else {
+				head = scope.substring(0, dotIndex)
+				tail = scope.substring(dotIndex + 1)
+			}
+
+			if (this._children.hasOwnProperty(head)) {
+				childRules = this._children[head].match(tail);
+			}
 		}
 
-		let dotIndex = scope.indexOf('.');
-		let head: string;
-		let tail: string;
-		if (dotIndex === -1) {
-			head = scope;
-			tail = '';
-		} else {
-			head = scope.substring(0, dotIndex);
-			tail = scope.substring(dotIndex + 1);
-		}
+		const rules = [this._mainRule].concat(this._rulesWithParentScopes);
+		rules.sort(ThemeTrieElement._cmpBySpecificity);
 
-		if (this._children.hasOwnProperty(head)) {
-			return this._children[head].match(tail);
-		}
-
-		return ThemeTrieElement._sortBySpecificity((<ThemeTrieElementRule[]>[]).concat(this._mainRule).concat(this._rulesWithParentScopes));
+		// If an element exists for a deeper scope, its rule specificity is greater than
+		// the current element, but we still need to return the current element's rules in
+		// case none of the deeper elements match (due to parent scope requirements).
+		return childRules ? childRules.concat(rules) : rules;
 	}
 
 	public insert(scopeDepth: number, scope: ScopeName, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {

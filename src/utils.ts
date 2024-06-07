@@ -105,7 +105,7 @@ export function strcmp(a: string, b: string): number {
 	return 0;
 }
 
-export function strArrCmp(a: string[] | null, b: string[] | null): number {
+export function strArrCmp(a: readonly string[] | null, b: readonly string[] | null): number {
 	if (a === null && b === null) {
 		return 0;
 	}
