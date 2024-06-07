@@ -547,6 +547,9 @@ export class ThemeTrieElement {
 			if (parentScopeLengthDelta !== 0) {
 				return parentScopeLengthDelta;
 			}
+
+			aParentIndex++;
+			bParentIndex++;
 		}
 
 		// If a depth-first, scope-by-scope comparison resulted in a tie, the rule with
