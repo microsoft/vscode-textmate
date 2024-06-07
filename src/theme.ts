@@ -192,6 +192,7 @@ function _scopePathMatchesParentScopes(scopePath: ScopeStack | null, parentScope
 		if (!scopePath) {
 			return false;
 		}
+		scopePath = scopePath.parent;
 	}
 
 	// All parent scopes were matched.
