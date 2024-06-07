@@ -562,7 +562,6 @@ export class ThemeTrieElement {
 	}
 
 	public match(scope: ScopeName): ThemeTrieElementRule[] {
-		let childRules: ThemeTrieElementRule[] | undefined;
 		if (scope !== '') {
 			let dotIndex = scope.indexOf('.')
 			let head: string
@@ -576,17 +575,13 @@ export class ThemeTrieElement {
 			}
 
 			if (this._children.hasOwnProperty(head)) {
-				childRules = this._children[head].match(tail);
+				return this._children[head].match(tail);
 			}
 		}
 
-		const rules = [this._mainRule].concat(this._rulesWithParentScopes);
+		const rules = this._rulesWithParentScopes.concat(this._mainRule);
 		rules.sort(ThemeTrieElement._cmpBySpecificity);
-
-		// If an element exists for a deeper scope, its rule specificity is greater than
-		// the current element, but we still need to return the current element's rules in
-		// case none of the deeper elements match (due to parent scope requirements).
-		return childRules ? childRules.concat(rules) : rules;
+		return rules;
 	}
 
 	public insert(scopeDepth: number, scope: ScopeName, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
