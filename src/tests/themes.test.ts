@@ -606,6 +606,63 @@ test('Theme resolving rules with parent scopes', () => {
 	assertThemeEqual(actual, expected);
 });
 
+test('Theme resolving a rule with child combinator', () => {
+	let theme = Theme.createFromRawTheme({
+		settings: [
+			{ settings: { foreground: '#100000' } },
+			{ scope: 'b a', settings: { foreground: '#200000' } },
+			{ scope: 'b > a', settings: { foreground: '#300000' } },
+			{ scope: 'c > b > a', settings: { foreground: '#400000' } },
+			{ scope: 'a', settings: { foreground: '#500000' } },
+		]
+	});
+
+	const colorMap = theme.getColorMap();
+	const match = (...path: string[]) => {
+		const result = theme.match(ScopeStack.from(...path));
+		if (!result) {
+			return null;
+		}
+		return colorMap[result.foregroundId];
+	};
+
+	assert.equal(match('b', 'a'), '#300000', 'b a');
+	assert.equal(match('b', 'c', 'a'), '#200000', 'b c a');
+	assert.equal(match('c', 'b', 'a'), '#400000', 'c b a');
+	assert.equal(match('c', 'b', 'd', 'a'), '#200000', 'c b d a');
+});
+
+test('Theme resolving should give deeper scopes higher specificity (#233)', () => {
+	let theme = Theme.createFromRawTheme({
+		settings: [
+			{ settings: { foreground: '#100000' } },
+			{ scope: 'y.z a.b', settings: { foreground: '#200000' } },
+			{ scope: 'x y a.b', settings: { foreground: '#300000' } },
+		]
+	});
+
+	const colorMap = theme.getColorMap();
+	const defaults = theme.getDefaults();
+
+	const match = (...path: string[]) => {
+		const result = theme.match(ScopeStack.from(...path));
+		if (!result || result.foregroundId === 0) {
+			return null;
+		}
+		return colorMap[result.foregroundId];
+	};
+
+	// Sanity check
+	assert.equal(match('x', 'a.b'), null, 'x a.b');
+	assert.equal(match('y', 'a.b'), null, 'y a.b');
+	assert.equal(match('y.z', 'a'), null, 'y.z a');
+	assert.equal(match('x', 'y', 'a.b'), '#300000', 'x y a.b');
+
+	// Even though the "x y a.b" rule has more scopes in its path, the "y.z a.b" rule has
+	// a deeper match, so it should take precedence.
+	assert.equal(match('x', 'y.z', 'a.b'), '#200000', 'y.z a.b');
+});
+
 test('Theme resolving issue #38: ignores rules with invalid colors', () => {
 	let actual = parseTheme({
 		settings: [{
