@@ -2,7 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { StateStackImpl, StateStackFrame } from "./grammar";
+import { StateStackImpl, StateStackFrame } from "./grammar/index";
 import { StateStack } from "./main";
 
 export function diffStateStacksRefEq(first: StateStack, second: StateStack): StackDiff {
