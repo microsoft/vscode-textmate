@@ -6,6 +6,7 @@
     "name": "Microsoft Corporation"
   },
   "main": "./release/main.js",
+  "module": "./release/esm/main.js",
   "typings": "./release/main.d.ts",
   "repository": {
     "type": "git",
@@ -18,13 +19,14 @@
   "scripts": {
     "watch": "tsc --watch",
     "compile": "tsc",
+    "compile:esm": "tsc -b ./tsconfig.esm.json",
     "test": "mocha --ui=tdd ./out/tests/all.test.js",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "tmconvert": "node scripts/tmconvert.js",
     "version": "npm run compile && npm run test",
     "postversion": "git push && git push --tags",
-    "prepublishOnly": "tsc && webpack --progress",
+    "prepublishOnly": "tsc && tsc -b ./tsconfig.esm.json && webpack --progress",
     "bundle": "webpack"
   },
   "devDependencies": {
