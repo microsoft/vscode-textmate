@@ -13,4 +13,5 @@ jobs:
           node-version: 14
       - run: npm ci
       - run: npm run compile
+      - run: npm run compile:esm
       - run: npm test
