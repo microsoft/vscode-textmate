@@ -30,7 +30,7 @@
     "version": "npm run compile && npm run test",
     "postversion": "git push && git push --tags",
     "prepublishOnly": "tsc && webpack --progress && npm run api-extractor",
-    "bundle": "webpack",
+    "bundle": "webpack && npm run api-extractor",
     "api-extractor": "mkdirp etc && npx api-extractor run --local"
   },
   "devDependencies": {
