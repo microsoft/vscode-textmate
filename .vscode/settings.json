@@ -10,15 +10,21 @@
 		"release/**": true,
 		"coverage/**": true
 	},
-	"git.branchProtection": ["main", "release/*"],
+	"git.branchProtection": [
+		"main",
+		"release/*"
+	],
 	"git.branchProtectionPrompt": "alwaysCommitToNewBranch",
 	"git.branchRandomName.enable": true,
 	"lcov.sourceMaps": true,
 	"typescript.tsdk": "./node_modules/typescript/lib",
 	"tslint.enable": true,
-
 	"mochaExplorer.ui": "tdd",
 	"testExplorer.useNativeTesting": true,
 	"mochaExplorer.files": "out/tests/all.test.js",
-	"sarif-viewer.connectToGithubCodeScanning": "off"
+	"sarif-viewer.connectToGithubCodeScanning": "off",
+	"files.associations": {
+		"api-extractor.json": "jsonc",
+		"tsdoc-metadata.json": "jsonc"
+	}
 }

@@ -6,7 +6,12 @@
     "name": "Microsoft Corporation"
   },
   "main": "./release/main.js",
-  "typings": "./release/main.d.ts",
+  "typings": "./types/vscode-textmate.d.ts",
+  "files": [
+    "release/**/*.js",
+    "!release/tests/**/*.js",
+    "types/vscode-textmate.d.ts"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/microsoft/vscode-textmate"
@@ -24,13 +29,16 @@
     "tmconvert": "node scripts/tmconvert.js",
     "version": "npm run compile && npm run test",
     "postversion": "git push && git push --tags",
-    "prepublishOnly": "tsc && webpack --progress",
-    "bundle": "webpack"
+    "prepublishOnly": "tsc && webpack --progress && npm run api-extractor",
+    "bundle": "webpack && npm run api-extractor",
+    "api-extractor": "mkdirp etc && npx api-extractor run --local"
   },
   "devDependencies": {
+    "@microsoft/api-extractor": "^7.48.0",
     "@types/mocha": "^9.1.0",
     "@types/node": "^16.6.1",
     "copy-webpack-plugin": "^9.1.0",
+    "mkdirp": "^3.0.1",
     "mocha": "^9.2.2",
     "typescript": "^4.3.5",
     "vscode-oniguruma": "^1.5.1",
