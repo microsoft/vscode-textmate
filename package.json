@@ -39,7 +39,7 @@
     "@types/node": "^16.6.1",
     "copy-webpack-plugin": "^9.1.0",
     "mkdirp": "^3.0.1",
-    "mocha": "^9.2.2",
+    "mocha": "^11.1.0",
     "typescript": "^4.3.5",
     "vscode-oniguruma": "^1.5.1",
     "webpack": "^5.50.0",
