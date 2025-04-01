@@ -372,7 +372,7 @@ export class BeginWhileRule extends Rule {
 			this._cachedCompiledWhilePatterns.push(this._while.hasBackReferences ? this._while.clone() : this._while);
 		}
 		if (this._while.hasBackReferences) {
-			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource ? endRegexSource : '\uFFFF');
+			this._cachedCompiledWhilePatterns.setSource(0, endRegexSource ? endRegexSource : '');
 		}
 		return this._cachedCompiledWhilePatterns;
 	}
