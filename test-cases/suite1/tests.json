@@ -1443,7 +1443,7 @@
 						"value": "ust some text",
 						"scopes": [
 							"text.test",
-							"comment"
+							"string"
 						]
 					}
 				]
@@ -1452,10 +1452,17 @@
 				"line": "which contains undefined and then",
 				"tokens": [
 					{
-						"value": "which contains undefined and then",
+						"value": "w",
 						"scopes": [
 							"text.test",
 							"comment"
+						]
+					},
+					{
+						"value": "hich contains undefined and then",
+						"scopes": [
+							"text.test",
+							"string"
 						]
 					}
 				]
@@ -1464,10 +1471,17 @@
 				"line": "more text",
 				"tokens": [
 					{
-						"value": "more text",
+						"value": "m",
 						"scopes": [
 							"text.test",
 							"comment"
+						]
+					},
+					{
+						"value": "ore text",
+						"scopes": [
+							"text.test",
+							"string"
 						]
 					}
 				]
