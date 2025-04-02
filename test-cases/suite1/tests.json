@@ -1828,5 +1828,38 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/251.tmLanguage.json"
+		],
+		"grammarPath": "fixtures/251.tmLanguage.json",
+		"desc": "Issue #251 empty `end` match immediately",
+		"lines": [
+			{
+				"line": "   comment   ",
+				"tokens": [
+					{
+						"value": "   ",
+						"scopes": [
+							"source.empty.end"
+						]
+					},
+					{
+						"value": "comment",
+						"scopes": [
+							"source.empty.end",
+							"comment"
+						]
+					},
+					{
+						"value": "   ",
+						"scopes": [
+							"source.empty.end"
+						]
+					}
+				]
+			}
+		]
 	}
 ]
