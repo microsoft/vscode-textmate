@@ -2,15 +2,19 @@ name: CI
 
 on: [pull_request]
 
+permissions: {}
+
 jobs:
   build:
     name: CI
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
         with:
-          node-version: 14
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - run: npm ci
       - run: npm run compile
       - run: npm test
