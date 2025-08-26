@@ -280,7 +280,14 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
-		return r.lineTokens.getResult(r.ruleStack, r.lineLength, r.stoppedEarly);
+		const result = r.lineTokens.getResult(r.ruleStack, r.lineLength, r.stoppedEarly);
+		// Since variableFontInfo is read-only, we need to create a new object
+		return {
+			tokens: result.tokens,
+			ruleStack: result.ruleStack,
+			stoppedEarly: result.stoppedEarly,
+			variableFontInfo: r.variableFontInfo  // Use variable font info directly from _tokenize
+		};
 	}
 
 	public tokenizeLine2(
@@ -289,7 +296,14 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
-		return r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength, r.stoppedEarly);
+		const result = r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength, r.stoppedEarly);
+		// Since variableFontInfo is read-only, we need to create a new object
+		return {
+			tokens: result.tokens,
+			ruleStack: result.ruleStack,
+			stoppedEarly: result.stoppedEarly,
+			variableFontInfo: r.variableFontInfo  // Use variable font info directly from _tokenize
+		};
 	}
 
 	private _tokenize(
@@ -302,7 +316,9 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineTokens: LineTokens;
 		ruleStack: StateStackImpl;
 		stoppedEarly: boolean;
+		variableFontInfo: IVariableFontInfo[];
 	} {
+		console.log('this._grammar : ', this._grammar);
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(
 				this._grammar.repository.$self,
@@ -390,6 +406,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			lineTokens: lineTokens,
 			ruleStack: r.stack,
 			stoppedEarly: r.stoppedEarly,
+			variableFontInfo: lineTokens.getVariableFontInfo()
 		};
 	}
 }
@@ -899,12 +916,12 @@ export class BalancedBracketSelectors {
 		unbalancedBracketScopes: string[],
 	) {
 		this.balancedBracketScopes = balancedBracketScopes.flatMap((selector) => {
-				if (selector === '*') {
-					this.allowAny = true;
-					return [];
-				}
-				return createMatchers(selector, nameMatcher).map((m) => m.matcher);
+			if (selector === '*') {
+				this.allowAny = true;
+				return [];
 			}
+			return createMatchers(selector, nameMatcher).map((m) => m.matcher);
+		}
 		);
 		this.unbalancedBracketScopes = unbalancedBracketScopes.flatMap((selector) =>
 			createMatchers(selector, nameMatcher).map((m) => m.matcher)
@@ -975,6 +992,13 @@ export class LineTokens {
 		this._binaryTokens = [];
 		this._variableFontInfo = [];
 		this._lastTokenEndIndex = 0;
+	}
+
+	/**
+	 * Get the variable font information collected during tokenization
+	 */
+	public getVariableFontInfo(): IVariableFontInfo[] {
+		return this._variableFontInfo;
 	}
 
 	public produce(stack: StateStackImpl, endIndex: number): void {
