@@ -4,7 +4,7 @@
 
 import { DebugFlags } from '../debug';
 import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
-import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack } from '../main';
+import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IVariableFontInfo } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
@@ -280,11 +280,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
-		return {
-			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
-			ruleStack: r.ruleStack,
-			stoppedEarly: r.stoppedEarly,
-		};
+		return r.lineTokens.getResult(r.ruleStack, r.lineLength, r.stoppedEarly);
 	}
 
 	public tokenizeLine2(
@@ -293,11 +289,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
-		return {
-			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
-			ruleStack: r.ruleStack,
-			stoppedEarly: r.stoppedEarly,
-		};
+		return r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength, r.stoppedEarly);
 	}
 
 	private _tokenize(
@@ -351,8 +343,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				);
 			} else {
 				scopeList = AttributedScopeStack.createRoot(
-					 "unknown",
-					 defaultMetadata
+					"unknown",
+					defaultMetadata
 				);
 			}
 
@@ -441,7 +433,7 @@ export class AttributedScopeStack {
 			rootStyle
 		);
 
-		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes);
+		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes, rootStyle);
 	}
 
 	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
@@ -457,7 +449,8 @@ export class AttributedScopeStack {
 	private constructor(
 		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
-		public readonly tokenAttributes: EncodedTokenAttributes
+		public readonly tokenAttributes: EncodedTokenAttributes,
+		public readonly styleAttributes: StyleAttributes | null = null
 	) {
 	}
 
@@ -559,7 +552,7 @@ export class AttributedScopeStack {
 			rawMetadata,
 			scopeThemeMatchResult
 		);
-		return new AttributedScopeStack(target, newPath, metadata);
+		return new AttributedScopeStack(target, newPath, metadata, scopeThemeMatchResult);
 	}
 
 	public getScopeNames(): string[] {
@@ -956,6 +949,10 @@ export class LineTokens {
 	 * used only if `_emitBinaryTokens` is true.
 	 */
 	private readonly _binaryTokens: number[];
+	/**
+	 * Store variable font information for the line
+	 */
+	private readonly _variableFontInfo: IVariableFontInfo[];
 
 	private _lastTokenEndIndex: number;
 
@@ -976,6 +973,7 @@ export class LineTokens {
 		}
 		this._tokens = [];
 		this._binaryTokens = [];
+		this._variableFontInfo = [];
 		this._lastTokenEndIndex = 0;
 	}
 
@@ -989,6 +987,30 @@ export class LineTokens {
 	): void {
 		if (this._lastTokenEndIndex >= endIndex) {
 			return;
+		}
+
+		// Get style attributes from scopesList to extract font information
+		let fontFamily: string | null = null;
+		let fontSize: string | null = null;
+		let lineHeight: string | null = null;
+
+		console.log('scopesList.styleAttributes : ', scopesList?.styleAttributes);
+
+		if (scopesList && scopesList.styleAttributes) {
+			fontFamily = scopesList.styleAttributes.fontFamily;
+			fontSize = scopesList.styleAttributes.fontSize;
+			lineHeight = scopesList.styleAttributes.lineHeight;
+
+			// Only add font info if at least one property is defined
+			if (fontFamily || fontSize || lineHeight) {
+				this._variableFontInfo.push({
+					startIndex: this._lastTokenEndIndex,
+					length: endIndex - this._lastTokenEndIndex,
+					fontFamily,
+					fontSize,
+					lineHeight
+				});
+			}
 		}
 
 		if (this._emitBinaryTokens) {
@@ -1071,7 +1093,7 @@ export class LineTokens {
 		this._lastTokenEndIndex = endIndex;
 	}
 
-	public getResult(stack: StateStackImpl, lineLength: number): IToken[] {
+	public getResult(stack: StateStackImpl, lineLength: number, stoppedEarly: boolean): ITokenizeLineResult {
 		if (this._tokens.length > 0 && this._tokens[this._tokens.length - 1].startIndex === lineLength - 1) {
 			// pop produced token for newline
 			this._tokens.pop();
@@ -1083,10 +1105,15 @@ export class LineTokens {
 			this._tokens[this._tokens.length - 1].startIndex = 0;
 		}
 
-		return this._tokens;
+		return {
+			tokens: this._tokens,
+			ruleStack: stack,
+			stoppedEarly: stoppedEarly,
+			variableFontInfo: this._variableFontInfo
+		};
 	}
 
-	public getBinaryResult(stack: StateStackImpl, lineLength: number): Uint32Array {
+	public getBinaryResult(stack: StateStackImpl, lineLength: number, stoppedEarly: boolean): ITokenizeLineResult2 {
 		if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 2] === lineLength - 1) {
 			// pop produced token for newline
 			this._binaryTokens.pop();
@@ -1104,7 +1131,12 @@ export class LineTokens {
 			result[i] = this._binaryTokens[i];
 		}
 
-		return result;
+		return {
+			tokens: result,
+			ruleStack: stack,
+			stoppedEarly: stoppedEarly,
+			variableFontInfo: this._variableFontInfo
+		};
 	}
 }
 
