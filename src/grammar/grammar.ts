@@ -994,8 +994,6 @@ export class LineTokens {
 		let fontSize: string | null = null;
 		let lineHeight: string | null = null;
 
-		console.log('scopesList.styleAttributes : ', scopesList?.styleAttributes);
-
 		if (scopesList && scopesList.styleAttributes) {
 			fontFamily = scopesList.styleAttributes.fontFamily;
 			fontSize = scopesList.styleAttributes.fontSize;
