@@ -9,7 +9,7 @@ import { IRawGrammar } from './rawGrammar';
 import { SyncRegistry } from './registry';
 import { IRawTheme, ScopeName, Theme } from './theme';
 import { StandardTokenType } from './encodedTokenAttributes';
-import { ScopeDependencyProcessor } from './grammar/grammarDependencies'
+import { ScopeDependencyProcessor } from './grammar/grammarDependencies';
 import { applyStateStackDiff, diffStateStacksRefEq, StackDiff } from './diffStateStacks';
 
 export * from './onigLib';
@@ -73,6 +73,7 @@ export class Registry {
 	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
 	 */
 	public setTheme(theme: IRawTheme, colorMap?: string[]): void {
+		console.log('theme from vscode-textmate', theme);
 		this._syncRegistry.setTheme(Theme.createFromRawTheme(theme, colorMap));
 	}
 
@@ -262,22 +263,22 @@ export interface IVariableFontInfo {
 	 * Starting index in the line
 	 */
 	readonly startIndex: number;
-	
+
 	/**
 	 * Length of the segment
 	 */
 	readonly length: number;
-	
+
 	/**
 	 * Font family specification
 	 */
 	readonly fontFamily: string | null;
-	
+
 	/**
 	 * Font size specification
 	 */
 	readonly fontSize: string | null;
-	
+
 	/**
 	 * Line height specification
 	 */

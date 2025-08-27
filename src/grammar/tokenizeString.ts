@@ -38,6 +38,15 @@ class TokenizeStringResult {
 	checkWhileConditions: boolean,
 	timeLimit: number
 ): TokenizeStringResult {
+	console.log('_tokenizeString');
+	console.log('stack: ', stack);
+	console.log('lineText: ', lineText);
+	console.log('linePos: ', linePos);
+	console.log('isFirstLine: ', isFirstLine);
+	console.log('lineTokens: ', lineTokens);
+	console.log('checkWhileConditions: ', checkWhileConditions);
+	console.log('timeLimit: ', timeLimit);
+
 	const lineLength = lineText.content.length;
 
 	let STOP = false;

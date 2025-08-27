@@ -281,12 +281,11 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
 		const result = r.lineTokens.getResult(r.ruleStack, r.lineLength, r.stoppedEarly);
-		// Since variableFontInfo is read-only, we need to create a new object
 		return {
 			tokens: result.tokens,
 			ruleStack: result.ruleStack,
 			stoppedEarly: result.stoppedEarly,
-			variableFontInfo: r.variableFontInfo  // Use variable font info directly from _tokenize
+			variableFontInfo: r.variableFontInfo
 		};
 	}
 
@@ -297,12 +296,11 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
 		const result = r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength, r.stoppedEarly);
-		// Since variableFontInfo is read-only, we need to create a new object
 		return {
 			tokens: result.tokens,
 			ruleStack: result.ruleStack,
 			stoppedEarly: result.stoppedEarly,
-			variableFontInfo: r.variableFontInfo  // Use variable font info directly from _tokenize
+			variableFontInfo: r.variableFontInfo
 		};
 	}
 
@@ -318,7 +316,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		stoppedEarly: boolean;
 		variableFontInfo: IVariableFontInfo[];
 	} {
-		console.log('this._grammar : ', this._grammar);
+		console.log('_tokenize this._grammar : ', this._grammar);
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(
 				this._grammar.repository.$self,
@@ -382,6 +380,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineText = lineText + "\n";
 		const onigLineText = this.createOnigString(lineText);
 		const lineLength = onigLineText.content.length;
+
+		console.log('lineText: ', lineText);
+		console.log('prevState : ', prevState);
+
 		const lineTokens = new LineTokens(
 			emitBinaryTokens,
 			lineText,
@@ -398,6 +400,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			true,
 			timeLimit
 		);
+		console.log('r : ', r);
 
 		disposeOnigString(onigLineText);
 
@@ -412,6 +415,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 }
 
 function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): IRawGrammar {
+	console.log('initGrammar', grammar);
 	grammar = clone(grammar);
 
 	grammar.repository = grammar.repository || <any>{};
@@ -426,6 +430,7 @@ function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): I
 
 export class AttributedScopeStack {
 	static fromExtension(namesScopeList: AttributedScopeStack | null, contentNameScopesList: AttributedScopeStackFrame[]): AttributedScopeStack | null {
+		console.log('fromExtension')
 		let current = namesScopeList;
 		let scopeNames = namesScopeList?.scopePath ?? null;
 		for (const frame of contentNameScopesList) {
@@ -436,10 +441,12 @@ export class AttributedScopeStack {
 	}
 
 	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
+		console.log('createRoot');
 		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes);
 	}
 
 	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, grammar: Grammar): AttributedScopeStack {
+		console.log('createRootAndLookUpScopeName')
 		const rawRootMetadata = grammar.getMetadataForScope(scopeName);
 		const scopePath = new ScopeStack(null, scopeName);
 		const rootStyle = grammar.themeProvider.themeMatch(scopePath);
@@ -535,6 +542,7 @@ export class AttributedScopeStack {
 	}
 
 	public pushAttributed(scopePath: ScopePath | null, grammar: Grammar): AttributedScopeStack {
+		console.log('pushAttributed', scopePath);
 		if (scopePath === null) {
 			return this;
 		}
@@ -559,11 +567,13 @@ export class AttributedScopeStack {
 		scopeName: ScopeName,
 		grammar: Grammar,
 	): AttributedScopeStack {
+		console.log('_pushAttributed');
 		const rawMetadata = grammar.getMetadataForScope(scopeName);
 
 		const newPath = target.scopePath.push(scopeName);
 		const scopeThemeMatchResult =
 			grammar.themeProvider.themeMatch(newPath);
+		console.log('scopeThemeMatchResult : ', scopeThemeMatchResult);
 		const metadata = AttributedScopeStack.mergeAttributes(
 			target.tokenAttributes,
 			rawMetadata,
@@ -1002,6 +1012,7 @@ export class LineTokens {
 	}
 
 	public produce(stack: StateStackImpl, endIndex: number): void {
+		console.log('produce', stack);
 		this.produceFromScopes(stack.contentNameScopesList, endIndex);
 	}
 
@@ -1009,6 +1020,19 @@ export class LineTokens {
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
+
+		console.log('produceFromScopes scopesList : ', scopesList);
+		const scopeNames = scopesList?.getScopeNames();
+		const scopeName = scopesList?.scopeName;
+		const scopePath = scopesList?.scopePath;
+		const styleAttributes = scopesList?.styleAttributes;
+		const tokenAttributes = scopesList?.tokenAttributes;
+		console.log('scopeNames : ', scopeNames);
+		console.log('scopeName : ', scopeName);
+		console.log('scopePath : ', scopePath);
+		console.log('styleAttributes : ', styleAttributes);
+		console.log('tokenAttributes : ', tokenAttributes);
+
 		if (this._lastTokenEndIndex >= endIndex) {
 			return;
 		}
@@ -1153,6 +1177,8 @@ export class LineTokens {
 			result[i] = this._binaryTokens[i];
 		}
 
+		console.log('this._variableFontInfo : ', this._variableFontInfo);
+		console.log('this._variableFontInfo.length : ', this._variableFontInfo.length);
 		return {
 			tokens: result,
 			ruleStack: stack,
