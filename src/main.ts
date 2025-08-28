@@ -282,7 +282,7 @@ export interface IVariableFontInfo {
 	/**
 	 * Line height specification
 	 */
-	readonly lineHeight: string | null;
+	readonly lineHeight: number | null;
 }
 
 export interface IToken {

@@ -104,7 +104,7 @@ export interface IRawThemeSetting {
 		readonly background?: string;
 		readonly fontFamily?: string;
 		readonly fontSize?: string;
-		readonly lineHeight?: string;
+		readonly lineHeight?: number;
 	};
 }
 
@@ -224,7 +224,7 @@ export class StyleAttributes {
 		public readonly backgroundId: number,
 		public readonly fontFamily: string | null = null,
 		public readonly fontSize: string | null = null,
-		public readonly lineHeight: string | null = null
+		public readonly lineHeight: number | null = null
 	) { }
 }
 
@@ -310,8 +310,8 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			fontSize = entry.settings.fontSize;
 		}
 
-		let lineHeight: string | null = null;
-		if (typeof entry.settings.lineHeight === 'string') {
+		let lineHeight: number | null = null;
+		if (typeof entry.settings.lineHeight === 'number') {
 			lineHeight = entry.settings.lineHeight;
 		}
 
@@ -354,7 +354,7 @@ export class ParsedThemeRule {
 		public readonly background: string | null,
 		public readonly fontFamily: string | null = null,
 		public readonly fontSize: string | null = null,
-		public readonly lineHeight: string | null = null,
+		public readonly lineHeight: number | null = null,
 	) {
 	}
 }
@@ -454,7 +454,6 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		[]
 	);
 	console.log('parsedThemeRules : ', parsedThemeRules);
-	// Insert all rules
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
 		root.insert(
@@ -531,7 +530,7 @@ export class ThemeTrieElementRule {
 	background: number;
 	fontFamily: string | null;
 	fontSize: string | null;
-	lineHeight: string | null;
+	lineHeight: number | null;
 
 	constructor(
 		scopeDepth: number,
@@ -541,7 +540,7 @@ export class ThemeTrieElementRule {
 		background: number,
 		fontFamily: string | null = null,
 		fontSize: string | null = null,
-		lineHeight: string | null = null
+		lineHeight: number | null = null
 	) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes || emptyParentScopes;
@@ -581,7 +580,7 @@ export class ThemeTrieElementRule {
 		background: number,
 		fontFamily: string | null = null,
 		fontSize: string | null = null,
-		lineHeight: string | null = null
+		lineHeight: number | null = null
 	): void {
 		if (this.scopeDepth > scopeDepth) {
 			console.log('how did this happen?');
@@ -713,7 +712,7 @@ export class ThemeTrieElement {
 		background: number,
 		fontFamily: string | null = null,
 		fontSize: string | null = null,
-		lineHeight: string | null = null
+		lineHeight: number | null = null
 	): void {
 		if (scope === '') {
 			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
@@ -750,7 +749,7 @@ export class ThemeTrieElement {
 		background: number,
 		fontFamily: string | null = null,
 		fontSize: string | null = null,
-		lineHeight: string | null = null
+		lineHeight: number | null = null
 	): void {
 
 		if (parentScopes === null) {

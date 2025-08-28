@@ -1021,12 +1021,12 @@ export class LineTokens {
 		endIndex: number
 	): void {
 
-		console.log('produceFromScopes scopesList : ', scopesList);
 		const scopeNames = scopesList?.getScopeNames();
 		const scopeName = scopesList?.scopeName;
 		const scopePath = scopesList?.scopePath;
 		const styleAttributes = scopesList?.styleAttributes;
 		const tokenAttributes = scopesList?.tokenAttributes;
+		console.log('produceFromScopes scopesList : ', scopesList);
 		console.log('scopeNames : ', scopeNames);
 		console.log('scopeName : ', scopeName);
 		console.log('scopePath : ', scopePath);
@@ -1040,7 +1040,7 @@ export class LineTokens {
 		// Get style attributes from scopesList to extract font information
 		let fontFamily: string | null = null;
 		let fontSize: string | null = null;
-		let lineHeight: string | null = null;
+		let lineHeight: number | null = null;
 
 		if (scopesList && scopesList.styleAttributes) {
 			fontFamily = scopesList.styleAttributes.fontFamily;
