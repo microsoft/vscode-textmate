@@ -1168,7 +1168,12 @@ export class VariableFonts {
 				);
 				const lastVariableFont = this._variableFontInfo[this._variableFontInfo.length - 1]
 				if (lastVariableFont && lastVariableFont.optionsEqual(variableFont)) {
-					lastVariableFont.extendLengthBy(variableFont.length);
+					const lastVariableFontEndIndex = lastVariableFont.startIndex + lastVariableFont.length;
+					if (lastVariableFontEndIndex === this._lastTokenEndIndex || lastVariableFontEndIndex + 1 === this._lastTokenEndIndex) {
+						lastVariableFont.extendLengthBy(variableFont.startIndex + variableFont.length - lastVariableFontEndIndex);
+					} else {
+						this._variableFontInfo.push(variableFont);
+					}
 				} else {
 					this._variableFontInfo.push(variableFont);
 				}

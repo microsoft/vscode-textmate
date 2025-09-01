@@ -573,6 +573,14 @@ function getFindOptions(allowA: boolean, allowG: boolean): number {
 }
 
 function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: VariableFonts, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
+	const produceFromScopes = (scopesList: AttributedScopeStack | null, endIndex: number): void => {
+		lineTokens.produceFromScopes(scopesList, endIndex);
+		variableFonts.produceFromScopes(scopesList, endIndex);
+	}
+	const produce = (stack: StateStackImpl, endIndex: number): void => {
+		lineTokens.produce(stack, endIndex);
+		variableFonts.produce(stack, endIndex);
+	}
 	if (captures.length === 0) {
 		return;
 	}
@@ -605,14 +613,14 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		// pop captures while needed
 		while (localStack.length > 0 && localStack[localStack.length - 1].endPos <= captureIndex.start) {
 			// pop!
-			lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
+			produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
 			localStack.pop();
 		}
 
 		if (localStack.length > 0) {
-			lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, captureIndex.start);
+			produceFromScopes(localStack[localStack.length - 1].scopes, captureIndex.start);
 		} else {
-			lineTokens.produce(stack, captureIndex.start);
+			produce(stack, captureIndex.start);
 		}
 
 		if (captureRule.retokenizeCapturedWithRuleId) {
@@ -640,7 +648,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 	while (localStack.length > 0) {
 		// pop!
-		lineTokens.produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
+		produceFromScopes(localStack[localStack.length - 1].scopes, localStack[localStack.length - 1].endPos);
 		localStack.pop();
 	}
 }
