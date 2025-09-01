@@ -9,7 +9,6 @@ export class Theme {
 		source: IRawTheme | undefined,
 		colorMap?: string[]
 	): Theme {
-		console.log('createFromRawTheme');
 		return this.createFromParsedTheme(parseTheme(source), colorMap);
 	}
 
@@ -28,7 +27,7 @@ export class Theme {
 		private readonly _colorMap: ColorMap,
 		private readonly _defaults: StyleAttributes,
 		private readonly _root: ThemeTrieElement
-	) { }
+	) {}
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
@@ -39,7 +38,6 @@ export class Theme {
 	}
 
 	public match(scopePath: ScopeStack | null): StyleAttributes | null {
-		console.log('match : ', scopePath);
 		if (scopePath === null) {
 			return this._defaults;
 		}
@@ -49,8 +47,6 @@ export class Theme {
 		const effectiveRule = matchingTrieElements.find((v) =>
 			_scopePathMatchesParentScopes(scopePath.parent, v.parentScopes)
 		);
-		console.log('matchingTrieElements : ', matchingTrieElements);
-		console.log('effectiveRule : ', effectiveRule);
 		if (!effectiveRule) {
 			return null;
 		}
@@ -232,7 +228,6 @@ export class StyleAttributes {
  * Parse a raw theme into rules.
  */
 export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
-	console.log('source : ', source);
 	if (!source) {
 		return [];
 	}
@@ -299,7 +294,6 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			background = entry.settings.background;
 		}
 
-		// Parse new font properties
 		let fontFamily: string | null = null;
 		if (typeof entry.settings.fontFamily === 'string') {
 			fontFamily = entry.settings.fontFamily;
@@ -340,7 +334,7 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			);
 		}
 	}
-	console.log('result : ', result);
+
 	return result;
 }
 
@@ -449,11 +443,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		defaultLineHeight
 	);
 
-	let root = new ThemeTrieElement(
-		new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight),
-		[]
-	);
-	console.log('parsedThemeRules : ', parsedThemeRules);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight),[]);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
 		root.insert(
@@ -469,8 +459,6 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		);
 	}
 
-	console.log('defaults : ', defaults);
-	console.log('root : ', root);
 	return new Theme(colorMap, defaults, root);
 }
 
@@ -621,7 +609,6 @@ export class ThemeTrieElement {
 		rulesWithParentScopes: ThemeTrieElementRule[] = [],
 		private readonly _children: ITrieChildrenMap = {}
 	) {
-		console.log('new ThemeTrieElement mainRule : ', _mainRule);
 		this._rulesWithParentScopes = rulesWithParentScopes;
 	}
 
@@ -676,8 +663,6 @@ export class ThemeTrieElement {
 	}
 
 	public match(scope: ScopeName): ThemeTrieElementRule[] {
-		console.log('match scope : ', scope);
-
 		if (scope !== '') {
 			let dotIndex = scope.indexOf('.')
 			let head: string
@@ -690,7 +675,6 @@ export class ThemeTrieElement {
 				tail = scope.substring(dotIndex + 1)
 			}
 
-			console.log('head : ', head, ', tail: ', tail, ', children: ', this._children);
 			if (this._children.hasOwnProperty(head)) {
 				return this._children[head].match(tail);
 			}
@@ -698,8 +682,6 @@ export class ThemeTrieElement {
 
 		const rules = this._rulesWithParentScopes.concat(this._mainRule);
 		rules.sort(ThemeTrieElement._cmpBySpecificity);
-		console.log('this._mainRule: ', this._mainRule);
-		console.log('scope: ', scope, ' => rules: ', rules);
 		return rules;
 	}
 

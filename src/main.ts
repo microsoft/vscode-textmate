@@ -73,7 +73,6 @@ export class Registry {
 	 * Change the theme. Once called, no previous `ruleStack` should be used anymore.
 	 */
 	public setTheme(theme: IRawTheme, colorMap?: string[]): void {
-		console.log('theme from vscode-textmate', theme);
 		this._syncRegistry.setTheme(Theme.createFromRawTheme(theme, colorMap));
 	}
 
@@ -230,7 +229,7 @@ export interface ITokenizeLineResult {
 	/**
 	 * Variable font information for the tokenized line
 	 */
-	readonly variableFontInfo: IVariableFontInfo[];
+	readonly variableFontInfo: IVariableFont[];
 }
 
 export interface ITokenizeLineResult2 {
@@ -252,13 +251,13 @@ export interface ITokenizeLineResult2 {
 	/**
 	 * Variable font information for the tokenized line
 	 */
-	readonly variableFontInfo: IVariableFontInfo[];
+	readonly variableFontInfo: IVariableFont[];
 }
 
 /**
  * Represents variable font information for a segment of text
  */
-export interface IVariableFontInfo {
+export interface IVariableFont {
 	/**
 	 * Starting index in the line
 	 */
