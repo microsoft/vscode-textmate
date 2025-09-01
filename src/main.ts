@@ -227,9 +227,9 @@ export interface ITokenizeLineResult {
 	 */
 	readonly stoppedEarly: boolean;
 	/**
-	 * Variable font information for the tokenized line
+	 * Font information for the tokenized line
 	 */
-	readonly variableFontInfo: IVariableFont[];
+	readonly fonts: IFontInfo[];
 }
 
 export interface ITokenizeLineResult2 {
@@ -251,13 +251,13 @@ export interface ITokenizeLineResult2 {
 	/**
 	 * Variable font information for the tokenized line
 	 */
-	readonly variableFontInfo: IVariableFont[];
+	readonly fonts: IFontInfo[];
 }
 
 /**
  * Represents variable font information for a segment of text
  */
-export interface IVariableFont {
+export interface IFontInfo {
 	/**
 	 * Starting index in the line
 	 */

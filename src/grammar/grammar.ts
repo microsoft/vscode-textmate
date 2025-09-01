@@ -4,7 +4,7 @@
 
 import { DebugFlags } from '../debug';
 import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
-import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IVariableFont } from '../main';
+import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IFontInfo } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
@@ -284,7 +284,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
-			variableFontInfo: r.variableFonts.getVariableFontInfo()
+			fonts: r.fonts
 		};
 	}
 
@@ -298,7 +298,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
-			variableFontInfo: r.variableFonts.getVariableFontInfo()
+			fonts: r.fonts
 		};
 	}
 
@@ -312,7 +312,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineTokens: LineTokens;
 		ruleStack: StateStackImpl;
 		stoppedEarly: boolean;
-		variableFonts: VariableFonts;
+		fonts: IFontInfo[];
 	} {
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(
@@ -354,8 +354,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				);
 			} else {
 				scopeList = AttributedScopeStack.createRoot(
-					"unknown",
-					defaultMetadata
+					 "unknown",
+					 defaultMetadata
 				);
 			}
 
@@ -383,7 +383,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			this._tokenTypeMatchers,
 			this.balancedBracketSelectors
 		);
-		const variableFonts = new VariableFonts();
+		const fontsComputer = new FontsComputer();
 		const r = _tokenizeString(
 			this,
 			onigLineText,
@@ -391,11 +391,11 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			0,
 			prevState,
 			lineTokens,
-			variableFonts,
+			fontsComputer,
 			true,
 			timeLimit
 		);
-
+		const fonts = fontsComputer.getVariableFontInfo();
 		disposeOnigString(onigLineText);
 
 		return {
@@ -403,7 +403,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			lineTokens: lineTokens,
 			ruleStack: r.stack,
 			stoppedEarly: r.stoppedEarly,
-			variableFonts: variableFonts
+			fonts
 		};
 	}
 }
@@ -913,12 +913,12 @@ export class BalancedBracketSelectors {
 		unbalancedBracketScopes: string[],
 	) {
 		this.balancedBracketScopes = balancedBracketScopes.flatMap((selector) => {
-			if (selector === '*') {
-				this.allowAny = true;
-				return [];
+				if (selector === '*') {
+					this.allowAny = true;
+					return [];
+				}
+				return createMatchers(selector, nameMatcher).map((m) => m.matcher);
 			}
-			return createMatchers(selector, nameMatcher).map((m) => m.matcher);
-		}
 		);
 		this.unbalancedBracketScopes = unbalancedBracketScopes.flatMap((selector) =>
 			createMatchers(selector, nameMatcher).map((m) => m.matcher)
@@ -1115,7 +1115,8 @@ export class LineTokens {
 	}
 }
 
-class VariableFont implements IVariableFont {
+class FontInfo implements IFontInfo {
+
 	constructor(
 		public startIndex: number,
 		public length: number,
@@ -1124,7 +1125,7 @@ class VariableFont implements IVariableFont {
 		public lineHeight: number | null
 	) { }
 
-	optionsEqual(other: IVariableFont): boolean {
+	optionsEqual(other: IFontInfo): boolean {
 		return this.fontFamily === other.fontFamily
 			&& this.fontSize === other.fontSize
 			&& this.lineHeight === other.lineHeight;
@@ -1135,9 +1136,9 @@ class VariableFont implements IVariableFont {
 	}
 }
 
-export class VariableFonts {
+export class FontsComputer {
 
-	private readonly _variableFontInfo: VariableFont[] = [];
+	private readonly _variableFontInfo: FontInfo[] = [];
 
 	private _lastTokenEndIndex: number = 0;
 
@@ -1159,7 +1160,7 @@ export class VariableFonts {
 			const fontSize = scopesList.styleAttributes.fontSize;
 			const lineHeight = scopesList.styleAttributes.lineHeight;
 			if (fontFamily || fontSize || lineHeight) {
-				const variableFont = new VariableFont(
+				const variableFont = new FontInfo(
 					this._lastTokenEndIndex,
 					endIndex - this._lastTokenEndIndex,
 					fontFamily,
@@ -1182,7 +1183,7 @@ export class VariableFonts {
 		this._lastTokenEndIndex = endIndex;
 	}
 
-	public getVariableFontInfo(): IVariableFont[] {
+	public getVariableFontInfo(): IFontInfo[] {
 		return this._variableFontInfo;
 	}
 }

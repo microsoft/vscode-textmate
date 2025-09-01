@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { DebugFlags, UseOnigurumaFindOptions } from '../debug';
-import type { LineTokens, StateStackImpl, VariableFonts } from './grammar';
+import type { LineTokens, StateStackImpl, FontsComputer } from './grammar';
 import { disposeOnigString, FindOption, IOnigCaptureIndex, OnigString } from '../onigLib';
 import { BeginEndRule, BeginWhileRule, CaptureRule, CompiledRule, endRuleId, MatchRule, Rule, RuleId, whileRuleId } from '../rule';
 import { performanceNow } from '../utils';
@@ -35,7 +35,7 @@ export function _tokenizeString(
 	linePos: number,
 	stack: StateStackImpl,
 	lineTokens: LineTokens,
-	variableFonts: VariableFonts,
+	variableFonts: FontsComputer,
 	checkWhileConditions: boolean,
 	timeLimit: number
 ): TokenizeStringResult {
@@ -342,7 +342,7 @@ export function _tokenizeString(
  * If any fails, cut off the entire stack above the failed while condition. While conditions
  * may also advance the linePosition.
  */
-function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: VariableFonts): IWhileCheckResult {
+function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: FontsComputer): IWhileCheckResult {
 	const produce = (stack: StateStackImpl, endIndex: number): void => {
 		lineTokens.produce(stack, endIndex);
 		variableFonts.produce(stack, endIndex);
@@ -572,7 +572,7 @@ function getFindOptions(allowA: boolean, allowG: boolean): number {
 	return options;
 }
 
-function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: VariableFonts, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
+function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: FontsComputer, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
 	const produceFromScopes = (scopesList: AttributedScopeStack | null, endIndex: number): void => {
 		lineTokens.produceFromScopes(scopesList, endIndex);
 		variableFonts.produceFromScopes(scopesList, endIndex);
