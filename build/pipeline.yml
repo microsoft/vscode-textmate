@@ -40,7 +40,7 @@ extends:
         testPlatforms:
           - name: Linux
             nodeVersions:
-              - 16.x
+              - 22.x
 
         testSteps:
           - script: npm ci
