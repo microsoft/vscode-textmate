@@ -10,7 +10,7 @@ import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
 import { ruleIdFromNumber, IRuleFactoryHelper, IRuleRegistry, Rule, RuleFactory, RuleId, ruleIdToNumber } from '../rule';
 import { FontStyle, ScopeName, ScopePath, ScopeStack, StyleAttributes } from '../theme';
-import { clone } from '../utils';
+import { clone, containsRTL } from '../utils';
 import { BasicScopeAttributes, BasicScopeAttributesProvider } from './basicScopesAttributeProvider';
 import { _tokenizeString } from './tokenizeString';
 
@@ -960,6 +960,7 @@ export class LineTokens {
 	private _lastTokenEndIndex: number;
 
 	private readonly _tokenTypeOverrides: TokenTypeMatcher[];
+	private readonly _mergeConsecutiveTokensWithEqualMetadata: boolean;
 
 	constructor(
 		emitBinaryTokens: boolean,
@@ -974,6 +975,8 @@ export class LineTokens {
 		} else {
 			this._lineText = null;
 		}
+		// Don't merge tokens if the line contains RTL characters
+		this._mergeConsecutiveTokensWithEqualMetadata = !containsRTL(lineText);
 		this._tokens = [];
 		this._binaryTokens = [];
 		this._lastTokenEndIndex = 0;
@@ -1031,7 +1034,7 @@ export class LineTokens {
 				);
 			}
 
-			if (this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
+			if (this._mergeConsecutiveTokensWithEqualMetadata && this._binaryTokens.length > 0 && this._binaryTokens[this._binaryTokens.length - 1] === metadata) {
 				// no need to push a token with the same metadata
 				this._lastTokenEndIndex = endIndex;
 				return;
