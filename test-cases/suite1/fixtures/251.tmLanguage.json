@@ -1,0 +1,11 @@
+{
+	"$schema": "https://raw.githubusercontent.com/RedCMD/TmLanguage-Syntax-Highlighter/main/vscode.tmLanguage.schema.json",
+	"scopeName": "source.empty.end",
+	"patterns": [
+		{
+			"begin": "comment",
+			"end": "",
+			"name": "comment"
+		}
+	]
+}
