@@ -9,7 +9,7 @@ import { IRawGrammar } from './rawGrammar';
 import { SyncRegistry } from './registry';
 import { IRawTheme, ScopeName, Theme } from './theme';
 import { StandardTokenType } from './encodedTokenAttributes';
-import { ScopeDependencyProcessor } from './grammar/grammarDependencies'
+import { ScopeDependencyProcessor } from './grammar/grammarDependencies';
 import { applyStateStackDiff, diffStateStacksRefEq, StackDiff } from './diffStateStacks';
 
 export * from './onigLib';
@@ -226,6 +226,10 @@ export interface ITokenizeLineResult {
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
 	readonly stoppedEarly: boolean;
+	/**
+	 * Font information for the tokenized line
+	 */
+	readonly fonts: IFontInfo[];
 }
 
 export interface ITokenizeLineResult2 {
@@ -244,6 +248,40 @@ export interface ITokenizeLineResult2 {
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
 	readonly stoppedEarly: boolean;
+	/**
+	 * Variable font information for the tokenized line
+	 */
+	readonly fonts: IFontInfo[];
+}
+
+/**
+ * Represents variable font information for a segment of text
+ */
+export interface IFontInfo {
+	/**
+	 * Starting index in the line
+	 */
+	readonly startIndex: number;
+
+	/**
+	 * Length of the segment
+	 */
+	readonly length: number;
+
+	/**
+	 * Font family specification
+	 */
+	readonly fontFamily: string | null;
+
+	/**
+	 * Font size specification
+	 */
+	readonly fontSize: string | null;
+
+	/**
+	 * Line height specification
+	 */
+	readonly lineHeight: number | null;
 }
 
 export interface IToken {

@@ -4,7 +4,7 @@
 
 import { DebugFlags } from '../debug';
 import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
-import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack } from '../main';
+import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IFontInfo } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
@@ -284,6 +284,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
+			fonts: r.fonts
 		};
 	}
 
@@ -297,6 +298,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
+			fonts: r.fonts
 		};
 	}
 
@@ -310,6 +312,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineTokens: LineTokens;
 		ruleStack: StateStackImpl;
 		stoppedEarly: boolean;
+		fonts: IFontInfo[];
 	} {
 		if (this._rootId === -1) {
 			this._rootId = RuleFactory.getCompiledRuleId(
@@ -380,6 +383,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			this._tokenTypeMatchers,
 			this.balancedBracketSelectors
 		);
+		const fontsComputer = new FontsComputer();
 		const r = _tokenizeString(
 			this,
 			onigLineText,
@@ -387,10 +391,11 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			0,
 			prevState,
 			lineTokens,
+			fontsComputer,
 			true,
 			timeLimit
 		);
-
+		const fonts = fontsComputer.getVariableFontInfo();
 		disposeOnigString(onigLineText);
 
 		return {
@@ -398,6 +403,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 			lineTokens: lineTokens,
 			ruleStack: r.stack,
 			stoppedEarly: r.stoppedEarly,
+			fonts
 		};
 	}
 }
@@ -441,7 +447,7 @@ export class AttributedScopeStack {
 			rootStyle
 		);
 
-		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes);
+		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes, rootStyle);
 	}
 
 	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
@@ -457,7 +463,8 @@ export class AttributedScopeStack {
 	private constructor(
 		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
-		public readonly tokenAttributes: EncodedTokenAttributes
+		public readonly tokenAttributes: EncodedTokenAttributes,
+		public readonly styleAttributes: StyleAttributes | null = null
 	) {
 	}
 
@@ -559,7 +566,7 @@ export class AttributedScopeStack {
 			rawMetadata,
 			scopeThemeMatchResult
 		);
-		return new AttributedScopeStack(target, newPath, metadata);
+		return new AttributedScopeStack(target, newPath, metadata, scopeThemeMatchResult);
 	}
 
 	public getScopeNames(): string[] {
@@ -1111,3 +1118,75 @@ export class LineTokens {
 	}
 }
 
+class FontInfo implements IFontInfo {
+
+	constructor(
+		public startIndex: number,
+		public length: number,
+		public fontFamily: string | null,
+		public fontSize: string | null,
+		public lineHeight: number | null
+	) { }
+
+	optionsEqual(other: IFontInfo): boolean {
+		return this.fontFamily === other.fontFamily
+			&& this.fontSize === other.fontSize
+			&& this.lineHeight === other.lineHeight;
+	}
+
+	extendLengthBy(delta: number): void {
+		this.length += delta;
+	}
+}
+
+export class FontsComputer {
+
+	private readonly _variableFontInfo: FontInfo[] = [];
+
+	private _lastTokenEndIndex: number = 0;
+
+	constructor() { }
+
+	public produce(stack: StateStackImpl, endIndex: number): void {
+		this.produceFromScopes(stack.contentNameScopesList, endIndex);
+	}
+
+	public produceFromScopes(
+		scopesList: AttributedScopeStack | null,
+		endIndex: number
+	): void {
+		if (this._lastTokenEndIndex >= endIndex) {
+			return;
+		}
+		if (scopesList && scopesList.styleAttributes) {
+			const fontFamily = scopesList.styleAttributes.fontFamily;
+			const fontSize = scopesList.styleAttributes.fontSize;
+			const lineHeight = scopesList.styleAttributes.lineHeight;
+			if (fontFamily || fontSize || lineHeight) {
+				const variableFont = new FontInfo(
+					this._lastTokenEndIndex,
+					endIndex - this._lastTokenEndIndex,
+					fontFamily,
+					fontSize,
+					lineHeight
+				);
+				const lastVariableFont = this._variableFontInfo[this._variableFontInfo.length - 1]
+				if (lastVariableFont && lastVariableFont.optionsEqual(variableFont)) {
+					const lastVariableFontEndIndex = lastVariableFont.startIndex + lastVariableFont.length;
+					if (lastVariableFontEndIndex === this._lastTokenEndIndex || lastVariableFontEndIndex + 1 === this._lastTokenEndIndex) {
+						lastVariableFont.extendLengthBy(variableFont.startIndex + variableFont.length - lastVariableFontEndIndex);
+					} else {
+						this._variableFontInfo.push(variableFont);
+					}
+				} else {
+					this._variableFontInfo.push(variableFont);
+				}
+			}
+		}
+		this._lastTokenEndIndex = endIndex;
+	}
+
+	public getVariableFontInfo(): IFontInfo[] {
+		return this._variableFontInfo;
+	}
+}
