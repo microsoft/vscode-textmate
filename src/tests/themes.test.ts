@@ -302,19 +302,19 @@ test('Theme parsing can parse', () => {
 	});
 
 	let expected = [
-		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('source', null, 1, FontStyle.NotSet, null, '#100000'),
-		new ParsedThemeRule('something', null, 1, FontStyle.NotSet, null, '#100000'),
-		new ParsedThemeRule('bar', null, 2, FontStyle.NotSet, null, '#010000'),
-		new ParsedThemeRule('baz', null, 2, FontStyle.NotSet, null, '#010000'),
-		new ParsedThemeRule('bar', ['selector', 'source.css'], 3, FontStyle.Bold, null, null),
-		new ParsedThemeRule('constant', null, 4, FontStyle.Italic, '#ff0000', null),
-		new ParsedThemeRule('constant.numeric', null, 5, FontStyle.NotSet, '#00ff00', null),
-		new ParsedThemeRule('constant.numeric.hex', null, 6, FontStyle.Bold, null, null),
-		new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null),
-		new ParsedThemeRule('constant.numeric.bin', null, 8, FontStyle.Bold | FontStyle.Strikethrough, null, null),
-		new ParsedThemeRule('constant.numeric.dec', null, 9, FontStyle.None, '#0000ff', null),
-		new ParsedThemeRule('foo', null, 10, FontStyle.None, '#CFA', null),
+		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('source', null, 1, FontStyle.NotSet, null, '#100000', '', '', 0),
+		new ParsedThemeRule('something', null, 1, FontStyle.NotSet, null, '#100000', '', '', 0),
+		new ParsedThemeRule('bar', null, 2, FontStyle.NotSet, null, '#010000', '', '', 0),
+		new ParsedThemeRule('baz', null, 2, FontStyle.NotSet, null, '#010000', '', '', 0),
+		new ParsedThemeRule('bar', ['selector', 'source.css'], 3, FontStyle.Bold, null, null, '', '', 0),
+		new ParsedThemeRule('constant', null, 4, FontStyle.Italic, '#ff0000', null, '', '', 0),
+		new ParsedThemeRule('constant.numeric', null, 5, FontStyle.NotSet, '#00ff00', null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.hex', null, 6, FontStyle.Bold, null, null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.bin', null, 8, FontStyle.Bold | FontStyle.Strikethrough, null, null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.dec', null, 9, FontStyle.None, '#0000ff', null, '', '', 0),
+		new ParsedThemeRule('foo', null, 10, FontStyle.None, '#CFA', null, '', '', 0),
 	];
 
 	assert.deepStrictEqual(actual, expected);
@@ -359,130 +359,138 @@ function assertThemeEqual(actual: Theme, expected: Theme): void {
 test('Theme resolving always has defaults', () => {
 	let actual = Theme.createFromParsedTheme([]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#000000');
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 1', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, null)
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, null, '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#000000');
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 2', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.None, null, null)
+		new ParsedThemeRule('', null, -1, FontStyle.None, null, null, '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#000000');
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 3', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null)
+		new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null, '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#000000');
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.Bold, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.Bold, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 4', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#ff0000', null)
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#ff0000', null, '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#ff0000');
 	const _B = colorMap.getId('#ffffff');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving respects incoming defaults 5', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000')
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000', '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#000000');
 	const _B = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving can merge incoming defaults', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000'),
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#00ff00', null),
-		new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, null, '#ff0000', '', '', 0),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#00ff00', null, '', '', 0),
+		new ParsedThemeRule('', null, -1, FontStyle.Bold, null, null, '', '', 0),
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#00ff00');
 	const _B = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.Bold, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET))
+		new StyleAttributes(FontStyle.Bold, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
 
 test('Theme resolving defaults are inherited', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('var', null, -1, FontStyle.NotSet, '#ff0000', null)
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('var', null, -1, FontStyle.NotSet, '#ff0000', null, '', '', 0)
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#F8F8F2');
 	const _B = colorMap.getId('#272822');
 	const _C = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 		})
 	);
 	assertThemeEqual(actual, expected);
@@ -490,20 +498,21 @@ test('Theme resolving defaults are inherited', () => {
 
 test('Theme resolving same rules get merged', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('var', null, 1, FontStyle.Bold, null, null),
-		new ParsedThemeRule('var', null, 0, FontStyle.NotSet, '#ff0000', null),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('var', null, 1, FontStyle.Bold, null, null, '', '', 0),
+		new ParsedThemeRule('var', null, 0, FontStyle.NotSet, '#ff0000', null, '', '', 0),
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#F8F8F2');
 	const _B = colorMap.getId('#272822');
 	const _C = colorMap.getId('#ff0000');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 		})
 	);
 	assertThemeEqual(actual, expected);
@@ -511,22 +520,23 @@ test('Theme resolving same rules get merged', () => {
 
 test('Theme resolving rules are inherited 1', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
-		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null, '', '', 0),
+		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null, '', '', 0),
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#F8F8F2');
 	const _B = colorMap.getId('#272822');
 	const _C = colorMap.getId('#ff0000');
 	const _D = colorMap.getId('#00ff00');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NOT_SET), [], {
-				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _D, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 			})
 		})
 	);
@@ -535,17 +545,18 @@ test('Theme resolving rules are inherited 1', () => {
 
 test('Theme resolving rules are inherited 2', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null),
-		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null),
-		new ParsedThemeRule('constant', null, 4, FontStyle.Italic, '#100000', null),
-		new ParsedThemeRule('constant.numeric', null, 5, FontStyle.NotSet, '#200000', null),
-		new ParsedThemeRule('constant.numeric.hex', null, 6, FontStyle.Bold, null, null),
-		new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null),
-		new ParsedThemeRule('constant.numeric.dec', null, 8, FontStyle.None, '#300000', null),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#ff0000', null, '', '', 0),
+		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#00ff00', null, '', '', 0),
+		new ParsedThemeRule('constant', null, 4, FontStyle.Italic, '#100000', null, '', '', 0),
+		new ParsedThemeRule('constant.numeric', null, 5, FontStyle.NotSet, '#200000', null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.hex', null, 6, FontStyle.Bold, null, null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.oct', null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, null, null, '', '', 0),
+		new ParsedThemeRule('constant.numeric.dec', null, 8, FontStyle.None, '#300000', null, '', '', 0),
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#F8F8F2');
 	const _B = colorMap.getId('#272822');
 	const _C = colorMap.getId('#100000');
@@ -555,16 +566,16 @@ test('Theme resolving rules are inherited 2', () => {
 	const _G = colorMap.getId('#00ff00');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _F, _NOT_SET), [], {
-				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _G, _NOT_SET))
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _F, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _G, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET))
 			}),
-			'constant': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Italic, _C, _NOT_SET), [], {
-				'numeric': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Italic, _D, _NOT_SET), [], {
-					'hex': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold, _D, _NOT_SET)),
-					'oct': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NOT_SET)),
-					'dec': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.None, _E, _NOT_SET)),
+			'constant': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Italic, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+				'numeric': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Italic, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
+					'hex': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET)),
+					'oct': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET)),
+					'dec': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.None, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET)),
 				})
 			})
 		})
@@ -574,14 +585,15 @@ test('Theme resolving rules are inherited 2', () => {
 
 test('Theme resolving rules with parent scopes', () => {
 	let actual = Theme.createFromParsedTheme([
-		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822'),
-		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#100000', null),
-		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#200000', null),
-		new ParsedThemeRule('var', ['source.css'], 1, FontStyle.Italic, '#300000', null),
-		new ParsedThemeRule('var', ['source.css'], 2, FontStyle.Underline, null, null),
+		new ParsedThemeRule('', null, -1, FontStyle.NotSet, '#F8F8F2', '#272822', '', '', 0),
+		new ParsedThemeRule('var', null, -1, FontStyle.Bold, '#100000', null, '', '', 0),
+		new ParsedThemeRule('var.identifier', null, -1, FontStyle.NotSet, '#200000', null, '', '', 0),
+		new ParsedThemeRule('var', ['source.css'], 1, FontStyle.Italic, '#300000', null, '', '', 0),
+		new ParsedThemeRule('var', ['source.css'], 2, FontStyle.Underline, null, null, '', '', 0),
 	]);
 	let colorMap = new ColorMap();
-	const _NOT_SET = 0;
+	const _NUMBER_NOT_SET = 0;
+	const _STRING_NOT_SET = '';
 	const _A = colorMap.getId('#F8F8F2');
 	const _B = colorMap.getId('#272822');
 	const _C = colorMap.getId('#100000');
@@ -589,15 +601,15 @@ test('Theme resolving rules with parent scopes', () => {
 	const _E = colorMap.getId('#200000');
 	let expected = new Theme(
 		colorMap,
-		new StyleAttributes(FontStyle.None, _A, _B),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NOT_SET, _NOT_SET), [], {
+		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET), [], {
 			'var': new ThemeTrieElement(
-				new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, 0),
-				[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NOT_SET)],
+				new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, 0, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+				[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET)],
 				{
 					'identifier': new ThemeTrieElement(
-						new ThemeTrieElementRule(2, null, FontStyle.Bold, _E, _NOT_SET),
-						[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NOT_SET)]
+						new ThemeTrieElementRule(2, null, FontStyle.Bold, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET),
+						[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET)]
 					)
 				}
 			)
@@ -707,12 +719,12 @@ test('Theme resolving issue #38: ignores rules with invalid colors', () => {
 	});
 
 	let expected = [
-		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#cccccc', '#222222'),
-		new ParsedThemeRule('variable', null, 1, FontStyle.None, null, null),
-		new ParsedThemeRule('variable.parameter', null, 2, FontStyle.Italic, null, null),
-		new ParsedThemeRule('support.other.variable', null, 3, FontStyle.None, null, null),
-		new ParsedThemeRule('variable.other', null, 4, FontStyle.None, null, null),
-		new ParsedThemeRule('variable.parameter.function.coffee', null, 5, FontStyle.Italic, '#F9D423', null),
+		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#cccccc', '#222222', '', '', 0),
+		new ParsedThemeRule('variable', null, 1, FontStyle.None, null, null, '', '', 0),
+		new ParsedThemeRule('variable.parameter', null, 2, FontStyle.Italic, null, null, '', '', 0),
+		new ParsedThemeRule('support.other.variable', null, 3, FontStyle.None, null, null, '', '', 0),
+		new ParsedThemeRule('variable.other', null, 4, FontStyle.None, null, null, '', '', 0),
+		new ParsedThemeRule('variable.parameter.function.coffee', null, 5, FontStyle.Italic, '#F9D423', null, '', '', 0),
 	];
 
 	assert.deepStrictEqual(actual, expected);
@@ -742,13 +754,13 @@ test('Theme resolving issue #35: Trailing comma in a tmTheme scope selector', ()
 	});
 
 	let expected = [
-		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#EFEFEF', '#25292C'),
-		new ParsedThemeRule('meta.at-rule.return.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
-		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.return.scss'], 1, FontStyle.NotSet, '#CC7832', null),
-		new ParsedThemeRule('meta.at-rule.else.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
-		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.else.scss'], 1, FontStyle.NotSet, '#CC7832', null),
-		new ParsedThemeRule('meta.at-rule.if.scss', null, 1, FontStyle.NotSet, '#CC7832', null),
-		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.if.scss'], 1, FontStyle.NotSet, '#CC7832', null),
+		new ParsedThemeRule('', null, 0, FontStyle.NotSet, '#EFEFEF', '#25292C', '', '', 0),
+		new ParsedThemeRule('meta.at-rule.return.scss', null, 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
+		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.return.scss'], 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
+		new ParsedThemeRule('meta.at-rule.else.scss', null, 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
+		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.else.scss'], 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
+		new ParsedThemeRule('meta.at-rule.if.scss', null, 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
+		new ParsedThemeRule('punctuation.definition', ['meta.at-rule.if.scss'], 1, FontStyle.NotSet, '#CC7832', null, '', '', 0),
 	];
 
 	assert.deepStrictEqual(actual, expected);
