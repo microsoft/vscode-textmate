@@ -27,7 +27,7 @@ export class Theme {
 		private readonly _colorMap: ColorMap,
 		private readonly _defaults: StyleAttributes,
 		private readonly _root: ThemeTrieElement
-	) {}
+	) { }
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
@@ -218,9 +218,9 @@ export class StyleAttributes {
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foregroundId: number,
 		public readonly backgroundId: number,
-		public readonly fontFamily: string | null = null,
-		public readonly fontSize: string | null = null,
-		public readonly lineHeight: number | null = null
+		public readonly fontFamily: string,
+		public readonly fontSize: string,
+		public readonly lineHeight: number
 	) { }
 }
 
@@ -294,17 +294,17 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			background = entry.settings.background;
 		}
 
-		let fontFamily: string | null = null;
+		let fontFamily: string = '';
 		if (typeof entry.settings.fontFamily === 'string') {
 			fontFamily = entry.settings.fontFamily;
 		}
 
-		let fontSize: string | null = null;
+		let fontSize: string = '';
 		if (typeof entry.settings.fontSize === 'string') {
 			fontSize = entry.settings.fontSize;
 		}
 
-		let lineHeight: number | null = null;
+		let lineHeight: number = 0;
 		if (typeof entry.settings.lineHeight === 'number') {
 			lineHeight = entry.settings.lineHeight;
 		}
@@ -346,9 +346,9 @@ export class ParsedThemeRule {
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foreground: string | null,
 		public readonly background: string | null,
-		public readonly fontFamily: string | null = null,
-		public readonly fontSize: string | null = null,
-		public readonly lineHeight: number | null = null,
+		public readonly fontFamily: string,
+		public readonly fontSize: string,
+		public readonly lineHeight: number,
 	) {
 	}
 }
@@ -408,9 +408,9 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 	let defaultFontStyle = FontStyle.None;
 	let defaultForeground = '#000000';
 	let defaultBackground = '#ffffff';
-	let defaultFontFamily = null;
-	let defaultFontSize = null;
-	let defaultLineHeight = null;
+	let defaultFontFamily = '';
+	let defaultFontSize = '';
+	let defaultLineHeight = 0;
 
 	while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
 		let incomingDefaults = parsedThemeRules.shift()!;
@@ -443,7 +443,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		defaultLineHeight
 	);
 
-	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight),[]);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
 		root.insert(
@@ -516,9 +516,9 @@ export class ThemeTrieElementRule {
 	fontStyle: number;
 	foreground: number;
 	background: number;
-	fontFamily: string | null;
-	fontSize: string | null;
-	lineHeight: number | null;
+	fontFamily: string;
+	fontSize: string;
+	lineHeight: number;
 
 	constructor(
 		scopeDepth: number,
@@ -526,9 +526,9 @@ export class ThemeTrieElementRule {
 		fontStyle: number,
 		foreground: number,
 		background: number,
-		fontFamily: string | null = null,
-		fontSize: string | null = null,
-		lineHeight: number | null = null
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
 	) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes || emptyParentScopes;
@@ -566,9 +566,9 @@ export class ThemeTrieElementRule {
 		fontStyle: number,
 		foreground: number,
 		background: number,
-		fontFamily: string | null = null,
-		fontSize: string | null = null,
-		lineHeight: number | null = null
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
 	): void {
 		if (this.scopeDepth > scopeDepth) {
 			console.log('how did this happen?');
@@ -585,13 +585,13 @@ export class ThemeTrieElementRule {
 		if (background !== 0) {
 			this.background = background;
 		}
-		if (fontFamily !== null) {
+		if (fontFamily !== '') {
 			this.fontFamily = fontFamily;
 		}
-		if (fontSize !== null) {
+		if (fontSize !== '') {
 			this.fontSize = fontSize;
 		}
-		if (lineHeight !== null) {
+		if (lineHeight !== 0) {
 			this.lineHeight = lineHeight;
 		}
 	}
@@ -692,9 +692,9 @@ export class ThemeTrieElement {
 		fontStyle: number,
 		foreground: number,
 		background: number,
-		fontFamily: string | null = null,
-		fontSize: string | null = null,
-		lineHeight: number | null = null
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number,
 	): void {
 		if (scope === '') {
 			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
@@ -729,9 +729,9 @@ export class ThemeTrieElement {
 		fontStyle: number,
 		foreground: number,
 		background: number,
-		fontFamily: string | null = null,
-		fontSize: string | null = null,
-		lineHeight: number | null = null
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
 	): void {
 
 		if (parentScopes === null) {
@@ -763,13 +763,13 @@ export class ThemeTrieElement {
 		if (background === 0) {
 			background = this._mainRule.background;
 		}
-		if (fontFamily === null) {
+		if (fontFamily === '') {
 			fontFamily = this._mainRule.fontFamily;
 		}
-		if (fontSize === null) {
+		if (fontSize === '') {
 			fontSize = this._mainRule.fontSize;
 		}
-		if (lineHeight === null) {
+		if (lineHeight === 0) {
 			lineHeight = this._mainRule.lineHeight;
 		}
 

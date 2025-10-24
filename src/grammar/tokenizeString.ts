@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { DebugFlags, UseOnigurumaFindOptions } from '../debug';
-import type { LineTokens, StateStackImpl, FontsComputer } from './grammar';
+import type { LineTokens, StateStackImpl, LineFonts } from './grammar';
 import { disposeOnigString, FindOption, IOnigCaptureIndex, OnigString } from '../onigLib';
 import { BeginEndRule, BeginWhileRule, CaptureRule, CompiledRule, endRuleId, MatchRule, Rule, RuleId, whileRuleId } from '../rule';
 import { performanceNow } from '../utils';
@@ -35,13 +35,13 @@ export function _tokenizeString(
 	linePos: number,
 	stack: StateStackImpl,
 	lineTokens: LineTokens,
-	variableFonts: FontsComputer,
+	lineFonts: LineFonts,
 	checkWhileConditions: boolean,
 	timeLimit: number
 ): TokenizeStringResult {
 	const produce = (stack: StateStackImpl, endIndex: number): void => {
 		lineTokens.produce(stack, endIndex);
-		variableFonts.produce(stack, endIndex);
+		lineFonts.produce(stack, endIndex);
 	}
 	const lineLength = lineText.content.length;
 
@@ -56,7 +56,7 @@ export function _tokenizeString(
 			linePos,
 			stack,
 			lineTokens,
-			variableFonts
+			lineFonts
 		);
 		stack = whileCheckResult.stack;
 		linePos = whileCheckResult.linePos;
@@ -134,7 +134,7 @@ export function _tokenizeString(
 				isFirstLine,
 				stack,
 				lineTokens,
-				variableFonts,
+				lineFonts,
 				poppedRule.endCaptures,
 				captureIndices
 			);
@@ -201,7 +201,7 @@ export function _tokenizeString(
 					isFirstLine,
 					stack,
 					lineTokens,
-					variableFonts,
+					lineFonts,
 					pushedRule.beginCaptures,
 					captureIndices
 				);
@@ -251,7 +251,7 @@ export function _tokenizeString(
 					isFirstLine,
 					stack,
 					lineTokens,
-					variableFonts,
+					lineFonts,
 					pushedRule.beginCaptures,
 					captureIndices
 				);
@@ -305,7 +305,7 @@ export function _tokenizeString(
 					isFirstLine,
 					stack,
 					lineTokens,
-					variableFonts,
+					lineFonts,
 					matchingRule.captures,
 					captureIndices
 				);
@@ -342,10 +342,10 @@ export function _tokenizeString(
  * If any fails, cut off the entire stack above the failed while condition. While conditions
  * may also advance the linePosition.
  */
-function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: FontsComputer): IWhileCheckResult {
+function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, linePos: number, stack: StateStackImpl, lineTokens: LineTokens, lineFonts: LineFonts): IWhileCheckResult {
 	const produce = (stack: StateStackImpl, endIndex: number): void => {
 		lineTokens.produce(stack, endIndex);
-		variableFonts.produce(stack, endIndex);
+		lineFonts.produce(stack, endIndex);
 	}
 	let anchorPosition = (stack.beginRuleCapturedEOL ? 0 : -1);
 
@@ -382,7 +382,7 @@ function _checkWhileConditions(grammar: Grammar, lineText: OnigString, isFirstLi
 			}
 			if (r.captureIndices && r.captureIndices.length) {
 				produce(whileRule.stack, r.captureIndices[0].start);
-				handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, variableFonts, whileRule.rule.whileCaptures, r.captureIndices);
+				handleCaptures(grammar, lineText, isFirstLine, whileRule.stack, lineTokens, lineFonts, whileRule.rule.whileCaptures, r.captureIndices);
 				produce(whileRule.stack, r.captureIndices[0].end);
 				anchorPosition = r.captureIndices[0].end;
 				if (r.captureIndices[0].end > linePos) {
@@ -572,14 +572,14 @@ function getFindOptions(allowA: boolean, allowG: boolean): number {
 	return options;
 }
 
-function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, variableFonts: FontsComputer, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
+function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boolean, stack: StateStackImpl, lineTokens: LineTokens, lineFonts: LineFonts, captures: (CaptureRule | null)[], captureIndices: IOnigCaptureIndex[]): void {
 	const produceFromScopes = (scopesList: AttributedScopeStack | null, endIndex: number): void => {
 		lineTokens.produceFromScopes(scopesList, endIndex);
-		variableFonts.produceFromScopes(scopesList, endIndex);
+		lineFonts.produceFromScopes(scopesList, endIndex);
 	}
 	const produce = (stack: StateStackImpl, endIndex: number): void => {
 		lineTokens.produce(stack, endIndex);
-		variableFonts.produce(stack, endIndex);
+		lineFonts.produce(stack, endIndex);
 	}
 	if (captures.length === 0) {
 		return;
@@ -632,7 +632,7 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 
 			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
 			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
-			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, variableFonts, false, /* no time limit */0);
+			_tokenizeString(grammar, onigSubStr, (isFirstLine && captureIndex.start === 0), captureIndex.start, stackClone, lineTokens, lineFonts, false, /* no time limit */0);
 			disposeOnigString(onigSubStr);
 			continue;
 		}

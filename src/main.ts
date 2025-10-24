@@ -218,6 +218,7 @@ export interface IGrammar {
 
 export interface ITokenizeLineResult {
 	readonly tokens: IToken[];
+	readonly fonts: IFontInfo[];
 	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
@@ -226,10 +227,6 @@ export interface ITokenizeLineResult {
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
 	readonly stoppedEarly: boolean;
-	/**
-	 * Font information for the tokenized line
-	 */
-	readonly fonts: IFontInfo[];
 }
 
 export interface ITokenizeLineResult2 {
@@ -241,6 +238,10 @@ export interface ITokenizeLineResult2 {
 	 */
 	readonly tokens: Uint32Array;
 	/**
+	 * Variable font information for the tokenized line
+	 */
+	readonly fonts: IFontInfo[];
+	/**
 	 * The `prevState` to be passed on to the next line tokenization.
 	 */
 	readonly ruleStack: StateStack;
@@ -248,10 +249,6 @@ export interface ITokenizeLineResult2 {
 	 * Did tokenization stop early due to reaching the time limit.
 	 */
 	readonly stoppedEarly: boolean;
-	/**
-	 * Variable font information for the tokenized line
-	 */
-	readonly fonts: IFontInfo[];
 }
 
 /**
@@ -264,9 +261,9 @@ export interface IFontInfo {
 	readonly startIndex: number;
 
 	/**
-	 * Length of the segment
+	 * End index in the line
 	 */
-	readonly length: number;
+	readonly endIndex: number;
 
 	/**
 	 * Font family specification
