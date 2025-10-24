@@ -114,7 +114,7 @@ class ThemeInfo {
 			try {
 				await tst.evaluate();
 				assert.deepStrictEqual(tst.actual, tst.expected);
-			} catch (err) {
+			} catch(err) {
 				tst.writeExpected();
 				throw err;
 			}

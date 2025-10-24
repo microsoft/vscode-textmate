@@ -354,8 +354,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				);
 			} else {
 				scopeList = AttributedScopeStack.createRoot(
-					"unknown",
-					defaultMetadata
+					 "unknown",
+					 defaultMetadata
 				);
 			}
 
@@ -427,13 +427,13 @@ export class AttributedScopeStack {
 		let scopeNames = namesScopeList?.scopePath ?? null;
 		for (const frame of contentNameScopesList) {
 			scopeNames = ScopeStack.push(scopeNames, frame.scopeNames);
-			current = new AttributedScopeStack(current, scopeNames!, frame.encodedTokenAttributes);
+			current = new AttributedScopeStack(current, scopeNames!, frame.encodedTokenAttributes, null);
 		}
 		return current;
 	}
 
 	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
-		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes);
+		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes, null);
 	}
 
 	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, grammar: Grammar): AttributedScopeStack {
@@ -464,7 +464,7 @@ export class AttributedScopeStack {
 		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
 		public readonly tokenAttributes: EncodedTokenAttributes,
-		public readonly styleAttributes: StyleAttributes | null = null
+		public readonly styleAttributes: StyleAttributes | null
 	) {
 	}
 
@@ -913,12 +913,12 @@ export class BalancedBracketSelectors {
 		unbalancedBracketScopes: string[],
 	) {
 		this.balancedBracketScopes = balancedBracketScopes.flatMap((selector) => {
-			if (selector === '*') {
-				this.allowAny = true;
-				return [];
+				if (selector === '*') {
+					this.allowAny = true;
+					return [];
+				}
+				return createMatchers(selector, nameMatcher).map((m) => m.matcher);
 			}
-			return createMatchers(selector, nameMatcher).map((m) => m.matcher);
-		}
 		);
 		this.unbalancedBracketScopes = unbalancedBracketScopes.flatMap((selector) =>
 			createMatchers(selector, nameMatcher).map((m) => m.matcher)

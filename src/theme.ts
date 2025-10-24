@@ -27,7 +27,7 @@ export class Theme {
 		private readonly _colorMap: ColorMap,
 		private readonly _defaults: StyleAttributes,
 		private readonly _root: ThemeTrieElement
-	) { }
+	) {}
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
@@ -83,7 +83,7 @@ export type ScopePattern = string;
 /**
  * A TextMate theme.
  */
-export interface IRawTheme {
+ export interface IRawTheme {
 	readonly name?: string;
 	readonly settings: IRawThemeSetting[];
 }
@@ -91,7 +91,7 @@ export interface IRawTheme {
 /**
  * A single theme setting.
  */
-export interface IRawThemeSetting {
+ export interface IRawThemeSetting {
 	readonly name?: string;
 	readonly scope?: ScopePattern | ScopePattern[];
 	readonly settings: {
@@ -125,7 +125,7 @@ export class ScopeStack {
 	constructor(
 		public readonly parent: ScopeStack | null,
 		public readonly scopeName: ScopeName
-	) { }
+	) {}
 
 	public push(scopeName: ScopeName): ScopeStack {
 		return new ScopeStack(this, scopeName);
@@ -507,7 +507,7 @@ export class ColorMap {
 	}
 }
 
-const emptyParentScopes = Object.freeze(<ScopeName[]>[]);
+const emptyParentScopes= Object.freeze(<ScopeName[]>[]);
 
 export class ThemeTrieElementRule {
 

@@ -28,7 +28,7 @@ class TokenizeStringResult {
  * @param timeLimit Use `0` to indicate no time limit
  * @returns the StackElement or StackElement.TIME_LIMIT_REACHED if the time limit has been reached
  */
-export function _tokenizeString(
+ export function _tokenizeString(
 	grammar: Grammar,
 	lineText: OnigString,
 	isFirstLine: boolean,
@@ -120,9 +120,9 @@ export function _tokenizeString(
 			if (DebugFlags.InDebugMode) {
 				console.log(
 					"  popping " +
-					poppedRule.debugName +
-					" - " +
-					poppedRule.debugEndRegExp
+						poppedRule.debugName +
+						" - " +
+						poppedRule.debugEndRegExp
 				);
 			}
 
@@ -189,9 +189,9 @@ export function _tokenizeString(
 				if (DebugFlags.InDebugMode) {
 					console.log(
 						"  pushing " +
-						pushedRule.debugName +
-						" - " +
-						pushedRule.debugBeginRegExp
+							pushedRule.debugName +
+							" - " +
+							pushedRule.debugBeginRegExp
 					);
 				}
 
@@ -293,9 +293,9 @@ export function _tokenizeString(
 				if (DebugFlags.InDebugMode) {
 					console.log(
 						"  matched " +
-						matchingRule.debugName +
-						" - " +
-						matchingRule.debugMatchRegExp
+							matchingRule.debugName +
+							" - " +
+							matchingRule.debugMatchRegExp
 					);
 				}
 
