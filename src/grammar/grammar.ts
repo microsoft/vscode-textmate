@@ -354,8 +354,8 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				);
 			} else {
 				scopeList = AttributedScopeStack.createRoot(
-					 "unknown",
-					 defaultMetadata
+					"unknown",
+					defaultMetadata
 				);
 			}
 
@@ -913,12 +913,12 @@ export class BalancedBracketSelectors {
 		unbalancedBracketScopes: string[],
 	) {
 		this.balancedBracketScopes = balancedBracketScopes.flatMap((selector) => {
-				if (selector === '*') {
-					this.allowAny = true;
-					return [];
-				}
-				return createMatchers(selector, nameMatcher).map((m) => m.matcher);
+			if (selector === '*') {
+				this.allowAny = true;
+				return [];
 			}
+			return createMatchers(selector, nameMatcher).map((m) => m.matcher);
+		}
 		);
 		this.unbalancedBracketScopes = unbalancedBracketScopes.flatMap((selector) =>
 			createMatchers(selector, nameMatcher).map((m) => m.matcher)
@@ -1118,7 +1118,7 @@ export class LineTokens {
 	}
 }
 
-class FontInfo implements IFontInfo {
+export class FontInfo implements IFontInfo {
 
 	constructor(
 		public startIndex: number,
