@@ -1128,7 +1128,7 @@ export class FontInfo implements IFontInfo {
 		public lineHeight: number | null
 	) { }
 
-	equal(other: IFontInfo): boolean {
+	optionsEqual(other: IFontInfo): boolean {
 		return this.fontFamily === other.fontFamily
 			&& this.fontSize === other.fontSize
 			&& this.lineHeight === other.lineHeight;
@@ -1171,13 +1171,8 @@ export class LineFonts {
 			lineHeight
 		);
 		const lastFont = this._fonts[this._fonts.length - 1]
-		if (lastFont && lastFont.equal(font)) {
-			const lastFontEndIndex = lastFont.endIndex;
-			if (lastFontEndIndex === this._lastIndex || lastFontEndIndex + 1 === this._lastIndex) {
-				lastFont.endIndex = font.endIndex;
-			} else {
-				this._fonts.push(font);
-			}
+		if (lastFont && lastFont.endIndex === this._lastIndex && lastFont.optionsEqual(font)) {
+			lastFont.endIndex = font.endIndex;
 		} else {
 			this._fonts.push(font);
 		}
