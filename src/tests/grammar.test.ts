@@ -7,6 +7,7 @@ import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType } 
 import { Registry } from '../main';
 import { FontStyle } from '../theme';
 import { getOniguruma } from './onigLibs';
+import { FontInfo } from '../grammar/grammar';
 
 function assertEquals(metadata: number, languageId: number, tokenType: StandardTokenType, containsBalancedBrackets: boolean, fontStyle: FontStyle, foreground: number, background: number): void {
 	const actual = {
@@ -136,6 +137,60 @@ test.skip('Shadowed rules are resolved correctly', async function () {
 		const result = grammar.tokenizeLine('bar1', null, undefined);
 		// TODO this should be inner!
 		assert.deepStrictEqual(result.tokens, [{ startIndex: 0, endIndex: 4, scopes: ["source.test", "outer"] }]);
+	} finally {
+		registry.dispose();
+	}
+});
+
+test('Fonts are correctly set', async function () {
+	const registry = new Registry({ loadGrammar: async () => undefined, onigLib: getOniguruma() });
+	try {
+		registry.setTheme({
+			settings: [{
+				scope: 'bar.test',
+				settings: {
+					fontFamily: 'monospace',
+					fontSize: '12px',
+					lineHeight: 20
+				}
+			}]
+		});
+		const grammar = await registry.addGrammar({
+			scopeName: 'source.test',
+			repository: { $self: undefined!, $base: undefined! },
+			patterns: [
+				{ match: '\\bbar\\b', name: 'bar.test' }
+			]
+		});
+		const result = grammar.tokenizeLine2('bar hello', null, undefined);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", "12px", 20)]);
+	} finally {
+		registry.dispose();
+	}
+});
+
+test('Fonts are correctly set 2', async function () {
+	const registry = new Registry({ loadGrammar: async () => undefined, onigLib: getOniguruma() });
+	try {
+		registry.setTheme({
+			settings: [{
+				scope: 'entity.name.function.ts',
+				settings: {
+					fontFamily: 'Times New Roman',
+					fontSize: '20px',
+					lineHeight: 40
+				}
+			}]
+		});
+		const grammar = await registry.addGrammar({
+			scopeName: 'source.ts',
+			repository: { $self: undefined!, $base: undefined! },
+			patterns: [
+				{ match: 'g', name: 'entity.name.function.ts' }
+			]
+		});
+		const result = grammar.tokenizeLine2('function g() {}', null, undefined);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(9, 10, 'Times New Roman', "20px", 40)]);
 	} finally {
 		registry.dispose();
 	}

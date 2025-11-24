@@ -54,7 +54,10 @@ export class Theme {
 		return new StyleAttributes(
 			effectiveRule.fontStyle,
 			effectiveRule.foreground,
-			effectiveRule.background
+			effectiveRule.background,
+			effectiveRule.fontFamily,
+			effectiveRule.fontSize,
+			effectiveRule.lineHeight
 		);
 	}
 }
@@ -95,6 +98,9 @@ export type ScopePattern = string;
 		readonly fontStyle?: string;
 		readonly foreground?: string;
 		readonly background?: string;
+		readonly fontFamily?: string;
+		readonly fontSize?: string;
+		readonly lineHeight?: number;
 	};
 }
 
@@ -211,8 +217,11 @@ export class StyleAttributes {
 	constructor(
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foregroundId: number,
-		public readonly backgroundId: number
-	) {}
+		public readonly backgroundId: number,
+		public readonly fontFamily: string,
+		public readonly fontSize: string,
+		public readonly lineHeight: number
+	) { }
 }
 
 /**
@@ -285,6 +294,21 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			background = entry.settings.background;
 		}
 
+		let fontFamily: string = '';
+		if (typeof entry.settings.fontFamily === 'string') {
+			fontFamily = entry.settings.fontFamily;
+		}
+
+		let fontSize: string = '';
+		if (typeof entry.settings.fontSize === 'string') {
+			fontSize = entry.settings.fontSize;
+		}
+
+		let lineHeight: number = 0;
+		if (typeof entry.settings.lineHeight === 'number') {
+			lineHeight = entry.settings.lineHeight;
+		}
+
 		for (let j = 0, lenJ = scopes.length; j < lenJ; j++) {
 			let _scope = scopes[j].trim();
 
@@ -303,7 +327,10 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 				i,
 				fontStyle,
 				foreground,
-				background
+				background,
+				fontFamily,
+				fontSize,
+				lineHeight
 			);
 		}
 	}
@@ -319,6 +346,9 @@ export class ParsedThemeRule {
 		public readonly fontStyle: OrMask<FontStyle>,
 		public readonly foreground: string | null,
 		public readonly background: string | null,
+		public readonly fontFamily: string,
+		public readonly fontSize: string,
+		public readonly lineHeight: number,
 	) {
 	}
 }
@@ -378,6 +408,10 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 	let defaultFontStyle = FontStyle.None;
 	let defaultForeground = '#000000';
 	let defaultBackground = '#ffffff';
+	let defaultFontFamily = '';
+	let defaultFontSize = '';
+	let defaultLineHeight = 0;
+
 	while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
 		let incomingDefaults = parsedThemeRules.shift()!;
 		if (incomingDefaults.fontStyle !== FontStyle.NotSet) {
@@ -389,14 +423,40 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		if (incomingDefaults.background !== null) {
 			defaultBackground = incomingDefaults.background;
 		}
+		if (incomingDefaults.fontFamily !== null) {
+			defaultFontFamily = incomingDefaults.fontFamily;
+		}
+		if (incomingDefaults.fontSize !== null) {
+			defaultFontSize = incomingDefaults.fontSize;
+		}
+		if (incomingDefaults.lineHeight !== null) {
+			defaultLineHeight = incomingDefaults.lineHeight;
+		}
 	}
 	let colorMap = new ColorMap(_colorMap);
-	let defaults = new StyleAttributes(defaultFontStyle, colorMap.getId(defaultForeground), colorMap.getId(defaultBackground));
+	let defaults = new StyleAttributes(
+		defaultFontStyle,
+		colorMap.getId(defaultForeground),
+		colorMap.getId(defaultBackground),
+		defaultFontFamily,
+		defaultFontSize,
+		defaultLineHeight
+	);
 
-	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0), []);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
-		root.insert(0, rule.scope, rule.parentScopes, rule.fontStyle, colorMap.getId(rule.foreground), colorMap.getId(rule.background));
+		root.insert(
+			0,
+			rule.scope,
+			rule.parentScopes,
+			rule.fontStyle,
+			colorMap.getId(rule.foreground),
+			colorMap.getId(rule.background),
+			rule.fontFamily,
+			rule.fontSize,
+			rule.lineHeight
+		);
 	}
 
 	return new Theme(colorMap, defaults, root);
@@ -456,20 +516,44 @@ export class ThemeTrieElementRule {
 	fontStyle: number;
 	foreground: number;
 	background: number;
+	fontFamily: string;
+	fontSize: string;
+	lineHeight: number;
 
-	constructor(scopeDepth: number, parentScopes: readonly ScopeName[] | null, fontStyle: number, foreground: number, background: number) {
+	constructor(
+		scopeDepth: number,
+		parentScopes: readonly ScopeName[] | null,
+		fontStyle: number,
+		foreground: number,
+		background: number,
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
+	) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes || emptyParentScopes;
 		this.fontStyle = fontStyle;
 		this.foreground = foreground;
 		this.background = background;
+		this.fontFamily = fontFamily;
+		this.fontSize = fontSize;
+		this.lineHeight = lineHeight;
 	}
 
 	public clone(): ThemeTrieElementRule {
-		return new ThemeTrieElementRule(this.scopeDepth, this.parentScopes, this.fontStyle, this.foreground, this.background);
+		return new ThemeTrieElementRule(
+			this.scopeDepth,
+			this.parentScopes,
+			this.fontStyle,
+			this.foreground,
+			this.background,
+			this.fontFamily,
+			this.fontSize,
+			this.lineHeight
+		);
 	}
 
-	public static cloneArr(arr:ThemeTrieElementRule[]): ThemeTrieElementRule[] {
+	public static cloneArr(arr: ThemeTrieElementRule[]): ThemeTrieElementRule[] {
 		let r: ThemeTrieElementRule[] = [];
 		for (let i = 0, len = arr.length; i < len; i++) {
 			r[i] = arr[i].clone();
@@ -477,7 +561,15 @@ export class ThemeTrieElementRule {
 		return r;
 	}
 
-	public acceptOverwrite(scopeDepth: number, fontStyle: number, foreground: number, background: number): void {
+	public acceptOverwrite(
+		scopeDepth: number,
+		fontStyle: number,
+		foreground: number,
+		background: number,
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
+	): void {
 		if (this.scopeDepth > scopeDepth) {
 			console.log('how did this happen?');
 		} else {
@@ -492,6 +584,15 @@ export class ThemeTrieElementRule {
 		}
 		if (background !== 0) {
 			this.background = background;
+		}
+		if (fontFamily !== '') {
+			this.fontFamily = fontFamily;
+		}
+		if (fontSize !== '') {
+			this.fontSize = fontSize;
+		}
+		if (lineHeight !== 0) {
+			this.lineHeight = lineHeight;
 		}
 	}
 }
@@ -584,9 +685,19 @@ export class ThemeTrieElement {
 		return rules;
 	}
 
-	public insert(scopeDepth: number, scope: ScopeName, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
+	public insert(
+		scopeDepth: number,
+		scope: ScopeName,
+		parentScopes: ScopeName[] | null,
+		fontStyle: number,
+		foreground: number,
+		background: number,
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number,
+	): void {
 		if (scope === '') {
-			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background);
+			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -609,14 +720,23 @@ export class ThemeTrieElement {
 			this._children[head] = child;
 		}
 
-		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background);
+		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 	}
 
-	private _doInsertHere(scopeDepth: number, parentScopes: ScopeName[] | null, fontStyle: number, foreground: number, background: number): void {
+	private _doInsertHere(
+		scopeDepth: number,
+		parentScopes: ScopeName[] | null,
+		fontStyle: number,
+		foreground: number,
+		background: number,
+		fontFamily: string,
+		fontSize: string,
+		lineHeight: number
+	): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule
-			this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background);
+			this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -626,7 +746,7 @@ export class ThemeTrieElement {
 
 			if (strArrCmp(rule.parentScopes, parentScopes) === 0) {
 				// bingo! => we get to merge this into an existing one
-				rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background);
+				rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 				return;
 			}
 		}
@@ -643,7 +763,25 @@ export class ThemeTrieElement {
 		if (background === 0) {
 			background = this._mainRule.background;
 		}
+		if (fontFamily === '') {
+			fontFamily = this._mainRule.fontFamily;
+		}
+		if (fontSize === '') {
+			fontSize = this._mainRule.fontSize;
+		}
+		if (lineHeight === 0) {
+			lineHeight = this._mainRule.lineHeight;
+		}
 
-		this._rulesWithParentScopes.push(new ThemeTrieElementRule(scopeDepth, parentScopes, fontStyle, foreground, background));
+		this._rulesWithParentScopes.push(new ThemeTrieElementRule(
+			scopeDepth,
+			parentScopes,
+			fontStyle,
+			foreground,
+			background,
+			fontFamily,
+			fontSize,
+			lineHeight
+		));
 	}
 }
