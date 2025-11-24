@@ -1159,13 +1159,13 @@ export class LineFonts {
 		const fontFamily = styleAttributes.fontFamily;
 		const fontSize = styleAttributes.fontSize;
 		const lineHeight = styleAttributes.lineHeight;
-		if (fontFamily === null && fontSize === null && lineHeight === null) {
+		if (!fontFamily && !fontSize && !lineHeight) {
 			this._lastIndex = endIndex;
 			return;
 		}
 		const font = new FontInfo(
 			this._lastIndex,
-			endIndex - this._lastIndex,
+			endIndex,
 			fontFamily,
 			fontSize,
 			lineHeight

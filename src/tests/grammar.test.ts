@@ -142,14 +142,13 @@ test.skip('Shadowed rules are resolved correctly', async function () {
 	}
 });
 
-test.only('Fonts are correctly set', async function () {
+test('Fonts are correctly set', async function () {
 	const registry = new Registry({ loadGrammar: async () => undefined, onigLib: getOniguruma() });
 	try {
 		registry.setTheme({
 			settings: [{
-				scope: 'source.test',
+				scope: 'bar.test',
 				settings: {
-					fontStyle: 'bold underline',
 					fontFamily: 'monospace',
 					fontSize: '12px',
 					lineHeight: 20
@@ -158,25 +157,13 @@ test.only('Fonts are correctly set', async function () {
 		});
 		const grammar = await registry.addGrammar({
 			scopeName: 'source.test',
-			repository: {
-				$base: undefined!,
-				$self: undefined!,
-				bar: { include: '#bar', name: 'entity.name.test' }
-			},
+			repository: { $self: undefined!, $base: undefined! },
 			patterns: [
-				{
-					repository: {
-						$base: undefined!,
-						$self: undefined!,
-						bar: { match: '\\bbar1\\b', name: 'entity.name.test' }
-					}
-				}
+				{ match: '\\bbar\\b', name: 'bar.test' }
 			]
 		});
-		const result = grammar.tokenizeLine2('bar1 hello', null, undefined);
-		console.log('result.fonts : ', result.fonts);
-		console.log('result.tokens : ', result.tokens);
-		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 4, "monospace", "12px", 20)]);
+		const result = grammar.tokenizeLine2('bar hello', null, undefined);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", "12px", 20)]);
 	} finally {
 		registry.dispose();
 	}
@@ -196,19 +183,10 @@ test('Fonts are correctly set 2', async function () {
 			}]
 		});
 		const grammar = await registry.addGrammar({
-			scopeName: 'entity.name.function.ts',
-			repository: {
-				$base: undefined!,
-				$self: undefined!
-			},
+			scopeName: 'source.ts',
+			repository: { $self: undefined!, $base: undefined! },
 			patterns: [
-				{
-					repository: {
-						$base: undefined!,
-						$self: undefined!,
-						bar: { match: 'g' }
-					}
-				}
+				{ match: 'g', name: 'entity.name.function.ts' }
 			]
 		});
 		const result = grammar.tokenizeLine2('function g() {}', null, undefined);
