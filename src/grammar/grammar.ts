@@ -281,10 +281,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	): ITokenizeLineResult {
 		const r = this._tokenize(lineText, prevState, false, timeLimit);
 		return {
-			tokens: r.lineTokens.getResult(r.ruleStack, r.lineLength),
+			tokens: r.tokenHandler.getTokenResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
-			fonts: r.lineFonts.getResult()
+			fonts: r.tokenHandler.getFontResult()
 		};
 	}
 
@@ -295,10 +295,10 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
 		return {
-			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
+			tokens: r.tokenHandler.getBinaryTokenResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
 			stoppedEarly: r.stoppedEarly,
-			fonts: r.lineFonts.getResult()
+			fonts: r.tokenHandler.getFontResult()
 		};
 	}
 
@@ -309,8 +309,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number
 	): {
 		lineLength: number;
-		lineTokens: LineTokens;
-		lineFonts: LineFonts;
+		tokenHandler: ITokenHandler;
 		ruleStack: StateStackImpl;
 		stoppedEarly: boolean;
 	} {
@@ -377,21 +376,19 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		lineText = lineText + "\n";
 		const onigLineText = this.createOnigString(lineText);
 		const lineLength = onigLineText.content.length;
-		const lineTokens = new LineTokens(
+		const tokenHandler = new TokenHandler(
 			emitBinaryTokens,
 			lineText,
 			this._tokenTypeMatchers,
 			this.balancedBracketSelectors
 		);
-		const lineFonts = new LineFonts();
 		const r = _tokenizeString(
 			this,
 			onigLineText,
 			isFirstLine,
 			0,
 			prevState,
-			lineTokens,
-			lineFonts,
+			tokenHandler,
 			true,
 			timeLimit
 		);
@@ -400,8 +397,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 		return {
 			lineLength: lineLength,
-			lineTokens: lineTokens,
-			lineFonts: lineFonts,
+			tokenHandler: tokenHandler,
 			ruleStack: r.stack,
 			stoppedEarly: r.stoppedEarly,
 		};
@@ -989,10 +985,6 @@ export class LineTokens {
 		this._lastTokenEndIndex = 0;
 	}
 
-	public produce(stack: StateStackImpl, endIndex: number): void {
-		this.produceFromScopes(stack.contentNameScopesList, endIndex);
-	}
-
 	public produceFromScopes(
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
@@ -1089,7 +1081,7 @@ export class LineTokens {
 
 		if (this._tokens.length === 0) {
 			this._lastTokenEndIndex = -1;
-			this.produce(stack, lineLength);
+			this.produceFromScopes(stack.contentNameScopesList, lineLength);
 			this._tokens[this._tokens.length - 1].startIndex = 0;
 		}
 
@@ -1105,7 +1097,7 @@ export class LineTokens {
 
 		if (this._binaryTokens.length === 0) {
 			this._lastTokenEndIndex = -1;
-			this.produce(stack, lineLength);
+			this.produceFromScopes(stack.contentNameScopesList, lineLength);
 			this._binaryTokens[this._binaryTokens.length - 2] = 0;
 		}
 
@@ -1143,10 +1135,6 @@ export class LineFonts {
 
 	constructor() { }
 
-	public produce(stack: StateStackImpl, endIndex: number): void {
-		this.produceFromScopes(stack.contentNameScopesList, endIndex);
-	}
-
 	public produceFromScopes(
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
@@ -1181,5 +1169,50 @@ export class LineFonts {
 
 	public getResult(): IFontInfo[] {
 		return this._fonts;
+	}
+}
+
+export interface ITokenHandler {
+	handle(scopes: AttributedScopeStack | null, endIndex: number): void;
+	getTokenResult(stack: StateStackImpl, lineLength: number): IToken[];
+	getBinaryTokenResult(stack: StateStackImpl, lineLength: number): Uint32Array;
+	getFontResult(): IFontInfo[];
+}
+
+export class TokenHandler {
+
+	private _lineTokens: LineTokens;
+	private _lineFonts: LineFonts;
+
+	constructor(
+		emitBinaryTokens: boolean,
+		lineText: string,
+		tokenTypeOverrides: TokenTypeMatcher[],
+		balancedBracketSelectors: BalancedBracketSelectors | null
+	) {
+		this._lineTokens = new LineTokens(
+			emitBinaryTokens,
+			lineText,
+			tokenTypeOverrides,
+			balancedBracketSelectors
+		);
+		this._lineFonts = new LineFonts();
+	}
+
+	handle(scopes: AttributedScopeStack | null, endIndex: number): void {
+		this._lineTokens.produceFromScopes(scopes, endIndex);
+		this._lineFonts.produceFromScopes(scopes, endIndex);
+	}
+
+	getTokenResult(stack: StateStackImpl, lineLength: number): IToken[] {
+		return this._lineTokens.getResult(stack, lineLength)
+	}
+
+	getBinaryTokenResult(stack: StateStackImpl, lineLength: number): Uint32Array {
+		return this._lineTokens.getBinaryResult(stack, lineLength);
+	}
+
+	getFontResult(): IFontInfo[] {
+		return this._lineFonts.getResult();
 	}
 }
