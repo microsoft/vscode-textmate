@@ -64,10 +64,10 @@ class TokenizeStringResult {
 		anchorPosition = whileCheckResult.anchorPosition;
 	}
 
-	const startTime = Date.now();
+	const startTime = performanceNow()
 	while (!STOP) {
 		if (timeLimit !== 0) {
-			const elapsedTime = Date.now() - startTime;
+			const elapsedTime = performanceNow() - startTime;
 			if (elapsedTime > timeLimit) {
 				return new TokenizeStringResult(stack, true);
 			}
