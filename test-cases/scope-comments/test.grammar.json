@@ -1,0 +1,19 @@
+{
+	"scopeName": "source.test",
+	"patterns": [
+		{
+			"match": "\\b(hello)\\b",
+			"name": "keyword.test",
+			"comment": "Matches the hello keyword"
+		},
+		{
+			"match": "\\b(world)\\b",
+			"name": "string.test",
+			"comment": "Matches the world keyword"
+		},
+		{
+			"match": "\\b(test)\\b",
+			"name": "variable.test"
+		}
+	]
+}
