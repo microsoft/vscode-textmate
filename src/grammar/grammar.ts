@@ -433,12 +433,12 @@ export class AttributedScopeStack {
 	}
 
 	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
-		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes, null);
+		return new AttributedScopeStack(null, new ScopeStack(null, scopeName, null), tokenAttributes, null);
 	}
 
 	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, grammar: Grammar): AttributedScopeStack {
 		const rawRootMetadata = grammar.getMetadataForScope(scopeName);
-		const scopePath = new ScopeStack(null, scopeName);
+		const scopePath = new ScopeStack(null, scopeName, null);
 		const rootStyle = grammar.themeProvider.themeMatch(scopePath);
 
 		const resolvedTokenAttributes = AttributedScopeStack.mergeAttributes(
@@ -531,7 +531,7 @@ export class AttributedScopeStack {
 		);
 	}
 
-	public pushAttributed(scopePath: ScopePath | null, grammar: Grammar): AttributedScopeStack {
+	public pushAttributed(scopePath: ScopePath | null, grammar: Grammar, scopeComment?: string | null): AttributedScopeStack {
 		if (scopePath === null) {
 			return this;
 		}
@@ -539,13 +539,14 @@ export class AttributedScopeStack {
 		if (scopePath.indexOf(' ') === -1) {
 			// This is the common case and much faster
 
-			return AttributedScopeStack._pushAttributed(this, scopePath, grammar);
+			return AttributedScopeStack._pushAttributed(this, scopePath, grammar, scopeComment);
 		}
 
 		const scopes = scopePath.split(/ /g);
 		let result: AttributedScopeStack = this;
 		for (const scope of scopes) {
-			result = AttributedScopeStack._pushAttributed(result, scope, grammar);
+			// For multi-scope pushes, only the first scope gets the comment
+			result = AttributedScopeStack._pushAttributed(result, scope, grammar, result === this ? scopeComment : null);
 		}
 		return result;
 
@@ -555,10 +556,11 @@ export class AttributedScopeStack {
 		target: AttributedScopeStack,
 		scopeName: ScopeName,
 		grammar: Grammar,
+		scopeComment?: string | null
 	): AttributedScopeStack {
 		const rawMetadata = grammar.getMetadataForScope(scopeName);
 
-		const newPath = target.scopePath.push(scopeName);
+		const newPath = target.scopePath.push(scopeName, scopeComment || null);
 		const scopeThemeMatchResult =
 			grammar.themeProvider.themeMatch(newPath);
 		const metadata = AttributedScopeStack.mergeAttributes(
@@ -571,6 +573,10 @@ export class AttributedScopeStack {
 
 	public getScopeNames(): string[] {
 		return this.scopePath.getSegments();
+	}
+
+	public getScopeComments(): (string | null)[] {
+		return this.scopePath.getComments();
 	}
 
 	public getExtensionIfDefined(base: AttributedScopeStack | null): AttributedScopeStackFrame[] | undefined {
@@ -1063,6 +1069,7 @@ export class LineTokens {
 		}
 
 		const scopes = scopesList?.getScopeNames() ?? [];
+		const scopeComments = scopesList?.getScopeComments() ?? [];
 
 		if (DebugFlags.InDebugMode) {
 			console.log('  token: |' + this._lineText!.substring(this._lastTokenEndIndex, endIndex).replace(/\n$/, '\\n') + '|');
@@ -1075,7 +1082,8 @@ export class LineTokens {
 			startIndex: this._lastTokenEndIndex,
 			endIndex: endIndex,
 			// value: lineText.substring(lastTokenEndIndex, endIndex),
-			scopes: scopes
+			scopes: scopes,
+			scopeComments: scopeComments
 		});
 
 		this._lastTokenEndIndex = endIndex;

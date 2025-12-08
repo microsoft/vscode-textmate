@@ -285,6 +285,7 @@ export interface IToken {
 	startIndex: number;
 	readonly endIndex: number;
 	readonly scopes: string[];
+	readonly scopeComments: (string | null)[];
 }
 
 /**

@@ -105,9 +105,11 @@ export type ScopePattern = string;
 }
 
 export class ScopeStack {
-	static push(path: ScopeStack | null, scopeNames: ScopeName[]): ScopeStack | null {
-		for (const name of scopeNames) {
-			path = new ScopeStack(path, name);
+	static push(path: ScopeStack | null, scopeNames: ScopeName[], scopeComments?: (string | null)[]): ScopeStack | null {
+		for (let i = 0; i < scopeNames.length; i++) {
+			const name = scopeNames[i];
+			const comment = scopeComments && scopeComments[i] !== undefined ? scopeComments[i] : null;
+			path = new ScopeStack(path, name, comment);
 		}
 		return path;
 	}
@@ -117,18 +119,19 @@ export class ScopeStack {
 	public static from(...segments: ScopeName[]): ScopeStack | null {
 		let result: ScopeStack | null = null;
 		for (let i = 0; i < segments.length; i++) {
-			result = new ScopeStack(result, segments[i]);
+			result = new ScopeStack(result, segments[i], null);
 		}
 		return result;
 	}
 
 	constructor(
 		public readonly parent: ScopeStack | null,
-		public readonly scopeName: ScopeName
+		public readonly scopeName: ScopeName,
+		public readonly scopeComment: string | null
 	) {}
 
-	public push(scopeName: ScopeName): ScopeStack {
-		return new ScopeStack(this, scopeName);
+	public push(scopeName: ScopeName, scopeComment?: string | null): ScopeStack {
+		return new ScopeStack(this, scopeName, scopeComment || null);
 	}
 
 	public getSegments(): ScopeName[] {
@@ -136,6 +139,17 @@ export class ScopeStack {
 		const result: ScopeName[] = [];
 		while (item) {
 			result.push(item.scopeName);
+			item = item.parent;
+		}
+		result.reverse();
+		return result;
+	}
+
+	public getComments(): (string | null)[] {
+		let item: ScopeStack | null = this;
+		const result: (string | null)[] = [];
+		while (item) {
+			result.push(item.scopeComment);
 			item = item.parent;
 		}
 		result.reverse();
