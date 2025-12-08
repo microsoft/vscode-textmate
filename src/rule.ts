@@ -51,13 +51,16 @@ export abstract class Rule {
 	private readonly _contentNameIsCapturing: boolean;
 	private readonly _contentName: string | null;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined) {
+	private readonly _comment: string | null;
+
+	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined) {
 		this.$location = $location;
 		this.id = id;
 		this._name = name || null;
 		this._nameIsCapturing = RegexSource.hasCaptures(this._name);
 		this._contentName = contentName || null;
 		this._contentNameIsCapturing = RegexSource.hasCaptures(this._contentName);
+		this._comment = comment || null;
 	}
 
 	public abstract dispose(): void;
@@ -81,6 +84,10 @@ export abstract class Rule {
 		return RegexSource.replaceCaptures(this._contentName, lineText, captureIndices);
 	}
 
+	public getComment(): string | null {
+		return this._comment;
+	}
+
 	public abstract collectPatterns(grammar: IRuleRegistry, out: RegExpSourceList): void;
 
 	public abstract compile(grammar: IRuleRegistry & IOnigLib, endRegexSource: string | null): CompiledRule;
@@ -97,8 +104,8 @@ export class CaptureRule extends Rule {
 
 	public readonly retokenizeCapturedWithRuleId: RuleId | 0;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, retokenizeCapturedWithRuleId: RuleId | 0) {
-		super($location, id, name, contentName);
+	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined, retokenizeCapturedWithRuleId: RuleId | 0) {
+		super($location, id, name, contentName, comment);
 		this.retokenizeCapturedWithRuleId = retokenizeCapturedWithRuleId;
 	}
 
@@ -124,8 +131,8 @@ export class MatchRule extends Rule {
 	public readonly captures: (CaptureRule | null)[];
 	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | undefined, match: string, captures: (CaptureRule | null)[]) {
-		super($location, id, name, null);
+	constructor($location: ILocation | undefined, id: RuleId, name: string | undefined, comment: string | undefined, match: string, captures: (CaptureRule | null)[]) {
+		super($location, id, name, null, comment);
 		this._match = new RegExpSource(match, this.id);
 		this.captures = captures;
 		this._cachedCompiledPatterns = null;
@@ -168,8 +175,8 @@ export class IncludeOnlyRule extends Rule {
 	public readonly patterns: RuleId[];
 	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, patterns: ICompilePatternsResult) {
-		super($location, id, name, contentName);
+	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined, patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName, comment);
 		this.patterns = patterns.patterns;
 		this.hasMissingPatterns = patterns.hasMissingPatterns;
 		this._cachedCompiledPatterns = null;
@@ -217,8 +224,8 @@ export class BeginEndRule extends Rule {
 	public readonly patterns: RuleId[];
 	private _cachedCompiledPatterns: RegExpSourceList | null;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], end: string | undefined, endCaptures: (CaptureRule | null)[], applyEndPatternLast: boolean | undefined, patterns: ICompilePatternsResult) {
-		super($location, id, name, contentName);
+	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], end: string | undefined, endCaptures: (CaptureRule | null)[], applyEndPatternLast: boolean | undefined, patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName, comment);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
 		this._end = new RegExpSource(end ? end : '\uFFFF', -1);
@@ -298,8 +305,8 @@ export class BeginWhileRule extends Rule {
 	private _cachedCompiledPatterns: RegExpSourceList | null;
 	private _cachedCompiledWhilePatterns: RegExpSourceList<RuleId | typeof whileRuleId> | null;
 
-	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], _while: string, whileCaptures: (CaptureRule | null)[], patterns: ICompilePatternsResult) {
-		super($location, id, name, contentName);
+	constructor($location: ILocation | undefined, id: RuleId, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined, begin: string, beginCaptures: (CaptureRule | null)[], _while: string, whileCaptures: (CaptureRule | null)[], patterns: ICompilePatternsResult) {
+		super($location, id, name, contentName, comment);
 		this._begin = new RegExpSource(begin, this.id);
 		this.beginCaptures = beginCaptures;
 		this.whileCaptures = whileCaptures;
@@ -380,9 +387,9 @@ export class BeginWhileRule extends Rule {
 
 export class RuleFactory {
 
-	public static createCaptureRule(helper: IRuleFactoryHelper, $location: ILocation | undefined, name: string | null | undefined, contentName: string | null | undefined, retokenizeCapturedWithRuleId: RuleId | 0): CaptureRule {
+	public static createCaptureRule(helper: IRuleFactoryHelper, $location: ILocation | undefined, name: string | null | undefined, contentName: string | null | undefined, comment: string | null | undefined, retokenizeCapturedWithRuleId: RuleId | 0): CaptureRule {
 		return helper.registerRule((id) => {
-			return new CaptureRule($location, id, name, contentName, retokenizeCapturedWithRuleId);
+			return new CaptureRule($location, id, name, contentName, comment, retokenizeCapturedWithRuleId);
 		});
 	}
 
@@ -396,6 +403,7 @@ export class RuleFactory {
 						desc.$vscodeTextmateLocation,
 						desc.id,
 						desc.name,
+						desc.comment,
 						desc.match,
 						RuleFactory._compileCaptures(desc.captures, helper, repository)
 					);
@@ -414,6 +422,7 @@ export class RuleFactory {
 						desc.id,
 						desc.name,
 						desc.contentName,
+						desc.comment,
 						RuleFactory._compilePatterns(patterns, helper, repository)
 					);
 				}
@@ -424,6 +433,7 @@ export class RuleFactory {
 						desc.id,
 						desc.name,
 						desc.contentName,
+						desc.comment,
 						desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
 						desc.while, RuleFactory._compileCaptures(desc.whileCaptures || desc.captures, helper, repository),
 						RuleFactory._compilePatterns(desc.patterns, helper, repository)
@@ -435,6 +445,7 @@ export class RuleFactory {
 					desc.id,
 					desc.name,
 					desc.contentName,
+					desc.comment,
 					desc.begin, RuleFactory._compileCaptures(desc.beginCaptures || desc.captures, helper, repository),
 					desc.end, RuleFactory._compileCaptures(desc.endCaptures || desc.captures, helper, repository),
 					desc.applyEndPatternLast,
@@ -477,7 +488,7 @@ export class RuleFactory {
 				if (captures[captureId].patterns) {
 					retokenizeCapturedWithRuleId = RuleFactory.getCompiledRuleId(captures[captureId], helper, repository);
 				}
-				r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].$vscodeTextmateLocation, captures[captureId].name, captures[captureId].contentName, retokenizeCapturedWithRuleId);
+				r[numericCaptureId] = RuleFactory.createCaptureRule(helper, captures[captureId].$vscodeTextmateLocation, captures[captureId].name, captures[captureId].contentName, captures[captureId].comment, retokenizeCapturedWithRuleId);
 			}
 		}
 

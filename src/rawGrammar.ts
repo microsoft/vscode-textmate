@@ -43,6 +43,7 @@ export interface IRawRule extends ILocatable {
 
 	readonly name?: ScopeName;
 	readonly contentName?: ScopeName;
+	readonly comment?: string;
 
 	readonly match?: RegExpString;
 	readonly captures?: IRawCaptures;
