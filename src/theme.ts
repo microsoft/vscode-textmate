@@ -108,7 +108,7 @@ export class ScopeStack {
 	static push(path: ScopeStack | null, scopeNames: ScopeName[], scopeComments?: (string | null)[]): ScopeStack | null {
 		for (let i = 0; i < scopeNames.length; i++) {
 			const name = scopeNames[i];
-			const comment = scopeComments && scopeComments[i] !== undefined ? scopeComments[i] : null;
+			const comment = scopeComments && i < scopeComments.length ? scopeComments[i] : null;
 			path = new ScopeStack(path, name, comment);
 		}
 		return path;
