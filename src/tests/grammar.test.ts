@@ -151,7 +151,7 @@ test('Fonts are correctly set', async function () {
 				settings: {
 					fontFamily: 'monospace',
 					fontSize: 1.2,
-					lineHeight: 20
+					lineHeight: 3
 				}
 			}]
 		});
@@ -178,7 +178,7 @@ test('Fonts are correctly set 2', async function () {
 				settings: {
 					fontFamily: 'Times New Roman',
 					fontSize: 1.3,
-					lineHeight: 40
+					lineHeight: 3
 				}
 			}]
 		});
