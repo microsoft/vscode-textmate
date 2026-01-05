@@ -150,7 +150,7 @@ test('Fonts are correctly set', async function () {
 				scope: 'bar.test',
 				settings: {
 					fontFamily: 'monospace',
-					fontSize: '12px',
+					fontSize: 1.2,
 					lineHeight: 20
 				}
 			}]
@@ -163,7 +163,7 @@ test('Fonts are correctly set', async function () {
 			]
 		});
 		const result = grammar.tokenizeLine2('bar hello', null, undefined);
-		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", "12px", 20)]);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", 1.2, 1.3)]);
 	} finally {
 		registry.dispose();
 	}
@@ -177,7 +177,7 @@ test('Fonts are correctly set 2', async function () {
 				scope: 'entity.name.function.ts',
 				settings: {
 					fontFamily: 'Times New Roman',
-					fontSize: '20px',
+					fontSize: 1.3,
 					lineHeight: 40
 				}
 			}]
@@ -190,7 +190,7 @@ test('Fonts are correctly set 2', async function () {
 			]
 		});
 		const result = grammar.tokenizeLine2('function g() {}', null, undefined);
-		assert.deepStrictEqual(result.fonts, [new FontInfo(9, 10, 'Times New Roman', "20px", 40)]);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(9, 10, 'Times New Roman', 1.2, 1.3)]);
 	} finally {
 		registry.dispose();
 	}

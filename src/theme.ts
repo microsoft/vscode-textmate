@@ -83,7 +83,7 @@ export type ScopePattern = string;
 /**
  * A TextMate theme.
  */
- export interface IRawTheme {
+export interface IRawTheme {
 	readonly name?: string;
 	readonly settings: IRawThemeSetting[];
 }
@@ -91,7 +91,7 @@ export type ScopePattern = string;
 /**
  * A single theme setting.
  */
- export interface IRawThemeSetting {
+export interface IRawThemeSetting {
 	readonly name?: string;
 	readonly scope?: ScopePattern | ScopePattern[];
 	readonly settings: {
@@ -99,7 +99,7 @@ export type ScopePattern = string;
 		readonly foreground?: string;
 		readonly background?: string;
 		readonly fontFamily?: string;
-		readonly fontSize?: string;
+		readonly fontSize?: number;
 		readonly lineHeight?: number;
 	};
 }
@@ -219,7 +219,7 @@ export class StyleAttributes {
 		public readonly foregroundId: number,
 		public readonly backgroundId: number,
 		public readonly fontFamily: string,
-		public readonly fontSize: string,
+		public readonly fontSize: number,
 		public readonly lineHeight: number
 	) { }
 }
@@ -299,8 +299,8 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 			fontFamily = entry.settings.fontFamily;
 		}
 
-		let fontSize: string = '';
-		if (typeof entry.settings.fontSize === 'string') {
+		let fontSize: number = 0;
+		if (typeof entry.settings.fontSize === 'number') {
 			fontSize = entry.settings.fontSize;
 		}
 
@@ -347,7 +347,7 @@ export class ParsedThemeRule {
 		public readonly foreground: string | null,
 		public readonly background: string | null,
 		public readonly fontFamily: string,
-		public readonly fontSize: string,
+		public readonly fontSize: number,
 		public readonly lineHeight: number,
 	) {
 	}
@@ -409,7 +409,7 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 	let defaultForeground = '#000000';
 	let defaultBackground = '#ffffff';
 	let defaultFontFamily = '';
-	let defaultFontSize = '';
+	let defaultFontSize = 0;
 	let defaultLineHeight = 0;
 
 	while (parsedThemeRules.length >= 1 && parsedThemeRules[0].scope === '') {
@@ -517,7 +517,7 @@ export class ThemeTrieElementRule {
 	foreground: number;
 	background: number;
 	fontFamily: string;
-	fontSize: string;
+	fontSize: number;
 	lineHeight: number;
 
 	constructor(
@@ -527,7 +527,7 @@ export class ThemeTrieElementRule {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSize: string,
+		fontSize: number,
 		lineHeight: number
 	) {
 		this.scopeDepth = scopeDepth;
@@ -567,7 +567,7 @@ export class ThemeTrieElementRule {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSize: string,
+		fontSize: number,
 		lineHeight: number
 	): void {
 		if (this.scopeDepth > scopeDepth) {
@@ -588,7 +588,7 @@ export class ThemeTrieElementRule {
 		if (fontFamily !== '') {
 			this.fontFamily = fontFamily;
 		}
-		if (fontSize !== '') {
+		if (fontSize !== 0) {
 			this.fontSize = fontSize;
 		}
 		if (lineHeight !== 0) {
@@ -693,7 +693,7 @@ export class ThemeTrieElement {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSize: string,
+		fontSize: number,
 		lineHeight: number,
 	): void {
 		if (scope === '') {
@@ -730,7 +730,7 @@ export class ThemeTrieElement {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSize: string,
+		fontSize: number,
 		lineHeight: number
 	): void {
 
@@ -766,7 +766,7 @@ export class ThemeTrieElement {
 		if (fontFamily === '') {
 			fontFamily = this._mainRule.fontFamily;
 		}
-		if (fontSize === '') {
+		if (fontSize === 0) {
 			fontSize = this._mainRule.fontSize;
 		}
 		if (lineHeight === 0) {

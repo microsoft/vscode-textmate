@@ -1124,7 +1124,7 @@ export class FontInfo implements IFontInfo {
 		public startIndex: number,
 		public endIndex: number,
 		public fontFamily: string | null,
-		public fontSize: string | null,
+		public fontSize: number | null,
 		public lineHeight: number | null
 	) { }
 
