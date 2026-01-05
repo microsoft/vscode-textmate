@@ -150,8 +150,8 @@ test('Fonts are correctly set', async function () {
 				scope: 'bar.test',
 				settings: {
 					fontFamily: 'monospace',
-					fontSize: 1.2,
-					lineHeight: 3
+					fontSizeMultiplier: 1.2,
+					lineHeightMultiplier: 3
 				}
 			}]
 		});
@@ -177,8 +177,8 @@ test('Fonts are correctly set 2', async function () {
 				scope: 'entity.name.function.ts',
 				settings: {
 					fontFamily: 'Times New Roman',
-					fontSize: 1.3,
-					lineHeight: 3
+					fontSizeMultiplier: 1.3,
+					lineHeightMultiplier: 3
 				}
 			}]
 		});
