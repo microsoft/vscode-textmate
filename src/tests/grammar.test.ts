@@ -163,7 +163,7 @@ test('Fonts are correctly set', async function () {
 			]
 		});
 		const result = grammar.tokenizeLine2('bar hello', null, undefined);
-		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", 1.2, 3)]);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(0, 3, "monospace", 1.2, 1.3)]);
 	} finally {
 		registry.dispose();
 	}
@@ -190,7 +190,7 @@ test('Fonts are correctly set 2', async function () {
 			]
 		});
 		const result = grammar.tokenizeLine2('function g() {}', null, undefined);
-		assert.deepStrictEqual(result.fonts, [new FontInfo(9, 10, 'Times New Roman', 1.3, 3)]);
+		assert.deepStrictEqual(result.fonts, [new FontInfo(9, 10, 'Times New Roman', 1.2, 1.3)]);
 	} finally {
 		registry.dispose();
 	}
