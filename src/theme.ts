@@ -27,7 +27,7 @@ export class Theme {
 		private readonly _colorMap: ColorMap,
 		private readonly _defaults: StyleAttributes,
 		private readonly _root: ThemeTrieElement
-	) { }
+	) {}
 
 	public getColorMap(): string[] {
 		return this._colorMap.getColorMap();
@@ -56,8 +56,8 @@ export class Theme {
 			effectiveRule.foreground,
 			effectiveRule.background,
 			effectiveRule.fontFamily,
-			effectiveRule.fontSizeMultiplier,
-			effectiveRule.lineHeightMultiplier
+			effectiveRule.fontSize,
+			effectiveRule.lineHeight
 		);
 	}
 }
@@ -99,8 +99,8 @@ export interface IRawThemeSetting {
 		readonly foreground?: string;
 		readonly background?: string;
 		readonly fontFamily?: string;
-		readonly fontSizeMultiplier?: number;
-		readonly lineHeightMultiplier?: number;
+		readonly fontSize?: number;
+		readonly lineHeight?: number;
 	};
 }
 
@@ -125,7 +125,7 @@ export class ScopeStack {
 	constructor(
 		public readonly parent: ScopeStack | null,
 		public readonly scopeName: ScopeName
-	) { }
+	) {}
 
 	public push(scopeName: ScopeName): ScopeStack {
 		return new ScopeStack(this, scopeName);
@@ -219,8 +219,8 @@ export class StyleAttributes {
 		public readonly foregroundId: number,
 		public readonly backgroundId: number,
 		public readonly fontFamily: string,
-		public readonly fontSizeMultiplier: number,
-		public readonly lineHeightMultiplier: number
+		public readonly fontSize: number,
+		public readonly lineHeight: number
 	) { }
 }
 
@@ -300,13 +300,13 @@ export function parseTheme(source: IRawTheme | undefined): ParsedThemeRule[] {
 		}
 
 		let fontSize: number = 0;
-		if (typeof entry.settings.fontSizeMultiplier === 'number') {
-			fontSize = entry.settings.fontSizeMultiplier;
+		if (typeof entry.settings.fontSize === 'number') {
+			fontSize = entry.settings.fontSize;
 		}
 
 		let lineHeight: number = 0;
-		if (typeof entry.settings.lineHeightMultiplier === 'number') {
-			lineHeight = entry.settings.lineHeightMultiplier;
+		if (typeof entry.settings.lineHeight === 'number') {
+			lineHeight = entry.settings.lineHeight;
 		}
 
 		for (let j = 0, lenJ = scopes.length; j < lenJ; j++) {
@@ -347,8 +347,8 @@ export class ParsedThemeRule {
 		public readonly foreground: string | null,
 		public readonly background: string | null,
 		public readonly fontFamily: string,
-		public readonly fontSizeMultiplier: number,
-		public readonly lineHeightMultiplier: number,
+		public readonly fontSize: number,
+		public readonly lineHeight: number,
 	) {
 	}
 }
@@ -426,11 +426,11 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		if (incomingDefaults.fontFamily !== null) {
 			defaultFontFamily = incomingDefaults.fontFamily;
 		}
-		if (incomingDefaults.fontSizeMultiplier !== null) {
-			defaultFontSize = incomingDefaults.fontSizeMultiplier;
+		if (incomingDefaults.fontSize !== null) {
+			defaultFontSize = incomingDefaults.fontSize;
 		}
-		if (incomingDefaults.lineHeightMultiplier !== null) {
-			defaultLineHeight = incomingDefaults.lineHeightMultiplier;
+		if (incomingDefaults.lineHeight !== null) {
+			defaultLineHeight = incomingDefaults.lineHeight;
 		}
 	}
 	let colorMap = new ColorMap(_colorMap);
@@ -454,8 +454,8 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 			colorMap.getId(rule.foreground),
 			colorMap.getId(rule.background),
 			rule.fontFamily,
-			rule.fontSizeMultiplier,
-			rule.lineHeightMultiplier
+			rule.fontSize,
+			rule.lineHeight
 		);
 	}
 
@@ -507,7 +507,7 @@ export class ColorMap {
 	}
 }
 
-const emptyParentScopes = Object.freeze(<ScopeName[]>[]);
+const emptyParentScopes= Object.freeze(<ScopeName[]>[]);
 
 export class ThemeTrieElementRule {
 
@@ -517,8 +517,8 @@ export class ThemeTrieElementRule {
 	foreground: number;
 	background: number;
 	fontFamily: string;
-	fontSizeMultiplier: number;
-	lineHeightMultiplier: number;
+	fontSize: number;
+	lineHeight: number;
 
 	constructor(
 		scopeDepth: number,
@@ -527,8 +527,8 @@ export class ThemeTrieElementRule {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSizeMultiplier: number,
-		lineHeightMultiplier: number
+		fontSize: number,
+		lineHeight: number
 	) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes || emptyParentScopes;
@@ -536,8 +536,8 @@ export class ThemeTrieElementRule {
 		this.foreground = foreground;
 		this.background = background;
 		this.fontFamily = fontFamily;
-		this.fontSizeMultiplier = fontSizeMultiplier;
-		this.lineHeightMultiplier = lineHeightMultiplier;
+		this.fontSize = fontSize;
+		this.lineHeight = lineHeight;
 	}
 
 	public clone(): ThemeTrieElementRule {
@@ -548,8 +548,8 @@ export class ThemeTrieElementRule {
 			this.foreground,
 			this.background,
 			this.fontFamily,
-			this.fontSizeMultiplier,
-			this.lineHeightMultiplier
+			this.fontSize,
+			this.lineHeight
 		);
 	}
 
@@ -567,8 +567,8 @@ export class ThemeTrieElementRule {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSizeMultiplier: number,
-		lineHeightMultiplier: number
+		fontSize: number,
+		lineHeight: number
 	): void {
 		if (this.scopeDepth > scopeDepth) {
 			console.log('how did this happen?');
@@ -588,11 +588,11 @@ export class ThemeTrieElementRule {
 		if (fontFamily !== '') {
 			this.fontFamily = fontFamily;
 		}
-		if (fontSizeMultiplier !== 0) {
-			this.fontSizeMultiplier = fontSizeMultiplier;
+		if (fontSize !== 0) {
+			this.fontSize = fontSize;
 		}
-		if (lineHeightMultiplier !== 0) {
-			this.lineHeightMultiplier = lineHeightMultiplier;
+		if (lineHeight !== 0) {
+			this.lineHeight = lineHeight;
 		}
 	}
 }
@@ -693,11 +693,11 @@ export class ThemeTrieElement {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSizeMultiplier: number,
-		lineHeightMultiplier: number,
+		fontSize: number,
+		lineHeight: number,
 	): void {
 		if (scope === '') {
-			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSizeMultiplier, lineHeightMultiplier);
+			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -720,7 +720,7 @@ export class ThemeTrieElement {
 			this._children[head] = child;
 		}
 
-		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background, fontFamily, fontSizeMultiplier, lineHeightMultiplier);
+		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 	}
 
 	private _doInsertHere(
@@ -730,13 +730,13 @@ export class ThemeTrieElement {
 		foreground: number,
 		background: number,
 		fontFamily: string,
-		fontSizeMultiplier: number,
-		lineHeightMultiplier: number
+		fontSize: number,
+		lineHeight: number
 	): void {
 
 		if (parentScopes === null) {
 			// Merge into the main rule
-			this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSizeMultiplier, lineHeightMultiplier);
+			this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -746,7 +746,7 @@ export class ThemeTrieElement {
 
 			if (strArrCmp(rule.parentScopes, parentScopes) === 0) {
 				// bingo! => we get to merge this into an existing one
-				rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSizeMultiplier, lineHeightMultiplier);
+				rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 				return;
 			}
 		}
@@ -766,11 +766,11 @@ export class ThemeTrieElement {
 		if (fontFamily === '') {
 			fontFamily = this._mainRule.fontFamily;
 		}
-		if (fontSizeMultiplier === 0) {
-			fontSizeMultiplier = this._mainRule.fontSizeMultiplier;
+		if (fontSize === 0) {
+			fontSize = this._mainRule.fontSize;
 		}
-		if (lineHeightMultiplier === 0) {
-			lineHeightMultiplier = this._mainRule.lineHeightMultiplier;
+		if (lineHeight === 0) {
+			lineHeight = this._mainRule.lineHeight;
 		}
 
 		this._rulesWithParentScopes.push(new ThemeTrieElementRule(
@@ -780,8 +780,8 @@ export class ThemeTrieElement {
 			foreground,
 			background,
 			fontFamily,
-			fontSizeMultiplier,
-			lineHeightMultiplier
+			fontSize,
+			lineHeight
 		));
 	}
 }
