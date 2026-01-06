@@ -1124,14 +1124,14 @@ export class FontInfo implements IFontInfo {
 		public startIndex: number,
 		public endIndex: number,
 		public fontFamily: string | null,
-		public fontSize: number | null,
-		public lineHeight: number | null
+		public fontSizeMultiplier: number | null,
+		public lineHeightMultiplier: number | null
 	) { }
 
 	optionsEqual(other: IFontInfo): boolean {
 		return this.fontFamily === other.fontFamily
-			&& this.fontSize === other.fontSize
-			&& this.lineHeight === other.lineHeight;
+			&& this.fontSizeMultiplier === other.fontSizeMultiplier
+			&& this.lineHeightMultiplier === other.lineHeightMultiplier;
 	}
 }
 
@@ -1157,9 +1157,9 @@ export class LineFonts {
 			return;
 		}
 		const fontFamily = styleAttributes.fontFamily;
-		const fontSize = styleAttributes.fontSize;
-		const lineHeight = styleAttributes.lineHeight;
-		if (!fontFamily && !fontSize && !lineHeight) {
+		const fontSizeMultiplier = styleAttributes.fontSize;
+		const lineHeightMultiplier = styleAttributes.lineHeight;
+		if (!fontFamily && !fontSizeMultiplier && !lineHeightMultiplier) {
 			this._lastIndex = endIndex;
 			return;
 		}
@@ -1167,8 +1167,8 @@ export class LineFonts {
 			this._lastIndex,
 			endIndex,
 			fontFamily,
-			fontSize,
-			lineHeight
+			fontSizeMultiplier,
+			lineHeightMultiplier
 		);
 		const lastFont = this._fonts[this._fonts.length - 1]
 		if (lastFont && lastFont.endIndex === this._lastIndex && lastFont.optionsEqual(font)) {
