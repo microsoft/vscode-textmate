@@ -273,7 +273,7 @@ export interface IFontInfo {
 	/**
 	 * Font size specification
 	 */
-	readonly fontSize: string | null;
+	readonly fontSize: number | null;
 
 	/**
 	 * Line height specification
