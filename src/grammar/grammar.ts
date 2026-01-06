@@ -294,9 +294,6 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
-		console.log('lineText:', JSON.stringify(lineText));
-		console.log('prevState:', prevState);
-		console.log('r.lineFonts.getResult() : ', r.lineFonts.getResult());
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
