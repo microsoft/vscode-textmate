@@ -273,12 +273,12 @@ export interface IFontInfo {
 	/**
 	 * Font size specification
 	 */
-	readonly fontSize: number | null;
+	readonly fontSizeMultiplier: number | null;
 
 	/**
 	 * Line height specification
 	 */
-	readonly lineHeight: number | null;
+	readonly lineHeightMultiplier: number | null;
 }
 
 export interface IToken {
