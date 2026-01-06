@@ -294,6 +294,9 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 		timeLimit: number = 0
 	): ITokenizeLineResult2 {
 		const r = this._tokenize(lineText, prevState, true, timeLimit);
+		console.log('lineText:', JSON.stringify(lineText));
+		console.log('prevState:', prevState);
+		console.log('r.lineFonts.getResult() : ', r.lineFonts.getResult());
 		return {
 			tokens: r.lineTokens.getBinaryResult(r.ruleStack, r.lineLength),
 			ruleStack: r.ruleStack,
@@ -1151,14 +1154,9 @@ export class LineFonts {
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
-		const styleAttributes = scopesList?.styleAttributes;
-		if (!styleAttributes) {
-			this._lastIndex = endIndex;
-			return;
-		}
-		const fontFamily = styleAttributes.fontFamily;
-		const fontSizeMultiplier = styleAttributes.fontSize;
-		const lineHeightMultiplier = styleAttributes.lineHeight;
+		const fontFamily = this.getFontFamily(scopesList);
+		const fontSizeMultiplier = this.getFontSize(scopesList);
+		const lineHeightMultiplier = this.getLineHeight(scopesList);
 		if (!fontFamily && !fontSizeMultiplier && !lineHeightMultiplier) {
 			this._lastIndex = endIndex;
 			return;
@@ -1181,5 +1179,32 @@ export class LineFonts {
 
 	public getResult(): IFontInfo[] {
 		return this._fonts;
+	}
+
+	private getFontFamily(scopesList: AttributedScopeStack | null): string | null {
+		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontFamily; });
+	}
+
+	private getFontSize(scopesList: AttributedScopeStack | null): number | null {
+		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontSize; });
+	}
+
+	private getLineHeight(scopesList: AttributedScopeStack | null): number | null {
+		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.lineHeight; });
+	}
+
+	private getAttribute(scopesList: AttributedScopeStack | null, getAttr: (styleAttributes: StyleAttributes) => any | null): any | null {
+		if (!scopesList) {
+			return null;
+		}
+		const styleAttributes = scopesList.styleAttributes;
+		if (!styleAttributes) {
+			return null;
+		}
+		const attribute = getAttr(styleAttributes);
+		if (attribute) {
+			return attribute;
+		}
+		return this.getAttribute(scopesList.parent, getAttr);
 	}
 }
