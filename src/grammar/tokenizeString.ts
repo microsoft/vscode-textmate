@@ -170,9 +170,11 @@ class TokenizeStringResult {
 			const beforePush = stack;
 			// push it on the stack rule
 			const scopeName = _rule.getName(lineText.content, captureIndices);
+			const scopeComment = _rule.getComment();
 			const nameScopesList = stack.contentNameScopesList!.pushAttributed(
 				scopeName,
-				grammar
+				grammar,
+				scopeComment
 			);
 			stack = stack.push(
 				matchedRuleId,
@@ -214,7 +216,8 @@ class TokenizeStringResult {
 				);
 				const contentNameScopesList = nameScopesList.pushAttributed(
 					contentName,
-					grammar
+					grammar,
+					null  // contentName doesn't have a separate comment
 				);
 				stack = stack.withContentNameScopesList(contentNameScopesList);
 
@@ -263,7 +266,8 @@ class TokenizeStringResult {
 				);
 				const contentNameScopesList = nameScopesList.pushAttributed(
 					contentName,
-					grammar
+					grammar,
+					null  // contentName doesn't have a separate comment
 				);
 				stack = stack.withContentNameScopesList(contentNameScopesList);
 
@@ -626,9 +630,10 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRule.retokenizeCapturedWithRuleId) {
 			// the capture requires additional matching
 			const scopeName = captureRule.getName(lineTextContent, captureIndices);
-			const nameScopesList = stack.contentNameScopesList!.pushAttributed(scopeName, grammar);
+			const scopeComment = captureRule.getComment();
+			const nameScopesList = stack.contentNameScopesList!.pushAttributed(scopeName, grammar, scopeComment);
 			const contentName = captureRule.getContentName(lineTextContent, captureIndices);
-			const contentNameScopesList = nameScopesList.pushAttributed(contentName, grammar);
+			const contentNameScopesList = nameScopesList.pushAttributed(contentName, grammar, null);
 
 			const stackClone = stack.push(captureRule.retokenizeCapturedWithRuleId, captureIndex.start, -1, false, null, nameScopesList, contentNameScopesList);
 			const onigSubStr = grammar.createOnigString(lineTextContent.substring(0, captureIndex.end));
@@ -641,7 +646,8 @@ function handleCaptures(grammar: Grammar, lineText: OnigString, isFirstLine: boo
 		if (captureRuleScopeName !== null) {
 			// push
 			const base = localStack.length > 0 ? localStack[localStack.length - 1].scopes : stack.contentNameScopesList;
-			const captureRuleScopesList = base!.pushAttributed(captureRuleScopeName, grammar);
+			const captureRuleScopeComment = captureRule.getComment();
+			const captureRuleScopesList = base!.pushAttributed(captureRuleScopeName, grammar, captureRuleScopeComment);
 			localStack.push(new LocalStackElement(captureRuleScopesList, captureIndex.end));
 		}
 	}
