@@ -14,11 +14,11 @@ import {
 	fontStyleToString,
 	StyleAttributes
 } from '../theme';
-import { ThemeTest } from './themeTest';
 import { getOniguruma } from './onigLibs';
 import { Resolver, IGrammarRegistration, ILanguageRegistration } from './resolver';
 import { strArrCmp, strcmp } from '../utils';
 import { parsePLIST } from '../plist';
+import { resetVariables, TOTAL_GET_ATTR_CALLS, TOTAL_PROPERTY_COUNT } from '../grammar';
 
 const THEMES_TEST_PATH = path.join(__dirname, '../../test-cases/themes');
 
@@ -70,57 +70,79 @@ class ThemeInfo {
 	}
 }
 
-(function () {
-	let THEMES = [
-		new ThemeInfo('abyss', 'Abyss.tmTheme'),
-		new ThemeInfo('dark_vs', 'dark_vs.json'),
-		new ThemeInfo('light_vs', 'light_vs.json'),
-		new ThemeInfo('hc_black', 'hc_black.json'),
-		new ThemeInfo('dark_plus', 'dark_plus.json', 'dark_vs.json'),
-		new ThemeInfo('light_plus', 'light_plus.json', 'light_vs.json'),
-		new ThemeInfo('kimbie_dark', 'Kimbie_dark.tmTheme'),
-		new ThemeInfo('monokai', 'Monokai.tmTheme'),
-		new ThemeInfo('monokai_dimmed', 'dimmed-monokai.tmTheme'),
-		new ThemeInfo('quietlight', 'QuietLight.tmTheme'),
-		new ThemeInfo('red', 'red.tmTheme'),
-		new ThemeInfo('solarized_dark', 'Solarized-dark.tmTheme'),
-		new ThemeInfo('solarized_light', 'Solarized-light.tmTheme'),
-		new ThemeInfo('tomorrow_night_blue', 'Tomorrow-Night-Blue.tmTheme'),
-	];
+export let COMPUTE_FONTS: boolean = false;
 
-	// Load all language/grammar metadata
-	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
-	for (let grammar of _grammars) {
+test.only('Tokenize test.ts with TypeScript grammar and dark_vs theme', async () => {
+
+	resetVariables();
+
+	// Load dark_vs theme
+	const themeFile = path.join(THEMES_TEST_PATH, 'dark_vs.json');
+	const themeContent = fs.readFileSync(themeFile).toString();
+	const theme: IRawTheme = JSON.parse(themeContent);
+
+	// Load TypeScript grammar
+	const grammarsData: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
+	const languagesData: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
+
+	// Update paths for grammars
+	for (let grammar of grammarsData) {
 		grammar.path = path.join(THEMES_TEST_PATH, grammar.path);
 	}
 
-	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
+	const resolver = new Resolver(grammarsData, languagesData, getOniguruma());
+	const registry = new Registry(resolver);
+	registry.setTheme(theme);
 
-	let _resolver = new Resolver(_grammars, _languages, getOniguruma());
-	let _themeData = THEMES.map(theme => theme.create(_resolver));
+	// Load TypeScript grammar
+	const tsGrammar = await registry.loadGrammar('source.ts');
+	assert.ok(tsGrammar, 'TypeScript grammar should be loaded');
 
-	// Discover all tests
-	let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
-	testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.result.patch$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
+	// Read test.ts file
+	const testFilePath = path.join(THEMES_TEST_PATH, 'fixtures/test.ts');
+	const testFileContent = fs.readFileSync(testFilePath).toString('utf8');
+	const lines = testFileContent.split(/\r\n|\r|\n/);
 
-	for (let testFile of testFiles) {
-		let tst = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
-		test(tst.testName, async function () {
-			this.timeout(20000);
-			try {
-				await tst.evaluate();
-				assert.deepStrictEqual(tst.actual, tst.expected);
-			} catch(err) {
-				tst.writeExpected();
-				throw err;
-			}
-		});
-	}
+	// Tokenize all lines
+	const tokenizeLine = () => {
+		let ruleStack = null;
+		const tokenizedLines: any[] = [];
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const result = tsGrammar.tokenizeLine2(line, ruleStack);
+			ruleStack = result.ruleStack;
+			tokenizedLines.push({
+				line: i + 1,
+				tokens: result.tokens,
+				fonts: result.fonts
+			});
+		}
+		return tokenizedLines;
+	};
 
-})();
+	// Verify we tokenized all lines
+	COMPUTE_FONTS = false;
+	const startComputeFontsFalse = Date.now();
+	tokenizeLine();
+	const endComputeFontsFalse = Date.now();
+
+	console.log('Tokenization time without fonts (ms):', (endComputeFontsFalse - startComputeFontsFalse));
+
+	COMPUTE_FONTS = true;
+	const startComputeFontsTrue = Date.now();
+	tokenizeLine();
+	const endComputeFontsTrue = Date.now();
+
+	console.log('Tokenization time with fonts (ms):', (endComputeFontsTrue - startComputeFontsTrue));
+
+	const getAttrCallsPerPropertyCount = TOTAL_GET_ATTR_CALLS / TOTAL_PROPERTY_COUNT;
+
+	console.log('TOTAL_PROPERTY_COUNT : ', TOTAL_PROPERTY_COUNT);
+	console.log('TOTAL_GET_ATTR_CALLS : ', TOTAL_GET_ATTR_CALLS);
+
+	console.log('TOTAL_PROPERTY_COUNT / TOTAL_GET_ATTR_CALLS :', getAttrCallsPerPropertyCount);
+});
+
 
 test('Theme matching gives higher priority to deeper matches', () => {
 	const theme = Theme.createFromRawTheme({

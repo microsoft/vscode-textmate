@@ -9,7 +9,6 @@ import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
 import { IRawGrammar, IRawRepository, IRawRule } from '../rawGrammar';
 import { ruleIdFromNumber, IRuleFactoryHelper, IRuleRegistry, Rule, RuleFactory, RuleId, ruleIdToNumber } from '../rule';
-import { COMPUTE_FONTS } from '../tests/themes.test';
 import { FontStyle, ScopeName, ScopePath, ScopeStack, StyleAttributes } from '../theme';
 import { clone, containsRTL } from '../utils';
 import { BasicScopeAttributes, BasicScopeAttributesProvider } from './basicScopesAttributeProvider';
@@ -1136,12 +1135,17 @@ export class FontInfo implements IFontInfo {
 	}
 }
 
-export let TOTAL_PROPERTY_COUNT = 0;
-export let TOTAL_GET_ATTR_CALLS = 0;
+export let TOTAL_TIME = 0;
+export let TOTAL_COUNT = 0;
+export let TOTAL_CALLS = 0;
+
+export let PRODUCE_FROM_SCOPES_TIME = 0;
+export let PRODUCE_FROM_SCOPES_COUNT = 0;
 
 export function resetVariables() {
-	TOTAL_PROPERTY_COUNT = 0;
-	TOTAL_GET_ATTR_CALLS = 0;
+	TOTAL_TIME = 0;
+	TOTAL_COUNT = 0;
+	TOTAL_CALLS = 0;
 }
 
 export class LineFonts {
@@ -1160,9 +1164,8 @@ export class LineFonts {
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
-		if (!COMPUTE_FONTS) {
-			return;
-		}
+		PRODUCE_FROM_SCOPES_COUNT++;
+		const start = new Date().getTime();
 		const fontFamily = this.getFontFamily(scopesList);
 		const fontSizeMultiplier = this.getFontSize(scopesList);
 		const lineHeightMultiplier = this.getLineHeight(scopesList);
@@ -1184,6 +1187,8 @@ export class LineFonts {
 			this._fonts.push(font);
 		}
 		this._lastIndex = endIndex;
+		const end = new Date().getTime();
+		PRODUCE_FROM_SCOPES_TIME += (end - start);
 	}
 
 	public getResult(): IFontInfo[] {
@@ -1191,22 +1196,34 @@ export class LineFonts {
 	}
 
 	private getFontFamily(scopesList: AttributedScopeStack | null): string | null {
-		TOTAL_PROPERTY_COUNT++;
-		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontFamily; });
+		TOTAL_COUNT++;
+		const start = new Date().getTime();
+		const attr = this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontFamily; });
+		const end = new Date().getTime();
+		TOTAL_TIME += (end - start);
+		return attr;
 	}
 
 	private getFontSize(scopesList: AttributedScopeStack | null): number | null {
-		TOTAL_PROPERTY_COUNT++;
-		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontSize; });
+		TOTAL_COUNT++;
+		const start = new Date().getTime();
+		const attr = this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.fontSize; });
+		const end = new Date().getTime();
+		TOTAL_TIME += (end - start);
+		return attr;
 	}
 
 	private getLineHeight(scopesList: AttributedScopeStack | null): number | null {
-		TOTAL_PROPERTY_COUNT++;
-		return this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.lineHeight; });
+		TOTAL_COUNT++;
+		const start = new Date().getTime();
+		const attr = this.getAttribute(scopesList, (styleAttributes) => { return styleAttributes.lineHeight; });
+		const end = new Date().getTime();
+		TOTAL_TIME += (end - start);
+		return attr;
 	}
 
 	private getAttribute(scopesList: AttributedScopeStack | null, getAttr: (styleAttributes: StyleAttributes) => any | null): any | null {
-		TOTAL_GET_ATTR_CALLS++;
+		TOTAL_CALLS++;
 		if (!scopesList) {
 			return null;
 		}
