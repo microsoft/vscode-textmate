@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { DebugFlags } from '../debug';
-import { EncodedTokenAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
+import { EncodedTokenAttributes, fontAttributes, IFontAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
 import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IFontInfo } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
@@ -339,6 +339,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				defaultStyle.foregroundId,
 				defaultStyle.backgroundId
 			);
+			const fontAttribute = fontAttributes.get(defaultStyle.fontFamily, defaultStyle.fontSize, defaultStyle.lineHeight);
 
 			const rootScopeName = this.getRule(this._rootId).getName(
 				null,
@@ -350,12 +351,14 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				scopeList = AttributedScopeStack.createRootAndLookUpScopeName(
 					rootScopeName,
 					defaultMetadata,
+					fontAttribute,
 					this
 				);
 			} else {
 				scopeList = AttributedScopeStack.createRoot(
 					"unknown",
-					defaultMetadata
+					defaultMetadata,
+					fontAttribute
 				);
 			}
 
@@ -427,16 +430,16 @@ export class AttributedScopeStack {
 		let scopeNames = namesScopeList?.scopePath ?? null;
 		for (const frame of contentNameScopesList) {
 			scopeNames = ScopeStack.push(scopeNames, frame.scopeNames);
-			current = new AttributedScopeStack(current, scopeNames!, frame.encodedTokenAttributes, null);
+			current = new AttributedScopeStack(current, scopeNames!, frame.encodedTokenAttributes, null, null);
 		}
 		return current;
 	}
 
-	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes): AttributedScopeStack {
-		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes, null);
+	public static createRoot(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, fontAttributes: IFontAttributes): AttributedScopeStack {
+		return new AttributedScopeStack(null, new ScopeStack(null, scopeName), tokenAttributes, fontAttributes, null);
 	}
 
-	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, grammar: Grammar): AttributedScopeStack {
+	public static createRootAndLookUpScopeName(scopeName: ScopeName, tokenAttributes: EncodedTokenAttributes, fontAttributes: IFontAttributes, grammar: Grammar): AttributedScopeStack {
 		const rawRootMetadata = grammar.getMetadataForScope(scopeName);
 		const scopePath = new ScopeStack(null, scopeName);
 		const rootStyle = grammar.themeProvider.themeMatch(scopePath);
@@ -446,8 +449,12 @@ export class AttributedScopeStack {
 			rawRootMetadata,
 			rootStyle
 		);
+		const resolvedFontAttributes = AttributedScopeStack.mergeFontAttributes(
+			fontAttributes,
+			rootStyle
+		);
 
-		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes, rootStyle);
+		return new AttributedScopeStack(null, scopePath, resolvedTokenAttributes, resolvedFontAttributes, rootStyle);
 	}
 
 	public get scopeName(): ScopeName { return this.scopePath.scopeName; }
@@ -464,6 +471,7 @@ export class AttributedScopeStack {
 		public readonly parent: AttributedScopeStack | null,
 		public readonly scopePath: ScopeStack,
 		public readonly tokenAttributes: EncodedTokenAttributes,
+		public readonly fontAttributes: IFontAttributes | null,
 		public readonly styleAttributes: StyleAttributes | null
 	) {
 	}
@@ -531,6 +539,17 @@ export class AttributedScopeStack {
 		);
 	}
 
+	private static mergeFontAttributes(
+		oldFontAttributes: IFontAttributes | null,
+		styleAttributes: StyleAttributes | null
+	): IFontAttributes {
+		const fontFamily = styleAttributes?.fontFamily || oldFontAttributes?.fontFamily || null;
+		const fontSize = styleAttributes?.fontSize || oldFontAttributes?.fontSize || null;
+		const lineHeight = styleAttributes?.lineHeight || oldFontAttributes?.lineHeight || null;
+		const fontAttribute = fontAttributes.get(fontFamily, fontSize, lineHeight);
+		return fontAttribute;
+	}
+
 	public pushAttributed(scopePath: ScopePath | null, grammar: Grammar): AttributedScopeStack {
 		if (scopePath === null) {
 			return this;
@@ -566,7 +585,8 @@ export class AttributedScopeStack {
 			rawMetadata,
 			scopeThemeMatchResult
 		);
-		return new AttributedScopeStack(target, newPath, metadata, scopeThemeMatchResult);
+		const fontAttributes = AttributedScopeStack.mergeFontAttributes(target.fontAttributes, scopeThemeMatchResult);
+		return new AttributedScopeStack(target, newPath, metadata, fontAttributes, scopeThemeMatchResult);
 	}
 
 	public getScopeNames(): string[] {
@@ -1151,14 +1171,13 @@ export class LineFonts {
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
-		const styleAttributes = scopesList?.styleAttributes;
-		if (!styleAttributes) {
+		if (!scopesList?.fontAttributes) {
 			this._lastIndex = endIndex;
 			return;
 		}
-		const fontFamily = styleAttributes.fontFamily;
-		const fontSizeMultiplier = styleAttributes.fontSize;
-		const lineHeightMultiplier = styleAttributes.lineHeight;
+		const fontFamily = scopesList.fontAttributes.fontFamily;
+		const fontSizeMultiplier = scopesList.fontAttributes.fontSize;
+		const lineHeightMultiplier = scopesList.fontAttributes.lineHeight;
 		if (!fontFamily && !fontSizeMultiplier && !lineHeightMultiplier) {
 			this._lastIndex = endIndex;
 			return;
