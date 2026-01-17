@@ -4,6 +4,37 @@
 
 import { FontStyle } from "./theme";
 
+export interface IFontAttributes {
+	fontFamily: string | null;
+	fontSize: number | null;
+	lineHeight: number | null;
+}
+
+export class FontAttributes {
+
+	private readonly _map: Map<string, IFontAttributes> = new Map<string, IFontAttributes>();
+
+	private _getKey(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): string {
+		return `${fontFamily}|${fontSize}|${lineHeight}`;
+	}
+
+	public get(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): IFontAttributes {
+		const key = this._getKey(fontFamily, fontSize, lineHeight);
+		let result = this._map.get(key);
+		if (!result) {
+			result = {
+				fontFamily: fontFamily,
+				fontSize: fontSize,
+				lineHeight: lineHeight
+			};
+			this._map.set(key, result);
+		}
+		return result;
+	}
+}
+
+export const fontAttributes = new FontAttributes();
+
 export type EncodedTokenAttributes = number;
 
 export namespace EncodedTokenAttributes {
