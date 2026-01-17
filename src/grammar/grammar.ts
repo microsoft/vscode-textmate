@@ -546,8 +546,7 @@ export class AttributedScopeStack {
 		const fontFamily = styleAttributes?.fontFamily || oldFontAttributes?.fontFamily || null;
 		const fontSize = styleAttributes?.fontSize || oldFontAttributes?.fontSize || null;
 		const lineHeight = styleAttributes?.lineHeight || oldFontAttributes?.lineHeight || null;
-		const fontAttribute = fontAttributes.get(fontFamily, fontSize, lineHeight);
-		return fontAttribute;
+		return fontAttributes.get(fontFamily, fontSize, lineHeight);
 	}
 
 	public pushAttributed(scopePath: ScopePath | null, grammar: Grammar): AttributedScopeStack {
