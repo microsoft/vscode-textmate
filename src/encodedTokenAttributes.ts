@@ -17,9 +17,9 @@ export class FontAttribute {
 			return this;
 		}
 		return fontAttributes.get(
-			styleAttributes.fontFamily ?? this.fontFamily,
-			styleAttributes.fontSize ?? this.fontSize,
-			styleAttributes.lineHeight ?? this.lineHeight
+			styleAttributes.fontFamily || this.fontFamily,
+			styleAttributes.fontSize || this.fontSize,
+			styleAttributes.lineHeight || this.lineHeight
 		);
 	}
 }
