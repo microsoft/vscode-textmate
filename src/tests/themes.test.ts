@@ -122,8 +122,15 @@ class ThemeInfo {
 
 })();
 
-test.skip('Tokenize test.ts with TypeScript grammar and dark_vs theme', async () => {
+test('Tokenize test1.ts with TypeScript grammar and dark_vs theme', async () => {
+	await testTokenizationTime('test1.ts');
+});
 
+test.skip('Tokenize test2.ts with TypeScript grammar and dark_vs theme', async () => {
+	await testTokenizationTime('test2.ts');
+});
+
+async function testTokenizationTime(file: string) {
 	// Load dark_vs theme
 	const themeFile = path.join(THEMES_TEST_PATH, 'dark_vs.json');
 	const themeContent = fs.readFileSync(themeFile).toString();
@@ -147,7 +154,7 @@ test.skip('Tokenize test.ts with TypeScript grammar and dark_vs theme', async ()
 	assert.ok(tsGrammar, 'TypeScript grammar should be loaded');
 
 	// Read test.ts file
-	const testFilePath = path.join(THEMES_TEST_PATH, 'fixtures/test.ts');
+	const testFilePath = path.join(THEMES_TEST_PATH, 'fixtures', file);
 	const testFileContent = fs.readFileSync(testFilePath).toString('utf8');
 	const lines = testFileContent.split(/\r\n|\r|\n/);
 
@@ -174,7 +181,7 @@ test.skip('Tokenize test.ts with TypeScript grammar and dark_vs theme', async ()
 	const end = Date.now();
 
 	console.log('Tokenization time:', (end - start));
-});
+}
 
 test('Theme matching gives higher priority to deeper matches', () => {
 	const theme = Theme.createFromRawTheme({

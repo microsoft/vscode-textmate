@@ -2,31 +2,45 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
-import { FontStyle } from "./theme";
+import { FontStyle, StyleAttributes } from "./theme";
 
-export interface IFontAttributes {
-	fontFamily: string | null;
-	fontSize: number | null;
-	lineHeight: number | null;
+export class FontAttribute {
+
+	constructor(
+		public readonly fontFamily: string | null,
+		public readonly fontSize: number | null,
+		public readonly lineHeight: number | null
+	) { }
+
+	with(styleAttributes: StyleAttributes | null): FontAttribute {
+		if (!styleAttributes) {
+			return this;
+		}
+		return fontAttributes.get(
+			styleAttributes.fontFamily ?? this.fontFamily,
+			styleAttributes.fontSize ?? this.fontSize,
+			styleAttributes.lineHeight ?? this.lineHeight
+		);
+	}
 }
 
 export class FontAttributes {
 
-	private readonly _map: Map<string, IFontAttributes> = new Map<string, IFontAttributes>();
+	private readonly _map: Map<string, FontAttribute> = new Map<string, FontAttribute>();
 
 	private _getKey(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): string {
 		return `${fontFamily}|${fontSize}|${lineHeight}`;
 	}
 
-	public get(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): IFontAttributes {
+	public get(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): FontAttribute {
 		const key = this._getKey(fontFamily, fontSize, lineHeight);
 		let result = this._map.get(key);
 		if (!result) {
-			result = {
-				fontFamily: fontFamily,
-				fontSize: fontSize,
-				lineHeight: lineHeight
-			};
+			result = new FontAttribute(
+				fontFamily,
+				fontSize,
+				lineHeight
+			);
 			this._map.set(key, result);
 		}
 		return result;
