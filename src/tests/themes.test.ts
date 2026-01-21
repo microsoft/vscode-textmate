@@ -113,7 +113,7 @@ class ThemeInfo {
 			try {
 				await tst.evaluate();
 				assert.deepStrictEqual(tst.actual, tst.expected);
-			} catch(err) {
+			} catch (err) {
 				tst.writeExpected();
 				throw err;
 			}
@@ -121,6 +121,68 @@ class ThemeInfo {
 	}
 
 })();
+
+test('Tokenize test1.ts with TypeScript grammar and dark_vs theme', async () => {
+	await testTokenizationTime('test1.ts');
+});
+
+test('Tokenize test2.ts with TypeScript grammar and dark_vs theme', async function () {
+	this.timeout(0);
+	await testTokenizationTime('test2.ts');
+});
+
+async function testTokenizationTime(file: string) {
+	// Load dark_vs theme
+	const themeFile = path.join(THEMES_TEST_PATH, 'dark_vs.json');
+	const themeContent = fs.readFileSync(themeFile).toString();
+	const theme: IRawTheme = JSON.parse(themeContent);
+
+	// Load TypeScript grammar
+	const grammarsData: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
+	const languagesData: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
+
+	// Update paths for grammars
+	for (let grammar of grammarsData) {
+		grammar.path = path.join(THEMES_TEST_PATH, grammar.path);
+	}
+
+	const resolver = new Resolver(grammarsData, languagesData, getOniguruma());
+	const registry = new Registry(resolver);
+	registry.setTheme(theme);
+
+	// Load TypeScript grammar
+	const tsGrammar = await registry.loadGrammar('source.ts');
+	assert.ok(tsGrammar, 'TypeScript grammar should be loaded');
+
+	// Read test.ts file
+	const testFilePath = path.join(THEMES_TEST_PATH, 'fixtures', file);
+	const testFileContent = fs.readFileSync(testFilePath).toString('utf8');
+	const lines = testFileContent.split(/\r\n|\r|\n/);
+
+	// Tokenize all lines
+	const tokenizeLines = () => {
+		let ruleStack = null;
+		const tokenizedLines: any[] = [];
+		for (let i = 0; i < lines.length; i++) {
+			const line = lines[i];
+			const result = tsGrammar.tokenizeLine2(line, ruleStack);
+			ruleStack = result.ruleStack;
+			tokenizedLines.push({
+				line: i + 1,
+				tokens: result.tokens,
+				fonts: result.fonts
+			});
+		}
+		return tokenizedLines;
+	};
+
+	// Verify we tokenized all lines
+	const start = Date.now();
+	tokenizeLines();
+	const end = Date.now();
+
+	console.log('Tokenization time:', (end - start));
+}
 
 test('Theme matching gives higher priority to deeper matches', () => {
 	const theme = Theme.createFromRawTheme({
