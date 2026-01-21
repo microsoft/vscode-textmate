@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 import { DebugFlags } from '../debug';
-import { EncodedTokenAttributes, FontAttribute, fontAttributes, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
+import { EncodedTokenAttributes, FontAttribute, OptionalStandardTokenType, StandardTokenType, toOptionalTokenType } from '../encodedTokenAttributes';
 import { IEmbeddedLanguagesMap, IGrammar, IToken, ITokenizeLineResult, ITokenizeLineResult2, ITokenTypeMap, StateStack, IFontInfo } from '../main';
 import { createMatchers, Matcher } from '../matcher';
 import { disposeOnigString, IOnigLib, OnigScanner, OnigString } from '../onigLib';
@@ -339,7 +339,7 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 				defaultStyle.foregroundId,
 				defaultStyle.backgroundId
 			);
-			const fontAttribute = fontAttributes.get(defaultStyle.fontFamily, defaultStyle.fontSize, defaultStyle.lineHeight);
+			const fontAttribute = FontAttribute.from(defaultStyle.fontFamily, defaultStyle.fontSize, defaultStyle.lineHeight);
 
 			const rootScopeName = this.getRule(this._rootId).getName(
 				null,

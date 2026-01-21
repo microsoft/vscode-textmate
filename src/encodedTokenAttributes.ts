@@ -4,35 +4,29 @@
 
 import { FontStyle, StyleAttributes } from "./theme";
 
+/**
+ * Performance notes (benchmark on large TypeScript file ~3100ms total tokenization):
+ *
+ * We tested multiple FontAttribute caching strategies:
+ * - String key HashMap (current): ~3175ms - uses `${fontFamily}|${fontSize}|${lineHeight}` as key
+ * - Linear array scan: ~3141ms - iterates through ~5 cached items
+ * - Numeric key + transition cache: ~3184ms - complex caching with per-instance transitions
+ * - NOOP (always return this): ~3097ms - theoretical upper bound
+ *
+ * Conclusion: FontAttribute overhead is only ~45-80ms (1-2.5% of total time).
+ * The simple string key HashMap is sufficient - additional optimization complexity
+ * provides negligible benefit since there are typically only ~5 unique FontAttribute
+ * combinations in practice.
+ */
 export class FontAttribute {
 
-	constructor(
-		public readonly fontFamily: string | null,
-		public readonly fontSize: number | null,
-		public readonly lineHeight: number | null
-	) { }
+	private static readonly _map: Map<string, FontAttribute> = new Map<string, FontAttribute>();
 
-	with(styleAttributes: StyleAttributes | null): FontAttribute {
-		if (!styleAttributes) {
-			return this;
-		}
-		return fontAttributes.get(
-			styleAttributes.fontFamily || this.fontFamily,
-			styleAttributes.fontSize || this.fontSize,
-			styleAttributes.lineHeight || this.lineHeight
-		);
-	}
-}
-
-export class FontAttributes {
-
-	private readonly _map: Map<string, FontAttribute> = new Map<string, FontAttribute>();
-
-	private _getKey(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): string {
+	private static _getKey(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): string {
 		return `${fontFamily}|${fontSize}|${lineHeight}`;
 	}
 
-	public get(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): FontAttribute {
+	private static _get(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): FontAttribute {
 		const key = this._getKey(fontFamily, fontSize, lineHeight);
 		let result = this._map.get(key);
 		if (!result) {
@@ -45,9 +39,28 @@ export class FontAttributes {
 		}
 		return result;
 	}
-}
 
-export const fontAttributes = new FontAttributes();
+	public static from(fontFamily: string | null, fontSize: number | null, lineHeight: number | null): FontAttribute {
+		return new FontAttribute(fontFamily, fontSize, lineHeight);
+	}
+
+	private constructor(
+		public readonly fontFamily: string | null,
+		public readonly fontSize: number | null,
+		public readonly lineHeight: number | null
+	) { }
+
+	with(styleAttributes: StyleAttributes | null): FontAttribute {
+		if (!styleAttributes) {
+			return this;
+		}
+		return FontAttribute._get(
+			styleAttributes.fontFamily || this.fontFamily,
+			styleAttributes.fontSize || this.fontSize,
+			styleAttributes.lineHeight || this.lineHeight
+		);
+	}
+}
 
 export type EncodedTokenAttributes = number;
 

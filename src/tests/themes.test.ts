@@ -126,7 +126,8 @@ test('Tokenize test1.ts with TypeScript grammar and dark_vs theme', async () => 
 	await testTokenizationTime('test1.ts');
 });
 
-test.skip('Tokenize test2.ts with TypeScript grammar and dark_vs theme', async () => {
+test('Tokenize test2.ts with TypeScript grammar and dark_vs theme', async function () {
+	this.timeout(0);
 	await testTokenizationTime('test2.ts');
 });
 
