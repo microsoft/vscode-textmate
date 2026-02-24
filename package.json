@@ -23,7 +23,7 @@
   "scripts": {
     "watch": "tsc --watch",
     "compile": "tsc",
-    "test": "mocha --ui=tdd ./out/tests/all.test.js",
+    "test": "mocha",
     "benchmark": "node benchmark/benchmark.js",
     "inspect": "node out/tests/inspect.js",
     "tmconvert": "node scripts/tmconvert.js",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@microsoft/api-extractor": "^7.48.0",
-    "@types/mocha": "^9.1.0",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^16.6.1",
     "copy-webpack-plugin": "^9.1.0",
     "mkdirp": "^3.0.1",

@@ -70,8 +70,8 @@ class ThemeInfo {
 	}
 }
 
-(function () {
-	let THEMES = [
+suite('Theme file tests', function () {
+	const THEMES = [
 		new ThemeInfo('abyss', 'Abyss.tmTheme'),
 		new ThemeInfo('dark_vs', 'dark_vs.json'),
 		new ThemeInfo('light_vs', 'light_vs.json'),
@@ -89,25 +89,25 @@ class ThemeInfo {
 	];
 
 	// Load all language/grammar metadata
-	let _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
-	for (let grammar of _grammars) {
+	const _grammars: IGrammarRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'grammars.json')).toString('utf8'));
+	for (const grammar of _grammars) {
 		grammar.path = path.join(THEMES_TEST_PATH, grammar.path);
 	}
 
-	let _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
+	const _languages: ILanguageRegistration[] = JSON.parse(fs.readFileSync(path.join(THEMES_TEST_PATH, 'languages.json')).toString('utf8'));
 
-	let _resolver = new Resolver(_grammars, _languages, getOniguruma());
-	let _themeData = THEMES.map(theme => theme.create(_resolver));
+	const _resolver = new Resolver(_grammars, _languages, getOniguruma());
+	const _themeData = THEMES.map(theme => theme.create(_resolver));
 
 	// Discover all tests
-	let testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'));
-	testFiles = testFiles.filter(testFile => !/\.result$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.result.patch$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.actual$/.test(testFile));
-	testFiles = testFiles.filter(testFile => !/\.diff.html$/.test(testFile));
+	const testFiles = fs.readdirSync(path.join(THEMES_TEST_PATH, 'tests'))
+		.filter(testFile => !/\.result$/.test(testFile))
+		.filter(testFile => !/\.result.patch$/.test(testFile))
+		.filter(testFile => !/\.actual$/.test(testFile))
+		.filter(testFile => !/\.diff.html$/.test(testFile));
 
-	for (let testFile of testFiles) {
-		let tst = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
+	for (const testFile of testFiles) {
+		const tst = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
 		test(tst.testName, async function () {
 			this.timeout(20000);
 			try {
@@ -120,7 +120,7 @@ class ThemeInfo {
 		});
 	}
 
-})();
+});
 
 test('Tokenize test1.ts with TypeScript grammar and dark_vs theme', async () => {
 	await testTokenizationTime('test1.ts');

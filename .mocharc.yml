@@ -1,0 +1,2 @@
+ui: tdd
+spec: ./out/tests/all.test.js

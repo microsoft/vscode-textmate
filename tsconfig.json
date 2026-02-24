@@ -9,8 +9,11 @@
 		"strict": true,
 		"newLine": "lf",
 		"lib": [
-			"es5",
-			"es2015.promise"
+			"es2020"
+		],
+		"types": [
+			"mocha",
+			"node"
 		]
 	},
 	"exclude": [
