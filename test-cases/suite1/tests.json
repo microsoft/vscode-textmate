@@ -1875,5 +1875,41 @@
 				]
 			}
 		]
+	},
+	{
+		"grammars": [
+			"fixtures/239.tmLanguage.json"
+		],
+		"grammarPath": "fixtures/239.tmLanguage.json",
+		"desc": "Issue #239 Wrong backreference escaping",
+		"lines": [
+			{
+				"line": "#a-z comment",
+				"tokens": [
+					{
+						"value": "#a-z",
+						"scopes": [
+							"source.backreference-escaping",
+							"string"
+						]
+					},
+					{
+						"value": " ",
+						"scopes": [
+							"source.backreference-escaping",
+							"string"
+						]
+					},
+					{
+						"value": "comment",
+						"scopes": [
+							"source.backreference-escaping",
+							"string",
+							"comment"
+						]
+					}
+				]
+			}
+		]
 	}
 ]

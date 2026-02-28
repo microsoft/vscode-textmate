@@ -157,7 +157,7 @@ export function isValidHexColor(hex: string): boolean {
  * Escapes regular expression characters in a given string
  */
 export function escapeRegExpCharacters(value: string): string {
-	return value.replace(/[\-\\\{\}\*\+\?\|\^\$\.\,\[\]\(\)\#\s]/g, '\\$&');
+	return value.replace(/[\\|([{}\]).?*+^$]/g, '\\$&');
 }
 
 export class CachedFn<TKey, TValue> {
