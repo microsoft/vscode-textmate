@@ -2,6 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import { test, describe } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
@@ -108,8 +109,7 @@ class ThemeInfo {
 
 	for (let testFile of testFiles) {
 		let tst = new ThemeTest(THEMES_TEST_PATH, testFile, _themeData, _resolver);
-		test(tst.testName, async function () {
-			this.timeout(20000);
+		test(tst.testName, { timeout: 20000 }, async () => {
 			try {
 				await tst.evaluate();
 				assert.deepStrictEqual(tst.actual, tst.expected);
@@ -126,8 +126,7 @@ test('Tokenize test1.ts with TypeScript grammar and dark_vs theme', async () => 
 	await testTokenizationTime('test1.ts');
 });
 
-test('Tokenize test2.ts with TypeScript grammar and dark_vs theme', async function () {
-	this.timeout(0);
+test('Tokenize test2.ts with TypeScript grammar and dark_vs theme', { timeout: 0 }, async () => {
 	await testTokenizationTime('test2.ts');
 });
 
@@ -236,7 +235,7 @@ test('Theme matching gives higher priority to parent matches 2', () => {
 	assert.strictEqual(colorMap[result!.foregroundId], '#300000');
 });
 
-suite('Theme matching can match', () => {
+describe('Theme matching can match', () => {
 	const theme = Theme.createFromRawTheme({
 		settings: [
 			{ settings: { foreground: '#F8F8F2', background: '#272822' } },

@@ -2,6 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import { test } from 'vitest';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as assert from 'assert';
