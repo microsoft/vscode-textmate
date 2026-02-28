@@ -2,6 +2,7 @@
  * Copyright (C) Microsoft Corporation. All rights reserved.
  *--------------------------------------------------------*/
 
+import { test } from 'vitest';
 import * as assert from 'assert';
 import { createMatchers } from '../matcher';
 
