@@ -1,0 +1,12 @@
+{
+	"$schema": "https://raw.githubusercontent.com/RedCMD/TmLanguage-Syntax-Highlighter/main/vscode.tmLanguage.schema.json",
+	"scopeName": "source.backreference-escaping",
+	"patterns": [
+		{
+			"begin": "^(#)(\\S+)",
+			"end": "(?x)\\1\n[\\2]+",
+			"name": "string",
+			"endCaptures": { "0": { "name": "$0" } }
+		}
+	]
+}
