@@ -3,7 +3,7 @@
  *--------------------------------------------------------*/
 
 export const DebugFlags = {
-	InDebugMode: (typeof process !== 'undefined' && !!process.env['VSCODE_TEXTMATE_DEBUG'])
+	InDebugMode: (typeof process !== 'undefined' && !!process?.env?.['VSCODE_TEXTMATE_DEBUG'])
 };
 
 export const UseOnigurumaFindOptions = false;
