@@ -105,7 +105,8 @@ Tokenizing line: }
 
 ## For grammar authors
 
-See [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test) that can help you write unit tests against your grammar.
+- [vscode-tmgrammar-test](https://github.com/PanAeon/vscode-tmgrammar-test) - for writing unit tests against a grammar
+- [textmate-validate](https://github.com/carlwr/textmate-validate) - for linting the regexes of a grammar using `vscode-textmate`'s regex engine
 
 ## API doc
 
