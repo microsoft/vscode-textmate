@@ -15,6 +15,7 @@ import { applyStateStackDiff, diffStateStacksRefEq, StackDiff } from './diffStat
 export * from './onigLib';
 
 export { IRawGrammar, IRawTheme };
+export { EncodedTokenAttributes } from './encodedTokenAttributes';
 
 /**
  * A registry helper that can locate grammar file paths given scope names.
