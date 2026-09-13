@@ -213,6 +213,16 @@ function _matchesScope(scopeName: ScopeName, scopePattern: ScopeName): boolean {
 	return scopePattern === scopeName || (scopeName.startsWith(scopePattern) && scopeName[scopePattern.length] === '.');
 }
 
+function parentScopeCount(parentScopes: readonly ScopeName[]): number {
+	let count = 0;
+	for (let i = 0, len = parentScopes.length; i < len; i++) {
+		if (parentScopes[i] !== '>') {
+			count++;
+		}
+	}
+	return count;
+}
+
 export class StyleAttributes {
 	constructor(
 		public readonly fontStyle: OrMask<FontStyle>,
@@ -443,13 +453,14 @@ function resolveParsedThemeRules(parsedThemeRules: ParsedThemeRule[], _colorMap:
 		defaultLineHeight
 	);
 
-	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight), []);
+	let root = new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, 0, 0, defaultFontFamily, defaultFontSize, defaultLineHeight), []);
 	for (let i = 0, len = parsedThemeRules.length; i < len; i++) {
 		let rule = parsedThemeRules[i];
 		root.insert(
 			0,
 			rule.scope,
 			rule.parentScopes,
+			rule.index,
 			rule.fontStyle,
 			colorMap.getId(rule.foreground),
 			colorMap.getId(rule.background),
@@ -513,6 +524,7 @@ export class ThemeTrieElementRule {
 
 	scopeDepth: number;
 	parentScopes: readonly ScopeName[];
+	index: number;
 	fontStyle: number;
 	foreground: number;
 	background: number;
@@ -523,6 +535,7 @@ export class ThemeTrieElementRule {
 	constructor(
 		scopeDepth: number,
 		parentScopes: readonly ScopeName[] | null,
+		index: number,
 		fontStyle: number,
 		foreground: number,
 		background: number,
@@ -532,6 +545,7 @@ export class ThemeTrieElementRule {
 	) {
 		this.scopeDepth = scopeDepth;
 		this.parentScopes = parentScopes || emptyParentScopes;
+		this.index = index;
 		this.fontStyle = fontStyle;
 		this.foreground = foreground;
 		this.background = background;
@@ -544,6 +558,7 @@ export class ThemeTrieElementRule {
 		return new ThemeTrieElementRule(
 			this.scopeDepth,
 			this.parentScopes,
+			this.index,
 			this.fontStyle,
 			this.foreground,
 			this.background,
@@ -563,6 +578,7 @@ export class ThemeTrieElementRule {
 
 	public acceptOverwrite(
 		scopeDepth: number,
+		index: number,
 		fontStyle: number,
 		foreground: number,
 		background: number,
@@ -575,6 +591,7 @@ export class ThemeTrieElementRule {
 		} else {
 			this.scopeDepth = scopeDepth;
 		}
+		this.index = index;
 		// console.log('TODO -> my depth: ' + this.scopeDepth + ', overwriting depth: ' + scopeDepth);
 		if (fontStyle !== FontStyle.NotSet) {
 			this.fontStyle = fontStyle;
@@ -658,8 +675,15 @@ export class ThemeTrieElement {
 		}
 
 		// If a depth-first, scope-by-scope comparison resulted in a tie, the rule with
-		// more parent scopes is considered more specific.
-		return b.parentScopes.length - a.parentScopes.length;
+		// more parent scopes is considered more specific. Child combinators only
+		// constrain matching, so they are not counted as parent scopes.
+		const parentScopeCountDiff = parentScopeCount(b.parentScopes) - parentScopeCount(a.parentScopes);
+		if (parentScopeCountDiff !== 0) {
+			return parentScopeCountDiff;
+		}
+
+		// The rules are equally specific, so the later rule wins.
+		return b.index - a.index;
 	}
 
 	public match(scope: ScopeName): ThemeTrieElementRule[] {
@@ -689,6 +713,7 @@ export class ThemeTrieElement {
 		scopeDepth: number,
 		scope: ScopeName,
 		parentScopes: ScopeName[] | null,
+		index: number,
 		fontStyle: number,
 		foreground: number,
 		background: number,
@@ -697,7 +722,7 @@ export class ThemeTrieElement {
 		lineHeight: number,
 	): void {
 		if (scope === '') {
-			this._doInsertHere(scopeDepth, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
+			this._doInsertHere(scopeDepth, parentScopes, index, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -720,12 +745,13 @@ export class ThemeTrieElement {
 			this._children[head] = child;
 		}
 
-		child.insert(scopeDepth + 1, tail, parentScopes, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
+		child.insert(scopeDepth + 1, tail, parentScopes, index, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 	}
 
 	private _doInsertHere(
 		scopeDepth: number,
 		parentScopes: ScopeName[] | null,
+		index: number,
 		fontStyle: number,
 		foreground: number,
 		background: number,
@@ -736,7 +762,7 @@ export class ThemeTrieElement {
 
 		if (parentScopes === null) {
 			// Merge into the main rule
-			this._mainRule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
+			this._mainRule.acceptOverwrite(scopeDepth, index, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 			return;
 		}
 
@@ -746,7 +772,7 @@ export class ThemeTrieElement {
 
 			if (strArrCmp(rule.parentScopes, parentScopes) === 0) {
 				// bingo! => we get to merge this into an existing one
-				rule.acceptOverwrite(scopeDepth, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
+				rule.acceptOverwrite(scopeDepth, index, fontStyle, foreground, background, fontFamily, fontSize, lineHeight);
 				return;
 			}
 		}
@@ -776,6 +802,7 @@ export class ThemeTrieElement {
 		this._rulesWithParentScopes.push(new ThemeTrieElementRule(
 			scopeDepth,
 			parentScopes,
+			index,
 			fontStyle,
 			foreground,
 			background,
