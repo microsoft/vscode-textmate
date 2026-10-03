@@ -412,7 +412,7 @@ function assertThemeEqual(actual: Theme, expected: Theme): void {
 	// Don't compare cache objects
 	assert.deepStrictEqual(
 		[actual["_colorMap"], actual["_defaults"], actual["_root"]],
-		[expected["_colorMap"], actual["_defaults"], actual["_root"]]
+		[expected["_colorMap"], expected["_defaults"], expected["_root"]]
 	);
 }
 
@@ -426,7 +426,7 @@ test('Theme resolving always has defaults', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -443,7 +443,7 @@ test('Theme resolving respects incoming defaults 1', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -460,7 +460,7 @@ test('Theme resolving respects incoming defaults 2', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -477,7 +477,7 @@ test('Theme resolving respects incoming defaults 3', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.Bold, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -494,7 +494,7 @@ test('Theme resolving respects incoming defaults 4', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -511,7 +511,7 @@ test('Theme resolving respects incoming defaults 5', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -530,7 +530,7 @@ test('Theme resolving can merge incoming defaults', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.Bold, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 	);
 	assertThemeEqual(actual, expected);
 });
@@ -549,8 +549,8 @@ test('Theme resolving defaults are inherited', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.NotSet, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, -1, FontStyle.NotSet, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 		})
 	);
 	assertThemeEqual(actual, expected);
@@ -571,8 +571,8 @@ test('Theme resolving same rules get merged', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, 1, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 		})
 	);
 	assertThemeEqual(actual, expected);
@@ -594,9 +594,9 @@ test('Theme resolving rules are inherited 1', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, -1, FontStyle.Bold, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, -1, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 			})
 		})
 	);
@@ -627,15 +627,15 @@ test('Theme resolving rules are inherited 2', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Bold, _F, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Bold, _G, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+			'var': new ThemeTrieElement(new ThemeTrieElementRule(1, null, -1, FontStyle.Bold, _F, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+				'identifier': new ThemeTrieElement(new ThemeTrieElementRule(2, null, -1, FontStyle.Bold, _G, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET))
 			}),
-			'constant': new ThemeTrieElement(new ThemeTrieElementRule(1, null, FontStyle.Italic, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-				'numeric': new ThemeTrieElement(new ThemeTrieElementRule(2, null, FontStyle.Italic, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
-					'hex': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
-					'oct': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
-					'dec': new ThemeTrieElement(new ThemeTrieElementRule(3, null, FontStyle.None, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
+			'constant': new ThemeTrieElement(new ThemeTrieElementRule(1, null, 4, FontStyle.Italic, _C, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+				'numeric': new ThemeTrieElement(new ThemeTrieElementRule(2, null, 5, FontStyle.Italic, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+					'hex': new ThemeTrieElement(new ThemeTrieElementRule(3, null, 6, FontStyle.Bold, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
+					'oct': new ThemeTrieElement(new ThemeTrieElementRule(3, null, 7, FontStyle.Bold | FontStyle.Italic | FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
+					'dec': new ThemeTrieElement(new ThemeTrieElementRule(3, null, 8, FontStyle.None, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)),
 				})
 			})
 		})
@@ -662,14 +662,14 @@ test('Theme resolving rules with parent scopes', () => {
 	let expected = new Theme(
 		colorMap,
 		new StyleAttributes(FontStyle.None, _A, _B, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-		new ThemeTrieElement(new ThemeTrieElementRule(0, null, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
+		new ThemeTrieElement(new ThemeTrieElementRule(0, null, -1, FontStyle.NotSet, _NUMBER_NOT_SET, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET), [], {
 			'var': new ThemeTrieElement(
-				new ThemeTrieElementRule(1, null, FontStyle.Bold, _C, 0, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-				[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)],
+				new ThemeTrieElementRule(1, null, -1, FontStyle.Bold, _C, 0, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
+				[new ThemeTrieElementRule(1, ['source.css'], 2, FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)],
 				{
 					'identifier': new ThemeTrieElement(
-						new ThemeTrieElementRule(2, null, FontStyle.Bold, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
-						[new ThemeTrieElementRule(1, ['source.css'], FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)]
+						new ThemeTrieElementRule(2, null, -1, FontStyle.Bold, _E, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET),
+						[new ThemeTrieElementRule(1, ['source.css'], 2, FontStyle.Underline, _D, _NUMBER_NOT_SET, _STRING_NOT_SET, _NUMBER_NOT_SET, _NUMBER_NOT_SET)]
 					)
 				}
 			)
@@ -824,4 +824,30 @@ test('Theme resolving issue #35: Trailing comma in a tmTheme scope selector', ()
 	];
 
 	assert.deepStrictEqual(actual, expected);
+});
+
+test('Theme resolving: child combinators do not add specificity (#292)', () => {
+	const theme = Theme.createFromRawTheme({
+		settings: [
+			{
+				scope: 'source.ini > string > punctuation.definition.string.begin.ini',
+				settings: { foreground: '#FF0000' },
+			},
+			{
+				scope: 'source.ini string punctuation.definition.string.begin.ini',
+				settings: { foreground: '#00FF00' },
+			},
+		],
+	});
+
+	const result = theme.match(ScopeStack.from(
+		'source.ini',
+		'string.quoted.single.ini',
+		'punctuation.definition.string.begin.ini',
+	));
+
+	assert.strictEqual(
+		theme.getColorMap()[result!.foregroundId],
+		'#00FF00',
+	);
 });
