@@ -409,6 +409,13 @@ export class Grammar implements IGrammar, IRuleFactoryHelper, IOnigLib {
 
 function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): IRawGrammar {
 	grammar = clone(grammar);
+	// Raw grammars may contain metadata named id. Only compiled rules may use it.
+	clearRuleIds(grammar);
+	if (grammar.injections) {
+		for (const selector in grammar.injections) {
+			clearRuleIds(grammar.injections[selector]);
+		}
+	}
 
 	grammar.repository = grammar.repository || <any>{};
 	grammar.repository.$self = {
@@ -418,6 +425,25 @@ function initGrammar(grammar: IRawGrammar, base: IRawRule | null | undefined): I
 	};
 	grammar.repository.$base = base || grammar.repository.$self;
 	return grammar;
+}
+
+function clearRuleIds(rule: IRawRule): void {
+	delete rule.id;
+	if (rule.patterns) {
+		for (const pattern of rule.patterns) {
+			clearRuleIds(pattern);
+		}
+	}
+	for (const key of ['repository', 'captures', 'beginCaptures', 'endCaptures', 'whileCaptures'] as const) {
+		const rules = rule[key];
+		if (rules) {
+			for (const name in rules) {
+				if (name !== '$vscodeTextmateLocation' && rules[name]) {
+					clearRuleIds(rules[name]);
+				}
+			}
+		}
+	}
 }
 
 export class AttributedScopeStack {
