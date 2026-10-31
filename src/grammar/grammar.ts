@@ -1145,6 +1145,12 @@ export class LineFonts {
 		scopesList: AttributedScopeStack | null,
 		endIndex: number
 	): void {
+		// The tokenizer can call this twice at the same offset, e.g. when a rule
+		// with a zero-width end pattern is popped. LineTokens guards for it; this
+		// did not, so an empty range reached _fonts and _lastIndex could rewind.
+		if (this._lastIndex >= endIndex) {
+			return;
+		}
 		if (!scopesList?.fontAttributes) {
 			this._lastIndex = endIndex;
 			return;
