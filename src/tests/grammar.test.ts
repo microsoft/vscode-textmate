@@ -196,3 +196,34 @@ test('Fonts are correctly set 2', async function () {
 		registry.dispose();
 	}
 });
+
+test('Fonts are not emitted for a zero-width range', async function () {
+	const registry = new Registry({ loadGrammar: async () => undefined, onigLib: getOniguruma() });
+	try {
+		registry.setTheme({
+			settings: [
+				{ scope: 'outer.test', settings: { fontFamily: 'monospace', fontSize: 1.2, lineHeight: 3 } },
+				{ scope: 'inner.test', settings: { fontFamily: 'Times New Roman', fontSize: 1.3, lineHeight: 2 } }
+			]
+		});
+		const grammar = await registry.addGrammar({
+			scopeName: 'source.test',
+			repository: { $self: undefined!, $base: undefined! },
+			patterns: [
+				{
+					begin: 'a', end: '(?=c)', name: 'outer.test',
+					patterns: [
+						// zero-width end, and a different font than the enclosing rule,
+						// so a degenerate range cannot be merged away
+						{ begin: 'b', end: '(?=c)', name: 'inner.test', patterns: [] }
+					]
+				}
+			]
+		});
+		const result = grammar.tokenizeLine2('abc', null, undefined);
+		const degenerate = result.fonts.filter(f => f.endIndex <= f.startIndex);
+		assert.deepStrictEqual(degenerate, [], 'no font range may be empty or inverted');
+	} finally {
+		registry.dispose();
+	}
+});
