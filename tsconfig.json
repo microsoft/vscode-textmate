@@ -18,6 +18,7 @@
 		"node_modules",
 		"release",
 		"out",
-		"test-cases"
+		"test-cases",
+		"vitest.config.ts"
 	]
 }
