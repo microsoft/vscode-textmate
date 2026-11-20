@@ -8,7 +8,7 @@ import { DebugFlags } from './debug';
 import { parseJSON } from './json';
 
 export function parseRawGrammar(content: string, filePath: string | null = null): IRawGrammar {
-	if (filePath !== null && /\.json$/.test(filePath)) {
+	if (filePath !== null && /\.json$/i.test(filePath)) {
 		return parseJSONGrammar(content, filePath);
 	}
 	return parsePLISTGrammar(content, filePath);
