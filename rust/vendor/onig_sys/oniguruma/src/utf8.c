@@ -44,7 +44,8 @@
 #define utf8_islead(c)     ((UChar )((c) & 0xc0) != 0x80)
 #define utf8_istail(c)     ((UChar )((c) & 0xc0) == 0x80)
 
-static const int EncLen_UTF8[] = {
+/* Not static: regenc.h's enclen() reads it directly for UTF-8. */
+const int OnigEncLenUTF8[] = {
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
@@ -70,7 +71,7 @@ static const int EncLen_UTF8[] = {
 static int
 mbc_enc_len(const UChar* p)
 {
-  return EncLen_UTF8[*p];
+  return OnigEncLenUTF8[*p];
 }
 
 static int

@@ -62,6 +62,7 @@
 
 
 static int forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start, UChar* range, UChar** low, UChar** high);
+static inline void forward_search_low_high(regex_t* reg, const UChar* str, UChar* start, UChar* p, UChar** low, UChar** high);
 
 static int
 search_in_range(regex_t* reg, const UChar* str, const UChar* end, const UChar* start, const UChar* range, /* match range */ const UChar* data_range, /* subject string range */ OnigRegion* region, OnigOptionType option, OnigMatchParam* mp);
@@ -4462,6 +4463,14 @@ struct OnigRegSetStruct {
   int          tm_mps_cap;
   char*        tm_stk;
   size_t       tm_stk_bytes;
+  /* forward_search cache of keyed searches (see onig_regset_search_keyed) */
+  void*        tm_fc;
+  int          tm_fc_cap;
+  unsigned long long tm_req_key;
+  unsigned long long tm_key;
+  const UChar* tm_key_str;
+  const UChar* tm_key_end;
+  unsigned long long tm_epoch;
 };
 
 enum SearchRangeStatus {
@@ -4527,6 +4536,77 @@ regset_match_at(OnigRegSet* set, regex_t* reg, const UChar* str,
     else goto finish; /* error */ \
   }
 
+#ifdef ONIG_REGSET_FS_VERIFY
+#include <stdio.h>
+#include <stdlib.h>
+#endif
+
+/* Per-regex forward_search cache for keyed regset searches.
+   Within one epoch (same key, str and end, unchanged set), forward_search
+   from a char head returns the first candidate at or after it, so that
+   result, or "none", holds for every later char head up to the candidate. */
+typedef struct {
+  unsigned long long epoch;
+  UChar* from;
+  UChar* found;
+} FsCache;
+
+static int
+cached_forward_search(regex_t* reg, FsCache* c, unsigned long long epoch,
+                      const UChar* str, const UChar* end, UChar* start,
+                      UChar* range, UChar** low, UChar** high)
+{
+  int r;
+  UChar* p;
+
+  if (range != end || (start < end && (*start & 0xc0) == 0x80) ||
+      ((reg->optimize == OPTIMIZE_STR_FAST ||
+        reg->optimize == OPTIMIZE_STR_FAST_STEP_FORWARD) &&
+       (reg->exact[0] & 0xc0) == 0x80))
+    return forward_search(reg, str, end, start, range, low, high);
+
+  p = start;
+  if (reg->dist_min != 0) {
+    UChar* q;
+    if (DIST_CAST(end - p) <= reg->dist_min)
+      return 0; /* fail */
+    q = p + reg->dist_min;
+    while (p < q) p += enclen(reg->enc, p);
+  }
+
+  if (c->epoch != epoch || p < c->from ||
+      (IS_NOT_NULL(c->found) && p > c->found)) {
+    r = forward_search(reg, str, end, start, range, low, high);
+    c->epoch = epoch;
+    c->from  = p;
+    c->found = r != 0 ? *high + reg->dist_min : (UChar* )NULL;
+    return r;
+  }
+
+  r = IS_NOT_NULL(c->found) ? 1 : 0;
+  if (r != 0)
+    forward_search_low_high(reg, str, start, c->found, low, high);
+
+#ifdef ONIG_REGSET_FS_VERIFY
+  {
+    UChar* vlow  = (UChar* )NULL;
+    UChar* vhigh = (UChar* )NULL;
+    int vr = forward_search(reg, str, end, start, range, &vlow, &vhigh);
+    if (vr != r || (r != 0 && (vhigh != *high ||
+        (reg->dist_max != INFINITE_LEN && vlow != *low)))) {
+      fprintf(stderr, "onig regset forward_search cache mismatch\n");
+      abort();
+    }
+  }
+#endif
+  return r;
+}
+
+#define REGSET_FORWARD_SEARCH(reg, i, s, rng, lowp, highp) \
+  (IS_NOT_NULL(fc) ? \
+   cached_forward_search((reg), fc + (i), set->tm_epoch, str, end, (s), (rng), (lowp), (highp)) : \
+   forward_search((reg), str, end, (s), (rng), (lowp), (highp)))
+
 static inline int
 regset_search_body_position_lead(OnigRegSet* set,
            const UChar* str, const UChar* end,
@@ -4541,6 +4621,7 @@ regset_search_body_position_lead(OnigRegSet* set,
   regex_t* reg;
   OnigEncoding enc;
   SearchRange* sr;
+  FsCache* fc;
 
   n   = set->n;
   enc = set->enc;
@@ -4554,6 +4635,29 @@ regset_search_body_position_lead(OnigRegSet* set,
   }
   sr = (SearchRange* )set->tm_sr;
 
+  fc = (FsCache* )NULL;
+  if (set->tm_req_key != 0 && set->enc == ONIG_ENCODING_UTF8) {
+    if (set->tm_fc_cap < n) {
+      FsCache* nfc = (FsCache* )xrealloc(set->tm_fc, sizeof(*nfc) * n);
+      if (IS_NOT_NULL(nfc)) {
+        int k;
+        for (k = set->tm_fc_cap; k < n; k++) nfc[k].epoch = 0;
+        set->tm_fc     = (void* )nfc;
+        set->tm_fc_cap = n;
+      }
+    }
+    if (set->tm_fc_cap >= n) {
+      if (set->tm_key != set->tm_req_key || set->tm_key_str != str ||
+          set->tm_key_end != end) {
+        set->tm_key     = set->tm_req_key;
+        set->tm_key_str = str;
+        set->tm_key_end = end;
+        set->tm_epoch++;
+      }
+      fc = (FsCache* )set->tm_fc;
+    }
+  }
+
   for (i = 0; i < n; i++) {
     reg = set->rs[i].reg;
 
@@ -4565,7 +4669,7 @@ regset_search_body_position_lead(OnigRegSet* set,
         else
           sch_range = (UChar* )end;
 
-        if (forward_search(reg, str, end, s, sch_range, &low, &high)) {
+        if (REGSET_FORWARD_SEARCH(reg, i, s, sch_range, &low, &high)) {
           sr[i].state = SRS_LOW_HIGH;
           sr[i].low  = low;
           sr[i].high = high;
@@ -4574,7 +4678,7 @@ regset_search_body_position_lead(OnigRegSet* set,
       }
       else {
         sch_range = (UChar* )end;
-        if (forward_search(reg, str, end, s, sch_range, &low, &high)) {
+        if (REGSET_FORWARD_SEARCH(reg, i, s, sch_range, &low, &high)) {
           goto total_active;
         }
       }
@@ -4598,7 +4702,7 @@ regset_search_body_position_lead(OnigRegSet* set,
 
         if (s <  sr[i].low) continue;
         if (s >= sr[i].high) {
-          if (forward_search(set->rs[i].reg, str, end, s, sr[i].sch_range,
+          if (REGSET_FORWARD_SEARCH(set->rs[i].reg, i, s, sr[i].sch_range,
                              &low, &high) != 0) {
             sr[i].low      = low;
             sr[i].high     = high;
@@ -4641,7 +4745,7 @@ regset_search_body_position_lead(OnigRegSet* set,
         if (sr[i].state == SRS_LOW_HIGH) {
           if (s <  sr[i].low) continue;
           if (s >= sr[i].high) {
-            if (forward_search(set->rs[i].reg, str, end, s, sr[i].sch_range,
+            if (REGSET_FORWARD_SEARCH(set->rs[i].reg, i, s, sr[i].sch_range,
                                &low, &high) != 0) {
               sr[i].low      = low;
               sr[i].high     = high;
@@ -5224,6 +5328,34 @@ onig_match_with_param(regex_t* reg, const UChar* str, const UChar* end,
   return r;
 }
 
+static inline void
+forward_search_low_high(regex_t* reg, const UChar* str, UChar* start, UChar* p,
+                        UChar** low, UChar** high)
+{
+  if (reg->dist_max == 0) {
+    *low  = p;
+    *high = p;
+  }
+  else {
+    if (reg->dist_max != INFINITE_LEN) {
+      if (DIST_CAST(p - str) < reg->dist_max) {
+        *low = (UChar* )str;
+      }
+      else {
+        *low = p - reg->dist_max;
+        if (*low > start) {
+          *low = onigenc_get_right_adjust_char_head(reg->enc, start, *low);
+        }
+      }
+    }
+    /* no needs to adjust *high, *high is used as range check only */
+    if (DIST_CAST(p - str) < reg->dist_min)
+      *high = (UChar* )str;
+    else
+      *high = p - reg->dist_min;
+  }
+}
+
 static int
 forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
                UChar* range, UChar** low, UChar** high)
@@ -5309,28 +5441,7 @@ forward_search(regex_t* reg, const UChar* str, const UChar* end, UChar* start,
       }
     }
 
-    if (reg->dist_max == 0) {
-      *low  = p;
-      *high = p;
-    }
-    else {
-      if (reg->dist_max != INFINITE_LEN) {
-        if (DIST_CAST(p - str) < reg->dist_max) {
-          *low = (UChar* )str;
-        }
-        else {
-          *low = p - reg->dist_max;
-          if (*low > start) {
-            *low = onigenc_get_right_adjust_char_head(reg->enc, start, *low);
-          }
-        }
-      }
-      /* no needs to adjust *high, *high is used as range check only */
-      if (DIST_CAST(p - str) < reg->dist_min)
-        *high = (UChar* )str;
-      else
-        *high = p - reg->dist_min;
-    }
+    forward_search_low_high(reg, str, start, p, low, high);
 
 #ifdef ONIG_DEBUG_SEARCH
     fprintf(DBGFP,
@@ -6065,6 +6176,7 @@ onig_regset_add(OnigRegSet* set, regex_t* reg)
   set->rs[set->n].reg    = reg;
   set->rs[set->n].region = region;
   set->n++;
+  set->tm_key = 0;
 
   update_regset_by_reg(set, reg);
   return 0;
@@ -6097,11 +6209,31 @@ onig_regset_replace(OnigRegSet* set, int at, regex_t* reg)
 
     set->rs[at].reg = reg;
   }
+  set->tm_key = 0;
 
   for (i = 0; i < set->n; i++)
     update_regset_by_reg(set, set->rs[i].reg);
 
   return 0;
+}
+
+/* onig_regset_search() for callers that search one string many times: key
+   (non-zero) identifies the string, which must be valid UTF-8 and must not
+   change while the key is in use, and lets the set reuse forward_search
+   results between calls with the same key, str and end. */
+extern int
+onig_regset_search_keyed(OnigRegSet* set, unsigned long long key,
+                         const UChar* str, const UChar* end,
+                         const UChar* start, const UChar* range,
+                         OnigRegSetLead lead, OnigOptionType option,
+                         int* rmatch_pos)
+{
+  int r;
+
+  set->tm_req_key = key;
+  r = onig_regset_search(set, str, end, start, range, lead, option, rmatch_pos);
+  set->tm_req_key = 0;
+  return r;
 }
 
 extern void
@@ -6124,6 +6256,7 @@ onig_regset_free(OnigRegSet* set)
   if (IS_NOT_NULL(set->tm_msas)) xfree(set->tm_msas);
   if (IS_NOT_NULL(set->tm_mps))  xfree(set->tm_mps);
   if (IS_NOT_NULL(set->tm_stk))  xfree(set->tm_stk);
+  if (IS_NOT_NULL(set->tm_fc))   xfree(set->tm_fc);
   xfree(set->rs);
   xfree(set);
 }

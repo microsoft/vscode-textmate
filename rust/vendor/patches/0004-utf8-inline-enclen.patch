@@ -1,0 +1,51 @@
+regenc.h, utf8.c: look up the length of a UTF-8 character inline
+
+enclen(enc, p) called the encoding's mbc_enc_len through a function
+pointer, and for UTF-8 that function only reads a 256-entry table. With
+this patch, enclen reads the table directly when the encoding is UTF-8 and
+calls through the pointer for the others. utf8.c exports the table as
+OnigEncLenUTF8. Every length, and so every match, is unchanged.
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regenc.h b/oniguruma/src/regenc.h
+index d0b447d..b92411a 100644
+--- a/oniguruma/src/regenc.h
++++ b/oniguruma/src/regenc.h
+@@ -80,7 +80,12 @@ typedef struct {
+ #define ASCII_LIMIT            127
+ #define NEWLINE_CODE           0x0a
+ 
+-#define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
++/* UTF-8's mbc_enc_len is a table lookup: do it inline instead of through
++   the encoding's function pointer. */
++extern const int OnigEncLenUTF8[];
++#define enclen(enc,p) \
++  ((enc) == ONIG_ENCODING_UTF8 ? OnigEncLenUTF8[*(const UChar* )(p)] \
++                               : ONIGENC_MBC_ENC_LEN(enc,p))
+ 
+ /* character types bit flag */
+ #define BIT_CTYPE_NEWLINE  (1<< ONIGENC_CTYPE_NEWLINE)
+diff --git a/oniguruma/src/utf8.c b/oniguruma/src/utf8.c
+index 1178d09..349dcb5 100644
+--- a/oniguruma/src/utf8.c
++++ b/oniguruma/src/utf8.c
+@@ -44,7 +44,8 @@
+ #define utf8_islead(c)     ((UChar )((c) & 0xc0) != 0x80)
+ #define utf8_istail(c)     ((UChar )((c) & 0xc0) == 0x80)
+ 
+-static const int EncLen_UTF8[] = {
++/* Not static: regenc.h's enclen() reads it directly for UTF-8. */
++const int OnigEncLenUTF8[] = {
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+   1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+@@ -70,7 +71,7 @@ static const int EncLen_UTF8[] = {
+ static int
+ mbc_enc_len(const UChar* p)
+ {
+-  return EncLen_UTF8[*p];
++  return OnigEncLenUTF8[*p];
+ }
+ 
+ static int

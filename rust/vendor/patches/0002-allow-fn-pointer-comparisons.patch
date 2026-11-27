@@ -1,0 +1,21 @@
+src/lib.rs: allow a lint in the bindings
+
+The generated bindings derive PartialEq on structs with function pointers,
+which the unpredictable_function_pointer_comparisons lint warns about.
+Cargo caps lints for crates from crates.io but not for path dependencies,
+so the vendored crate showed 16 warnings.
+
+See rust/vendor/README.md.
+
+diff --git a/src/lib.rs b/src/lib.rs
+index 504adf7..383b9f4 100644
+--- a/src/lib.rs
++++ b/src/lib.rs
+@@ -9,6 +9,7 @@ pub use crate::bindgened::*;
+ #[allow(non_camel_case_types)]
+ #[allow(non_snake_case)]
+ #[allow(clippy::all)]
++#[allow(unpredictable_function_pointer_comparisons)]
+ mod ffi;
+ 
+ #[cfg(not(feature = "generate"))]

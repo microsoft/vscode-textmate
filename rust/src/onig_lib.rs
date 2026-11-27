@@ -6,8 +6,10 @@
 //! that reproduces vscode-oniguruma's search (regset search for short lines, per-regex cached search for long ones).
 use onig_sys as o;
 use std::cell::RefCell;
+use std::collections::HashMap;
 use std::os::raw::c_int;
 use std::ptr::null_mut;
+use std::rc::{Rc, Weak};
 use std::sync::Once;
 use std::sync::atomic::{AtomicI64, Ordering};
 
@@ -43,6 +45,25 @@ pub trait OnigLib {
 }
 
 static NEXT_STRING_ID: AtomicI64 = AtomicI64::new(1);
+
+unsafe extern "C" {
+	/// `onig_regset_search` that reuses each regex's forward_search result
+	/// between calls with the same non-zero `key`, string and end. The string
+	/// must be valid UTF-8 and must not change while its key is in use, which
+	/// holds for an `OnigString` and its `sid`. Added to the vendored
+	/// Oniguruma by `vendor/patches/0005-regset-forward-search-cache.patch`.
+	fn onig_regset_search_keyed(
+		set: *mut o::OnigRegSet,
+		key: u64,
+		str: *const o::OnigUChar,
+		end: *const o::OnigUChar,
+		start: *const o::OnigUChar,
+		range: *const o::OnigUChar,
+		lead: o::OnigRegSetLead,
+		option: o::OnigOptionType,
+		rmatch_pos: *mut c_int,
+	) -> c_int;
+}
 
 /// A line as vscode-oniguruma's OnigString sees it: UTF-8 bytes, UTF-16 positions, and the offset maps (only for non-ASCII text).
 /// The text is read-only: the lengths, the offset maps and the id that keys the scanners' caches are computed from it once.
@@ -212,6 +233,8 @@ struct Scanner {
 	set: *mut o::OnigRegSet,
 	/// Null for a pattern that failed to compile.
 	regs: Vec<o::OnigRegex>,
+	/// Keeps the regexes in `regs` alive. Scanners with the same pattern share one (see `REGEX_CACHE`).
+	owned: Vec<Option<Rc<CompiledRegex>>>,
 	regions: Vec<*mut o::OnigRegion>,
 	has_g: Vec<bool>,
 	cache: Vec<(i64, i64, bool)>,
@@ -222,24 +245,61 @@ struct Scanner {
 impl Drop for Scanner {
 	fn drop(&mut self) {
 		unsafe {
-			if self.set.is_null() {
-				free_regs(&self.regs);
-			} else {
-				o::onig_regset_free(self.set); // also frees the regexes
+			if !self.set.is_null() {
+				// onig_regset_free frees the regexes still in the set, but they belong to `owned` and maybe to other
+				// scanners: take them out first. onig_regset_replace with NULL frees only the entry's region.
+				for i in (0..self.regs.len()).rev() {
+					o::onig_regset_replace(self.set, i as c_int, null_mut());
+				}
+				o::onig_regset_free(self.set);
 			}
 			for &r in &self.regions {
 				o::onig_region_free(r, 1);
 			}
 		}
+		// Only now, out of the set, may the regexes be freed.
+		self.owned.clear();
 	}
 }
 
-fn free_regs(regs: &[o::OnigRegex]) {
-	for &r in regs {
-		if !r.is_null() {
-			unsafe { o::onig_free(r) };
-		}
+/// A compiled regex, freed when the last scanner that holds it is dropped.
+struct CompiledRegex(o::OnigRegex);
+
+impl Drop for CompiledRegex {
+	fn drop(&mut self) {
+		unsafe { o::onig_free(self.0) };
 	}
+}
+
+#[derive(Default)]
+struct RegexCache {
+	regexes: HashMap<String, Weak<CompiledRegex>>,
+	prune_at: usize,
+}
+
+thread_local! {
+	/// The compiled regexes that scanners hold, by pattern. A grammar compiles the same patterns many times: a rule's
+	/// scanner for each `\A`/`\G` state, and a new scanner each time a begin/end rule whose end refers to the begin's
+	/// captures matches. Searching only reads a regex (the regions, match stack and caches belong to the set or the
+	/// scanner), so the scanners share it. All patterns compile with the same options, so the pattern is the key.
+	static REGEX_CACHE: RefCell<RegexCache> = RefCell::new(RegexCache::default());
+}
+
+/// `onig_new_one`, shared through `REGEX_CACHE`. A pattern that fails is not cached, so it fails the same way again.
+fn compile_shared(p: &str) -> Result<Rc<CompiledRegex>, String> {
+	REGEX_CACHE.with(|cache| {
+		let mut cache = cache.borrow_mut();
+		if let Some(r) = cache.regexes.get(p).and_then(Weak::upgrade) {
+			return Ok(r);
+		}
+		let r = Rc::new(CompiledRegex(onig_new_one(p)?));
+		if cache.regexes.len() >= cache.prune_at {
+			cache.regexes.retain(|_, w| w.strong_count() > 0);
+			cache.prune_at = (2 * cache.regexes.len()).max(1024);
+		}
+		cache.regexes.insert(p.to_string(), Rc::downgrade(&r));
+		Ok(r)
+	})
 }
 
 static ONIG_INIT: Once = Once::new();
@@ -283,24 +343,24 @@ fn onig_new_one(p: &str) -> Result<o::OnigRegex, String> {
 /// Compiles the patterns and puts them in a regset. `strict` fails on the first pattern Oniguruma rejects, or when
 /// it refuses the set; otherwise the scanner keeps what vscode-oniguruma 1.7.0 keeps (see `create_onig_scanner`).
 fn onig_compile(pats: &[String], strict: bool) -> Result<Scanner, String> {
-	let mut regs: Vec<o::OnigRegex> = Vec::with_capacity(pats.len());
+	let mut owned: Vec<Option<Rc<CompiledRegex>>> = Vec::with_capacity(pats.len());
 	for p in pats {
-		match onig_new_one(p) {
-			Ok(r) => regs.push(r),
-			Err(e) if strict => {
-				free_regs(&regs);
-				return Err(e);
-			}
-			Err(_) => regs.push(null_mut()),
+		match compile_shared(p) {
+			Ok(r) => owned.push(Some(r)),
+			Err(e) if strict => return Err(e),
+			Err(_) => owned.push(None),
 		}
 	}
+	let mut regs: Vec<o::OnigRegex> = owned
+		.iter()
+		.map(|r| r.as_ref().map_or(null_mut(), |r| r.0))
+		.collect();
 	let mut set: *mut o::OnigRegSet = null_mut();
 	if regs.iter().all(|r| !r.is_null()) {
 		// On failure, onig_regset_new leaves `set` null and the regexes to us.
 		let r = unsafe { o::onig_regset_new(&mut set, regs.len() as c_int, regs.as_mut_ptr()) };
 		if r != o::ONIG_NORMAL as c_int {
 			if strict {
-				free_regs(&regs);
 				return Err(format!("onig_regset_new failed: {r}"));
 			}
 			set = null_mut();
@@ -315,6 +375,7 @@ fn onig_compile(pats: &[String], strict: bool) -> Result<Scanner, String> {
 	Ok(Scanner {
 		set,
 		regs,
+		owned,
 		regions,
 		has_g,
 		cache,
@@ -390,8 +451,9 @@ fn onig_find(
 		let mut best: c_int = 0;
 		let idx = unsafe {
 			let end = p.add(s.u8len);
-			o::onig_regset_search(
+			onig_regset_search_keyed(
 				sc.set,
+				sid as u64,
 				p,
 				end,
 				p.add(pos8 as usize),
@@ -464,5 +526,86 @@ mod tests {
 			],
 			[None, None, Some(2), Some(2)]
 		);
+	}
+
+	/// Scanners with the same patterns share their compiled regexes: dropping one leaves the others working, and a
+	/// pattern that fails to compile fails again.
+	#[test]
+	fn scanners_that_share_patterns_outlive_each_other() {
+		let pats = ["a+", "b", "a+"].map(String::from);
+		let find = |sc: &dyn OnigScanner| {
+			sc.find_next_match_sync(&OnigString::new("xbaa".to_string()), 0)
+				.map(|m| {
+					(
+						m.index,
+						m.capture_indices[0].start,
+						m.capture_indices[0].end,
+					)
+				})
+		};
+		let first = NativeOnigLib.create_onig_scanner(&pats);
+		let second = NativeOnigLib.create_onig_scanner(&pats[..2]);
+		let before = [find(&*first), find(&*second)];
+		drop(first);
+		let third = NativeOnigLib.create_onig_scanner(&pats[1..]);
+		let failing = [r"(", r"(", "a+"].map(String::from);
+		assert_eq!(
+			(
+				before,
+				find(&*second),
+				find(&*third),
+				NativeOnigLib.try_create_onig_scanner(&failing).err(),
+				NativeOnigLib.try_create_onig_scanner(&failing[1..]).err(),
+			),
+			(
+				[Some((1, 1, 2)), Some((1, 1, 2))],
+				Some((1, 1, 2)),
+				Some((0, 1, 2)),
+				Some("end pattern with unmatched parenthesis".to_string()),
+				Some("end pattern with unmatched parenthesis".to_string()),
+			)
+		);
+	}
+
+	/// Searching one string again from other positions, in any order and between searches in other strings, finds
+	/// what a search in a new string finds: the regset remembers `forward_search` results per string, and a new
+	/// string never reuses them.
+	#[test]
+	fn searches_in_the_same_string_find_what_searches_in_a_new_string_find() {
+		let scanner = NativeOnigLib.create_onig_scanner(
+			&[
+				"abc", "é+", "[xyz]{2}", r"\bfoo", "(?<=a)b", "😀", r"\G.", "$",
+			]
+			.map(String::from),
+		);
+		let find = |s: &OnigString, start: usize| {
+			scanner
+				.find_next_match_sync(s, start)
+				.map(|m| (m.index, m.capture_indices))
+		};
+		let texts = ["abc éé xyz foo ab 😀 abc", "xx foo é 😀😀 ab", "a"];
+		let other = OnigString::new("foo xy".to_string());
+		for text in texts {
+			let len = text.encode_utf16().count();
+			let mut positions: Vec<usize> = (0..=len).collect();
+			positions.extend((0..=len).rev());
+			positions.extend((0..=len).step_by(3));
+			let expected: Vec<_> = positions
+				.iter()
+				.map(|&start| (start, find(&OnigString::new(text.to_string()), start)))
+				.collect();
+			let same = OnigString::new(text.to_string());
+			let actual: Vec<_> = positions
+				.iter()
+				.enumerate()
+				.map(|(i, &start)| {
+					if i % 7 == 6 {
+						find(&other, i % 6);
+					}
+					(start, find(&same, start))
+				})
+				.collect();
+			assert_eq!(actual, expected, "{text:?}");
+		}
 	}
 }

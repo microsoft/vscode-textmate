@@ -80,7 +80,12 @@ typedef struct {
 #define ASCII_LIMIT            127
 #define NEWLINE_CODE           0x0a
 
-#define enclen(enc,p)          ONIGENC_MBC_ENC_LEN(enc,p)
+/* UTF-8's mbc_enc_len is a table lookup: do it inline instead of through
+   the encoding's function pointer. */
+extern const int OnigEncLenUTF8[];
+#define enclen(enc,p) \
+  ((enc) == ONIG_ENCODING_UTF8 ? OnigEncLenUTF8[*(const UChar* )(p)] \
+                               : ONIGENC_MBC_ENC_LEN(enc,p))
 
 /* character types bit flag */
 #define BIT_CTYPE_NEWLINE  (1<< ONIGENC_CTYPE_NEWLINE)
