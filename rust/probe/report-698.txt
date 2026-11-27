@@ -1,6 +1,6 @@
 A: vscode-oniguruma 1.7.0
 B: native Oniguruma 6.9.8
-82 cases: 69 identical, 0 differ, 13 do not compile in B
+82 cases: 69 identical, 0 differ, 13 do not compile in B, 0 missing
 
 Cases B rejects as invalid patterns (B printed the compile error; vscode-oniguruma 1.7.0 does not throw for an invalid pattern, and its result for one is not an engine match: run engine_probe --lenient to compare what the tokenizer gets):
   #34 patterns=["("]: B: end pattern with unmatched parenthesis | A: {"index":0,"captures":[[0,0]]}

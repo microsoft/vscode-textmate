@@ -1,6 +1,6 @@
 A: vscode-oniguruma 1.7.0
 B: native Oniguruma 6.9.10
-82 cases: 57 identical, 16 differ, 9 do not compile in B
+82 cases: 57 identical, 16 differ, 9 do not compile in B, 0 missing
 
 Differing cases:
   #42 patterns=["[[:punct:]]"] input="a$b!c" start=0

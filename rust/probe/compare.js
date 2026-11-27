@@ -22,10 +22,15 @@ const show = s => JSON.stringify(s.length > 60 ? s.slice(0, 57) + '...' : s);
 let same = 0;
 const differs = [];
 const compileErrors = [];
+const missing = [];
 cases.forEach((c, i) => {
 	const ra = a.results.get(i);
 	const rb = b.results.get(i);
-	if (rb && rb.error !== undefined) {
+	// A case without a result (a run that stopped early, say) is not compared: undefined would equal undefined.
+	const missingIn = [[a, 'A'], [b, 'B']].filter(([out]) => !out.results.has(i)).map(([, name]) => name);
+	if (missingIn.length) {
+		missing.push({ i, c, missingIn });
+	} else if (rb && rb.error !== undefined) {
 		compileErrors.push({ i, c, ra, rb });
 	} else if (JSON.stringify(ra) === JSON.stringify(rb)) {
 		same++;
@@ -36,7 +41,13 @@ cases.forEach((c, i) => {
 
 console.log(`A: ${a.engine}`);
 console.log(`B: ${b.engine}`);
-console.log(`${cases.length} cases: ${same} identical, ${differs.length} differ, ${compileErrors.length} do not compile in B`);
+console.log(`${cases.length} cases: ${same} identical, ${differs.length} differ, ${compileErrors.length} do not compile in B, ${missing.length} missing`);
+if (missing.length) {
+	console.log('\nCases without a result:');
+	for (const { i, c, missingIn } of missing) {
+		console.log(`  #${i} patterns=${JSON.stringify(c.patterns)} input=${show(c.input)} start=${c.start}: missing in ${missingIn.join(' and ')}`);
+	}
+}
 if (differs.length) {
 	console.log('\nDiffering cases:');
 	for (const { i, c, ra, rb } of differs) {
@@ -51,4 +62,4 @@ if (compileErrors.length) {
 		console.log(`  #${i} patterns=${JSON.stringify(c.patterns)}: B: ${rb.error} | A: ${JSON.stringify(ra)}`);
 	}
 }
-process.exitCode = differs.length ? 1 : 0;
+process.exitCode = differs.length || missing.length ? 1 : 0;

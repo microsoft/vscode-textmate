@@ -1,3 +1,3 @@
 A: vscode-oniguruma 1.7.0
 B: native Oniguruma 6.9.8
-82 cases: 82 identical, 0 differ, 0 do not compile in B
+82 cases: 82 identical, 0 differ, 0 do not compile in B, 0 missing

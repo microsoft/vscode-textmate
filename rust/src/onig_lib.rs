@@ -45,8 +45,9 @@ pub trait OnigLib {
 static NEXT_STRING_ID: AtomicI64 = AtomicI64::new(1);
 
 /// A line as vscode-oniguruma's OnigString sees it: UTF-8 bytes, UTF-16 positions, and the offset maps (only for non-ASCII text).
+/// The text is read-only: the lengths, the offset maps and the id that keys the scanners' caches are computed from it once.
 pub struct OnigString {
-	pub content: String,
+	content: String,
 	sid: i64,
 	u8len: usize,
 	u16len: usize,
@@ -94,6 +95,10 @@ impl OnigString {
 			m16to8: Some(m16to8),
 			m8to16: Some(m8to16),
 		}
+	}
+	/// `content` in JavaScript: the text.
+	pub fn content(&self) -> &str {
+		&self.content
 	}
 	/// `content.length` in JavaScript (UTF-16 code units).
 	pub fn len16(&self) -> usize {
@@ -182,10 +187,12 @@ impl OnigScanner for NativeScanner {
 		string: &OnigString,
 		start_position: usize,
 	) -> Option<OnigMatch> {
+		// Saturate: a position past the end behaves the same however large it is (a cast would wrap it to a negative one).
+		let pos16 = i64::try_from(start_position).unwrap_or(i64::MAX);
 		let mut b = self.0.borrow_mut();
 		let sc = b.as_mut()?;
 		let mut out = Vec::new();
-		let idx = onig_find(sc, string, string.sid, start_position as i64, &mut out)?;
+		let idx = onig_find(sc, string, string.sid, pos16, &mut out)?;
 		let capture_indices = out
 			.chunks(2)
 			.map(|p| CaptureIndex {
@@ -365,7 +372,8 @@ fn onig_find(
 ) -> Option<usize> {
 	out.clear();
 	let pos8 = s.to8(pos16);
-	if pos8 > s.u8len as i64 {
+	// `to8` maps a negative position to 0 only in non-ASCII text, and the search below needs `0..=u8len`.
+	if pos8 < 0 || pos8 > s.u8len as i64 {
 		return None;
 	}
 	let (idx, region) = if s.u8len < 1000 {
@@ -431,4 +439,30 @@ fn onig_find(
 		out.push(s.to16(e as u32 as i64));
 	}
 	Some(idx)
+}
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	/// A start position too large for `i64` behaves like any other position past the end: no match in ASCII text, and
+	/// a search at the end in other text, where vscode-oniguruma's OnigString clamps the position to the end.
+	#[test]
+	fn a_start_position_too_large_for_i64_is_past_the_end() {
+		let scanner = NativeOnigLib.create_onig_scanner(&[r"\G".to_string()]);
+		let find = |text: &str, start: usize| {
+			scanner
+				.find_next_match_sync(&OnigString::new(text.to_string()), start)
+				.map(|m| m.capture_indices[0].start)
+		};
+		assert_eq!(
+			[
+				find("abc", 4),
+				find("abc", usize::MAX),
+				find("aé", 3),
+				find("aé", usize::MAX)
+			],
+			[None, None, Some(2), Some(2)]
+		);
+	}
 }
