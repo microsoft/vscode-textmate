@@ -21,8 +21,6 @@ checksum = "1c66915cc5391097de7a2b0b972e8505aa33c0df401fd3a6811dbdb32881ba48"
 [[package]]
 name = "onig_sys"
 version = "69.8.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7b829e3d7e9cc74c7e315ee8edb185bf4190da5acde74afd7fc59c35b1f086e7"
 dependencies = [
  "cc",
  "pkg-config",

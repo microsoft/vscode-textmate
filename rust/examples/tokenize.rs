@@ -49,7 +49,7 @@ fn main() {
 	let lines = ["let a = \"x\"; /* a comment", "that ends here */ const b"];
 
 	// `None` is INITIAL. As in vscode-textmate, indices count UTF-16 code units (these lines are ASCII, so they are
-	// byte offsets too), and the last token ends one past the line, at the "\n" the tokenizer appends.
+	// byte offsets too), and the last token can end one past the line, at the "\n" the tokenizer appends.
 	let mut state: Option<Rc<StateStack>> = None;
 	for line in lines {
 		let result = grammar.tokenize_line(line, state.as_ref());

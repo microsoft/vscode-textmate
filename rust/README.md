@@ -21,7 +21,7 @@ The port is complete: every part of vscode-textmate that loads grammars and them
 `upstream_tests` would skip a test whose grammar files are missing; none are. Three of these tests (Issue #66, #239 and #251) cover the changes on main since 9.3.2, and a port of 9.3.2 alone fails them.
 
 - **The regex engine and invalid patterns**: see Engine parity below. All 6,500 distinct regexes that the 84 grammars can produce compile in the port's Oniguruma, and for regexes that don't compile the port gives vscode-oniguruma's results.
-- **Unit tests**: `cargo test` runs 27 tests: 20 ports of vscode-textmate's matcher, JSON and grammar tests (stack element metadata, fonts, shadowed rules) and 7 of the port's own, one of which tokenizes on 8 threads at once (see Internals). `parse_json` accepts and rejects what `JSON.parse` does, which vscode-textmate uses for JSON grammars.
+- **Unit tests**: `cargo test` runs 28 tests: 20 ports of vscode-textmate's matcher, JSON and grammar tests (stack element metadata, fonts, shadowed rules) and 8 of the port's own, one of which tokenizes on 8 threads at once (see Internals). `parse_json` accepts and rejects what `JSON.parse` does, which vscode-textmate uses for JSON grammars.
 - **One finding**: vscode-textmate's grammar test "Shadowed rules are resolved correctly" is skipped upstream and expects `outer`, with "TODO this should be inner". vscode-textmate (9.3.2 and main) actually returns `inner`, and the ported test asserts what it does.
 
 ## Performance
@@ -30,18 +30,18 @@ Same machine (an arm64 Mac), same grammars, theme and files; JS is vscode-textma
 
 | File | Lines | Tokens | Load | Cold | Warm | Warm speedup |
 |---|---|---|---|---|---|---|
-| TypeScript (VS Code textModel.ts) | 2,748 | 18,084 | 2.3 / 3.2 | 300.6 / 461.2 | 142.7 / 196.9 | 1.38× |
-| TypeScript (VS Code agentService.ts) | 17,189 | 117,537 | 1.1 / 1.4 | 1,288.8 / 1,891.8 | 1,113.5 / 1,585.7 | 1.42× |
-| JavaScript (react-dom.development.js) | 26,263 | 95,304 | 3.7 / 2.8 | 1,128.4 / 1,584.5 | 1,008.2 / 1,380.1 | 1.37× |
-| C++ (koffi base.cc) | 11,199 | 52,762 | 4.3 / 5.1 | 1,296.3 / 1,990.5 | 826.1 / 1,214.1 | 1.47× |
-| C++ (node-addon-api napi-inl.h) | 7,251 | 32,848 | 4.1 / 3.7 | 864.3 / 1,348.5 | 503.1 / 733.9 | 1.46× |
-| CSS (VS Code's src/vs/**/*.css, ~1 MB) | 29,666 | 135,730 | 0.5 / 1.2 | 1,141.7 / 1,580.5 | 985.8 / 1,336.9 | 1.36× |
-| Markdown (axios CHANGELOG.md) | 1,935 | 11,679 | 21.7 / 31.1 | 137.8 / 262.6 | 105.4 / 170.2 | 1.62× |
-| HTML (bignumber.js API.html) | 2,250 | 16,136 | 2.3 / 2.5 | 66.8 / 108.1 | 33.6 / 53.4 | 1.59× |
-| Python (example.py) | 501 | 2,601 | 0.5 / 0.8 | 31.9 / 48.7 | 21.1 / 29.4 | 1.39× |
-| **Total** | **99,002** | **482,681** | 40.5 / 51.8 | 6,256.6 / 9,276.4 | 4,739.5 / 6,700.6 | **1.41×** |
+| TypeScript (VS Code textModel.ts) | 2,748 | 18,084 | 3.8 / 3.2 | 260.7 / 461.2 | 116.1 / 196.9 | 1.70× |
+| TypeScript (VS Code agentService.ts) | 17,189 | 117,537 | 1.1 / 1.4 | 1,094.0 / 1,891.8 | 919.6 / 1,585.7 | 1.72× |
+| JavaScript (react-dom.development.js) | 26,263 | 95,304 | 3.3 / 2.8 | 940.8 / 1,584.5 | 821.5 / 1,380.1 | 1.68× |
+| C++ (koffi base.cc) | 11,199 | 52,762 | 6.4 / 5.1 | 1,192.7 / 1,990.5 | 722.8 / 1,214.1 | 1.68× |
+| C++ (node-addon-api napi-inl.h) | 7,251 | 32,848 | 4.0 / 3.7 | 796.0 / 1,348.5 | 436.5 / 733.9 | 1.68× |
+| CSS (VS Code's src/vs/**/*.css, ~1 MB) | 29,666 | 135,730 | 1.9 / 1.2 | 1,052.7 / 1,580.5 | 901.0 / 1,336.9 | 1.48× |
+| Markdown (axios CHANGELOG.md) | 1,935 | 11,679 | 39.5 / 31.1 | 130.6 / 262.6 | 97.3 / 170.2 | 1.75× |
+| HTML (bignumber.js API.html) | 2,250 | 16,136 | 2.3 / 2.5 | 56.6 / 108.1 | 23.3 / 53.4 | 2.29× |
+| Python (example.py) | 501 | 2,601 | 0.5 / 0.8 | 28.9 / 48.7 | 18.2 / 29.4 | 1.62× |
+| **Total** | **99,002** | **482,681** | 62.8 / 51.8 | 5,553.0 / 9,276.4 | 4,056.3 / 6,700.6 | **1.65×** |
 
-The port is 1.48× faster cold and 1.41× faster warm. Against vscode-textmate built from main, on the files of the main comparison above, the warm speedup per file is 1.34× to 1.62×, and varies by a few hundredths between runs. Load times are a few ms and noisy. The release profile uses LTO and one codegen unit; nothing else was tuned.
+The port is 1.67× faster cold and 1.65× faster warm. Against vscode-textmate built from main, on the files of the main comparison above, the warm speedup per file is 1.48× to 2.28×, and varies by a few hundredths between runs. Load times are a few ms and noisy. The release profile uses LTO and one codegen unit. Most of the time is spent in Oniguruma, and its regset search allocated and freed its scratch memory, and a match stack for each regex it tried, on every search; the vendored Oniguruma keeps them in the regset instead (vendor/onig_sys/PATCHES.md), which takes 14% off the warm total and gives the same results. `bench <data dir> [--reps N] [corpus tags...]` times the same passes as `oracle` without comparing anything, for quick runs while tuning.
 
 ## Usage
 
@@ -98,7 +98,7 @@ The API is vscode-textmate's, with names in snake_case: `Registry` (`load_gramma
 
 ## Internals
 
-vscode-textmate leaves the regex engine to its caller through `IOnigLib`; VS Code passes vscode-oniguruma, which compiles Oniguruma to WebAssembly. The port has the same seam, the `OnigLib` and `OnigScanner` traits, and `NativeOnigLib` implements them on C Oniguruma 6.9.8, the same sources that vscode-oniguruma 1.7.0 compiles to WebAssembly, which the `onig_sys` crate (pinned to 69.8.1) builds. It searches the way vscode-oniguruma's onig.cc does: all the scanner's regexes at once with a regset for UTF-8 strings shorter than 1,000 bytes, and each regex on its own, caching its last result, for longer ones. Each line is converted to UTF-8 once, and positions are mapped between the UTF-16 offsets of the API and the UTF-8 offsets Oniguruma searches. Like vscode-oniguruma's `createOnigScanner`, `create_onig_scanner` never fails: a scanner with patterns that don't compile gives vscode-oniguruma's results (see Engine parity), and `NativeOnigLib::try_create_onig_scanner` returns Oniguruma's error instead, for tools.
+vscode-textmate leaves the regex engine to its caller through `IOnigLib`; VS Code passes vscode-oniguruma, which compiles Oniguruma to WebAssembly. The port has the same seam, the `OnigLib` and `OnigScanner` traits, and `NativeOnigLib` implements them on C Oniguruma 6.9.8, the same sources that vscode-oniguruma 1.7.0 compiles to WebAssembly, which the `onig_sys` crate (69.8.1, vendored in vendor/onig_sys with one patch to the regset, see Engine parity) builds. It searches the way vscode-oniguruma's onig.cc does: all the scanner's regexes at once with a regset for UTF-8 strings shorter than 1,000 bytes, and each regex on its own, caching its last result, for longer ones. Each line is converted to UTF-8 once, and positions are mapped between the UTF-16 offsets of the API and the UTF-8 offsets Oniguruma searches. Like vscode-oniguruma's `createOnigScanner`, `create_onig_scanner` never fails: a scanner with patterns that don't compile gives vscode-oniguruma's results (see Engine parity), and `NativeOnigLib::try_create_onig_scanner` returns Oniguruma's error instead, for tools.
 
 Threads: a `Registry` and its grammars use `Rc` and are not `Send`, so each thread that tokenizes needs its own. Oniguruma initializes its global tables lazily and without a lock on the first `onig_new`, which corrupted the heap when registries on two threads compiled their first regexes at once (WebAssembly vscode-oniguruma never meets this, as it runs on one thread); `NativeOnigLib` therefore initializes Oniguruma once, under `std::sync::Once`, before its first compile. tests/threads.rs tokenizes on 8 threads at once: without that, 3 of 100 runs crashed; with it, none of 300 did.
 
@@ -113,13 +113,13 @@ Threads: a `Registry` and its grammars use `Rc` and are not `Send`, so each thre
 | `grammar` | grammar/grammar.ts, grammar/tokenizeString.ts, grammar/grammarDependencies.ts, registry.ts, main.ts |
 | `diff_state_stacks` | diffStateStacks.ts |
 
-The port keeps the TypeScript structure (the same types, functions and order, so the two read side by side), with `Rc`, `RefCell` and `Cell` where the TypeScript shares and mutates objects. Rules are created and compiled lazily and cached as in the TypeScript. Object keys keep JS order (array-index keys first, then the rest as written), because vscode-textmate iterates captures and injections in that order, which decides rule ids and which injection is tried first; `json` is a small ordered JSON and plist parser, so the only dependencies are `onig_sys` 69.8.1 (pinned, see Engine parity) and `rustc-hash` 2.1.3. PORT-SPEC.md records the details, part by part.
+The port keeps the TypeScript structure (the same types, functions and order, so the two read side by side), with `Rc`, `RefCell` and `Cell` where the TypeScript shares and mutates objects. Rules are created and compiled lazily and cached as in the TypeScript. Object keys keep JS order (array-index keys first, then the rest as written), because vscode-textmate iterates captures and injections in that order, which decides rule ids and which injection is tried first; `json` is a small ordered JSON and plist parser, so the only dependencies are `onig_sys` 69.8.1 (vendored, see Engine parity) and `rustc-hash` 2.1.3. PORT-SPEC.md records the details, part by part.
 
 ## Engine parity
 
 Tokens depend on the regex engine as much as on vscode-textmate, so the port must run the Oniguruma that VS Code runs, and do what it does when a pattern doesn't compile.
 
-- **Same sources.** vscode-oniguruma 1.7.0 compiles Oniguruma 6.9.8 (commit 08d36110), whose Unicode data is version 14.0. `onig_sys` 69.8.1 bundles 6.9.8, and the 83 files of its oniguruma/src are byte-identical to those of that commit; the newer `onig_sys` 69.9.x bundles 6.9.10, with Unicode 16.0. Cargo.toml pins `=69.8.1`.
+- **Same sources.** vscode-oniguruma 1.7.0 compiles Oniguruma 6.9.8 (commit 08d36110), whose Unicode data is version 14.0. `onig_sys` 69.8.1 bundles 6.9.8, and the 83 files of its oniguruma/src are byte-identical to those of that commit; the newer `onig_sys` 69.9.x bundles 6.9.10, with Unicode 16.0. Cargo.toml pins `=69.8.1` and patches it with vendor/onig_sys, a copy of the crate that keeps the 64 files of oniguruma/src its build uses, all unchanged except regexec.c, whose regset search reuses its memory between searches without changing what it finds (PATCHES.md there gives the diff and why the results are the same).
 - **Why it matters.** probe/cases.json holds 82 regex cases (POSIX classes, case folding, Unicode properties and letters added in Unicode 15, 15.1 and 16, anchors, look-behind, back-references, long lines, invalid patterns). probe/probe.js runs them on vscode-oniguruma 1.7.0 and `engine_probe` on the port's Oniguruma. With 6.9.10, 16 cases gave different results: `[[:punct:]]`, `(?I)` with character classes, letters, emoji and case pairs of Unicode 15 and 16, and 4 patterns that 6.9.10 compiles and 6.9.8 rejects (`\p{PosixPunct}` and three scripts of Unicode 15 and 16). With 6.9.8, the 69 cases whose patterns compile are identical, and for each of the other 13, which 6.9.8 rejects (the 4 above and 9 patterns that are invalid in both versions), 1.7.0 gives its invalid-pattern result (probe/report-6910.txt, report-698.txt).
 - **Invalid patterns.** vscode-oniguruma never reports a pattern that doesn't compile: `createOnigScanner` succeeds, and the scanner's results follow from how onig.cc uses the failed regex. They are deterministic, and `create_onig_scanner` reproduces them: on lines shorter than 1,000 UTF-8 bytes, a scanner whose patterns all fail matches the empty string at the start position as pattern 0, and a scanner with both kinds (or one `onig_regset_new` refuses) never matches; on longer lines, the failing patterns never match and the others work. With `--lenient`, `engine_probe` builds scanners that way and all 82 cases are identical (report-698-lenient.txt). probe/garbage.js and `garbage_probe` compare 103 such searches (5 kinds of invalid pattern, short, long and non-ASCII lines, mixed scanners), with identical output, and probe/garbage-history.js shows that 1.7.0's results don't depend on earlier searches. probe/invalid-grammar.js and `invalid_grammar` tokenize a grammar with invalid patterns in `match`, `begin`, `end` and `while` rules, as 9.3.2 on 1.7.0 and as the port: 9 cases, 118 lines of tokens, identical, including the two cases where 9.3.2's endless-loop guard stops the line.
 - **Every built-in pattern compiles.** `pattern_sweep` compiles each regex the 84 grammars can produce (23,171, of which 6,500 are distinct, with the `\A`/`\G` variants and back-reference resolution that vscode-textmate applies), and none fails, so VS Code's own grammars never reach the invalid-pattern path.
@@ -128,7 +128,7 @@ Tokens depend on the regex engine as much as on vscode-textmate, so the port mus
 
 All of these are as in vscode-textmate, except the last.
 
-- Token indices count UTF-16 code units, and the last token ends at the line's length + 1 (the "\n" the tokenizer appends).
+- Token indices count UTF-16 code units, and the last token can end at the line's length + 1 (the "\n" the tokenizer appends).
 - Captures with their own patterns are retokenized without a time limit.
 - `FontAttribute::with` replaces only fields that are truthy in JS, so a font size of 0 or an empty font family keeps the parent's.
 - States rebuilt from a diff carry no fonts, and adjacent font ranges with equal options merge into one.
@@ -137,7 +137,7 @@ All of these are as in vscode-textmate, except the last.
 
 ## Building and testing
 
-Rust 1.85 or later, with edition 2024 (`rust-version` in Cargo.toml; `cargo test` passes with 1.85.0 and 1.100.0), and a C compiler (`onig_sys` builds Oniguruma from source; with `default-features = false` it uses its bundled bindings, so neither libclang nor bindgen is needed). Built and tested on an arm64 Mac only.
+Rust 1.85 or later, with edition 2024 (`rust-version` in Cargo.toml; `cargo test` passes with 1.85.0 and 1.100.0), and a C compiler (`onig_sys`, vendored in vendor/onig_sys, builds Oniguruma from source; with `default-features = false` it uses its bundled bindings, so neither libclang nor bindgen is needed). Built and tested on an arm64 Mac only.
 
 ```sh
 cargo build --release
@@ -161,6 +161,9 @@ cargo run --release --bin oracle -- <data dir>
 VSCODE_ROOT=<vscode checkout> node oracle-js/dump-fixtures.js <fixtures dir> dump
 VSCODE_ROOT=<vscode checkout> node oracle-js/dump-fixtures.js <fixtures dir> fonts
 cargo run --release --bin oracle -- <fixtures dir>
+
+# timings only, without comparing: grammar load, a cold pass and the best of N warm passes per file
+cargo run --release --bin bench -- <data dir> [--reps N]
 ```
 
 dump.js loads vscode-textmate (or the build that `VSCODE_TEXTMATE_JS` names) and vscode-oniguruma from a VS Code checkout (after `pnpm install`, with Node 24), registers its built-in grammars and its 2026 Dark theme the way VS Code does, tokenizes the 9 files, and writes the grammar list, the theme, and each file's lines, binary tokens, scopes and JS timings. fonts.js adds each line's fonts under two themes with font rules. `oracle` runs the port on the same data and prints the tables above, with the time-limit lines; `parse_check <data dir>` checks that every grammar there parses and that the theme loads. The data dir is about 130 MB and holds absolute paths into the checkout, so make it on the machine that runs the port. The files are those of VS Code main in November 2026, and some come from node_modules, so they move with VS Code's lockfile: change `CORPORA` in oracle-js/env.js when they are gone.
