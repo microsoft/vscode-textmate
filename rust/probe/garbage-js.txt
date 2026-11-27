@@ -1,0 +1,103 @@
+--- invalid pattern "("
+alone, short, start 0                                      {"index":0,"captures":[[0,0]]}
+alone, short, start 3                                      {"index":0,"captures":[[3,3]]}
+alone, short, start 7 (end)                                {"index":0,"captures":[[7,7]]}
+alone, empty string                                        {"index":0,"captures":[[0,0]]}
+alone, short, plain JS string, start 2                     {"index":0,"captures":[[2,2]]}
+alone, non-ASCII, start 4                                  {"index":0,"captures":[[4,4]]}
+alone, 1203-byte string, start 0                           null
+alone, 1203-byte string, start 1200                        null
+alone, short, same scanner x5, start 2                     {"index":0,"captures":[[2,2]]}
+[valid "b", bad], short, start 0                           null
+[bad, valid "b"], short, start 0                           null
+[valid "c", bad, valid "a"], short, start 3                null
+[valid "b", bad], 1203-byte string, start 0                {"index":0,"captures":[[1201,1202]]}
+[bad, valid "b"], 1203-byte string, start 0                {"index":1,"captures":[[1201,1202]]}
+[valid "zzz" (no match), bad], short, start 1              null
+afterwards: valid ["b"] still works, start 0               {"index":0,"captures":[[1,2]]}
+afterwards: valid ["b"] on 1203-byte string                {"index":0,"captures":[[1201,1202]]}
+--- invalid pattern "[a"
+alone, short, start 0                                      {"index":0,"captures":[[0,0]]}
+alone, short, start 3                                      {"index":0,"captures":[[3,3]]}
+alone, short, start 7 (end)                                {"index":0,"captures":[[7,7]]}
+alone, empty string                                        {"index":0,"captures":[[0,0]]}
+alone, short, plain JS string, start 2                     {"index":0,"captures":[[2,2]]}
+alone, non-ASCII, start 4                                  {"index":0,"captures":[[4,4]]}
+alone, 1203-byte string, start 0                           null
+alone, 1203-byte string, start 1200                        null
+alone, short, same scanner x5, start 2                     {"index":0,"captures":[[2,2]]}
+[valid "b", bad], short, start 0                           null
+[bad, valid "b"], short, start 0                           null
+[valid "c", bad, valid "a"], short, start 3                null
+[valid "b", bad], 1203-byte string, start 0                {"index":0,"captures":[[1201,1202]]}
+[bad, valid "b"], 1203-byte string, start 0                {"index":1,"captures":[[1201,1202]]}
+[valid "zzz" (no match), bad], short, start 1              null
+afterwards: valid ["b"] still works, start 0               {"index":0,"captures":[[1,2]]}
+afterwards: valid ["b"] on 1203-byte string                {"index":0,"captures":[[1201,1202]]}
+--- invalid pattern "\\p{Foo}"
+alone, short, start 0                                      {"index":0,"captures":[[0,0]]}
+alone, short, start 3                                      {"index":0,"captures":[[3,3]]}
+alone, short, start 7 (end)                                {"index":0,"captures":[[7,7]]}
+alone, empty string                                        {"index":0,"captures":[[0,0]]}
+alone, short, plain JS string, start 2                     {"index":0,"captures":[[2,2]]}
+alone, non-ASCII, start 4                                  {"index":0,"captures":[[4,4]]}
+alone, 1203-byte string, start 0                           null
+alone, 1203-byte string, start 1200                        null
+alone, short, same scanner x5, start 2                     {"index":0,"captures":[[2,2]]}
+[valid "b", bad], short, start 0                           null
+[bad, valid "b"], short, start 0                           null
+[valid "c", bad, valid "a"], short, start 3                null
+[valid "b", bad], 1203-byte string, start 0                {"index":0,"captures":[[1201,1202]]}
+[bad, valid "b"], 1203-byte string, start 0                {"index":1,"captures":[[1201,1202]]}
+[valid "zzz" (no match), bad], short, start 1              null
+afterwards: valid ["b"] still works, start 0               {"index":0,"captures":[[1,2]]}
+afterwards: valid ["b"] on 1203-byte string                {"index":0,"captures":[[1201,1202]]}
+--- invalid pattern "^*"
+alone, short, start 0                                      {"index":0,"captures":[[0,0]]}
+alone, short, start 3                                      {"index":0,"captures":[[3,3]]}
+alone, short, start 7 (end)                                {"index":0,"captures":[[7,7]]}
+alone, empty string                                        {"index":0,"captures":[[0,0]]}
+alone, short, plain JS string, start 2                     {"index":0,"captures":[[2,2]]}
+alone, non-ASCII, start 4                                  {"index":0,"captures":[[4,4]]}
+alone, 1203-byte string, start 0                           null
+alone, 1203-byte string, start 1200                        null
+alone, short, same scanner x5, start 2                     {"index":0,"captures":[[2,2]]}
+[valid "b", bad], short, start 0                           null
+[bad, valid "b"], short, start 0                           null
+[valid "c", bad, valid "a"], short, start 3                null
+[valid "b", bad], 1203-byte string, start 0                {"index":0,"captures":[[1201,1202]]}
+[bad, valid "b"], 1203-byte string, start 0                {"index":1,"captures":[[1201,1202]]}
+[valid "zzz" (no match), bad], short, start 1              null
+afterwards: valid ["b"] still works, start 0               {"index":0,"captures":[[1,2]]}
+afterwards: valid ["b"] on 1203-byte string                {"index":0,"captures":[[1201,1202]]}
+--- invalid pattern "(?<a>x)\\k<b>"
+alone, short, start 0                                      {"index":0,"captures":[[0,0]]}
+alone, short, start 3                                      {"index":0,"captures":[[3,3]]}
+alone, short, start 7 (end)                                {"index":0,"captures":[[7,7]]}
+alone, empty string                                        {"index":0,"captures":[[0,0]]}
+alone, short, plain JS string, start 2                     {"index":0,"captures":[[2,2]]}
+alone, non-ASCII, start 4                                  {"index":0,"captures":[[4,4]]}
+alone, 1203-byte string, start 0                           null
+alone, 1203-byte string, start 1200                        null
+alone, short, same scanner x5, start 2                     {"index":0,"captures":[[2,2]]}
+[valid "b", bad], short, start 0                           null
+[bad, valid "b"], short, start 0                           null
+[valid "c", bad, valid "a"], short, start 3                null
+[valid "b", bad], 1203-byte string, start 0                {"index":0,"captures":[[1201,1202]]}
+[bad, valid "b"], 1203-byte string, start 0                {"index":1,"captures":[[1201,1202]]}
+[valid "zzz" (no match), bad], short, start 1              null
+afterwards: valid ["b"] still works, start 0               {"index":0,"captures":[[1,2]]}
+afterwards: valid ["b"] on 1203-byte string                {"index":0,"captures":[[1201,1202]]}
+--- empty pattern list
+[], short, start 0                                         null
+[], 1203-byte string, start 0                              null
+--- 1000-byte boundary (vscode-textmate searches line + "\n")
+alone "(", 999-byte string, start 0                        {"index":0,"captures":[[0,0]]}
+alone "(", 1000-byte string, start 0                       null
+[valid "x", "("], 999-byte string, start 5                 null
+[valid "x", "("], 1000-byte string, start 5                {"index":0,"captures":[[5,6]]}
+--- valid patterns that onig_regset_new rejects (find-longest option)
+alone "(?L)a", short, start 0                              null
+[valid "x", "(?L)a"], short, start 0                       null
+alone "(?L)a", 1203-byte string, start 0                   {"index":0,"captures":[[1200,1201]]}
+[valid "x", "(?L)a"], 1203-byte string, start 1200         {"index":1,"captures":[[1200,1201]]}

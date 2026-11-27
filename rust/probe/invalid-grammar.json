@@ -1,0 +1,29 @@
+{
+	"scopeName": "source.invalid",
+	"patterns": [
+		{ "match": "\\bfoo\\b", "name": "keyword.foo" },
+		{
+			"begin": "\\[", "end": "\\]", "name": "meta.mixed",
+			"patterns": [
+				{ "match": "x", "name": "constant.x" },
+				{ "match": "(", "name": "invalid.paren" }
+			]
+		},
+		{ "begin": "<<", "end": "[a", "name": "meta.allbad.end" },
+		{ "begin": "\\{", "end": "\\}", "name": "meta.brace", "patterns": [{ "include": "#allbad" }] },
+		{ "begin": "\\(", "end": "\\)", "name": "meta.paren", "applyEndPatternLast": true, "patterns": [{ "include": "#allbad" }] },
+		{ "match": "(b)(a)(r)", "name": "entity.$1.$3", "captures": { "1": { "name": "c.one" }, "3": { "name": "c.three" } } },
+		{ "begin": "(\\w+)<", "end": ">\\1(", "name": "meta.backref" },
+		{ "begin": "^>", "while": "^(", "name": "meta.while" },
+		{ "begin": "!", "end": "(", "name": "meta.bang", "applyEndPatternLast": true, "patterns": [{ "include": "#allbad" }] },
+		{ "begin": "(?=%)", "end": "[%", "name": "meta.pct" }
+	],
+	"repository": {
+		"allbad": {
+			"patterns": [
+				{ "match": "^*", "name": "bad.one" },
+				{ "match": "\\p{Foo}", "name": "bad.two" }
+			]
+		}
+	}
+}

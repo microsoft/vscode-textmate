@@ -1,0 +1,18 @@
+A: vscode-oniguruma 1.7.0
+B: native Oniguruma 6.9.8
+82 cases: 69 identical, 0 differ, 13 do not compile in B
+
+Cases B rejects as invalid patterns (B printed the compile error; vscode-oniguruma 1.7.0 does not throw for an invalid pattern, and its result for one is not an engine match: run engine_probe --lenient to compare what the tokenizer gets):
+  #34 patterns=["("]: B: end pattern with unmatched parenthesis | A: {"index":0,"captures":[[0,0]]}
+  #35 patterns=["[a"]: B: premature end of char-class | A: {"index":0,"captures":[[0,0]]}
+  #37 patterns=["\\p{Foo}"]: B: invalid character property name {Foo} | A: {"index":0,"captures":[[0,0]]}
+  #38 patterns=["(?<a>x)\\k<b>"]: B: undefined name <b> reference | A: {"index":0,"captures":[[0,0]]}
+  #45 patterns=["\\p{PosixPunct}+"]: B: invalid character property name {PosixPunct} | A: {"index":0,"captures":[[0,0]]}
+  #63 patterns=["^*"]: B: target of repeat operator is invalid | A: {"index":0,"captures":[[0,0]]}
+  #64 patterns=["a|^*"]: B: target of repeat operator is invalid | A: {"index":0,"captures":[[0,0]]}
+  #69 patterns=["[\\w-a]+"]: B: unmatched range specifier in char-class | A: {"index":0,"captures":[[0,0]]}
+  #70 patterns=["[\\d-z]+"]: B: unmatched range specifier in char-class | A: {"index":0,"captures":[[0,0]]}
+  #71 patterns=["[a-\\w]"]: B: char-class value at end of range | A: {"index":0,"captures":[[0,0]]}
+  #72 patterns=["\\p{Kawi}"]: B: invalid character property name {Kawi} | A: {"index":0,"captures":[[0,0]]}
+  #73 patterns=["\\p{Nag_Mundari}"]: B: invalid character property name {Nag_Mundari} | A: {"index":0,"captures":[[0,0]]}
+  #74 patterns=["\\p{Garay}"]: B: invalid character property name {Garay} | A: {"index":0,"captures":[[0,0]]}
