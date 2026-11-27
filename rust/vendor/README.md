@@ -1,6 +1,6 @@
 # Vendored onig_sys
 
-`onig_sys/` is the `onig_sys` crate 69.8.1 from crates.io (rust-onig commit d2bf79faaff42d9c4e83878f3c7608f7db6d8574), which bundles Oniguruma 6.9.8, with the patches in `patches/` applied. `rust/Cargo.toml` keeps the `=69.8.1` requirement and replaces the crate with that folder through `[patch.crates-io]`.
+`onig_sys/` is the `onig_sys` crate 69.8.1 from crates.io (rust-onig commit d2bf79faaff42d9c4e83878f3c7608f7db6d8574), which bundles Oniguruma 6.9.8, with the patches in `patches/` applied. `rust/Cargo.toml` depends on that folder by path. A `[patch.crates-io]` entry would not do: Cargo applies `[patch]` only in the manifest it builds from, so a crate that depends on this one by path or Git would get the unpatched crate from crates.io, which lacks `onig_regset_search_keyed`, and fail to link. For the same reason, publishing this crate to crates.io would first need the patched crate published under a name of its own; until then, `cargo publish` refuses, as the dependency has no version.
 
 `onig_sys/` is generated: never edit it by hand. `update-onig-sys.sh` takes the crate from Cargo's cache, or downloads it, checks its SHA-256, keeps the files below, and applies the patches in `patches/` in order. `update-onig-sys.sh --check` does the same in a temporary folder and fails if `onig_sys/` differs, for example after an edit that has no patch.
 
