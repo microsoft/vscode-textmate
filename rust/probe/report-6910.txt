@@ -1,0 +1,64 @@
+A: vscode-oniguruma 1.7.0
+B: native Oniguruma 6.9.10
+82 cases: 57 identical, 16 differ, 9 do not compile in B, 0 missing
+
+Differing cases:
+  #42 patterns=["[[:punct:]]"] input="a$b!c" start=0
+      A: {"index":0,"captures":[[3,4]]}
+      B: {"index":0,"captures":[[1,2]]}
+  #43 patterns=["[[:punct:]]+"] input="$+<=>^`|~" start=0
+      A: null
+      B: {"index":0,"captures":[[0,9]]}
+  #44 patterns=["[[:^punct:]]+"] input="$+<=>^`|~a" start=0
+      A: {"index":0,"captures":[[0,10]]}
+      B: {"index":0,"captures":[[9,10]]}
+  #45 patterns=["\\p{PosixPunct}+"] input="$+!" start=0
+      A: {"index":0,"captures":[[0,0]]}
+      B: {"index":0,"captures":[[0,3]]}
+  #51 patterns=["(?iI)[a-z]+"] input="KKſk" start=0
+      A: {"index":0,"captures":[[0,4]]}
+      B: {"index":0,"captures":[[0,1]]}
+  #53 patterns=["(?iI)[k]"] input="K" start=0
+      A: {"index":0,"captures":[[0,1]]}
+      B: null
+  #54 patterns=["(?iI)[^k]"] input="K" start=0
+      A: null
+      B: {"index":0,"captures":[[0,1]]}
+  #72 patterns=["\\p{Kawi}"] input="x" start=0
+      A: {"index":0,"captures":[[0,0]]}
+      B: null
+  #73 patterns=["\\p{Nag_Mundari}"] input="x" start=0
+      A: {"index":0,"captures":[[0,0]]}
+      B: null
+  #74 patterns=["\\p{Garay}"] input="x" start=0
+      A: {"index":0,"captures":[[0,0]]}
+      B: null
+  #75 patterns=["\\w+"] input="a𑼄b" start=0
+      A: {"index":0,"captures":[[0,1]]}
+      B: {"index":0,"captures":[[0,4]]}
+  #76 patterns=["\\p{L}+"] input="a𐵐b" start=0
+      A: {"index":0,"captures":[[0,1]]}
+      B: {"index":0,"captures":[[0,4]]}
+  #77 patterns=["\\p{Alpha}+"] input="a𮯰b" start=0
+      A: {"index":0,"captures":[[0,1]]}
+      B: {"index":0,"captures":[[0,4]]}
+  #78 patterns=["[[:alpha:]]+"] input="a𞓐b" start=0
+      A: {"index":0,"captures":[[0,1]]}
+      B: {"index":0,"captures":[[0,4]]}
+  #80 patterns=["\\p{Emoji}"] input="🫨" start=0
+      A: null
+      B: {"index":0,"captures":[[0,2]]}
+  #81 patterns=["(?i)𐵰"] input="𐵐" start=0
+      A: null
+      B: {"index":0,"captures":[[0,2]]}
+
+Cases B rejects as invalid patterns (B printed the compile error; vscode-oniguruma 1.7.0 does not throw for an invalid pattern, and its result for one is not an engine match: run engine_probe --lenient to compare what the tokenizer gets):
+  #34 patterns=["("]: B: end pattern with unmatched parenthesis | A: {"index":0,"captures":[[0,0]]}
+  #35 patterns=["[a"]: B: premature end of char-class | A: {"index":0,"captures":[[0,0]]}
+  #37 patterns=["\\p{Foo}"]: B: invalid character property name {Foo} | A: {"index":0,"captures":[[0,0]]}
+  #38 patterns=["(?<a>x)\\k<b>"]: B: undefined name <b> reference | A: {"index":0,"captures":[[0,0]]}
+  #63 patterns=["^*"]: B: target of repeat operator is invalid | A: {"index":0,"captures":[[0,0]]}
+  #64 patterns=["a|^*"]: B: target of repeat operator is invalid | A: {"index":0,"captures":[[0,0]]}
+  #69 patterns=["[\\w-a]+"]: B: unmatched range specifier in char-class | A: {"index":0,"captures":[[0,0]]}
+  #70 patterns=["[\\d-z]+"]: B: unmatched range specifier in char-class | A: {"index":0,"captures":[[0,0]]}
+  #71 patterns=["[a-\\w]"]: B: char-class value at end of range | A: {"index":0,"captures":[[0,0]]}

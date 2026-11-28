@@ -1,0 +1,14 @@
+fresh: [bad] short@2                                 {"index":0,"captures":[[2,2]]}
+[bad] long@1200, then [bad] short@2                  null  ->  {"index":0,"captures":[[2,2]]}
+[bad] long@5, then [bad] short@2                     null  ->  {"index":0,"captures":[[2,2]]}
+[bad] long@0, then [bad] short@0                     null  ->  {"index":0,"captures":[[0,0]]}
+[b,bad] long@7, then [bad] short@3                   {"index":0,"captures":[[1201,1202]]}  ->  {"index":0,"captures":[[3,3]]}
+[bad] long@1200 x3 new strings, then [bad] short@2   null  ->  null  ->  null  ->  {"index":0,"captures":[[2,2]]}
+[bad] long@1200, then [b] short@0 (valid only)       null  ->  {"index":0,"captures":[[1,2]]}
+[bad] long@1200, then [bad,bad] short@2              null  ->  {"index":0,"captures":[[2,2]]}
+fresh: [bad,bad] short@2                             {"index":0,"captures":[[2,2]]}
+fresh: [bad,bad,bad] short@3                         {"index":0,"captures":[[3,3]]}
+fresh: [bad,bad] long@0                              null
+fresh: [bad,b,bad] long@0                            {"index":1,"captures":[[1201,1202]]}
+fresh: [bad,"$"] short@0                             null
+fresh: [bad] 999-byte@0 / 1000-byte@0                {"index":0,"captures":[[0,0]]}  ->  null

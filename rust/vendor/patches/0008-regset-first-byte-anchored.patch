@@ -1,0 +1,38 @@
+regexec.c: the regset first-byte test also covers anchored regexes
+
+Patch 0007 tested the first byte inline only for regexes at distance 0
+with no anchor (reg->anchor == 0). That condition is not needed:
+forward_search() reads dist_min, dist_max, sub_anchor and the optimize
+data, never reg->anchor, so for an anchored regex it reports the same
+candidates in the same order as the inline test. Whether the anchor
+holds is still decided where it was: match_at() checks \G, \A and
+look-behind, and the ANCR_ANYCHAR_INF test before each try still runs.
+Grammars use \G and look-behind a lot (TypeScript's keywords start with
+(?<![_$[:alnum:]])), so many more regexes now skip forward_search().
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regexec.c b/oniguruma/src/regexec.c
+index 3c53393..2e78b8a 100644
+--- a/oniguruma/src/regexec.c
++++ b/oniguruma/src/regexec.c
+@@ -4714,7 +4714,9 @@ regset_search_body_position_lead(OnigRegSet* set,
+   /* In the per-position loop below, a regex whose candidates are the
+      positions where its first byte or exact string matches is tested
+      inline at each position instead of through forward_search(). The
+-     positions it tests, and their order, are the same. */
++     positions it tests, and their order, are the same. An anchor doesn't
++     matter here: forward_search() doesn't read reg->anchor, and match_at()
++     checks it, as it did. */
+   fbok = (set->all_low_high == 0
+           || range - start <= ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN);
+ 
+@@ -4722,7 +4724,7 @@ regset_search_body_position_lead(OnigRegSet* set,
+     reg = set->rs[i].reg;
+ 
+     if (fbok != 0 && reg->dist_min == 0 && reg->dist_max == 0
+-        && reg->sub_anchor == 0 && reg->anchor == 0) {
++        && reg->sub_anchor == 0) {
+       if (reg->optimize == OPTIMIZE_MAP) {
+         sr[i].state = SRS_MAP;
+         continue;

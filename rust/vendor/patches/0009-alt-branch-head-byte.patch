@@ -1,0 +1,85 @@
+regcomp.c: alternatives that must start with a known byte skip a failed push
+
+An alternation compiles each branch but the last to OP_PUSH, which
+saves a backtrack point before the branch runs. When the branch can
+only match starting with one byte (its first string, possibly inside a
+capture group, an option group, an atomic group or a quantifier with a
+lower bound of at least 1, and not ignore-case), the branch now starts
+with OP_PUSH_OR_JUMP_EXACT1 instead, the opcode Oniguruma already
+emits for quantifiers with a known head byte. It pushes the same
+backtrack point when the byte at the current position is that byte,
+and otherwise jumps straight to the next branch, skipping a push that
+the branch's first byte compare would have popped right away. Grammars'
+keyword alternations, such as (?:if|else|for|while), take this path.
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regcomp.c b/oniguruma/src/regcomp.c
+index d341c38..74cb707 100644
+--- a/oniguruma/src/regcomp.c
++++ b/oniguruma/src/regcomp.c
+@@ -2421,6 +2421,39 @@ compile_length_gimmick_node(GimmickNode* node, regex_t* reg)
+   return len;
+ }
+ 
++/* Returns 1 and sets *c when every match of node must begin with byte *c. */
++static int
++alt_branch_head_byte(Node* node, UChar* c)
++{
++  switch (NODE_TYPE(node)) {
++  case NODE_LIST:
++    return alt_branch_head_byte(NODE_CAR(node), c);
++  case NODE_STRING:
++    {
++      StrNode* sn = STR_(node);
++      if (sn->end <= sn->s || NODE_IS_REAL_IGNORECASE(node))
++        return 0;
++      *c = sn->s[0];
++      return 1;
++    }
++  case NODE_QUANT:
++    if (QUANT_(node)->lower > 0)
++      return alt_branch_head_byte(NODE_BODY(node), c);
++    return 0;
++  case NODE_BAG:
++    switch (BAG_(node)->type) {
++    case BAG_OPTION:
++    case BAG_MEMORY:
++    case BAG_STOP_BACKTRACK:
++      return alt_branch_head_byte(NODE_BODY(node), c);
++    default:
++      return 0;
++    }
++  default:
++    return 0;
++  }
++}
++
+ static int
+ compile_length_tree(Node* node, regex_t* reg)
+ {
+@@ -2527,9 +2560,21 @@ compile_tree(Node* node, regex_t* reg, ParseEnv* env)
+         len = compile_length_tree(NODE_CAR(node), reg);
+         if (IS_NOT_NULL(NODE_CDR(node))) {
+           enum OpCode push = NODE_IS_SUPER(node) ? OP_PUSH_SUPER : OP_PUSH;
+-          r = add_op(reg, push);
+-          if (r != 0) break;
+-          COP(reg)->push.addr = SIZE_INC + len + OPSIZE_JUMP;
++#ifdef USE_OP_PUSH_OR_JUMP_EXACT
++          UChar head;
++          if (push == OP_PUSH && alt_branch_head_byte(NODE_CAR(node), &head) != 0) {
++            r = add_op(reg, OP_PUSH_OR_JUMP_EXACT1);
++            if (r != 0) break;
++            COP(reg)->push_or_jump_exact1.addr = SIZE_INC + len + OPSIZE_JUMP;
++            COP(reg)->push_or_jump_exact1.c = head;
++          }
++          else
++#endif
++          {
++            r = add_op(reg, push);
++            if (r != 0) break;
++            COP(reg)->push.addr = SIZE_INC + len + OPSIZE_JUMP;
++          }
+         }
+         r = compile_tree(NODE_CAR(node), reg, env);
+         if (r != 0) break;

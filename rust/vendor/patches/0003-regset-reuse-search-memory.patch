@@ -1,0 +1,215 @@
+regexec.c: the regset search reuses its memory
+
+onig_regset_search allocated and freed three arrays on every call, and in
+ONIG_REGSET_POSITION_LEAD mode every match_at it ran, for each regex at
+each position, allocated a match stack. With this patch, the set keeps the
+arrays (tm_mps, tm_msas, tm_sr) and one match stack (tm_stk) between
+searches, and clears a region only when its regex needs a cleared one.
+
+What a search finds is unchanged. The region of a regex that did not match
+keeps the values of an earlier search; the port reads only the region of
+the regex that the search returns.
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regexec.c b/oniguruma/src/regexec.c
+index cb8e620..6726081 100644
+--- a/oniguruma/src/regexec.c
++++ b/oniguruma/src/regexec.c
+@@ -4453,6 +4453,15 @@ struct OnigRegSetStruct {
+   OnigLen      anc_dmax;    /* (SEMI_)END_BUF anchor distance */
+   int          all_low_high;
+   int          anychar_inf;
++  /* scratch kept between searches (see regset_match_at) */
++  void*        tm_sr;
++  int          tm_sr_cap;
++  void*        tm_msas;
++  int          tm_msas_cap;
++  void*        tm_mps;
++  int          tm_mps_cap;
++  char*        tm_stk;
++  size_t       tm_stk_bytes;
+ };
+ 
+ enum SearchRangeStatus {
+@@ -4468,8 +4477,49 @@ typedef struct {
+   UChar* sch_range;
+ } SearchRange;
+ 
++#define REGSET_STACK_KEEP_MAX_BYTES  (1024 * 1024)
++
++/* match_at on the match stack of the set, which the set keeps between
++   calls, instead of a stack allocated, copied and freed for each regex. */
++static int
++regset_match_at(OnigRegSet* set, regex_t* reg, const UChar* str,
++                const UChar* end, const UChar* in_right_range,
++                const UChar* sstart, MatchArg* msa)
++{
++  int r;
++  size_t ptr_bytes;
++  size_t need;
++
++  if (msa->match_stack_limit != 0 || IS_NOT_NULL(msa->stack_p))
++    return match_at(reg, str, end, in_right_range, sstart, msa);
++
++  ptr_bytes = sizeof(StkPtrType) * msa->ptr_num;
++  need = ptr_bytes + sizeof(StackType) * INIT_MATCH_STACK_SIZE;
++  if (set->tm_stk_bytes < need) {
++    char* p = (char* )xrealloc(set->tm_stk, need);
++    if (IS_NULL(p)) return ONIGERR_MEMORY;
++    set->tm_stk = p;
++    set->tm_stk_bytes = need;
++  }
++
++  msa->stack_p = set->tm_stk;
++  msa->stack_n = (int )((set->tm_stk_bytes - ptr_bytes) / sizeof(StackType));
++  r = match_at(reg, str, end, in_right_range, sstart, msa);
++
++  /* match_at leaves the stack in msa, grown or not */
++  set->tm_stk = (char* )msa->stack_p;
++  set->tm_stk_bytes = ptr_bytes + sizeof(StackType) * (size_t )msa->stack_n;
++  msa->stack_p = (void* )0;
++  if (set->tm_stk_bytes > REGSET_STACK_KEEP_MAX_BYTES) {
++    xfree(set->tm_stk);
++    set->tm_stk = (char* )0;
++    set->tm_stk_bytes = 0;
++  }
++  return r;
++}
++
+ #define REGSET_MATCH_AND_RETURN_CHECK(upper_range) \
+-  r = match_at(reg, str, end, (upper_range), s, msas + i); \
++  r = regset_match_at(set, reg, str, end, (upper_range), s, msas + i); \
+   if (r != ONIG_MISMATCH) {\
+     if (r >= 0) {\
+       goto match;\
+@@ -4496,8 +4546,13 @@ regset_search_body_position_lead(OnigRegSet* set,
+   enc = set->enc;
+   s = (UChar* )start;
+ 
+-  sr = (SearchRange* )xmalloc(sizeof(*sr) * n);
+-  CHECK_NULL_RETURN_MEMERR(sr);
++  if (set->tm_sr_cap < n) {
++    sr = (SearchRange* )xrealloc(set->tm_sr, sizeof(*sr) * n);
++    CHECK_NULL_RETURN_MEMERR(sr);
++    set->tm_sr = (void* )sr;
++    set->tm_sr_cap = n;
++  }
++  sr = (SearchRange* )set->tm_sr;
+ 
+   for (i = 0; i < n; i++) {
+     reg = set->rs[i].reg;
+@@ -4614,15 +4669,12 @@ regset_search_body_position_lead(OnigRegSet* set,
+     } while (1);
+   }
+ 
+-  xfree(sr);
+   return ONIG_MISMATCH;
+ 
+  finish:
+-  xfree(sr);
+   return r;
+ 
+  match:
+-  xfree(sr);
+   *rmatch_pos = (int )(s - str);
+   return i;
+ }
+@@ -4701,8 +4753,16 @@ onig_regset_search_with_param(OnigRegSet* set,
+     region = set->rs[i].region;
+     ADJUST_MATCH_PARAM(reg, mps[i]);
+     if (IS_NOT_NULL(region)) {
+-      r = onig_region_resize_clear(region, reg->num_mem + 1);
+-      if (r != 0) goto finish_no_msa;
++      /* match_at sets every group of the region of a regex that matches;
++         the region of a regex that doesn't match keeps its old values */
++      if (region->num_regs != reg->num_mem + 1
++          || IS_NOT_NULL(region->history_root)
++          || reg->capture_history != 0
++          || OPTON_FIND_NOT_EMPTY(reg->options | option)
++          || OPTON_FIND_LONGEST(reg->options | option)) {
++        r = onig_region_resize_clear(region, reg->num_mem + 1);
++        if (r != 0) goto finish_no_msa;
++      }
+     }
+   }
+ 
+@@ -4809,8 +4869,13 @@ onig_regset_search_with_param(OnigRegSet* set,
+   }
+ 
+   if (lead == ONIG_REGSET_POSITION_LEAD) {
+-    msas = (MatchArg* )xmalloc(sizeof(*msas) * set->n);
+-    CHECK_NULL_RETURN_MEMERR(msas);
++    if (set->tm_msas_cap < set->n) {
++      msas = (MatchArg* )xrealloc(set->tm_msas, sizeof(*msas) * set->n);
++      CHECK_NULL_RETURN_MEMERR(msas);
++      set->tm_msas = (void* )msas;
++      set->tm_msas_cap = set->n;
++    }
++    msas = (MatchArg* )set->tm_msas;
+ 
+     for (i = 0; i < set->n; i++) {
+       MATCH_ARG_INIT(msas[i], set->rs[i].reg, option, set->rs[i].region,
+@@ -4838,7 +4903,7 @@ onig_regset_search_with_param(OnigRegSet* set,
+       onig_region_clear(set->rs[i].region);
+     }
+   }
+-  if (IS_NOT_NULL(msas)) xfree(msas);
++  if (IS_NOT_NULL(msas) && msas != (MatchArg* )set->tm_msas) xfree(msas);
+   return r;
+ 
+  mismatch_no_msa:
+@@ -4857,7 +4922,7 @@ onig_regset_search_with_param(OnigRegSet* set,
+       onig_region_clear(set->rs[i].region);
+     }
+   }
+-  if (IS_NOT_NULL(msas)) xfree(msas);
++  if (IS_NOT_NULL(msas) && msas != (MatchArg* )set->tm_msas) xfree(msas);
+   return r; /* regex index */
+ }
+ 
+@@ -4871,8 +4936,14 @@ onig_regset_search(OnigRegSet* set, const UChar* str, const UChar* end,
+   OnigMatchParam* mp;
+   OnigMatchParam** mps;
+ 
+-  mps = (OnigMatchParam** )xmalloc((sizeof(OnigMatchParam*) + sizeof(OnigMatchParam)) * set->n);
+-  CHECK_NULL_RETURN_MEMERR(mps);
++  if (set->tm_mps_cap < set->n) {
++    mps = (OnigMatchParam** )xrealloc(set->tm_mps,
++            (sizeof(OnigMatchParam*) + sizeof(OnigMatchParam)) * set->n);
++    CHECK_NULL_RETURN_MEMERR(mps);
++    set->tm_mps = (void* )mps;
++    set->tm_mps_cap = set->n;
++  }
++  mps = (OnigMatchParam** )set->tm_mps;
+ 
+   mp = (OnigMatchParam* )(mps + set->n);
+ 
+@@ -4886,8 +4957,6 @@ onig_regset_search(OnigRegSet* set, const UChar* str, const UChar* end,
+   for (i = 0; i < set->n; i++)
+     onig_free_match_param_content(mp + i);
+ 
+-  xfree(mps);
+-
+   return r;
+ }
+ 
+@@ -5894,6 +5963,7 @@ onig_regset_new(OnigRegSet** rset, int n, regex_t* regs[])
+ 
+   set = (OnigRegSet* )xmalloc(sizeof(*set));
+   CHECK_NULL_RETURN_MEMERR(set);
++  xmemset(set, 0, sizeof(*set));
+ 
+   alloc = n > REGSET_INITIAL_ALLOC_SIZE ? n : REGSET_INITIAL_ALLOC_SIZE;
+   rs = (RR* )xmalloc(sizeof(set->rs[0]) * alloc);
+@@ -6050,6 +6120,10 @@ onig_regset_free(OnigRegSet* set)
+       onig_region_free(region, 1);
+   }
+ 
++  if (IS_NOT_NULL(set->tm_sr))   xfree(set->tm_sr);
++  if (IS_NOT_NULL(set->tm_msas)) xfree(set->tm_msas);
++  if (IS_NOT_NULL(set->tm_mps))  xfree(set->tm_mps);
++  if (IS_NOT_NULL(set->tm_stk))  xfree(set->tm_stk);
+   xfree(set->rs);
+   xfree(set);
+ }

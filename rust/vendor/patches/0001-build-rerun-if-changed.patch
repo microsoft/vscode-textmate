@@ -1,0 +1,22 @@
+build.rs: rebuild when the sources change
+
+The crate's build script prints `cargo:rerun-if-env-changed` lines, which
+turn off Cargo's default of rerunning it when any file of the package
+changes. Print `cargo:rerun-if-changed` for oniguruma/src and build.rs too,
+so that an edit to the C sources rebuilds the library.
+
+See rust/vendor/README.md.
+
+diff --git a/build.rs b/build.rs
+index 138e9d8..cc7ec30 100644
+--- a/build.rs
++++ b/build.rs
+@@ -193,6 +193,8 @@ fn compile() {
+     }
+ 
+     cc.warnings(false); // not actionable by the end user
++    println!("cargo:rerun-if-changed=oniguruma/src");
++    println!("cargo:rerun-if-changed=build.rs");
+     cc.compile("onig");
+ }
+ 

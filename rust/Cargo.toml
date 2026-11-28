@@ -1,0 +1,21 @@
+[package]
+name = "vscode-textmate"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "A direct Rust port of vscode-textmate"
+license = "MIT"
+
+[dependencies]
+# Oniguruma 6.9.8, the same C sources that vscode-oniguruma 1.7.0 (the version VS Code ships) compiles to WASM.
+# default-features = false uses onig_sys's pre-generated bindings: its bindgen 0.59 panics on the 6.9.8 header (oniguruma.h:786).
+# vendor/onig_sys is onig_sys 69.8.1 with the patches in vendor/patches. It is a path dependency, not a [patch.crates-io]
+# entry, because Cargo applies [patch] only in the root manifest: crates that depend on this one by path or Git would get
+# the unpatched crate from crates.io, which lacks onig_regset_search_keyed. See vendor/README.md.
+onig_sys = { path = "vendor/onig_sys", default-features = false }
+rustc-hash = "2.1.3"
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
