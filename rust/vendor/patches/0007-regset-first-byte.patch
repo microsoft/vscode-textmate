@@ -1,0 +1,108 @@
+regexec.c: the regset search tests the first byte before it tries a regex
+
+In ONIG_REGSET_POSITION_LEAD mode, for short subjects (up to 500 bytes,
+and longer ones too unless every regex of the set has a bounded search
+range, the "low/high" case), the search walks the subject one character at a
+time and, at each position, asks each regex whether it could match there:
+for most regexes, with a forward_search from that position to find the
+next candidate. For a regex whose optimizer found what it must start with
+at distance 0, with no anchor, a first-byte map (OPTIMIZE_MAP) or an exact
+string (OPTIMIZE_STR, _STR_FAST, _STR_FAST_STEP_FORWARD), that forward
+search can only report the position itself or a later one, and it reports
+the position itself exactly when the map has the byte there, or the string
+starts there. With this patch, the search tests that directly at each
+position: map[*s], or the first byte and a memcmp of the string. It no
+longer runs forward_search for these regexes, neither when it starts nor
+at each candidate. match_at still decides every match, the regexes are
+still tried in the same order at the same positions, and the long-subject
+path is unchanged.
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regexec.c b/oniguruma/src/regexec.c
+index 71831f3..3c53393 100644
+--- a/oniguruma/src/regexec.c
++++ b/oniguruma/src/regexec.c
+@@ -4486,7 +4486,9 @@ struct OnigRegSetStruct {
+ enum SearchRangeStatus {
+   SRS_DEAD      = 0,
+   SRS_LOW_HIGH  = 1,
+-  SRS_ALL_RANGE = 2
++  SRS_ALL_RANGE = 2,
++  SRS_MAP       = 3, /* dist 0 first-byte map: test map[*s] at each s */
++  SRS_EXACT     = 4  /* dist 0 exact string: compare it at each s */
+ };
+ 
+ typedef struct {
+@@ -4670,6 +4672,7 @@ regset_search_body_position_lead(OnigRegSet* set,
+   OnigEncoding enc;
+   SearchRange* sr;
+   FsCache* fc;
++  int fbok;
+ 
+   n   = set->n;
+   enc = set->enc;
+@@ -4706,9 +4709,37 @@ regset_search_body_position_lead(OnigRegSet* set,
+     }
+   }
+ 
++#define ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN   500
++
++  /* In the per-position loop below, a regex whose candidates are the
++     positions where its first byte or exact string matches is tested
++     inline at each position instead of through forward_search(). The
++     positions it tests, and their order, are the same. */
++  fbok = (set->all_low_high == 0
++          || range - start <= ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN);
++
+   for (i = 0; i < n; i++) {
+     reg = set->rs[i].reg;
+ 
++    if (fbok != 0 && reg->dist_min == 0 && reg->dist_max == 0
++        && reg->sub_anchor == 0 && reg->anchor == 0) {
++      if (reg->optimize == OPTIMIZE_MAP) {
++        sr[i].state = SRS_MAP;
++        continue;
++      }
++      if ((reg->optimize == OPTIMIZE_STR
++           || reg->optimize == OPTIMIZE_STR_FAST_STEP_FORWARD
++           || (reg->optimize == OPTIMIZE_STR_FAST
++               && (ONIGENC_IS_SINGLEBYTE(set->enc)
++                   || set->enc == ONIG_ENCODING_UTF8)))
++          && reg->exact_end > reg->exact
++          && (set->enc != ONIG_ENCODING_UTF8
++              || (reg->exact[0] & 0xc0) != 0x80)) {
++        sr[i].state = SRS_EXACT;
++        continue;
++      }
++    }
++
+     sr[i].state = SRS_DEAD;
+     if (reg->optimize != OPTIMIZE_NONE) {
+       if (reg->dist_max != INFINITE_LEN) {
+@@ -4739,8 +4770,6 @@ regset_search_body_position_lead(OnigRegSet* set,
+     }
+   }
+ 
+-#define ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN   500
+-
+   if (set->all_low_high != 0
+       && range - start > ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN) {
+     do {
+@@ -4805,6 +4834,16 @@ regset_search_body_position_lead(OnigRegSet* set,
+             }
+           }
+         }
++        else if (sr[i].state == SRS_MAP) {
++          if (s >= range || set->rs[i].reg->map[*s] == 0) continue;
++        }
++        else if (sr[i].state == SRS_EXACT) {
++          reg = set->rs[i].reg;
++          if (s >= range || *s != reg->exact[0]
++              || end - s < reg->exact_end - reg->exact
++              || memcmp(s, reg->exact, reg->exact_end - reg->exact) != 0)
++            continue;
++        }
+ 
+         reg = set->rs[i].reg;
+         if ((reg->anchor & ANCR_ANYCHAR_INF) == 0 || prev_is_newline != 0) {

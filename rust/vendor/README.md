@@ -54,6 +54,40 @@ The results are the same because `forward_search`, when the search range ends at
 
 On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 3,930 to 3,517 ms (−10.5%), and the cold total from 5,423 to 5,013 ms (−7.6%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate).
 
+### `0006-regset-lazy-setup.patch`: the regset search sets up a regex only when it tries it (`oniguruma/src/regexec.c`)
+
+Before it searched, `onig_regset_search` in `ONIG_REGSET_POSITION_LEAD` mode set up every regex of the set: it adjusted the match parameters, resized the region and initialized the match arguments (`MATCH_ARG_INIT`), and at the end it freed them all again. A grammar's rule often has dozens of regexes, and a search usually stops after it has tried a few of them at the first positions, so most of that work was done for nothing.
+
+With the patch, a search in that mode with `start < end` sets up a regex the first time it tries a match with it (`regset_lazy_setup`), and at the end frees and clears only the regexes it set up. The set keeps, for each regex, the search that last set it up (`tm_igen`, 8 bytes per regex), and the list of the regexes the current search set up (`tm_used`, 4 bytes per regex). Each search starts a new number, so nothing carries over from one search to the next. The setup itself is the same code as before, run later; a search of the empty string and `ONIG_REGSET_REGEX_LEAD` still set up every regex first. The only difference a caller can see is that the region of a regex that the search didn't try keeps what it had; the port reads only the region of the regex that matched.
+
+On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 3,460 to 3,184 ms (−8.0%), and the cold total from 3,640 to 3,364 ms (−7.6%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate).
+
+### `0007-regset-first-byte.patch`: the regset search tests the first byte before it tries a regex (`oniguruma/src/regexec.c`)
+
+For a short subject (up to 500 bytes, and a longer one too unless every regex of the set has a bounded search range), `onig_regset_search` in `ONIG_REGSET_POSITION_LEAD` mode walks the subject one character at a time and, at each position, tries the regexes that could match there, in order. To know whether a regex could match at a position, it ran `forward_search` from there to find the regex's next candidate, once when it started and again each time it reached that candidate. Many of a grammar's regexes start with a fixed set of first bytes or a fixed string, which Oniguruma's optimizer records (`OPTIMIZE_MAP`, `OPTIMIZE_STR` and the `OPTIMIZE_STR_FAST` variants). When that start is at distance 0, `forward_search` reports the position itself exactly when the map has the byte there, or the string starts there.
+
+With the patch, the search tests that directly for those regexes that have no anchor (patch 0008 adds the anchored ones): `map[*s]`, or the first byte and a `memcmp` of the string, and no longer runs `forward_search` for them. `match_at` still decides every match, the regexes are tried in the same order at the same positions, and the path for long subjects is unchanged. A caller sees no difference.
+
+On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 3,090 to 2,752 ms (−11.0%), and the cold total from 3,264 to 2,926 ms (−10.4%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate). On checker.ts and sqlite3.c, it takes the warm total from 9,360 to 7,473 ms (−20.2%).
+
+### `0008-regset-first-byte-anchored.patch`: the first-byte test also covers anchored regexes (`oniguruma/src/regexec.c`)
+
+Patch 0007 tested the first byte only for regexes without an anchor. That condition is not needed: `forward_search` doesn't read the anchor of a regex, only its distance, its `sub_anchor` and its optimize data, so for an anchored regex it reports the same candidates, in the same order, as the direct test. Whether the anchor holds is decided where it was before: `match_at` checks `\G`, `\A` and look-behind, and the `ANCR_ANYCHAR_INF` check before each try still runs. Grammars use `\G` and look-behind a lot (TypeScript's keywords start with `(?<![_$[:alnum:]])`), so the patch covers many more regexes. A caller sees no difference.
+
+On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 2,768 to 2,521 ms (−8.9%), and the cold total from 2,946 to 2,699 ms (−8.4%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate). On checker.ts and sqlite3.c, it takes the warm total from 7,450 to 6,492 ms (−12.9%).
+
+### `0009-alt-branch-head-byte.patch`: alternatives that must start with a known byte skip a failed push (`oniguruma/src/regcomp.c`)
+
+An alternation compiles each branch but the last to `OP_PUSH`, which saves a backtrack point before the branch runs. When a branch can only match starting with one byte (its first string, possibly inside a capture group, an option group, an atomic group or a quantifier with a lower bound of at least 1, and not ignore-case), the patch starts it with `OP_PUSH_OR_JUMP_EXACT1` instead, the opcode Oniguruma already emits for a quantifier with a known head byte. It pushes the same backtrack point when the byte at the current position is that byte, and otherwise jumps straight to the next branch. Without the patch, the branch would push, fail on its first byte compare and pop. What a skipped branch would have done before that compare only pushes entries that the failure pops (captures inside an alternation are always saved on the stack), so the matches and the captures are the same. Grammars' keyword alternations, such as `(?:if|else|for|while)`, take this path. A caller sees no difference.
+
+On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 2,524 to 2,332 ms (−7.6%), and the cold total from 2,697 to 2,512 ms (−6.9%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate). On checker.ts and sqlite3.c, it takes the warm total from 6,490 to 6,304 ms (−2.9%).
+
+### `0010-utf8-map-search.patch`: the first-byte map scan steps one byte at a time in UTF-8 (`oniguruma/src/regexec.c`)
+
+When a regex can start with any of a set of bytes (for example an identifier, a number or a choice of keywords), Oniguruma looks for its next possible start with `map_search`, which walks the text one character at a time: it tests the byte at each character head against the regex's map, and looks up the length of the character to find the next head. In UTF-8 the character heads are exactly the bytes that are not continuation bytes (`0x80` to `0xBF`), so in UTF-8 the patch walks one byte at a time with no length lookup, and skips a hit on a continuation byte. `map_search` is called only from `forward_search`, always from a character head, and the port passes it valid UTF-8 only, so the patch tests the same character heads in the same order and returns the same position. Other encodings, the backward map search and the inline map test of patch 0007 are unchanged.
+
+On the same benchmark, run three times with and three times without the patch, alternately, the patch takes the warm total from 2,330 to 2,197 ms (−5.7%), and the cold total from 2,503 to 2,377 ms (−5.0%), with the same tokens on every line (`oracle`: 0 differences against vscode-textmate). On checker.ts and sqlite3.c, it takes the warm total from 6,278 to 5,844 ms (−6.9%).
+
 ## Updating
 
 1. Set `VERSION` and `SHA256` in `update-onig-sys.sh` to the new crate (crates.io shows the checksum), and update the list of excluded files in it if `oniguruma/src` gained or lost files that `build.rs` doesn't use.

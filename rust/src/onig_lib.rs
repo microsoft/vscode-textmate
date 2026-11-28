@@ -212,17 +212,9 @@ impl OnigScanner for NativeScanner {
 		let pos16 = i64::try_from(start_position).unwrap_or(i64::MAX);
 		let mut b = self.0.borrow_mut();
 		let sc = b.as_mut()?;
-		let mut out = Vec::new();
-		let idx = onig_find(sc, string, string.sid, pos16, &mut out)?;
-		let capture_indices = out
-			.chunks(2)
-			.map(|p| CaptureIndex {
-				start: p[0] as usize,
-				end: p[1] as usize,
-			})
-			.collect();
+		let (index, capture_indices) = onig_find(sc, string, string.sid, pos16)?;
 		Some(OnigMatch {
-			index: idx,
+			index,
 			capture_indices,
 		})
 	}
@@ -429,9 +421,7 @@ fn onig_find(
 	s: &OnigString,
 	sid: i64,
 	pos16: i64,
-	out: &mut Vec<i64>,
-) -> Option<usize> {
-	out.clear();
+) -> Option<(usize, Vec<CaptureIndex>)> {
 	let pos8 = s.to8(pos16);
 	// `to8` maps a negative position to 0 only in non-ASCII text, and the search below needs `0..=u8len`.
 	if pos8 < 0 || pos8 > s.u8len as i64 {
@@ -443,9 +433,14 @@ fn onig_find(
 			if !sc.all_invalid {
 				return None;
 			}
-			out.push(s.to16(pos8));
-			out.push(s.to16(pos8));
-			return Some(0);
+			let p16 = s.to16(pos8) as usize;
+			return Some((
+				0,
+				vec![CaptureIndex {
+					start: p16,
+					end: p16,
+				}],
+			));
 		}
 		let p = s.content.as_ptr();
 		let mut best: c_int = 0;
@@ -495,12 +490,15 @@ fn onig_find(
 	if nr > 1000 {
 		return None;
 	}
+	let mut out = Vec::with_capacity(nr.max(0) as usize);
 	for k in 0..nr as usize {
 		let (b, e) = unsafe { (*(*region).beg.add(k), *(*region).end.add(k)) };
-		out.push(s.to16(b as u32 as i64));
-		out.push(s.to16(e as u32 as i64));
+		out.push(CaptureIndex {
+			start: s.to16(b as u32 as i64) as usize,
+			end: s.to16(e as u32 as i64) as usize,
+		});
 	}
-	Some(idx)
+	Some((idx, out))
 }
 
 #[cfg(test)]

@@ -1,0 +1,36 @@
+regexec.c: the map search steps through UTF-8 a byte at a time
+
+forward_search finds where a match can start with map_search when the
+regex can begin with one of several bytes. map_search stepped from
+character to character, looking up each character's length. In valid
+UTF-8, the characters' first bytes are exactly the bytes that are not
+continuation bytes (0x80-0xBF), so for UTF-8 it now steps one byte at a
+time with no length lookup and skips hits on continuation bytes. It
+tests the same positions in the same order and returns the same
+position. Other encodings take the old loop.
+
+See rust/vendor/README.md.
+
+diff --git a/oniguruma/src/regexec.c b/oniguruma/src/regexec.c
+index 2e78b8a..43a3f0c 100644
+--- a/oniguruma/src/regexec.c
++++ b/oniguruma/src/regexec.c
+@@ -5385,6 +5385,18 @@ map_search(OnigEncoding enc, UChar map[],
+ {
+   const UChar *s = text;
+ 
++  if (enc == ONIG_ENCODING_UTF8) {
++    /* In valid UTF-8 from a character head, the character heads are exactly
++       the bytes that are not continuation bytes (0x80-0xBF): step one byte
++       at a time, with no length lookup, and skip hits on continuation
++       bytes. */
++    while (s < text_range) {
++      if (map[*s] != 0 && (*s & 0xc0) != 0x80) return (UChar* )s;
++      s++;
++    }
++    return (UChar* )NULL;
++  }
++
+   while (s < text_range) {
+     if (map[*s]) return (UChar* )s;
+ 

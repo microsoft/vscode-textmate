@@ -4471,12 +4471,24 @@ struct OnigRegSetStruct {
   const UChar* tm_key_str;
   const UChar* tm_key_end;
   unsigned long long tm_epoch;
+  /* lazy per-regex setup of position-lead searches (see regset_lazy_setup) */
+  unsigned long long  tm_gen;
+  unsigned long long* tm_igen;
+  int*                tm_used;
+  int                 tm_igen_cap;
+  int                 tm_nused;
+  int                 tm_init_mp;
+  OnigOptionType      tm_opt;
+  const UChar*        tm_ostart;
+  OnigMatchParam**    tm_mpsp;
 };
 
 enum SearchRangeStatus {
   SRS_DEAD      = 0,
   SRS_LOW_HIGH  = 1,
-  SRS_ALL_RANGE = 2
+  SRS_ALL_RANGE = 2,
+  SRS_MAP       = 3, /* dist 0 first-byte map: test map[*s] at each s */
+  SRS_EXACT     = 4  /* dist 0 exact string: compare it at each s */
 };
 
 typedef struct {
@@ -4527,7 +4539,45 @@ regset_match_at(OnigRegSet* set, regex_t* reg, const UChar* str,
   return r;
 }
 
+/* The setup of regex i that a position-lead search does once, before its
+   first match_at: most regexes of a set never get to match_at in a search,
+   because the search stops at the first position where one matches. */
+static int
+regset_lazy_setup(OnigRegSet* set, int i)
+{
+  int r;
+  regex_t* reg = set->rs[i].reg;
+  OnigRegion* region = set->rs[i].region;
+  OnigMatchParam* mp = set->tm_mpsp[i];
+  MatchArg* msa = (MatchArg* )set->tm_msas + i;
+
+  if (set->tm_init_mp != 0)
+    onig_initialize_match_param(mp);
+  msa->stack_p = (void* )0;
+  set->tm_igen[i] = set->tm_gen;
+  set->tm_used[set->tm_nused++] = i;
+
+  r = ONIG_NORMAL;
+  ADJUST_MATCH_PARAM(reg, mp);
+  if (IS_NOT_NULL(region)) {
+    if (region->num_regs != reg->num_mem + 1
+        || IS_NOT_NULL(region->history_root)
+        || reg->capture_history != 0
+        || OPTON_FIND_NOT_EMPTY(reg->options | set->tm_opt)
+        || OPTON_FIND_LONGEST(reg->options | set->tm_opt)) {
+      r = onig_region_resize_clear(region, reg->num_mem + 1);
+      if (r != 0) return r;
+    }
+  }
+  MATCH_ARG_INIT(*msa, reg, set->tm_opt, region, set->tm_ostart, mp);
+  return r;
+}
+
 #define REGSET_MATCH_AND_RETURN_CHECK(upper_range) \
+  if (set->tm_igen[i] != set->tm_gen) {\
+    r = regset_lazy_setup(set, i);\
+    if (r != ONIG_NORMAL) goto finish;\
+  }\
   r = regset_match_at(set, reg, str, end, (upper_range), s, msas + i); \
   if (r != ONIG_MISMATCH) {\
     if (r >= 0) {\
@@ -4622,6 +4672,7 @@ regset_search_body_position_lead(OnigRegSet* set,
   OnigEncoding enc;
   SearchRange* sr;
   FsCache* fc;
+  int fbok;
 
   n   = set->n;
   enc = set->enc;
@@ -4658,8 +4709,38 @@ regset_search_body_position_lead(OnigRegSet* set,
     }
   }
 
+#define ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN   500
+
+  /* In the per-position loop below, a regex whose candidates are the
+     positions where its first byte or exact string matches is tested
+     inline at each position instead of through forward_search(). The
+     positions it tests, and their order, are the same. An anchor doesn't
+     matter here: forward_search() doesn't read reg->anchor, and match_at()
+     checks it, as it did. */
+  fbok = (set->all_low_high == 0
+          || range - start <= ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN);
+
   for (i = 0; i < n; i++) {
     reg = set->rs[i].reg;
+
+    if (fbok != 0 && reg->dist_min == 0 && reg->dist_max == 0
+        && reg->sub_anchor == 0) {
+      if (reg->optimize == OPTIMIZE_MAP) {
+        sr[i].state = SRS_MAP;
+        continue;
+      }
+      if ((reg->optimize == OPTIMIZE_STR
+           || reg->optimize == OPTIMIZE_STR_FAST_STEP_FORWARD
+           || (reg->optimize == OPTIMIZE_STR_FAST
+               && (ONIGENC_IS_SINGLEBYTE(set->enc)
+                   || set->enc == ONIG_ENCODING_UTF8)))
+          && reg->exact_end > reg->exact
+          && (set->enc != ONIG_ENCODING_UTF8
+              || (reg->exact[0] & 0xc0) != 0x80)) {
+        sr[i].state = SRS_EXACT;
+        continue;
+      }
+    }
 
     sr[i].state = SRS_DEAD;
     if (reg->optimize != OPTIMIZE_NONE) {
@@ -4690,8 +4771,6 @@ regset_search_body_position_lead(OnigRegSet* set,
       sr[i].high     = (UChar* )range;
     }
   }
-
-#define ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN   500
 
   if (set->all_low_high != 0
       && range - start > ACTIVATE_ALL_LOW_HIGH_SEARCH_THRESHOLD_LEN) {
@@ -4756,6 +4835,16 @@ regset_search_body_position_lead(OnigRegSet* set,
               continue;
             }
           }
+        }
+        else if (sr[i].state == SRS_MAP) {
+          if (s >= range || set->rs[i].reg->map[*s] == 0) continue;
+        }
+        else if (sr[i].state == SRS_EXACT) {
+          reg = set->rs[i].reg;
+          if (s >= range || *s != reg->exact[0]
+              || end - s < reg->exact_end - reg->exact
+              || memcmp(s, reg->exact, reg->exact_end - reg->exact) != 0)
+            continue;
         }
 
         reg = set->rs[i].reg;
@@ -4839,6 +4928,8 @@ onig_regset_search_with_param(OnigRegSet* set,
   OnigEncoding enc;
   OnigRegion* region;
   MatchArg* msas;
+  int lazy;
+  int k;
   const UChar *orig_start = start;
   const UChar *orig_range = range;
 
@@ -4851,8 +4942,10 @@ onig_regset_search_with_param(OnigRegSet* set,
   r = 0;
   enc = set->enc;
   msas = (MatchArg* )NULL;
+  lazy = (lead == ONIG_REGSET_POSITION_LEAD && str < end);
+  set->tm_nused = 0;
 
-  for (i = 0; i < set->n; i++) {
+  for (i = 0; i < set->n && lazy == 0; i++) {
     reg    = set->rs[i].reg;
     region = set->rs[i].region;
     ADJUST_MATCH_PARAM(reg, mps[i]);
@@ -4981,10 +5074,21 @@ onig_regset_search_with_param(OnigRegSet* set,
     }
     msas = (MatchArg* )set->tm_msas;
 
-    for (i = 0; i < set->n; i++) {
-      MATCH_ARG_INIT(msas[i], set->rs[i].reg, option, set->rs[i].region,
-                     orig_start, mps[i]);
+    if (set->tm_igen_cap < set->n) {
+      size_t bytes = (sizeof(unsigned long long) + sizeof(int)) * set->n;
+      unsigned long long* g;
+
+      g = (unsigned long long* )xrealloc(set->tm_igen, bytes);
+      CHECK_NULL_RETURN_MEMERR(g);
+      xmemset(g, 0, bytes);
+      set->tm_igen = g;
+      set->tm_used = (int* )(g + set->n);
+      set->tm_igen_cap = set->n;
     }
+    set->tm_gen++;
+    set->tm_opt = option;
+    set->tm_ostart = orig_start;
+    set->tm_mpsp = mps;
 
     r = regset_search_body_position_lead(set, str, end, start, range,
                                          orig_range, option, msas, rmatch_pos);
@@ -4999,6 +5103,17 @@ onig_regset_search_with_param(OnigRegSet* set,
  mismatch:
   r = ONIG_MISMATCH;
  finish:
+  if (lazy != 0) {
+    for (k = 0; k < set->tm_nused; k++) {
+      i = set->tm_used[k];
+      MATCH_ARG_FREE(msas[i]);
+      if (OPTON_FIND_NOT_EMPTY(set->rs[i].reg->options) &&
+          IS_NOT_NULL(set->rs[i].region)) {
+        onig_region_clear(set->rs[i].region);
+      }
+    }
+    return r;
+  }
   for (i = 0; i < set->n; i++) {
     if (IS_NOT_NULL(msas))
       MATCH_ARG_FREE(msas[i]);
@@ -5018,6 +5133,17 @@ onig_regset_search_with_param(OnigRegSet* set,
  match:
   *rmatch_pos = (int )(s - str);
  match2:
+  if (lazy != 0) {
+    for (k = 0; k < set->tm_nused; k++) {
+      i = set->tm_used[k];
+      MATCH_ARG_FREE(msas[i]);
+      if (OPTON_FIND_NOT_EMPTY(set->rs[i].reg->options) &&
+          IS_NOT_NULL(set->rs[i].region)) {
+        onig_region_clear(set->rs[i].region);
+      }
+    }
+    return r; /* regex index */
+  }
   for (i = 0; i < set->n; i++) {
     if (IS_NOT_NULL(msas))
       MATCH_ARG_FREE(msas[i]);
@@ -5046,15 +5172,28 @@ onig_regset_search(OnigRegSet* set, const UChar* str, const UChar* end,
     CHECK_NULL_RETURN_MEMERR(mps);
     set->tm_mps = (void* )mps;
     set->tm_mps_cap = set->n;
+    mp = (OnigMatchParam* )(mps + set->n);
+    for (i = 0; i < set->n; i++)
+      mps[i] = mp + i;
   }
   mps = (OnigMatchParam** )set->tm_mps;
 
-  mp = (OnigMatchParam* )(mps + set->n);
+  mp = (OnigMatchParam* )(mps + set->tm_mps_cap);
 
-  for (i = 0; i < set->n; i++) {
-    onig_initialize_match_param(mp + i);
-    mps[i] = mp + i;
+  if (lead == ONIG_REGSET_POSITION_LEAD && str < end) {
+    /* regset_lazy_setup initializes the params of the regexes it tries */
+    set->tm_nused = 0;
+    set->tm_init_mp = 1;
+    r = onig_regset_search_with_param(set, str, end, start, range, lead,
+                                      option, mps, rmatch_pos);
+    set->tm_init_mp = 0;
+    for (i = 0; i < set->tm_nused; i++)
+      onig_free_match_param_content(mp + set->tm_used[i]);
+    return r;
   }
+
+  for (i = 0; i < set->n; i++)
+    onig_initialize_match_param(mp + i);
 
   r = onig_regset_search_with_param(set, str, end, start, range, lead, option, mps,
                                     rmatch_pos);
@@ -5245,6 +5384,18 @@ map_search(OnigEncoding enc, UChar map[],
            const UChar* text, const UChar* text_range)
 {
   const UChar *s = text;
+
+  if (enc == ONIG_ENCODING_UTF8) {
+    /* In valid UTF-8 from a character head, the character heads are exactly
+       the bytes that are not continuation bytes (0x80-0xBF): step one byte
+       at a time, with no length lookup, and skip hits on continuation
+       bytes. */
+    while (s < text_range) {
+      if (map[*s] != 0 && (*s & 0xc0) != 0x80) return (UChar* )s;
+      s++;
+    }
+    return (UChar* )NULL;
+  }
 
   while (s < text_range) {
     if (map[*s]) return (UChar* )s;
@@ -6254,6 +6405,7 @@ onig_regset_free(OnigRegSet* set)
 
   if (IS_NOT_NULL(set->tm_sr))   xfree(set->tm_sr);
   if (IS_NOT_NULL(set->tm_msas)) xfree(set->tm_msas);
+  if (IS_NOT_NULL(set->tm_igen)) xfree(set->tm_igen);
   if (IS_NOT_NULL(set->tm_mps))  xfree(set->tm_mps);
   if (IS_NOT_NULL(set->tm_stk))  xfree(set->tm_stk);
   if (IS_NOT_NULL(set->tm_fc))   xfree(set->tm_fc);

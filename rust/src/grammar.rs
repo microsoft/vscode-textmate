@@ -555,6 +555,8 @@ struct LineTokens<'a> {
 	merge_consecutive_tokens_with_equal_metadata: bool,
 	token_type_overrides: &'a [(Matcher, u32)],
 	balanced_bracket_selectors: Option<&'a BalancedBracketSelectors>,
+	/// The scope names of the token that binary tokens match their selectors against, reused between tokens.
+	scope_names: Vec<Rc<str>>,
 }
 
 impl<'a> LineTokens<'a> {
@@ -572,6 +574,7 @@ impl<'a> LineTokens<'a> {
 			merge_consecutive_tokens_with_equal_metadata: !contains_rtl(line_text),
 			token_type_overrides,
 			balanced_bracket_selectors,
+			scope_names: Vec::new(),
 		}
 	}
 
@@ -593,14 +596,15 @@ impl<'a> LineTokens<'a> {
 					.is_some_and(|b| !b.matches_always() && !b.matches_never())
 			{
 				// Only compute the scopes if necessary
-				let scopes = scopes_list.get_scope_names();
+				scopes_list.scope_path.fill_segments(&mut self.scope_names);
+				let scopes = &self.scope_names;
 				for (matcher, token_type) in self.token_type_overrides {
-					if matcher.matches(&scopes) {
+					if matcher.matches(scopes) {
 						metadata = set(metadata, 0, *token_type, None, -1, 0, 0);
 					}
 				}
 				if let Some(selectors) = self.balanced_bracket_selectors {
-					contains_balanced_brackets = selectors.matches(&scopes);
+					contains_balanced_brackets = selectors.matches(scopes);
 				}
 			}
 

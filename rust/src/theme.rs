@@ -23,14 +23,27 @@ impl ScopeStack {
 		})
 	}
 	pub fn get_segments(&self) -> Vec<Rc<str>> {
-		let mut result = vec![self.scope_name.clone()];
-		let mut item = self.parent.as_deref();
+		let mut result = Vec::new();
+		self.fill_segments(&mut result);
+		result
+	}
+
+	/// `get_segments` into `out`, which it clears first and which keeps its allocation between calls.
+	pub(crate) fn fill_segments(&self, out: &mut Vec<Rc<str>>) {
+		out.clear();
+		let mut depth = 0;
+		let mut item = Some(self);
 		while let Some(i) = item {
-			result.push(i.scope_name.clone());
+			depth += 1;
 			item = i.parent.as_deref();
 		}
-		result.reverse();
-		result
+		out.reserve(depth);
+		let mut item = Some(self);
+		while let Some(i) = item {
+			out.push(i.scope_name.clone());
+			item = i.parent.as_deref();
+		}
+		out.reverse();
 	}
 
 	/// `ScopeStack.push(path, scopeNames)`: pushes each scope name in turn.
